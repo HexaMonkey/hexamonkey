@@ -1,0 +1,151 @@
+#include "objecttype.h"
+#include "objecttypetemplate.h"
+
+ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
+{
+}
+
+ObjectType::ObjectType(const ObjectTypeTemplate& _typeTemplate) : _typeTemplate(&_typeTemplate), _parametersValue(_typeTemplate.numberOfParameters())
+{
+}
+
+const ObjectTypeTemplate& ObjectType::typeTemplate() const
+{
+    return *_typeTemplate;
+}
+
+const Variant& ObjectType::parameterValue(int index) const
+{
+    return _parametersValue[index];
+}
+
+bool ObjectType::parameterSpecified(int index) const
+{
+    return (_parametersValue[index].type() != Variant::unknown);
+}
+
+void ObjectType::setParameter(int index, const Variant &value)
+{
+    _parametersValue[index].setValue(value);
+}
+
+void ObjectType::setParameterByName(const std::string& parameterName, const Variant &value)
+{
+    setParameter(_typeTemplate->parameterNumber(parameterName), value);
+}
+
+const ObjectType& ObjectType::importParameters(const ObjectType& other)
+{
+    for(int i = 0; i < typeTemplate().numberOfParameters();++i)
+    {
+        if(!parameterSpecified(i))
+        {
+            for(int j = 0; j < other.typeTemplate().numberOfParameters();++j)
+            {
+                if(typeTemplate().parameterName(i) == other.typeTemplate().parameterName(j))
+                {
+
+                    setParameter(i, other.parameterValue(j));
+                }
+            }
+        }
+    }
+    return *this;
+}
+
+bool ObjectType::extendsDirectly(const ObjectType& other) const
+{
+    if(*_typeTemplate != *other._typeTemplate)
+    {
+        return false;
+    }
+
+    for(int i = 0; i < typeTemplate().numberOfParameters();++i)
+    {
+        if(other.parameterValue(i).type() != Variant::unknown
+           && parameterValue(i) != other.parameterValue(i))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ObjectType::isNull() const
+{
+    return (*_typeTemplate == nullTypeTemplate);
+}
+
+void swap(ObjectType& a, ObjectType& b)
+{
+    using std::swap;
+    swap(a._typeTemplate,b._typeTemplate);
+    swap(a._parametersValue, b._parametersValue);
+}
+
+ObjectType& ObjectType::operator =(ObjectType other)
+{
+    swap(*this, other);
+    return *this;
+}
+
+bool operator==(const ObjectType& a, const ObjectType& b)
+{
+    if(a.typeTemplate() != b.typeTemplate())
+        return false;
+
+    for(int i = 0; i < a.typeTemplate().numberOfParameters();++i)
+    {
+        if(a.parameterValue(i) != b.parameterValue(i))
+            return false;
+    }
+    return true;
+}
+
+bool operator!=(const ObjectType& a, const ObjectType& b)
+{
+    return !(a==b);
+}
+
+bool operator< (const ObjectType& a, const ObjectType& b)
+{
+    if(a.typeTemplate() != b.typeTemplate())
+        return (a.typeTemplate() < b.typeTemplate());
+
+    for(int i = 0; i < a.typeTemplate().numberOfParameters();++i)
+    {
+        if(a.parameterValue(i) != b.parameterValue(i))
+            return (a.parameterValue(i) < b.parameterValue(i));
+    }
+    return false;
+}
+
+std::ostream& ObjectType::display(std::ostream& out) const
+{
+    out << typeTemplate().name();
+    const int n = typeTemplate().numberOfParameters();
+    if(n>0)
+    {
+        out<<"(";
+        for(int i = 0; i < n; ++i)
+        {
+            if(parameterSpecified(i))
+            {
+                out<<parameterValue(i);
+            }
+            else
+            {
+                out<<typeTemplate().parameterName(i);
+            }
+            if(i < n-1)
+                out<<", ";
+        }
+        out<<")";
+    }
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const ObjectType& type)
+{
+    return type.display(out);
+}

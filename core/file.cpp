@@ -1,0 +1,115 @@
+#include "file.h"
+#include "strutil.h"
+#include "bitutil.h"
+#include "formatdetector.h"
+
+File::File() : _bitPosition(0)
+{
+}
+
+void File::setPath(const std::string& path)
+{
+    _path = path;
+
+    open();
+}
+
+const std::string& File::path() const
+{
+    return _path;
+}
+
+void File::open()
+{
+    _file.open(_path.c_str(), std::ios::in|std::ios::binary);
+    if(!good())
+        std::cerr<<"error : unable to open file :"<<_path<<std::endl;
+}
+
+void File::close()
+{
+    _file.close();
+}
+
+void File::clear()
+{
+    _file.clear();
+}
+
+void File::read(char* s, int64_t count )
+{
+    if(count == 0)
+        return;
+    if (_bitPosition == 0 && count % 8 == 0)
+        _file.read(s,count/8);
+    else
+    {
+        int64_t bitCount = (count + _bitPosition);
+        int64_t byteCount = (bitCount&7)? bitCount/8 + 1 : bitCount/8;
+        int8_t shift = byteCount*8 - bitCount;
+
+        char buffer[byteCount];
+        _file.read(buffer,byteCount);
+
+        //Delete first bits
+        buffer[0] &= lsbMask(8-_bitPosition);
+
+        //Shift bits
+        buffer[byteCount-1] >>= shift;
+        for(int i = byteCount-2; i>=0; i--)
+        {
+            buffer[i+1] |= buffer[i] << (8-shift) ;
+            buffer[i] >>= shift;
+        }
+
+        //Copying bits
+        int firstByte = (_bitPosition+shift>8)? 1 : 0;
+        for(int i = firstByte; i < byteCount; ++i)
+        {
+            s[i-firstByte] = buffer[i];
+        }
+
+        //Setting new file position
+        if ((bitCount & 0x7) != 0)
+        {
+            _file.seekg(-1,std::ios_base::cur);
+        }
+        _bitPosition = (count + _bitPosition)  & 7;
+    }
+}
+
+
+void File::seekg(int64_t off, std::ios_base::seekdir dir) {
+    switch (dir)
+    {
+        case std::ios_base::beg :
+            _bitPosition = off & 7; // & 7 stands for % 8
+        break;
+        case std::ios_base::end :
+            _bitPosition =  off & 7;
+        break;
+        default:
+            _bitPosition = (_bitPosition + off) & 7;
+            off += _bitPosition;
+        break;
+    }
+    _file.seekg(off / 8, dir);
+}
+
+
+int64_t File::tellg() {return _file.tellg() * 8 + _bitPosition;}
+
+
+int64_t File::size()
+{
+    int64_t pos = tellg();
+    _file.seekg(0, std::ios::end);
+    int64_t s = tellg();
+    seekg(pos, std::ios::beg);
+    return s;
+}
+
+bool File::good()
+{
+    return _file.is_open()&&!_file.fail()&&!_file.bad()&&!_file.eof();
+}

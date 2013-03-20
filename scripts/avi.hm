@@ -1,0 +1,156 @@
+addMagicNumber 52 49 46 46 xx xx xx xx 41 56 49 20 4c 49 53 54
+addExtension avi
+
+import microsoft
+
+class AviFile as File, ContainerCHUNK extends CHUNK, ContainerLIST extends LIST, ContainerRIFF extends RIFF
+{
+	while(1) CHUNK *;
+}
+
+class CHUNK(code) 
+{
+	FOURCC dwFourCC;
+	DWORD dwSize;
+	@size = 16*((dwSize+1)/2)+64;
+	
+	var subCode1 = substr(dwFourCC,0,2);
+	var subCode2 = substr(dwFourCC,2,4);
+	if(toint(subCode1) != NULL)
+		@args.code = subCode2;
+	else if(toint(subCode2) != NULL)
+		@args.code = subCode1;
+	else
+		@args.code = dwFourCC;
+}
+
+class LIST(code) as CHUNK("LIST"), RIFF(code) as CHUNK("RIFF")
+{
+	FOURCC dwFourCC;
+	@args.code = dwFourCC;
+}
+
+class AviRIFF extends ContainerRIFF as RIFF("AVI ");
+class AvixRIFF extends ContainerRIFF as RIFF("AVIX");
+
+class HeaderList extends ContainerLIST as LIST("hdrl");
+
+class MainAviHeader as CHUNK("avih")
+{
+	DWORD dwMicroSecPerFrame; // frame display rate (or 0)
+	DWORD dwMaxBytesPerSec; // max. transfer rate
+	DWORD dwPaddingGranularity; // pad to multiples of this
+	// size;
+	DWORD dwFlags; // the ever-present flags
+	DWORD dwTotalFrames; // # frames in file
+	DWORD dwInitialFrames;
+	DWORD dwStreams;
+	DWORD dwSuggestedBufferSize;
+	DWORD dwWidth;
+	DWORD dwHeight;
+	DWORD dwReserved[4];
+}
+
+class StreamHeaderList extends ContainerLIST as LIST("strl");
+
+class StreamHeader as CHUNK("strh")
+{
+	FOURCC fccType;
+	FOURCC fccHandler;
+	DWORD dwFlags;
+	WORD wPriority;
+	WORD wLanguage;
+	DWORD dwInitialFrames;
+	DWORD dwScale;
+	DWORD dwRate; /* dwRate / dwScale == samples/second */
+	DWORD dwStart;
+	DWORD dwLength; /* In units above... */
+	DWORD dwSuggestedBufferSize;
+	DWORD dwQuality;
+	DWORD dwSampleSize;
+	RECT rcFrame;
+}
+
+class StreamFormat(fccType) as CHUNK("strf")
+{
+	@args[0] = @parent[StreamHeader()].fccType;
+}
+
+class BitmapInfoHeader as StreamFormat("vids")
+{
+	DWORD biSize;
+	LONG  biWidth;
+	LONG  biHeight;
+	WORD  biPlanes;
+	WORD  biBitCount;
+	FOURCC biCompression;
+	DWORD biSizeImage;
+	LONG  biXPelsPerMeter;
+	LONG  biYPelsPerMeter;
+	DWORD biClrUsed;
+	DWORD biClrImportant;
+}
+
+class WaveFormatEx as StreamFormat("auds")
+{
+	WORD  wFormatTag;
+	WORD  nChannels;
+	DWORD nSamplesPerSec;
+	DWORD nAvgBytesPerSec;
+	WORD  nBlockAlign;
+	WORD  wBitsPerSample;
+	WORD  cbSize;
+}
+
+class StreamName as CHUNK("strn")
+{
+	String name;
+}
+
+class IndexChunk as CHUNK("indx")
+{
+	WORD wLongsPerEntry;
+	BYTE bIndexSubType;
+	BYTE bIndexType;
+	DWORD nEntriesInUse;
+	DWORD dwChunkId;
+	DWORD dwReserved[3];
+	DWORD adw[wLongsPerEntry][];
+}
+
+class IndexEntries as CHUNK("idx1")
+{
+	IndexEntry entries[];
+}
+
+class IndexEntry
+{
+	FOURCC ckid;
+	DWORD dwFlags;
+	DWORD dwChunkOffset;
+	DWORD dwChunkLength;
+}
+
+class MovieList extends ContainerLIST as LIST("movi");
+class MovieRecord extends ContainerLIST as LIST("rec ");
+
+class InfoList extends ContainerLIST as LIST("INFO");
+
+class OpenDMLList extends ContainerLIST as LIST("odml");
+
+class ODMLExtendedAVIHeader as CHUNK("dmlh")
+{
+	DWORD dwTotalFrames;
+} 
+
+forward CHUNK("dc") to VideoChunk
+forward CHUNK("db") to VideoChunk
+
+class Junk as CHUNK("JUNK"), 
+      AudioChunk as CHUNK("wb"),
+	  VideoChunk extends CHUNK,
+	  SubtitleChunk as CHUNK("tx"),
+	  StandardIndexBlock as CHUNK("ix")
+{
+	Data payload;
+}

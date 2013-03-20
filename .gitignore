@@ -1,13 +1,101 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+#Using a whitelist to keep a clean repository
+*
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+#Comment if you want to use your own git ignore locally
+!.gitignore
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+#License
+!LICENSE.txt
+
+#core of the program
+!core
+!core/*.cpp
+!core/*.h
+!core/formatdetector
+!core/formatdetector/*.cpp
+!core/formatdetector/*.h
+!core/interpreter
+!core/interpreter/*.cpp
+!core/interpreter/*.h
+!core/modules
+!core/modules/default
+!core/modules/default/*.cpp
+!core/modules/default/*.h
+!core/modules/ebml
+!core/modules/ebml/*.cpp
+!core/modules/ebml/*.h
+!core/modules/hmc
+!core/modules/hmc/*.cpp
+!core/modules/hmc/*.h
+!core/modules/hmc/*.csv
+!core/modules/mkv
+!core/modules/mkv/*.cpp
+!core/modules/mkv/*.h
+!core/modules/mkv/*.xml
+!core/modules/mp4
+!core/modules/mp4/*.cpp
+!core/modules/mp4/*.h
+!core/modules/mp4/*.csv
+!core/modules/standard
+!core/modules/standard/*.cpp
+!core/modules/standard/*.h
+!core/modules/ts
+!core/modules/ts/*.cpp
+!core/modules/ts/*.h
+!core/util
+!core/util/*.cpp
+!core/util/*.h
+!core/util/*.hpp
+
+#Documentation generation (file for doxygen)
+!doc
+!doc/Doxyfile
+
+
+#Scripts for analyse
+!scripts
+!/scripts/*.hm
+
+
+
+#Compiler part of the program
+!compiler
+
+#GUI in qt 
+!gui
+!gui/hex
+!gui/hex/*.cpp
+!gui/hex/*.h
+!gui/mt
+!gui/tree
+!gui/gui.pro
+!gui/*.qrc
+!gui/*.cpp
+!gui/*.h
+!gui/*.qrc
+!gui/*.rc
+!gui/*.ico
+!gui/*.svg
+!gui/tree/*.cpp
+!gui/tree/*.h
+!gui/mt/*.cpp
+!gui/mt/*.h
+
+#Windows installer builder
+!*.wxs
+
+#Ignoring moc files
+*moc_*
+
+#Compiler files
+!compiler
+!compiler/Makefile
+!compiler/compiler.h
+!compiler/header.h
+!compiler/ast.h
+!compiler/write.h
+!compiler/model.cpp
+!compiler/compiler.flex
+!compiler/compiler.y
+
+

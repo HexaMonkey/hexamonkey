@@ -1,0 +1,58 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C
+addExtension asf
+
+import microsoft
+
+class AsfFile as File
+{
+	while(1) OBJECT *;
+}
+
+class OBJECT(Id) 
+{
+	var guid = GUID();
+	(guid) ObjectId;
+	QWORD ObjectSize;
+    
+	@args.Id = ObjectId;
+	@size = 8 * ObjectSize;
+}
+
+class HeaderObject as OBJECT("75B22630-668E-11CF-A6D9-00AA0062CE6C")
+{
+	DWORD NumberOfHeaderObjects;
+	BYTE Reserved1;
+	BYTE Reserved2;
+	while(1) OBJECT *;
+}
+
+class DataObject as OBJECT("75B22636-668E-11CF-A6D9-00AA0062CE6C")
+{
+	GUID FileId;
+	QWORD TotalDataPackets;
+	WORD Reserved;
+	var packetSize = (@size - 400)/TotalDataPackets;
+	DataPacket(packetSize) data_packets[TotalDataPackets];
+}
+
+class DataPacket(size) extends Data(size)
+{
+	//ToDo
+}

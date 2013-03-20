@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <Product Name='HexaMonkey' Id='B2D4B8F2-AA5F-4b62-8FFD-59D523F7559A' UpgradeCode='13BEF67B-6BD2-4e5d-96C9-B3101E314C73'
+    Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='HexaMonkey'>
+    <Package Id='*' Keywords='Installer' Description="Hexamonkey 1.0 Installer"
+      Comments='HexaMonkey' Manufacturer='HexaMonkey'
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+	  <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
+    <Property Id='DiskPrompt' Value="HexaMonkey 1.0 Installation [1]" />
+		<Directory Id='TARGETDIR' Name='SourceDir'>
+			<Directory Id='ProgramFilesFolder' Name='PFiles'>
+				<Directory Id='INSTALLDIR' Name='HexaMonkey'>
+					<Component Id='MainExecutable' Guid='88F16802-B1E1-4116-A871-B6B8361CF035'>
+						<File Id='hexamonkeyEXE' Name='hexamonkey.exe' DiskId='1' Source='gui\release\HexaMonkey.exe' KeyPath='yes'>
+							<Shortcut Id="startmenuHexaMonkey" Directory="ProgramMenuDir" Name="HexaMonkey"
+						  WorkingDirectory='INSTALLDIR' Icon="hexamonkey.ico" IconIndex="0" Advertise="yes" />
+							<Shortcut Id="desktopHexaMonkey" Directory="DesktopFolder" Name="HexaMonkey"
+						  WorkingDirectory='INSTALLDIR' Icon="hexamonkey.ico" IconIndex="0" Advertise="yes" />
+						</File>
+					</Component>
+					
+					<Component Id='QtCore' Guid='8079125C-8E3B-4e25-999A-D783B0F01C23'>
+						<File Id='QtCoreDLL' Name='Qt5Core.dll' DiskId='1' Source='dll\Qt5Core.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='QtGui' Guid='A6ABD573-2EF6-4680-9B48-E761DB0FA335'>
+						<File Id='QtGuiDLL' Name='Qt5Gui.dll' DiskId='1' Source='dll\Qt5Gui.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='QtWidgets' Guid='E20C0C63-2112-4314-BACF-64C0961CE333'>
+						<File Id='QtWidgetsDLL' Name='Qt5Widgets.dll' DiskId='1' Source='dll\Qt5Widgets.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='LibGcc' Guid='739C44B2-55EB-4b94-BDFF-45FD3721CABD'>
+						<File Id='LibGCCDLL' Name='libgcc_s_sjlj-1.dll' DiskId='1' Source='dll\libgcc_s_sjlj-1.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='LibStd' Guid='13DB5C70-32E0-4949-9C75-BB29FE1C932B'>
+						<File Id='LibStdDLL' Name='libstdc++-6.dll' DiskId='1' Source='dll\libstdc++-6.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='LibThread' Guid='27029556-6271-4678-945A-613AF93E7DDF'>
+						<File Id='LibThreadDLL' Name='libwinpthread-1.dll' DiskId='1' Source='dll\libwinpthread-1.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='LibGLES' Guid='F81A54D4-A315-4048-8B56-1D9689D8B3C0'>
+						<File Id='LibGLESDLL' Name='libGLESv2.dll' DiskId='1' Source='dll\libGLESv2.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='LibEGL' Guid='BB17B213-10D8-4a85-A3F8-227D98CF375E'>
+						<File Id='LibEGLDLL' Name='libEGL.dll' DiskId='1' Source='dll\libEGL.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='Icudt' Guid='2CE4716E-35DE-4585-A4FD-2B4FBE4D0EFD'>
+						<File Id='IcudtDLL' Name='icudt49.dll' DiskId='1' Source='dll\icudt49.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='Icuin' Guid='0AF3DB4E-49AA-4ccc-B902-710641EA5605'>
+						<File Id='IcuinDLL' Name='icuin49.dll' DiskId='1' Source='dll\icuin49.dll' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='Icuuc' Guid='622FF767-BBE2-4f6c-A215-53AF3C96ABE2'>
+						<File Id='IcuucDLL' Name='icuuc49.dll' DiskId='1' Source='dll\icuuc49.dll' KeyPath='yes' />
+					</Component>
+					
+					
+					<Component Id='D3DCompiler' Guid='77640412-A6F4-43d1-A2D7-87A6915E5DBB'>
+						<File Id='D3DCompilerDLL' Name='D3DCompiler_43.dll' DiskId='1' Source='dll\D3DCompiler_43.dll' KeyPath='yes' />
+					</Component>
+					
+					<Directory Id="PlatformsFolder" Name="platforms">
+						<Component Id='QWindows' Guid='10663800-A8E6-464f-8A9D-66AF4745EB98'>
+							<File Id='QWindowsDLL' Name='qwindows.dll' DiskId='1' Source='dll\qwindows.dll' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='QMinimal' Guid='4DC55AEC-1F62-41e2-94D5-843A8835D25A'>
+							<File Id='QMinimalDLL' Name='qminimal.dll' DiskId='1' Source='dll\qminimal.dll' KeyPath='yes' />
+						</Component>
+					</Directory>
+					
+					<Component Id='HexaCompiler' Guid='A6BF5A0C-9B1E-4b0e-A8A1-9AD27EB074EA'>
+						<File Id='HexaCompilerEXE' Name='hexacompiler.exe' DiskId='1' Source='compiler\hexacompiler.exe' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='ExpCompiler' Guid='9FEA5F6B-4EF7-430d-AD4F-D037357E0340'>
+						<File Id='ExpCompilerEXE' Name='expcompiler.exe' DiskId='1' Source='compiler\expcompiler.exe' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='HmcModel' Guid='C42E9F91-6233-498b-A492-E20A4D794C4E'>
+						<File Id='HmcModelCSV' Name='hmcmodel.csv' DiskId='1' Source='core\modules\hmc\hmcmodel.csv' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='MkvModel' Guid='B003227F-8A80-4116-8483-A7D55660DBD8'>
+						<File Id='MkvModelXML' Name='mkvmodel.xml' DiskId='1' Source='core\modules\mkv\mkvmodel.xml' KeyPath='yes' />
+					</Component>
+					
+					<Component Id='Mp4Model' Guid='9726D004-D69A-404e-BC32-17B92CB2617F'>
+						<File Id='Mp4ModelCSV' Name='mp4model.csv' DiskId='1' Source='core\modules\mp4\mp4model.csv' KeyPath='yes' />
+					</Component>
+					
+					<Directory Id="ScriptsFolder" Name="scripts">
+						<Component Id='AviModule' Guid='9172EC4D-7497-41dd-8B4D-59822EF3EF6E'>
+							<File Id='AviModuleHM' Name='avi.hm' DiskId='1' Source='scripts\avi.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='AsfModule' Guid='016FDEEF-6C95-4f54-8D05-86FBF8F50849'>
+							<File Id='AsfModuleHM' Name='asf.hm' DiskId='1' Source='scripts\asf.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='MicrosoftModule' Guid='457596CE-E1BB-4149-9E8C-C2C958BBEE3D'>
+							<File Id='MicrosoftModuleHM' Name='microsoft.hm' DiskId='1' Source='scripts\microsoft.hm' KeyPath='yes' />
+						</Component>
+					</Directory>
+			  </Directory>
+		  </Directory>
+		  
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuDir" Name="HexaMonkey">
+					<Component Id="ProgramMenuDir" Guid="EE12E23F-7CDF-40a5-A1B2-A20C9E7C7BA3">
+						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+						<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+					</Component>
+				</Directory>
+			</Directory>
+			
+			<Directory Id="DesktopFolder" Name="Desktop" />
+			
+		</Directory>
+		<Feature Id='Complete' Level='1'>
+			<ComponentRef Id='MainExecutable' />
+			<ComponentRef Id='QtCore'/>
+			<ComponentRef Id='QtGui'/>
+			<ComponentRef Id='QtWidgets'/>
+			<ComponentRef Id='LibGcc'/>
+			<ComponentRef Id='LibStd'/>
+			<ComponentRef Id='Icudt'/>
+			<ComponentRef Id='Icuin'/>
+			<ComponentRef Id='Icuuc'/>
+			<ComponentRef Id='LibThread'/>
+			<ComponentRef Id='LibGLES'/>
+			<ComponentRef Id='LibEGL'/>
+			<ComponentRef Id='D3DCompiler'/>
+			<ComponentRef Id='QWindows'/>
+			<ComponentRef Id='QMinimal'/>
+			<ComponentRef Id='HexaCompiler'/>
+			<ComponentRef Id='ExpCompiler'/>
+			<ComponentRef Id='HmcModel'/>
+			<ComponentRef Id='MkvModel'/>
+			<ComponentRef Id='Mp4Model'/>
+			<ComponentRef Id='AviModule'/>
+			<ComponentRef Id='AsfModule'/>
+			<ComponentRef Id='MicrosoftModule'/>
+			<ComponentRef Id='ProgramMenuDir' />
+		</Feature>
+		<Icon Id="hexamonkey.ico" SourceFile="gui\logo.ico" />
+
+	  
+   </Product>
+</Wix>
