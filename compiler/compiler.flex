@@ -40,12 +40,12 @@ extern int line_number;
 \'(\\.|[^\\'])+\' {yylval.s = strdup(yytext+1); yylval.s[strlen(yylval.s)-1] = '\0'; return STRING_VALUE;}
 ({H}{H}|"xx")({WS}({H}{H}|"xx"))+ {yylval.s = strdup(yytext); return MAGIC_NUMBER;}
 
-"substr"		{return(SUBSTR_TOKEN);}
-"tostr"		    {return(TOSTR_TOKEN);}
-"toint"		    {return(TOINT_TOKEN);}
-"tofloat"		{return(TOFLOAT_TOKEN);}
-"uppercase"		{return(UPPERCASE_TOKEN);}
-"lowercase"		{return(LOWERCASE_TOKEN);}
+"%substr"		{return(SUBSTR_TOKEN);}
+"%str"		    {return(TOSTR_TOKEN);}
+"%int"		    {return(TOINT_TOKEN);}
+"%float"		{return(TOFLOAT_TOKEN);}
+"%uppercase"	{return(UPPERCASE_TOKEN);}
+"%lowercase"	{return(LOWERCASE_TOKEN);}
 
 ">>="			{return(RIGHT_ASSIGN_TOKEN);}
 "<<="			{return(LEFT_ASSIGN_TOKEN);}

@@ -459,7 +459,16 @@ Variable &Interpreter::evaluateTernaryOperation(int op, Variable &a, Variable &b
             && b.value().canConvertTo(Variant::integer)
             && c.value().canConvertTo(Variant::integer))
         {
-            result = &copy(a.value().toString().substr(b.value().toInteger(), c.value().toInteger()));
+            std::string str = a.value().toString();
+            int64_t start = b.value().toInteger();
+            int64_t size = c.value().toInteger();
+            if(start < str.size())
+            {
+                if(start+size < str.size())
+                    result = &copy(str.substr(start, size));
+                else
+                    result = &copy(str.substr(start));
+            }
         }
         break;
 

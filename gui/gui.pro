@@ -154,7 +154,7 @@ HEADERS  += mainwindow.h \
     ../compiler/model.h \
     ../core/interpreter/variable.h \
     ../core/parser.h \
-    ../core//default/fileparser.h \
+    ../core/modules/default/fileparser.h \
     ../core/modules/standard/bitparser.h \
     ../core/modules/standard/floatparser.h \
     ../core/modules/standard/intparser.h \
