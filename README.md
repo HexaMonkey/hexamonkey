@@ -12,11 +12,13 @@ There is an installer available on http://www.hexamonkey.com/, browse the downlo
 Building the project
 ====================
 Under linux
+-----------
 
 You need qt5, gcc>=4.7, bison and flex on your computer, make sure qmake is available in your PATH. Then just type make in the root of the project, that should do it. As of now there are no install or uninstall target so just run hexamonkey from where it has been built.
 
 
 Under windows
+-------------
 
 Build the .exe files
 You need the version of qt5 with the MinGW 4.7 compiler to build the project and also cygwin with gcc3, flex, bison and make. 
@@ -34,38 +36,27 @@ Required DLLs :
 
 Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
 
--Qt5Core.dll 
--Qt5Gui.dll 
-
-Qt5Widgets.dll 
-
-D3DCompiler_43.dll
-
-icudt49.dll
-
-icuin49.dll
-
-icuuc49.dll
-
-libEGL.dll
-
-libgcc_s_sjlj-1.dll 
-
-libGLESv2.dll
-
-libstdc++-6.dll
-
-libwinpthread-1.dll
-
+- Qt5Core.dll 
+- Qt5Gui.dll 
+- Qt5Widgets.dll 
+- D3DCompiler_43.dll
+- icudt49.dll
+- icuin49.dll
+- icuuc49.dll
+- libEGL.dll
+- libgcc_s_sjlj-1.dll 
+- libGLESv2.dll
+- libstdc++-6.dll
+- libwinpthread-1.dll
 
 Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw47_32\plugins\platform:
 
-qminimal.dll
-
-qwindows.dll
+- qminimal.dll
+- qwindows.dll
 
 
 You need to install wix (available at http://wix.sourceforge.net/) then run in the root of the project (after adding the bin dir of wix to your PATH or run full path to the candle.exe and light.exe instead of just their names.)
-candle.exe installer.wxs
-light.exe installer.wixobj
 
+candle.exe installer.wxs
+
+light.exe installer.wixobj
