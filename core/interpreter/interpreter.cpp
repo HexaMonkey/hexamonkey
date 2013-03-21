@@ -469,6 +469,8 @@ Variable &Interpreter::evaluateTernaryOperation(int op, Variable &a, Variable &b
                 else
                     result = &copy(str.substr(start));
             }
+            else
+                result = &copy("");
         }
         break;
 
