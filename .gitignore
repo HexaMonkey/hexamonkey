@@ -4,8 +4,10 @@
 #Comment if you want to use your own git ignore locally
 !.gitignore
 
-#License
 !LICENSE.txt
+!README.md
+!Makefile
+
 
 #core of the program
 !core

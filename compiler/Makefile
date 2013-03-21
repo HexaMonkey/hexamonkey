@@ -1,7 +1,10 @@
-CC=gcc
+CC=gcc $(CFLAGS)
+
+.PHONY: all	
+all: hexacompiler expcompiler
 
 hexacompiler: lex.yy.o compiler.tab.o
-	gcc -o hexacompiler $^
+	gcc -o hexacompiler $^ $(CFLAGS)
 	
 compiler.tab.h: compiler.y compiler.h ast.h model.h write.h
 	bison -d compiler.y
@@ -13,7 +16,7 @@ lex.yy.c: compiler.flex compiler.tab.h
 	flex compiler.flex
 	
 expcompiler: lexExp.yy.o compilerExp.tab.o
-	gcc -o expcompiler $^
+	gcc -o expcompiler $^ $(CFLAGS)
 
 compilerExp.tab.h: compilerExp.y compiler.h ast.h model.h write.h
 	bison --warnings=none --output=compilerExp.tab.c --defines=compilerExp.tab.h compilerExp.y 2>/dev/null
@@ -44,7 +47,5 @@ csvreader.o : ../core/util/csvreader.cpp ../core/util/csvreader.h
 .PHONY: clean	
 clean:
 	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.*
-	
-.PHONY: all	
-all: hexacompiler expcompiler
+
 	

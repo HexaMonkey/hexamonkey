@@ -1,3 +1,20 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 #include "hexfileview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
@@ -9,9 +26,9 @@ HexFileView::HexFileView(QWidget *parent) :
     _headerWidth(0),
     _hexWidth(fontMetrics().width("bd")+2),
     _charWidth(fontMetrics().width("m")+1),
-    _headerSeparationWidth(15),
+    _headerSeparationWidth(8),
     _hexSeparationWidth(6),
-    _hexCharSeparationWidth(15),
+    _hexCharSeparationWidth(8),
     _delegate(_hexWidth, _charWidth)
 {
     setFocusPolicy(Qt::StrongFocus);
