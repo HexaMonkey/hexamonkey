@@ -1,12 +1,13 @@
 CC=gcc
 QMAKE=qmake
 BUILD_DIR=./gui/release
+JOBS=-j5
 
-hexamonkey: gui/hexamonkey	hexacompiler expcompiler hmcmodel.csv mp4model.csv mkvmodel.xml
-	cp gui/hexamonkey* .
+hexamonkey: $(BUILD_DIR)/hexamonkey	hexacompiler expcompiler hmcmodel.csv mp4model.csv mkvmodel.xml
+	cp $(BUILD_DIR)/hexamonkey* .
 
-.PHONY: gui/hexamonkey	
-gui/hexamonkey:
+.PHONY: $(BUILD_DIR)/hexamonkey	
+$(BUILD_DIR)/hexamonkey:
 	mkdir -p $(BUILD_DIR); $(QMAKE) ./gui/gui.pro -r -o $(BUILD_DIR)/Makefile ; cd $(BUILD_DIR); make $(JOBS)
 	 
 hmcmodel.csv: core/modules/hmc/hmcmodel.csv
