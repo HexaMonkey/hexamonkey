@@ -34,9 +34,8 @@ Required DLLs :
 
 Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
 
-Qt5Core.dll 
-
-Qt5Gui.dll 
+*Qt5Core.dll 
+*Qt5Gui.dll 
 
 Qt5Widgets.dll 
 
