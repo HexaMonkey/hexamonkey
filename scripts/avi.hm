@@ -15,7 +15,7 @@ class CHUNK(code)
 	@size = 16*((dwSize+1)/2)+64;
 	
 	var subCode1 = substr(dwFourCC,0,2);
-	var subCode2 = substr(dwFourCC,2,4);
+	var subCode2 = substr(dwFourCC,2,2);
 	if(toint(subCode1) != NULL)
 		@args.code = subCode2;
 	else if(toint(subCode2) != NULL)
