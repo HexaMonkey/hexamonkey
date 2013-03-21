@@ -28,23 +28,25 @@ Then use qt5 on the file gui/gui.pro open wiht qt creator, then choose a Release
 Build the installer
 Check that all the required DLLs are in a dll directory you have created at the root of the project.
 Required DLLs : 
-  Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
-    Qt5Core.dll 
-    Qt5Gui.dll 
-    Qt5Widgets.dll 
-    D3DCompiler_43.dll
-    icudt49.dll
-    icuin49.dll
-    icuuc49.dll
-    libEGL.dll
-    libgcc_s_sjlj-1.dll 
-    libGLESv2.dll
-    libstdc++-6.dll
-    libwinpthread-1.dll
-  Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw47_32\plugins\platform:
-    qminimal.dll
-    qwindows.dll
-    
+
+Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
+Qt5Core.dll 
+Qt5Gui.dll 
+Qt5Widgets.dll 
+D3DCompiler_43.dll
+icudt49.dll
+icuin49.dll
+icuuc49.dll
+libEGL.dll
+libgcc_s_sjlj-1.dll 
+libGLESv2.dll
+libstdc++-6.dll
+libwinpthread-1.dll
+
+Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw47_32\plugins\platform:
+qminimal.dll
+qwindows.dll
+
 You need to install wix (available at http://wix.sourceforge.net/) then run in the root of the project (after adding the bin dir of wix to your PATH or run full path to the candle.exe and light.exe instead of just their names.)
 candle.exe installer.wxs
 light.exe installer.wixobj
