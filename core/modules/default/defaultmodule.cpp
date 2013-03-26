@@ -23,6 +23,11 @@
 #include "arrayparser.h"
 #include "tupleparser.h"
 
+#include "variable.h"
+#include "scope.h"
+
+#include "strutil.h"
+
 using namespace defaultTypes;
 
 bool DefaultModule::doLoad()
@@ -71,6 +76,139 @@ bool DefaultModule::doLoad()
                 return t*type.parameterValue(1).toInteger();
          }
          return -1;
+    });
+
+    addFunction("sizeof",
+                {"type"},
+                {false},
+                {},
+                []functionLambda
+    {
+        const ObjectType& type = scope.cget(0)->toObjectType();
+        int64_t size = module.getFixedSize(type);
+        std::cout<<type<<" "<<size<<std::endl;
+        if(size != -1)
+            return Variable::copy(size);
+        else
+            return Variable::null();
+
+    });
+
+    addFunction("int",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        const Variant& value = *scope.cget(0);
+        if(value.canConvertTo(Variant::integer))
+        {
+            return Variable::copy(value.toInteger());
+        }
+        else if(value.canConvertTo(Variant::string))
+        {
+            std::stringstream S;
+            S<<value.toString();
+            int64_t i;
+            if(!(S>>i).fail())
+                return Variable::copy(i);
+        }
+        return Variable::null();
+    });
+
+    addFunction("float",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        const Variant& value = *scope.cget(0);
+        if(value.canConvertTo(Variant::floating))
+        {
+            return Variable::copy(value.toDouble());
+        }
+        else if(value.canConvertTo(Variant::string))
+        {
+            std::stringstream S;
+            S<<value.toString();
+            double d;
+            if(!(S>>d).fail())
+                return Variable::copy(d);
+        }
+        return Variable::null();
+    });
+
+    addFunction("str",
+                {"value", "base", "size"},
+                {false, false, false},
+                {Variant(), 10, 0},
+                []functionLambda
+    {
+        std::cout<<*scope.cget(0)<<"->";
+        std::stringstream S;
+        S<<std::setbase(scope.cget(1)->toInteger())<<std::setw(scope.cget(2)->toInteger())<<std::setfill('0')<<*scope.cget(0);
+        const std::string& s = S.str();
+        std::cout<<s<<std::endl;
+        return Variable::copy(s);
+    });
+
+    addFunction("uppercase",
+                {"string"},
+                {false},
+                {},
+                []functionLambda
+    {
+        std::string str = toStr(*scope.cget(0));
+        std::transform(str.begin(), str.end(),str.begin(), ::toupper);
+        return Variable::copy(str);
+    });
+
+    addFunction("lowercase",
+                {"string"},
+                {false},
+                {},
+                []functionLambda
+    {
+        std::string str = toStr(*scope.cget(0));
+        std::transform(str.begin(), str.end(),str.begin(), ::tolower);
+        return Variable::copy(str);
+    });
+
+    addFunction("substr",
+                {"string", "start", "size"},
+                {false, false, false},
+                {},
+                []functionLambda
+    {
+
+        if(   scope.cget(0)->canConvertTo(Variant::string)
+           && scope.cget(1)->canConvertTo(Variant::integer))
+        {
+            const std::string& str    = scope.cget(0)->toString();
+
+            int64_t start;
+            int64_t size;
+            if(scope.cget(2)->canConvertTo(Variant::integer))
+            {
+                start = scope.cget(1)->toInteger();
+                size = scope.cget(2)->toInteger();
+            }
+            else
+            {
+                start = 0;
+                size = scope.cget(1)->toInteger();
+            }
+
+            if(start < str.size())
+            {
+                if(start+size < str.size())
+                    return Variable::copy(str.substr(start, size));
+                else
+                    return Variable::copy(str.substr(start));
+            }
+        }
+
+        return Variable::null();
     });
 
     return true;

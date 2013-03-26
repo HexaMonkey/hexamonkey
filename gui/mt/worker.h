@@ -28,8 +28,6 @@ class Worker : public QObject {
 
 public:
     Worker(Resource& resource);
-    ~Worker();
-
 
 public slots:
     void process();

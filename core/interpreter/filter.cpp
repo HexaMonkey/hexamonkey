@@ -21,7 +21,8 @@
 #include "objectscope.h"
 #include "interpreter.h"
 #include "variable.h"
-
+#include "parser.h"
+#include "holder.h"
 
 Filter::Filter(Interpreter* interpreter): _interpreter(interpreter)
 {
@@ -53,7 +54,8 @@ bool Filter::filterChildren(Object& object)
 
     if(_expression != "")
     {
-        return interpreter().evaluate(interpreter().program().elem(0), ConstObjectScope(object)).value().toBool();
+        Holder holder(interpreter());
+        return holder.cevaluate(interpreter().program().elem(0), ConstObjectScope(object)).toBool();
     }
     else
         return true;

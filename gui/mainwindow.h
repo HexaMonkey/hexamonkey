@@ -46,6 +46,7 @@ class MainWindow : public QMainWindow
     
 public:
     MainWindow(const ModuleLoader& moduleLoader, const InterpreterConstructor& interpreterConstructor, QWidget *parent = 0);
+    void openFile(const std::string& path);
 
 protected slots:
     void dropEvent(QDropEvent *event);
@@ -59,7 +60,6 @@ private slots:
 
 private:
     void openFiles(QStringList paths);
-    void openFile(const std::string& path);
     void createActions();
     void createMenus();
 

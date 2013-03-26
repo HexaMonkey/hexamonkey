@@ -15,44 +15,31 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef TREEITEM_H
-#define TREEITEM_H
+#ifndef FUNCTIONSCOPE_H
+#define FUNCTIONSCOPE_H
 
-#include <QList>
-#include <QVariant>
+#include "scope.h"
 
-/*!
- * \brief The TreeItem class
- */
-class TreeItem : public QObject
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+class FunctionScope : public Scope
 {
-    Q_OBJECT
 public:
-    TreeItem(const QList<QVariant> &data, TreeItem *parent);
-    static TreeItem* RootItem(const QList<QVariant> &data, QObject *owner);
-    virtual ~TreeItem() {}
-
-    void removeChildren();
-
-    TreeItem *child(int row);
-    int childCount() const;
-    int columnCount() const;
-    QVariant data(int column) const;
-    int row() const;
-    TreeItem *parent();
-
-    virtual bool synchronised();
-
-signals:
-    bool childrenRemoved();
+    void addModifiableParameter(const std::string& name, Variant& variant);
+    void addConstantParameter(const std::string& name, const Variant& variant);
+protected:
+    Variant* get(const Variant& key) const override;
+    const Variant* cget(const Variant& key) const override;
 
 private:
-    TreeItem(const QList<QVariant> &data, TreeItem *parent, QObject *owner);
-    void appendChild(TreeItem *child);
+    unsigned int getIndex(const Variant& key) const;
 
-    QList<TreeItem*> childItems;
-    TreeItem* parentItem;
-    QList<QVariant> itemData;
+    std::vector<Variant*> modifiableParameters;
+    std::vector<const Variant*> constantParameters;
+
+    std::unordered_map<std::string, int> parameterIndex;
 };
 
-#endif // TREEITEM_H
+#endif // FUNCTIONSCOPE_H

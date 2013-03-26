@@ -40,13 +40,6 @@ extern int line_number;
 \'(\\.|[^\\'])+\' {yylval.s = strdup(yytext+1); yylval.s[strlen(yylval.s)-1] = '\0'; return STRING_VALUE;}
 ({H}{H}|"xx")({WS}({H}{H}|"xx"))+ {yylval.s = strdup(yytext); return MAGIC_NUMBER;}
 
-"%substr"		{return(SUBSTR_TOKEN);}
-"%str"		    {return(TOSTR_TOKEN);}
-"%int"		    {return(TOINT_TOKEN);}
-"%float"		{return(TOFLOAT_TOKEN);}
-"%uppercase"	{return(UPPERCASE_TOKEN);}
-"%lowercase"	{return(LOWERCASE_TOKEN);}
-
 ">>="			{return(RIGHT_ASSIGN_TOKEN);}
 "<<="			{return(LEFT_ASSIGN_TOKEN);}
 "+="			{return(ADD_ASSIGN_TOKEN);}
@@ -97,6 +90,7 @@ extern int line_number;
       
 {L}{DL}* {yylval.s = strdup(yytext); return IDENT;} 
 "@"{L}{DL}* {yylval.s = strdup(yytext); return A_IDENT;} 
+"%"{L}{DL}* {yylval.s = strdup(yytext+1); return P_IDENT;}
 {WS}+      /* eat up whitespace */   
 [\n]     {++line_number;}                                                                     
 %%

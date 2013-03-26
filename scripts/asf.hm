@@ -28,6 +28,7 @@ class AsfFile as File
 class OBJECT(Id) 
 {
 	var guid = GUID();
+	%sizeof(guid);
 	(guid) ObjectId;
 	QWORD ObjectSize;
     

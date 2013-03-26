@@ -21,6 +21,8 @@
 #include <memory>
 #include <string>
 #include "interpreter.h"
+#include "variable.h"
+#include "parser.h"
 
 class Object;
 

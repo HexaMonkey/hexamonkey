@@ -27,8 +27,6 @@ Worker::Worker(Resource &resource) : _resource(resource) {
     qsrand((uint)time.msec());
 }
 
-Worker::~Worker() {
-}
 
 void Worker::process() {
     ParsingTask* next;

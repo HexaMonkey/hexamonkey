@@ -62,6 +62,11 @@ int main(int argc, char *argv[])
     window.setWindowTitle("HexaMonkey");
     window.setWindowIcon(QIcon(":/logo.svg"));
     window.showMaximized();
+
+    for(int i = 1; i < argc; ++i)
+    {
+        window.openFile(argv[i]);
+    }
     
     return a.exec();
 }

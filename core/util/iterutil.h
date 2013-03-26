@@ -18,7 +18,7 @@
 #ifndef ITERUTIL_H
 #define ITERUTIL_H
 
-
+#include <utility>
 
 template<class Cont>
 class const_reverse_wrapper
@@ -53,5 +53,19 @@ reverse_wrapper<Cont> reverse(Cont& cont)
 {
   return reverse_wrapper<Cont>(cont);
 }
+
+template<class iterator>
+class range
+{
+  iterator _begin;
+  iterator _end;
+
+public:
+  range(const iterator& begin, const iterator& end) : _begin(begin), _end(end) {}
+  range(const std::pair<iterator, iterator>& pair) : _begin(pair.first), _end(pair.second) {}
+
+  iterator begin() {return _begin;}
+  iterator end()   {return _end;}
+};
 
 #endif // ITERUTIL_H

@@ -19,6 +19,9 @@
 !core/interpreter
 !core/interpreter/*.cpp
 !core/interpreter/*.h
+!core/interpreter/scope
+!core/interpreter/scope/*.cpp
+!core/interpreter/scope/*.h
 !core/modules
 !core/modules/default
 !core/modules/default/*.cpp

@@ -34,19 +34,15 @@
 #include "variable.h"
 #include "variabledescriptor.h"
 #include "scope.h"
+#include "functionscope.h"
 #include "objecttypetemplate.h"
 #include "parser.h"
+#include "holder.h"
 
 
-
-Interpreter::Interpreter(const HmcModule &module) : _module(module), _program(NULL), _currentObject(NULL), _fileObject(NULL), emptyString("")
+Interpreter::Interpreter(const HmcModule &module) : _module(module), emptyString("")
 {
     UNUSED(hmcElemNames);
-}
-
-Interpreter::~Interpreter()
-{
-    clear();
 }
 
 bool Interpreter::loadFromString(const std::string &exp)
@@ -144,13 +140,12 @@ bool Interpreter::loadFromHMC(const std::string &path)
     clear();
     _file.setPath(path);
 
-    _fileObject = _module.handle(defaultTypes::file(), _file);
+    _fileObject.reset(_module.handle(defaultTypes::file(), _file));
     _fileObject->explore(-1);
 
     if(_fileObject->numberOfChildren())
     {
-        delete _program;
-        _program = new Program(*_fileObject->access(1));
+        _program.reset(new Program(*_fileObject->access(1)));
         return true;
     }
     else
@@ -163,11 +158,6 @@ bool Interpreter::loadFromHMC(const std::string &path)
 const std::string &Interpreter::error() const
 {
     return _error;
-}
-
-void Interpreter::setObject(Object& object)
-{
-    _currentObject = &object;
 }
 
 Program& Interpreter::program()
@@ -192,16 +182,15 @@ Variable& Interpreter::evaluate(const Program& rightValue, const Scope &scope, c
                 return evaluateBinaryOperation(op,  evaluate(rightValue.elem(1), scope, module),
                                                     evaluate(rightValue.elem(2), scope, module));
 
-            case 3:
-                return evaluateTernaryOperation(op, evaluate(rightValue.elem(1), scope, module),
-                                                    evaluate(rightValue.elem(2), scope, module),
-                                                    evaluate(rightValue.elem(3), scope, module));
 
             default:
-                return constReference(null);
+                return null();
         }
 
     }
+
+    case FUNCTION_EVALUATION:
+        return evaluateFunction(first, scope, module);
 
     case INT_CONSTANT:
     case UINT_CONSTANT:
@@ -210,7 +199,7 @@ Variable& Interpreter::evaluate(const Program& rightValue, const Scope &scope, c
         return constReference(first.payload());
 
     case NULL_CONSTANT:
-        return constReference(null);
+        return null();
 
     case EMPTY_STRING_CONSTANT:
         return constReference(emptyString);
@@ -221,280 +210,218 @@ Variable& Interpreter::evaluate(const Program& rightValue, const Scope &scope, c
     case TYPE:
         return copy(evaluateType(first, scope, module));
     }
-    return constReference(null);
+    return null();
 }
 
 Variable& Interpreter::evaluateBinaryOperation(int op, Variable &a, Variable &b)
 {
-    Variable *result;
+    Holder holder(*this);
+    const int parameterRelease = operatorParameterRelease[op];
+    if(parameterRelease&0x1)
+        holder.add(a);
+    if(parameterRelease&0x2)
+        holder.add(b);
+
     switch(op)
     {
     case ASSIGN_OP:
-        a.value() = b.constValue();
-        result = &a;
-        break;
+        a.value() = b.cvalue();
+        return a;
 
     case RIGHT_ASSIGN_OP:
-        a.value() >>= b.constValue();
-        result = &a;
-        break;
+        a.value() >>= b.cvalue();
+        return a;
 
     case LEFT_ASSIGN_OP:
-        a.value() <<= b.constValue();
-        result = &a;
-        break;
+        a.value() <<= b.cvalue();
+        return a;
 
     case ADD_ASSIGN_OP:
-        a.value() += b.constValue();
-        result = &a;
-        break;
+        a.value() += b.cvalue();
+        return a;
 
     case SUB_ASSIGN_OP:
-        a.value() -= b.constValue();
-        result = &a;
-        break;
+        a.value() -= b.cvalue();
+        return a;
 
     case MUL_ASSIGN_OP:
-        a.value() *= b.constValue();
-        result = &a;
-        break;
+        a.value() *= b.cvalue();
+        return a;
 
     case DIV_ASSIGN_OP:
-        a.value() /= b.constValue();
-        result = &a;
-        break;
+        a.value() /= b.cvalue();
+        return a;
 
     case MOD_ASSIGN_OP:
-        a.value() %= b.constValue();
-        result = &a;
-        break;
+        a.value() %= b.cvalue();
+        return a;
 
     case AND_ASSIGN_OP:
-        a.value() &= b.constValue();
-        result = &a;
-        break;
+        a.value() &= b.cvalue();
+        return a;
 
     case XOR_ASSIGN_OP:
-        a.value() ^= b.constValue();
-        result = &a;
-        break;
+        a.value() ^= b.cvalue();
+        return a;
 
     case OR_ASSIGN_OP:
-        a.value() |= b.constValue();
-        result = &a;
-        break;
+        a.value() |= b.cvalue();
+        return a;
 
     case OR_OP:
-        result = &copy(a.constValue() || b.constValue());
-        break;
+        return copy(a.cvalue() || b.cvalue());
 
     case AND_OP:
-        result = &copy(a.constValue() && b.constValue());
-        break;
+        return copy(a.cvalue() && b.cvalue());
 
     case BITWISE_OR_OP:
-        result = &copy(a.constValue() | b.constValue());
-        break;
+        return copy(a.cvalue() | b.cvalue());
 
     case BITWISE_XOR_OP:
-        result = &copy(a.constValue() ^ b.constValue());
-        break;
+        return copy(a.cvalue() ^ b.cvalue());
 
     case BITWISE_AND_OP:
-        result = &copy(a.constValue() & b.constValue());
-        break;
+        return copy(a.cvalue() & b.cvalue());
 
     case EQ_OP:
-        result = &copy(a.constValue() == b.constValue());
-        break;
+        return copy(a.cvalue() == b.cvalue());
 
     case NE_OP:
-        result = &copy(a.constValue() != b.constValue());
-        break;
+        return copy(a.cvalue() != b.cvalue());
 
     case GE_OP:
-        result = &copy(a.constValue() >= b.constValue());
-        break;
+        return copy(a.cvalue() >= b.cvalue());
 
     case GT_OP:
-        result = &copy(a.constValue() > b.constValue());
-        break;
+        return copy(a.cvalue() > b.cvalue());
 
     case LE_OP:
-        result = &copy(a.constValue() <= b.constValue());
-        break;
+        return copy(a.cvalue() <= b.cvalue());
 
     case LT_OP:
-        result = &copy(a.constValue() < b.constValue());
-        break;
+        return copy(a.cvalue() < b.cvalue());
 
     case RIGHT_OP:
-        result = &copy(a.constValue() >> b.constValue());
-        break;
+        return copy(a.cvalue() >> b.cvalue());
 
     case LEFT_OP:
-        result = &copy(a.constValue() << b.constValue());
-        break;
+        return copy(a.cvalue() << b.cvalue());
 
     case ADD_OP:
-        result = &copy(a.constValue() + b.constValue());
-        break;
+        return copy(a.cvalue() + b.cvalue());
 
     case SUB_OP:
-        result = &copy(a.constValue() - b.constValue());
-        break;
+        return copy(a.cvalue() - b.cvalue());
 
     case MUL_OP:
-        result = &copy(a.constValue() * b.constValue());
-        break;
+        return copy(a.cvalue() * b.cvalue());
 
     case DIV_OP:
-        result = &copy(a.constValue() / b.constValue());
-        break;
+        return copy(a.cvalue() / b.cvalue());
 
     case MOD_OP:
-        result = &copy(a.constValue() % b.constValue());
-        break;
+        return copy(a.cvalue() % b.cvalue());
 
     default:
-        result = &constReference(null);
+        break;
     }
 
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease&0x1)
-        release(a);
-    if(parameterRelease&0x2)
-        release(b);
-
-    return *result;
+    return null();
 }
 
 Variable &Interpreter::evaluateUnaryOperation(int op, Variable &a)
 {
-    Variable *result = nullptr;
+    Holder holder(*this);
+    const int parameterRelease = operatorParameterRelease[op];
+    if(parameterRelease)
+        holder.add(a);
+
     switch(op)
     {
     case NOT_OP:
-        result = &copy(!a.constValue());
-        break;
+        return copy(!a.cvalue());
 
     case BITWISE_NOT_OP:
-        result = &copy(~a.constValue());
-        break;
+        return copy(~a.cvalue());
 
     case OPP_OP:
-        result = &copy(-a.constValue());;
+        return copy(-a.cvalue());;
         break;
 
     case PRE_INC_OP:
         ++a.value();
-        result = &a;
-        break;
+        return a;
 
     case PRE_DEC_OP:
         --a.value();
-        result = &a;
-        break;
+        return a;
 
     case SUF_INC_OP:
-        result = &copy(a.value()++);
-        break;
+        return copy(a.value()++);
 
     case SUF_DEC_OP:
-        result = &copy(a.value()--);
-        break;
-
-    case TOINT_OP:
-        if(a.value().canConvertTo(Variant::integer))
-        {
-            result = &copy(a.value().toInteger());
-        }
-        else if(a.value().canConvertTo(Variant::string))
-        {
-            std::stringstream S;
-            S<<a.value().toString();
-            int64_t i;
-            if(!(S>>i).fail())
-                result = &copy(i);
-            else
-                result = &constReference(null);
-        }
-        break;
-
-    case UPPERCASE_OP:
-    {
-        std::string str = toStr(a.value());
-        std::transform(str.begin(), str.end(),str.begin(), ::toupper);
-        result = &copy(str);
-        break;
-    }
-
-
-    case LOWERCASE_OP:
-    {
-        std::string str = toStr(a.value());
-        std::transform(str.begin(), str.end(),str.begin(), ::tolower);
-        result = &copy(str);
-        break;
-    }
+        return copy(a.value()--);
 
     default:
-        result = &constReference(null);
+        break;
     }
-
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease)
-        release(a);
-
-    return *result;
+    return null();
 }
 
-Variable &Interpreter::evaluateTernaryOperation(int op, Variable &a, Variable &b, Variable &c)
+
+Variable &Interpreter::evaluateFunction(const Program &functionEvaluation, const Scope &scope, const Module &module)
 {
-    Variable *result = nullptr;
-    switch(op)
+    Holder holder(*this);
+    const std::string& name = functionEvaluation.elem(0).payload().toString() ;
+    Program arguments = functionEvaluation.elem(1);
+    const std::vector<std::string>& parametersNames = module.getFunctionParameterNames(name);
+    const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
+    const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
+
+    FunctionScope functionScope;
+    unsigned int size = parametersNames.size();
+    size_t i = 0;
+    for(Program argument:arguments)
     {
-    case SUBSTR_OP:
-        if(    a.value().canConvertTo(Variant::string)
-            && b.value().canConvertTo(Variant::integer)
-            && c.value().canConvertTo(Variant::integer))
+        if(i>=size)
+            break;
+
+        Variable& arg = holder.add(evaluate(argument, scope, module));
+        const std::string& argName = parametersNames[i];
+        if(parameterModifiables[i])
         {
-            std::string str = a.value().toString();
-            int64_t start = b.value().toInteger();
-            int64_t size = c.value().toInteger();
-            if(start < str.size())
-            {
-                if(start+size < str.size())
-                    result = &copy(str.substr(start, size));
-                else
-                    result = &copy(str.substr(start));
-            }
-            else
-                result = &copy("");
+            functionScope.addModifiableParameter(argName, arg.value());
         }
-        break;
+        else
+        {
+            functionScope.addConstantParameter(argName, arg.cvalue());
+        }
+        ++i;
+    }
 
-    case TOSTR_OP:
+    while(i < parametersDefaults.size())
     {
-        std::stringstream S;
-        S<<std::setbase(b.value().toInteger())<<std::setw(c.value().toInteger())<<std::setfill('0')<<a.value();
-        result = &copy(S.str());
-    }
-        break;
-
-    default:
-        result = &constReference(null);
+        functionScope.addConstantParameter(parametersNames[i], parametersDefaults[i]);
+        ++i;
     }
 
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease&0x1)
-        release(a);
-    if(parameterRelease&0x2)
-        release(b);
-    if(parameterRelease&0x4)
-        release(c);
+    while(i < size)
+    {
+        functionScope.addConstantParameter(parametersNames[i], nullVariant);
+        ++i;
+    }
 
-    return *result;
+    Variable* pvar = module.executeFunction(name, functionScope);
+    if(pvar != nullptr)
+    {
+        Variable& variable = registerVariable(pvar);
+        return holder.extract(variable);
+    }
+    else
+    {
+        std::cerr<<"function not found : "<<name<<std::endl;
+        return null();
+    }
 }
 
 Variable& Interpreter::evaluateVariable(const Program &variable, const Scope &scope, const Module &module)
@@ -510,7 +437,7 @@ Variable& Interpreter::evaluateVariable(const Program &variable, const Scope &sc
     {
         Scope* s = toUseScope->getScope(descriptor[i]);
         if(s == nullptr)
-            return constReference(null);
+            return null();
         delete toDeleteScope;
         toDeleteScope = s;
         toUseScope = s;
@@ -545,9 +472,8 @@ ObjectType Interpreter::evaluateType(const Program &program, const Scope &scope,
     {
         if(arguments.elem(i).id() == RIGHT_VALUE)
         {
-            Variable& var = evaluate(arguments.elem(i), scope, module);
-            type.setParameter(i, var.value());
-            release(var);
+            Holder holder(*this);
+            type.setParameter(i, holder.cevaluate(arguments.elem(i), scope, module));
         }
     }
     return type;
@@ -651,7 +577,8 @@ int64_t Interpreter::guessSize(const Program &classDefinition, const Module &mod
         {
         case DECLARATION:
             {
-                const ObjectType type = evaluate(line.elem(0), EmptyScope(), module).value().toObjectType();
+                Holder holder(*this);
+                const ObjectType& type = holder.cevaluate(line.elem(0), EmptyScope(), module).toObjectType();
                 if(type.isNull())
                     return -1;
                 int64_t elemSize = module.getFixedSize(type);
@@ -692,38 +619,40 @@ int64_t Interpreter::guessSize(const Program &classDefinition, const Module &mod
 
 Variable &Interpreter::copy(const Variant &value)
 {
-    Variable* var = Variable::copy(value);
-    _vars.insert(var);
-    return *var;
+    return registerVariable(Variable::copy(value));
 }
 
 Variable &Interpreter::constReference(const Variant &value)
 {
-    Variable* var = Variable::constReference(value);
-    _vars.insert(var);
-    return *var;
+    return registerVariable( Variable::constReference(value));
 }
 
 Variable &Interpreter::reference(Variant &value)
 {
-    Variable* var = Variable::reference(value);
-    _vars.insert(var);
-    return *var;
+    return registerVariable(Variable::reference(value));
+}
+
+Variable &Interpreter::null()
+{
+    return registerVariable(Variable::null());
+}
+
+Variable &Interpreter::registerVariable(Variable *variable)
+{
+    if(_vars.find(variable) == _vars.end())
+    {
+        _vars[variable] = std::unique_ptr<Variable>(variable);
+    }
+    return *variable;
 }
 
 void Interpreter::release(Variable &var)
 {
-    std::set<Variable*>::iterator it = _vars.find(&var);
-    delete *it;
-    _vars.erase(it);
+    _vars.erase(&var);
 }
 
 void Interpreter::garbageCollect()
 {
-    for(Variable* var : _vars)
-    {
-        delete var;
-    }
     _vars.clear();
 }
 
@@ -732,9 +661,7 @@ void Interpreter::clear()
     garbageCollect();
     _file.close();
     _file.clear();
-    _currentObject = NULL;
-    delete _fileObject;
-    _fileObject = NULL;
+    _fileObject.reset();
 }
 
 void Interpreter::buildVariableDescriptor(const Program &variable, const Scope &scope, const Module &module, VariableDescriptor &variableDescriptor)
@@ -749,9 +676,8 @@ void Interpreter::buildVariableDescriptor(const Program &variable, const Scope &
 
             case RIGHT_VALUE:
                 {
-                    Variable& var = evaluate(elem, scope);
-                    variableDescriptor.push_back(var.value());
-                    release(var);
+                    Holder holder(*this);
+                    variableDescriptor.push_back(holder.cevaluate(elem, scope, module));
                 }
                 break;
 

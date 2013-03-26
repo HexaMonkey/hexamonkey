@@ -26,16 +26,10 @@ HexFileModel::HexFileModel(QWidget *parent)
     , focused(true)
     , hlPosition(-1)
     , hlSize(0)
-    , file(new QFile())
     , headerCharCount(0)
 {
     beginInsertColumns(QModelIndex(),0,columnCount(QModelIndex()));
     endInsertColumns();
-}
-
-HexFileModel::~HexFileModel()
-{
-    delete file;
 }
 
 QModelIndex HexFileModel::modelIndex(qint64 pos) const
@@ -69,11 +63,11 @@ qint64 HexFileModel::search(QByteArray pattern, qint64 beginningPos)
         prefixes[i] = k;
     }
 
-    file->seek(beginningPos);
+    file.seek(beginningPos);
 
     k = -1;
     char c;
-    while(file->getChar(&c))
+    while(file.getChar(&c))
     {
         while (k > -1 && pattern[k+1] != c)
             k = prefixes[k];
@@ -81,7 +75,7 @@ qint64 HexFileModel::search(QByteArray pattern, qint64 beginningPos)
             ++k;
         if (k == pattern.size() - 1)
         {
-            qint64 pos = file->pos()-pattern.size();
+            qint64 pos = file.pos()-pattern.size();
             return 8*pos;
         }
     }
@@ -110,7 +104,7 @@ qint64 HexFileModel::search(QByteArray pattern, qint64 beginningPos)
 //Number of lines
 int HexFileModel::rowCount(const QModelIndex & /* parent */) const
 {
-    if (file->isOpen())
+    if (file.isOpen())
         return (fileSize/16)+1; //because 16 bytes per line
     return 0;
 }
@@ -180,16 +174,16 @@ QVariant HexFileModel::data(const QModelIndex &index, int role) const
         //As hex
         if(index.column() < 17)
         {
-            file->seek(pos);
-            QByteArray byte = file->read(1);
+            file.seek(pos);
+            QByteArray byte = file.read(1);
             return QVariant(byte.toHex());
         }
         //As char
         else
         {
-            file->seek(pos);
+            file.seek(pos);
             char ch;
-            file->read(&ch, 1);
+            file.read(&ch, 1);
             if (std::isprint(ch))
             {
                 return QVariant(QString::fromLatin1(&ch, 1));
@@ -291,17 +285,17 @@ Qt::ItemFlags HexFileModel::flags(const QModelIndex &index) const
 
 void HexFileModel::setFile(const QString &path)
 {
-    if (file->fileName() != path)
+    if (file.fileName() != path)
     {
-        if (file->isOpen())
-            file->close();
+        if (file.isOpen())
+            file.close();
         beginRemoveRows(QModelIndex(),0,rowCount(QModelIndex()));
         endRemoveRows();
-        file->setFileName(path);
-        file->open(QIODevice::ReadOnly);
-        fileSize = file->size();
+        file.setFileName(path);
+        file.open(QIODevice::ReadOnly);
+        fileSize = file.size();
 #if 1
-        if (file->size() > 1000000000)
+        if (file.size() > 1000000000)
             fileSize = 100000000;
 #endif
         headerCharCount = toHex(fileSize).size();

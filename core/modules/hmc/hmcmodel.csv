@@ -28,3 +28,4 @@ conditionalStatement;master;0;
 loop;master;0;
 emptyStringConstant;integer;0;
 forward;master;0;
+functionEvaluation;master;0;

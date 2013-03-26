@@ -18,7 +18,7 @@
 #ifndef MAPMODULE_H
 #define MAPMODULE_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <functional>
 
@@ -26,6 +26,7 @@
 
 #define parserLambda (const ObjectType &type, Object &object, const Module &module) ->Parser*
 #define fixedSizeLambda (const ObjectType &type, const Module &module) ->int64_t
+#define functionLambda (const Scope& scope, const Module &module) ->Variable*
 
 /*!
  * \brief The MapModule class
@@ -35,6 +36,7 @@ class MapModule : public Module
 protected:
     typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
     typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
+    typedef std::function<Variable* (const Scope&, const Module &)> FunctionGenerator;
 
     virtual ~MapModule(){}
 
@@ -45,15 +47,30 @@ protected:
     void setFixedSize(const std::string& name, int64_t fixedSize);
     void setFixedSizeFromArg(const std::string& name, int arg);
 
+    void addFunction(const std::string& name,
+                     const std::vector<std::string>& parameterNames,
+                     const std::vector<bool>& parameterModifiables,
+                     const std::vector<Variant>& parameterDefaults,
+                     const FunctionGenerator& function);
+
     virtual bool hasParser(const ObjectType &type) const override;
     virtual Parser* getParser(const ObjectType &type, Object &object, const Module &fromModule) const override;
 
     virtual int64_t doGetFixedSize(const ObjectType &type, const Module &module) const override;
 
+    bool doCanHandleFunction(const std::string& name) const override;
+    Variable* doExecuteFunction(const std::string& name, const Scope &params, const Module &fromModule) const override;
+    const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const override;
+    const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const override;
+    const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const override;
+
 private:
     static const ParserGenerator& nullGenerator;
-    std::map<std::string, ParserGenerator> _map;
-    std::map<std::string, FixedSizeGenerator> _sizes;
+    std::unordered_map<std::string, ParserGenerator> _map;
+    std::unordered_map<std::string, FixedSizeGenerator> _sizes;
+
+    typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, FunctionGenerator> FunctionDescriptor;
+    std::unordered_map<std::string,  FunctionDescriptor>  _functions;
 };
 
 #endif // MAPMODULE_H

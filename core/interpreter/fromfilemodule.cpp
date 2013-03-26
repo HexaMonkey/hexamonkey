@@ -31,6 +31,7 @@
 
 #include "interpreter.h"
 #include "variabledescriptor.h"
+#include "variable.h"
 
 const VariableDescriptor sizeDescriptor = {"@size"};
 const std::vector<VariableDescriptor> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};
@@ -70,9 +71,7 @@ bool FromFileModule::doLoad()
     loadExtensions(classDeclarations);
     loadSpecifications(classDeclarations);
     addParsers(classDeclarations);
-#if 0
-    guessSizes(classDeclarations);
-#endif
+
     return true;
 }
 

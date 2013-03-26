@@ -30,6 +30,8 @@
 
 class Object;
 class Parser;
+class Variable;
+class Scope;
 
 /*!
  * \brief The Module class
@@ -58,15 +60,27 @@ public:
     bool hasTemplate(const std::string& name) const;
     int64_t getFixedSize(const ObjectType& type) const;
 
+    bool canHandleFunction(const std::string &name) const;
+    const Module *functionHandler(const std::string &name) const;
+    Variable* executeFunction(const std::string &name, const Scope &params) const;
+    const std::vector<std::string>& getFunctionParameterNames(const std::string& name) const;
+    const std::vector<bool>& getFunctionParameterModifiables(const std::string& name) const;
+    const std::vector<Variant>& getFunctionParameterDefaults(const std::string& name) const;
+
 protected:
     virtual void addFormatDetection(StandardFormatDetector::Adder& formatAdder);
     virtual void requestImportations(std::vector<std::string>& formatRequested);
     virtual bool doLoad();
 
-
     virtual Parser* getParser(const ObjectType &type, Object& data, const Module& fromModule) const;
     virtual bool hasParser(const ObjectType &type) const;
     virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
+
+    virtual bool doCanHandleFunction(const std::string& name) const;
+    virtual Variable* doExecuteFunction(const std::string& name, const Scope &params, const Module &fromModule) const;
+    virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
+    virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const;
+    virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const;
 
     void addTemplate(const ObjectTypeTemplate& typeTemplate);
     const ObjectTypeTemplate& newTemplate(const std::string& name);
@@ -93,6 +107,8 @@ private:
     void addParsers(Object& data, const ObjectType &type, const Module& fromModule, const ObjectType &lastType = ObjectType()) const;
 
     Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
+
+    Variable* executeFunction(const std::string& name, const Scope &params, const Module& fromModule) const;
 
     bool _loaded;
 

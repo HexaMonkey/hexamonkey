@@ -18,6 +18,8 @@
 #include "variable.h"
 #include "variant.h"
 
+Variant nullVariant;
+
 Variable::~Variable()
 {
     if(_own)
@@ -39,9 +41,19 @@ Variant &Variable::value()
     return *_var;
 }
 
-const Variant &Variable::constValue() const
+const Variant &Variable::cvalue() const
 {
     return *_constVar;
+}
+
+bool Variable::isConst() const
+{
+    return _constant;
+}
+
+bool Variable::isOwner() const
+{
+    return _own;
 }
 
 Variable *Variable::copy(const Variant &value)
@@ -57,7 +69,12 @@ Variable *Variable::move(Variant *value)
 
 Variable *Variable::constReference(const Variant &value)
 {
-    return new Variable(false, true, NULL, &value);
+    return new Variable(false, true, nullptr, &value);
+}
+
+Variable *Variable::null()
+{
+    return constReference(nullVariant);
 }
 
 Variable *Variable::reference(Variant &value)

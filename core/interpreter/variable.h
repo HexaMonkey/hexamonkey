@@ -26,12 +26,16 @@ public:
     ~Variable();
 
     Variant& value();
-    const Variant& constValue() const;
+    const Variant& cvalue() const;
+
+    bool isConst() const;
+    bool isOwner() const;
 
     static Variable* copy(const Variant& value);
     static Variable* move(Variant* value);
     static Variable* reference(Variant& value);
     static Variable* constReference(const Variant& value);
+    static Variable* null();
 private:
     Variable(bool own, bool constant , Variant* var, const Variant* constVar);
     Variable() = delete;

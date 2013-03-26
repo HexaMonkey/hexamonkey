@@ -19,6 +19,10 @@
 
 #include "objecttypetemplate.h"
 
+const std::vector<std::string> emptyParameterNames;
+const std::vector<bool> emptyParameterModifiables;
+const std::vector<Variant> emptyParameterDefaults;
+
 const MapModule::ParserGenerator& MapModule::nullGenerator = []parserLambda{return nullptr;};
 
 void MapModule::addParser(const std::string &name, const MapModule::ParserGenerator &parserGenerator)
@@ -49,7 +53,12 @@ void MapModule::setFixedSizeFromArg(const std::string &name, int arg)
              if(type.parameterSpecified(arg))
                  return type.parameterValue(arg).toInteger();
              return -1;
-        };
+};
+}
+
+void MapModule::addFunction(const std::string &name, const std::vector<std::string> &parameterNames, const std::vector<bool> &parameterModifiables, const std::vector<Variant> &parameterDefaults, const MapModule::FunctionGenerator &function)
+{
+    _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, function);
 }
 
 bool MapModule::hasParser(const ObjectType &type) const
@@ -81,4 +90,55 @@ int64_t MapModule::doGetFixedSize(const ObjectType &type, const Module &module) 
     {
         return -1;
     }
+}
+
+bool MapModule::doCanHandleFunction(const std::string &name) const
+{
+    return _functions.find(name) != _functions.end();
+}
+
+Variable *MapModule::doExecuteFunction(const std::string &name, const Scope &params, const Module &fromModule) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return nullptr;
+
+    const FunctionGenerator& function = std::get<3>(it->second);
+
+    return function(params, fromModule);
+}
+
+
+const std::vector<std::string> &MapModule::doGetFunctionParameterNames(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterNames;
+
+    const std::vector<std::string>& parameterNames = std::get<0>(it->second);
+    return parameterNames;
+}
+
+const std::vector<bool> &MapModule::doGetFunctionParameterModifiables(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterModifiables;
+
+    const std::vector<bool>& parameterNames = std::get<1>(it->second);
+    return parameterNames;
+}
+
+const std::vector<Variant> &MapModule::doGetFunctionParameterDefaults(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterDefaults;
+
+    const std::vector<Variant>& parameterDefaults = std::get<2>(it->second);
+    return parameterDefaults;
 }

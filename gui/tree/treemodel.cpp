@@ -28,12 +28,7 @@ TreeModel::TreeModel(const QString &/*data*/, const InterpreterConstructor& inte
 {
     QList<QVariant> rootData;
     rootData << "Struct" << "Beginning position" << "Size";
-    rootItem = new TreeItem(rootData);
-}
-
-TreeModel::~TreeModel()
-{
-    delete rootItem;
+    rootItem = TreeItem::RootItem(rootData, this);
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
@@ -155,8 +150,7 @@ QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
     else
         parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
-    TreeObjectItem *item = new TreeObjectItem(object, interpreterConstructor.newInstance(), parentItem);
-    parentItem->appendChild(item);
+    new TreeObjectItem(object, interpreterConstructor.newInstance(), parentItem);
 
     QModelIndex itemIndex = index(realRowCount(parent)-1, 0, parent);
 

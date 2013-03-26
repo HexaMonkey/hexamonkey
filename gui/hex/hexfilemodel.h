@@ -33,7 +33,6 @@ class HexFileModel : public QAbstractTableModel
 
 public:
     HexFileModel(QWidget *parent);
-    ~HexFileModel();
 
     qint64 focusPosition;
     bool   focused;
@@ -44,11 +43,11 @@ public:
     qint64 position(QModelIndex i) const;
     qint64 search(QByteArray pattern, qint64 beginningPos);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 public slots:
     void setFile(const QString &path);
@@ -61,7 +60,7 @@ public slots:
 
 
 private:
-    QFile* file;
+    mutable QFile file;
     qint64 fileSize;
     int headerCharCount;
 };

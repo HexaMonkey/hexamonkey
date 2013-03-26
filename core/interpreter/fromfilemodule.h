@@ -22,6 +22,7 @@
 
 #include "mapmodule.h"
 #include "program.h"
+#include "interpreter.h"
 
 class Interpreter;
 
@@ -49,9 +50,7 @@ private:
 
     bool sizeDependency(const std::string& name) const;
     Program::const_iterator headerEnd(const std::string& name) const;
-#if 0
-    void guessSizes(Program &classDeclarations);
-#endif
+
     Interpreter& interpreter() const;
 
     std::unique_ptr<Interpreter> _interpreter;

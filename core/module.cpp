@@ -23,6 +23,10 @@
 #include "iterutil.h"
 
 
+const std::vector<std::string> emptyParameterNames;
+const std::vector<bool> emptyParameterModifiables;
+const std::vector<Variant> emptyParameterDefaults;
+
 Module::Module()
     :_loaded(false)
 {
@@ -250,6 +254,40 @@ int64_t Module::getFixedSize(const ObjectType &type) const
     return size;
 }
 
+bool Module::canHandleFunction(const std::string& name) const
+{
+    if(doCanHandleFunction(name))
+        return true;
+
+    for(const Module* importedModule: _importedModules)
+    {
+        if(importedModule->canHandleFunction(name))
+            return true;
+    }
+
+    return false;
+}
+
+const Module *Module::functionHandler(const std::string &name) const
+{
+    if(doCanHandleFunction(name))
+        return this;
+
+    for(const Module* importedModule: _importedModules)
+    {
+        const Module* result = importedModule->functionHandler(name);
+        if(result != nullptr)
+            return result;
+    }
+
+    return nullptr;
+}
+
+Variable *Module::executeFunction(const std::string &name, const Scope &params) const
+{
+    return executeFunction(name, params, *this);
+}
+
 void Module::addFormatDetection(StandardFormatDetector::Adder &/*formatAdder*/)
 {
 
@@ -287,6 +325,68 @@ int64_t Module::doGetFixedSize(const ObjectType &/*type*/, const Module &/*modul
 {
     return -1;
 }
+
+bool Module::doCanHandleFunction(const std::string &/*name*/) const
+{
+    return false;
+}
+
+Variable *Module::doExecuteFunction(const std::string &/*name*/, const Scope &/*params*/, const Module &/*fromModule*/) const
+{
+    return nullptr;
+}
+
+const std::vector<std::string> &Module::doGetFunctionParameterNames(const std::string& /*name*/) const
+{
+    return emptyParameterNames;
+}
+
+const std::vector<bool> &Module::doGetFunctionParameterModifiables(const std::string &/*name*/) const
+{
+    return emptyParameterModifiables;
+}
+
+const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &name) const
+{
+    return emptyParameterDefaults;
+}
+
+Variable *Module::executeFunction(const std::string &name, const Scope &params, const Module &fromModule) const
+{
+    const Module* handlerModule = functionHandler(name);
+    if(handlerModule == nullptr)
+        return nullptr;
+
+    return handlerModule->doExecuteFunction(name, params, fromModule);
+}
+
+const std::vector<std::string> &Module::getFunctionParameterNames(const std::string &name) const
+{
+    const Module* handlerModule = functionHandler(name);
+    if(handlerModule == nullptr)
+        return emptyParameterNames;
+
+    return handlerModule->doGetFunctionParameterNames(name);
+}
+
+const std::vector<bool> &Module::getFunctionParameterModifiables(const std::string &name) const
+{
+    const Module* handlerModule = functionHandler(name);
+    if(handlerModule == nullptr)
+        return emptyParameterModifiables;
+
+    return handlerModule->doGetFunctionParameterModifiables(name);
+}
+
+const std::vector<Variant> &Module::getFunctionParameterDefaults(const std::string &name) const
+{
+    const Module* handlerModule = functionHandler(name);
+    if(handlerModule == nullptr)
+        return emptyParameterDefaults;
+
+    return handlerModule->doGetFunctionParameterDefaults(name);
+}
+
 
 void Module::addTemplate(const ObjectTypeTemplate& typeTemplate)
 {

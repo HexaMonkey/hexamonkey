@@ -38,7 +38,6 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 public:
     TreeModel(const QString &data, const InterpreterConstructor& interpreterConstructor, QObject *parent = 0);
-    virtual ~TreeModel();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;

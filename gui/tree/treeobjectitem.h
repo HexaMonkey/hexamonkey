@@ -38,7 +38,7 @@ class TreeObjectItem : public TreeItem
 {
     Q_OBJECT
 public:
-    TreeObjectItem(Object& object, Interpreter* interpreter, TreeItem *parent = 0);
+    TreeObjectItem(Object& object, Interpreter* interpreter, TreeItem *parent);
     Object* object();
     Object::iterator nextChild();
     Object::iterator end();

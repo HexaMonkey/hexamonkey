@@ -38,22 +38,14 @@ class Interpreter
 {
 public:
     enum Mode {file, expression};
-    ~Interpreter();
 
     bool loadFromString(const std::string &exp);
     bool loadFromHM (const std::string& path, int mode);
     bool loadFromHMC(const std::string& path);
     const std::string& error() const;
 
-    void setObject(Object &object);
-
     Program& program();
 
-    Variable& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
-    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b);
-    Variable& evaluateUnaryOperation(int op, Variable& a);
-    Variable& evaluateTernaryOperation(int op, Variable& a, Variable& b, Variable& c);
-    Variable& evaluateVariable(const Program& variable, const Scope& scope, const Module& module = Module());
     ObjectType evaluateType(const Program& type, const Scope& scope, const Module& module);
     bool hasDeclaration(const Program& classDefinition);
 
@@ -61,11 +53,6 @@ public:
 
     int64_t guessSize(const Program& classDefinition, const Module& module);
 
-    Variable& copy(const Variant& value);
-    Variable& constReference(const Variant& value);
-    Variable& reference(Variant& value);
-
-    void release(Variable& var);
     void garbageCollect();
     void clear();
 
@@ -73,22 +60,39 @@ public:
 
 private:
     friend class InterpreterConstructor;
+    friend class Holder;
     Interpreter(const HmcModule& module);
     Interpreter(const Interpreter& interpreter) = delete;
     Interpreter& operator =(const Interpreter& interpreter) = delete;
+
+    Variable& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
+    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b);
+    Variable& evaluateUnaryOperation(int op, Variable& a);
+    Variable& evaluateFunction(const Program& functionEvaluation, const Scope& scope, const Module& module);
+    Variable& evaluateVariable(const Program& variable, const Scope& scope, const Module& module = Module());
+
+    Variable& copy(const Variant& value);
+    Variable& constReference(const Variant& value);
+    Variable& reference(Variant& value);
+    Variable& null();
+    Variable& registerVariable(Variable* variable);
+
+    void release(Variable& var);
+
     void buildVariableDescriptor(const Program& variable, const Scope& scope, const Module& module, VariableDescriptor& variableDescriptor);
 
+
+
     const HmcModule& _module;
-    Program* _program;
-    Object* _currentObject;
+    std::unique_ptr<Program> _program;
 
     File _file;
-    Object* _fileObject;
+    std::unique_ptr<Object> _fileObject;
 
-    const Variant null;
+    const Variant nullVariant;
     const Variant emptyString;
 
-    std::set<Variable*> _vars;
+    std::map<Variable*, std::unique_ptr<Variable> > _vars;
 
     std::string _error;
 };

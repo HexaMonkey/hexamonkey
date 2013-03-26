@@ -27,7 +27,7 @@ HexFileView::HexFileView(QWidget *parent) :
     _hexWidth(fontMetrics().width("bd")+2),
     _charWidth(fontMetrics().width("m")+1),
     _headerSeparationWidth(8),
-    _hexSeparationWidth(6),
+    _hexSeparationWidth(4),
     _hexCharSeparationWidth(8),
     _delegate(_hexWidth, _charWidth)
 {

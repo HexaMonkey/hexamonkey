@@ -18,15 +18,13 @@
 #include "treeitem.h"
 
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
-    : QObject(),
-      parentItem(parent),
-      itemData(data)
+    : TreeItem(data, parent, parent)
 {
 }
 
-TreeItem::~TreeItem()
+TreeItem *TreeItem::RootItem(const QList<QVariant> &data, QObject *owner)
 {
-    qDeleteAll(childItems);
+    return new TreeItem(data, nullptr, owner);
 }
 
 void TreeItem::appendChild(TreeItem *item)
@@ -79,3 +77,12 @@ bool TreeItem::synchronised()
     return true;
 }
 
+
+TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent, QObject *owner)
+       :QObject(owner),
+        parentItem(parent),
+        itemData(data)
+{
+    if(parent != nullptr)
+        parent->appendChild(this);
+}

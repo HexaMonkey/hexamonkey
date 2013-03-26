@@ -44,8 +44,6 @@
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN
 
-%token SUBSTR_TOKEN TOSTR_TOKEN TOINT_TOKEN TOFLOAT_TOKEN UPPERCASE_TOKEN LOWERCASE_TOKEN
-
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
 %left OR_TOKEN  
 %left AND_TOKEN
@@ -67,6 +65,7 @@
 
 %token <s> IDENT
 %token <s> A_IDENT
+%token <s> P_IDENT
 %token <s> MAGIC_NUMBER
 
 %token NULL_TOKEN
@@ -164,16 +163,17 @@ type:
    |explicit_type
 
 explicit_type:
-	identifier '(' ')' {push_master(ARGUMENTS,0);push_master(TYPE, 2);}
-   |identifier '(' type_arguments ')' {push_master(TYPE, 2);}
+	identifier right_value_arguments {push_master(TYPE, 2);}
 ;
 
-type_argument:
-	right_value
-
-type_arguments:
+right_value_arguments:
+	'(' ')' {push_master(ARGUMENTS,0);}
+   |'(' right_value_argument_list ')'
+;
+	
+right_value_argument_list:
 	  right_value {push_master(ARGUMENTS,1);}
-	| type_arguments ',' right_value {push_master(ARGUMENTS,2);}
+	| right_value_argument_list ',' right_value {push_master(ARGUMENTS,2);}
 ;
 
 extension:
@@ -257,6 +257,9 @@ extended_identifier:
    |A_IDENT {push_string(IDENTIFIER, $1);}
 ;
 
+function_identifier:
+	P_IDENT {push_string(IDENTIFIER, $1);}
+
 name_identifier:
 	IDENT {push_string(IDENTIFIER, $1);}
    |'*'   {push_string(IDENTIFIER, "*");}
@@ -298,17 +301,10 @@ right_value:
 	|DEC_TOKEN right_value {handle_unary_op(PRE_DEC_OP);push_master(RIGHT_VALUE, 2);}
 	|right_value INC_TOKEN %prec SUF_INC {handle_unary_op(SUF_INC_OP);push_master(RIGHT_VALUE, 2);}
 	|right_value DEC_TOKEN %prec SUF_DEC {handle_unary_op(SUF_DEC_OP);push_master(RIGHT_VALUE, 2);}
-	|SUBSTR_TOKEN '(' right_value ',' right_value ',' right_value ')' {handle_ternary_op(SUBSTR_OP);push_master(RIGHT_VALUE, 4);}
-	|TOSTR_TOKEN '(' right_value ')' {push_uinteger(UINT_CONSTANT, 10); push_master(RIGHT_VALUE, 1); push_uinteger(UINT_CONSTANT, 0); push_master(RIGHT_VALUE, 1); handle_ternary_op(TOSTR_OP);push_master(RIGHT_VALUE, 4);}
-	|TOSTR_TOKEN '(' right_value ',' right_value ')' {push_uinteger(UINT_CONSTANT, 0); push_master(RIGHT_VALUE, 1); handle_ternary_op(TOSTR_OP);push_master(RIGHT_VALUE, 4);}
-	|TOSTR_TOKEN '(' right_value ',' right_value ',' right_value ')' {handle_ternary_op(TOSTR_OP);push_master(RIGHT_VALUE, 4);}
-	|TOINT_TOKEN '(' right_value ')' {handle_unary_op(TOINT_OP);push_master(RIGHT_VALUE, 2);}
-	|TOFLOAT_TOKEN '(' right_value ')' {handle_unary_op(TOFLOAT_OP);push_master(RIGHT_VALUE, 2);}
-	|UPPERCASE_TOKEN '(' right_value ')' {handle_unary_op(UPPERCASE_OP);push_master(RIGHT_VALUE, 2);}
-	|LOWERCASE_TOKEN '(' right_value ')' {handle_unary_op(LOWERCASE_OP);push_master(RIGHT_VALUE, 2);}
 	|constant_value {push_master(RIGHT_VALUE, 1);}
 	|variable {push_master(RIGHT_VALUE, 1);}
 	|explicit_type {push_master(RIGHT_VALUE, 1);}
+    |function_identifier right_value_arguments {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
 	|'('right_value')'
 ;
 
