@@ -30,7 +30,8 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Interpreter
       _program(program),
       _index(program.begin()),
       _headerEnd(headerEnd),
-      _objectScope(object)
+      _objectScope(object),
+      _blockExecution(program.begin(), program.end(), module, interpreter, _scope, this)
 {
     _scope.addScope(_localScope);
     _scope.addScope(_objectScope);
@@ -43,20 +44,24 @@ void FromFileParser::doParseHead()
     if(fixedSize > 0)
         setSize(fixedSize);
 
-    _index = executeProgram(_index, _headerEnd);
+    _blockExecution.execute(_headerEnd);
+    //_index = executeProgram(_index, _headerEnd);
 }
 
 void FromFileParser::doParse()
 {
-    _index = executeProgram(_index, _program.end());
+    _blockExecution.execute();
+    //_index = executeProgram(_index, _program.end());
     interpreter().garbageCollect();
     _localScope.clear();
 }
 
 bool FromFileParser::doParseSome(int hint)
 {
-    _index = executeProgram(_index, _program.end(), hint);
-    if(_index == _program.end())
+    size_t parseQuota = hint;
+    _blockExecution.execute(parseQuota);
+    //_index = executeProgram(_index, _program.end(), hint);
+    if(_blockExecution.done()/*_index == _program.end()*/)
     {
         interpreter().garbageCollect();
         _localScope.clear();

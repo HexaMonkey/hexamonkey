@@ -33,7 +33,7 @@ void ArrayParser::doParse()
     while(availableSize())
     {
         Object* object = addVariable(elementType);
-        object->setName("@"+toStr(object->rank()));
+        object->setName("#");
     }
 }
 
@@ -44,7 +44,7 @@ bool ArrayParser::doParseSome(int hint)
         if(availableSize()<=0)
             return true;
         Object* object = addVariable(elementType);
-        object->setName("@"+toStr(object->rank()));
+        object->setName("#");
     }
     return false;
 }

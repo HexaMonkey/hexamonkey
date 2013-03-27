@@ -37,7 +37,7 @@ void TupleParser::doParseHead()
         for(int64_t i = 0; i < count; ++i)
         {
             Object* object = addVariable(elementType);
-            object->setName("@"+toStr(object->rank()));
+            object->setName("#");
             s+=object->size();
         }
         setSize(s);
@@ -49,7 +49,7 @@ void TupleParser::doParse()
     while(availableSize())
     {
         Object* object = addVariable(elementType);
-        object->setName("@"+toStr(object->rank()));
+        object->setName("#");
     }
 }
 
@@ -60,7 +60,7 @@ bool TupleParser::doParseSome(int hint)
         if(availableSize()<=0)
             return true;
         Object* object = addVariable(elementType);
-        object->setName("@"+toStr(object->rank()));
+        object->setName("#");
     }
     return false;
 }

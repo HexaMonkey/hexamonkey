@@ -39,7 +39,7 @@
 	double	           f;
 }
 
-%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN
+%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN
 %right IF_TOKEN ELSE_TOKEN
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN
@@ -111,8 +111,8 @@ magic_number:
 ;
 
 class_declaration:	
-	CLASS_TOKEN class_info optional_class_definition {push_master(CLASS_DECLARATION, 2);}
-   |CLASS_TOKEN class_infos optional_class_definition 
+	CLASS_TOKEN class_info optional_execution_block {push_master(CLASS_DECLARATION, 2);}
+   |CLASS_TOKEN class_infos optional_execution_block 
     {
         stash(1);
 		while(infos>0)
@@ -184,33 +184,33 @@ specification:
 	/*empty*/ {push_master(SPECIFICATION,0);}
    | AS_TOKEN type {push_master(SPECIFICATION,1);}
 
-optional_class_definition:
-	/*empty*/ {push_master(CLASS_DEFINITION, 0);}
-   |class_definition
+optional_execution_block:
+	/*empty*/ {push_master(EXECUTION_BLOCK, 0);}
+   |execution_block
    
-class_definition:
-     ';' {push_master(CLASS_DEFINITION, 0);}
-	| statement ';' {push_master(CLASS_DEFINITION, 1);}
-	| conditional_statement {push_master(CLASS_DEFINITION, 1);}
-	| loop {push_master(CLASS_DEFINITION, 1);}
-	| for_loop {push_master(CLASS_DEFINITION, 2);}
+execution_block:
+     ';' {push_master(EXECUTION_BLOCK, 0);}
+	| statement {push_master(EXECUTION_BLOCK, 1);}
 	|'{' statements '}'
 ;
 		
 statements:
-	/*empty*/ {push_master(CLASS_DEFINITION, 0);}
-  | statements statement ';' {push_master(CLASS_DEFINITION, 2);}
-  | statements conditional_statement {push_master(CLASS_DEFINITION, 2);}
-  | statements loop {push_master(CLASS_DEFINITION, 2);}
-  | statements for_loop {push_master(CLASS_DEFINITION, 3);}
+	/*empty*/ {push_master(EXECUTION_BLOCK, 0);}
+  | statements statement  {push_master(EXECUTION_BLOCK, 2);}
+  
+statement:
+	simple_statement';'
+   |conditional_statement
+   |loop
+   |for_loop
+   |do_loop
 ;
 
-statement:
-	local_declaration
+simple_statement:
+	local_declaration 
    |declaration
    |right_value
-
-;
+;   
 
 declaration:
 	_declaration {push_master(DECLARATION, 2);}
@@ -263,6 +263,7 @@ function_identifier:
 name_identifier:
 	IDENT {push_string(IDENTIFIER, $1);}
    |'*'   {push_string(IDENTIFIER, "*");}
+   |'#'   {push_string(IDENTIFIER, "#");}
 	
 right_value:
 	 right_value '=' right_value {handle_binary_op(ASSIGN_OP);push_master(RIGHT_VALUE,3);}
@@ -342,14 +343,17 @@ variable:
    |variable '[' right_value ']' {push_master(VARIABLE, 2);}
 	
 conditional_statement:
-	IF_TOKEN '(' right_value ')' class_definition {push_master(CLASS_DEFINITION,0); push_master(CONDITIONAL_STATEMENT,3);}
-   |IF_TOKEN '(' right_value ')' class_definition ELSE_TOKEN class_definition{push_master(CONDITIONAL_STATEMENT,3);}
+	IF_TOKEN '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,3);}
+   |IF_TOKEN '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(CONDITIONAL_STATEMENT,3);}
    
 loop:
-	WHILE_TOKEN '(' right_value ')' class_definition {push_master(LOOP,2);}
+	WHILE_TOKEN '(' right_value ')' execution_block {push_master(LOOP,2);}
 	
 for_loop:
-	FOR_TOKEN '(' statement ';' right_value ';' statement ')'{stash(0);} class_definition {unstash(0); push_master(CLASS_DEFINITION,2); push_master(LOOP,2);}
+	FOR_TOKEN '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
+	
+do_loop:
+	DO_TOKEN execution_block {stash(0); copy_stashed(0);} WHILE_TOKEN '(' right_value ')' {unstash(0); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
 %%
 
 void yyerror(char const *s)

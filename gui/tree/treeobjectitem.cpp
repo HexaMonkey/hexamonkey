@@ -112,7 +112,7 @@ QList<QVariant> display(Object& object)
     QList<QVariant> itemData;
     {
         std::stringstream S;
-        if(object.name()[0] == '@')
+        if(object.name()[0] == '#')
         {
             S << "[";
             S << "<span style=\"color:#000080;\">";

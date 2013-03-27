@@ -25,6 +25,7 @@
 #include "objectscope.h"
 #include "localscope.h"
 #include "compositescope.h"
+#include "blockexecution.h"
 
 class Interpreter;
 
@@ -56,6 +57,8 @@ private:
     MutableObjectScope _objectScope;
     LocalScope _localScope;
     CompositeScope _scope;
+
+    BlockExecution _blockExecution;
 
 };
 

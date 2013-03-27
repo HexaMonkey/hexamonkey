@@ -56,6 +56,7 @@ SOURCES += main.cpp\
     ../core/interpreter/fromfileparser.cpp \
     ../core/interpreter/fromfilemodule.cpp \
     ../core/interpreter/filter.cpp \
+    ../core/interpreter/blockexecution.cpp \
     ../core/interpreter/scope/typescope.cpp \
     ../core/interpreter/scope/scope.cpp \
     ../core/interpreter/scope/objectscope.cpp \
@@ -111,8 +112,7 @@ SOURCES += main.cpp\
     mt/tasklist.cpp \
     mt/resourcemanager.cpp \
     mt/resource.cpp \
-    mt/parsingtask.cpp \
-    ../core/interpreter/blockexecution.cpp
+    mt/parsingtask.cpp
 
 
 		
@@ -142,6 +142,7 @@ HEADERS  += mainwindow.h \
     ../core/interpreter/fromfileparser.h \
     ../core/interpreter/fromfilemodule.h \
     ../core/interpreter/filter.h \
+    ../core/interpreter/blockexecution.h \
     ../core/interpreter/scope/typescope.h \
     ../core/interpreter/scope/scope.h \
     ../core/interpreter/scope/objectscope.h \
@@ -211,8 +212,7 @@ HEADERS  += mainwindow.h \
     mt/resourcemanager.h \
     mt/resource.h \
     mt/parsingtask.h \
-    ../compiler/compiler.h \
-    ../core/interpreter/blockexecution.h
+    ../compiler/model.h \
 
 RESOURCES += \
     ressources.qrc

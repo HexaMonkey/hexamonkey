@@ -511,7 +511,7 @@ void Interpreter::buildDependencies(const Program &program, bool modificationOnl
 {
     switch(program.id())
     {
-    case CLASS_DEFINITION:
+    case EXECUTION_BLOCK:
     case CONDITIONAL_STATEMENT:
     case LOOP:
         for(Program elem:program)

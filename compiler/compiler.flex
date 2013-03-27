@@ -71,17 +71,21 @@ extern int line_number;
 {D}*"."{D}+({E})?	{yylval.f = atof(yytext); return FLOAT_VALUE;}
 {D}+"."{D}*({E})?	{yylval.f = atof(yytext); return FLOAT_VALUE;}
 
-"class"   {return CLASS_TOKEN;}
-"extends" {return EXTENDS_TOKEN;}
-"as"      {return AS_TOKEN;}
-"forward" {return FORWARD_TOKEN;}
-"to"      {return TO_TOKEN;}
-"for"     {return FOR_TOKEN;}
-"while"   {return WHILE_TOKEN;}
-"if"      {return IF_TOKEN;}
-"else"    {return ELSE_TOKEN;}
-"var"     {return VAR_TOKEN;}  
-"NULL"    {return NULL_TOKEN;}
+"class"    {return CLASS_TOKEN;}
+"extends"  {return EXTENDS_TOKEN;}
+"as"       {return AS_TOKEN;}
+"forward"  {return FORWARD_TOKEN;}
+"to"       {return TO_TOKEN;}
+"for"      {return FOR_TOKEN;}
+"while"    {return WHILE_TOKEN;}
+"do"       {return DO_TOKEN;}
+"if"       {return IF_TOKEN;}
+"else"     {return ELSE_TOKEN;}
+"return"   {return RETURN_TOKEN;}
+"break"    {return BREAK_TOKEN;}
+"continue" {return CONTINUE_TOKEN;}
+"var"      {return VAR_TOKEN;}  
+"NULL"     {return NULL_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}
 "addMagicNumber"    {return ADD_MAGIC_NUMBER_TOKEN;}

@@ -5,7 +5,7 @@ import microsoft
 
 class AviFile as File, ContainerCHUNK extends CHUNK, ContainerLIST extends LIST, ContainerRIFF extends RIFF
 {
-	while(1) CHUNK *;
+	while(1) CHUNK *; 
 }
 
 class CHUNK(code) 

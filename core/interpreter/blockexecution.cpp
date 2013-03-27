@@ -27,13 +27,13 @@ BlockExecution::BlockExecution(Program::const_iterator begin,
 
 void BlockExecution::execute()
 {
-    size_t parseQuota = std::numeric_limits<size_t>::max();
+    size_t parseQuota = 1000;//std::numeric_limits<size_t>::max();
     execute(end, parseQuota);
 }
 
 void BlockExecution::execute(Program::const_iterator breakpoint)
 {
-    size_t parseQuota = std::numeric_limits<size_t>::max();
+    size_t parseQuota = 1000;//std::numeric_limits<size_t>::max();
     execute(breakpoint, parseQuota);
 }
 
@@ -44,14 +44,17 @@ void BlockExecution::execute(size_t &parseQuota)
 
 void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQuota)
 {
-    while(current != breakpoint && parseQuota)
+
+    while(current != breakpoint && parseQuota > 0)
     {
+        const size_t line_number = std::distance(begin, current);
+        const Program& line = *current;
         if(subBlock)
         {
             if(subBlock->done())
             {
                 resetSubBlock();
-                const Program& line = *current;
+
                 switch(line.id())
                 {
 
@@ -70,7 +73,6 @@ void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQu
         }
         else
         {
-            const Program& line = *current;
             switch(line.id())
             {
                 case DECLARATION:
@@ -98,9 +100,7 @@ void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQu
                     break;
             }
         }
-        std::cout<<"parse quota"<<parseQuota<<std::endl;
     }
-
 }
 
 bool BlockExecution::done()
@@ -192,8 +192,8 @@ void BlockExecution::handleLoop(const Program &loop)
 {
     Holder holder(interpreter());
 
-    if((interpreter().hasDeclaration(loop.elem(1)) && parser().availableSize()<= 0)
-            ||  holder.cevaluate(loop.elem(0), scope()).toBool())
+    if(((!interpreter().hasDeclaration(loop.elem(1)) || parser().availableSize()> 0))
+            &&  holder.cevaluate(loop.elem(0), scope()).toBool())
     {
         setSubBlock(loop.elem(1).begin(), loop.elem(1).end());
     }
