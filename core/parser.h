@@ -39,12 +39,6 @@ public:
     virtual bool parseSome(int hint);
 
     bool parsed();
-
-protected:
-    virtual void doParseHead();
-    virtual void doParse();
-    virtual bool doParseSome(int hint);
-
     ObjectType& type();
     void setSize(int64_t size);
     void setName(const std::string& name);
@@ -61,6 +55,14 @@ protected:
     Object* lookForType(const ObjectType& type, bool forceParse = false);
 
     Object &object();
+
+
+protected:
+    virtual void doParseHead();
+    virtual void doParse();
+    virtual bool doParseSome(int hint);
+
+
 
 private:
     friend class SimpleParser;

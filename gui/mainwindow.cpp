@@ -27,7 +27,7 @@
 const int MainWindow::maxRecentFiles;
 
 MainWindow::MainWindow(const ModuleLoader &moduleLoader, const InterpreterConstructor& interpreterConstructor, QWidget *parent)
-    : QMainWindow(parent), moduleLoader(moduleLoader), interpreterConstructor(interpreterConstructor)
+    : QMainWindow(parent), nfiles(0), moduleLoader(moduleLoader), interpreterConstructor(interpreterConstructor)
 {
     createActions();
     createMenus();
