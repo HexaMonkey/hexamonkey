@@ -8,7 +8,7 @@ QT       += core gui widgets
 
 CONFIG   += c++11 config
 
-TARGET = HexaMonkey
+TARGET = hexamonkey
 TEMPLATE = app
 
 INCLUDEPATH += ../core \
