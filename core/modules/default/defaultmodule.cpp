@@ -86,7 +86,6 @@ bool DefaultModule::doLoad()
     {
         const ObjectType& type = scope.cget(0)->toObjectType();
         int64_t size = module.getFixedSize(type);
-        std::cout<<type<<" "<<size<<std::endl;
         if(size != -1)
             return Variable::copy(size);
         else
@@ -144,11 +143,9 @@ bool DefaultModule::doLoad()
                 {Variant(), 10, 0},
                 []functionLambda
     {
-        std::cout<<*scope.cget(0)<<"->";
         std::stringstream S;
         S<<std::setbase(scope.cget(1)->toInteger())<<std::setw(scope.cget(2)->toInteger())<<std::setfill('0')<<*scope.cget(0);
         const std::string& s = S.str();
-        std::cout<<s<<std::endl;
         return Variable::copy(s);
     });
 

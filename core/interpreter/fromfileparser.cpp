@@ -103,6 +103,7 @@ Program::const_iterator FromFileParser::executeProgram(const Program::const_iter
                 break;
 
             case LOOP:
+            case DO_LOOP:
                 if(handleLoop(line))
                     ++current;
                 break;

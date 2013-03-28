@@ -210,7 +210,21 @@ simple_statement:
 	local_declaration 
    |declaration
    |right_value
+   |break
+   |continue
+   |return
 ;   
+
+break:
+	BREAK_TOKEN {push_master(BREAK, 0);}
+	
+continue:
+	CONTINUE_TOKEN {push_master(CONTINUE, 0);}
+	
+return:
+	RETURN_TOKEN {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(RETURN, 1);}
+   |RETURN_TOKEN right_value {push_master(RETURN, 1);}
+
 
 declaration:
 	_declaration {push_master(DECLARATION, 2);}
@@ -353,7 +367,7 @@ for_loop:
 	FOR_TOKEN '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
 	
 do_loop:
-	DO_TOKEN execution_block {stash(0); copy_stashed(0);} WHILE_TOKEN '(' right_value ')' {unstash(0); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
+	DO_TOKEN execution_block {stash(0);} WHILE_TOKEN '(' right_value ')' {unstash(0); push_master(DO_LOOP,2);}
 %%
 
 void yyerror(char const *s)

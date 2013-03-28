@@ -17,37 +17,42 @@ BlockExecution::BlockExecution(Program::const_iterator begin,
     : begin(begin),
       end(end),
       current(begin),
+      last(end),
+      lineRepeatCount(0),
       _module(module),
       _interpreter(interpreter),
       _scope(scope),
-      _parser(parser)
+      _parser(parser),
+      inLoop(false)
 {
     UNUSED(hmcElemNames);
 }
 
-void BlockExecution::execute()
+BlockExecution::ExitCode BlockExecution::execute()
 {
-    size_t parseQuota = 1000;//std::numeric_limits<size_t>::max();
-    execute(end, parseQuota);
+    size_t parseQuota = std::numeric_limits<size_t>::max();
+    return execute(end, parseQuota);
 }
 
-void BlockExecution::execute(Program::const_iterator breakpoint)
+BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpoint)
 {
-    size_t parseQuota = 1000;//std::numeric_limits<size_t>::max();
-    execute(breakpoint, parseQuota);
+    size_t parseQuota = std::numeric_limits<size_t>::max();
+    return execute(breakpoint, parseQuota);
 }
 
-void BlockExecution::execute(size_t &parseQuota)
+BlockExecution::ExitCode BlockExecution::execute(size_t &parseQuota)
 {
-    execute(end, parseQuota);
+    return execute(end, parseQuota);
 }
 
-void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQuota)
+BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQuota)
 {
 
     while(current != breakpoint && parseQuota > 0)
     {
-        const size_t line_number = std::distance(begin, current);
+        if(current!=last)
+            lineRepeatCount = 0;
+
         const Program& line = *current;
         if(subBlock)
         {
@@ -59,6 +64,7 @@ void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQu
                 {
 
                     case LOOP:
+                    case DO_LOOP:
                         break;
 
                     default:
@@ -73,6 +79,7 @@ void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQu
         }
         else
         {
+            ++lineRepeatCount;
             switch(line.id())
             {
                 case DECLARATION:
@@ -95,12 +102,24 @@ void BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQu
                     handleLoop(line);
                     break;
 
+                case DO_LOOP:
+                    handleDoLoop(line);
+                    break;
+
                 default:
                     ++current;
                     break;
             }
         }
+        last = current;
     }
+    if(current == end)
+        return ExitCode::EndReached;
+
+    if(current == breakpoint)
+        return ExitCode::BreakPointReached;
+
+    return ExitCode::QuotaExhausted;
 }
 
 bool BlockExecution::done()
@@ -133,9 +152,11 @@ ContainerParser &BlockExecution::parser()
     return *_parser;
 }
 
-void BlockExecution::setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd)
+void BlockExecution::setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd, bool loop)
 {
     subBlock.reset(new BlockExecution(subBegin, subEnd, module(), interpreter(), scope(), _parser));
+    if(loop || inLoop)
+        subBlock->inLoop = true;
 }
 
 void BlockExecution::resetSubBlock()
@@ -179,26 +200,44 @@ void BlockExecution::handleCondition(const Program &condition)
     Holder holder(interpreter());
     if(holder.cevaluate(condition.elem(0), scope(), module()).toBool())
     {
-
-        setSubBlock(condition.elem(1).begin(), condition.elem(1).end());
+        setSubBlock(condition.elem(1).begin(), condition.elem(1).end(), false);
     }
     else
     {
-        setSubBlock(condition.elem(2).begin(), condition.elem(2).end());
+        setSubBlock(condition.elem(2).begin(), condition.elem(2).end(), false);
     }
 }
 
 void BlockExecution::handleLoop(const Program &loop)
 {
-    Holder holder(interpreter());
-
-    if(((!interpreter().hasDeclaration(loop.elem(1)) || parser().availableSize()> 0))
-            &&  holder.cevaluate(loop.elem(0), scope()).toBool())
+    if(loopCondition(loop))
     {
-        setSubBlock(loop.elem(1).begin(), loop.elem(1).end());
+        setSubBlock(loop.elem(1).begin(), loop.elem(1).end(), true);
     }
     else
     {
         ++current;
     }
+}
+
+void BlockExecution::handleDoLoop(const Program &loop)
+{
+
+
+    if(lineRepeatCount <= 1 || loopCondition(loop))
+    {
+        setSubBlock(loop.elem(1).begin(), loop.elem(1).end(), true);
+    }
+    else
+    {
+        ++current;
+    }
+}
+
+bool BlockExecution::loopCondition(const Program &loop)
+{
+    Holder holder(interpreter());
+
+    return holder.cevaluate(loop.elem(0), scope()).toBool()
+           && ((!interpreter().hasDeclaration(loop.elem(1)) || parser().availableSize()> 0));
 }

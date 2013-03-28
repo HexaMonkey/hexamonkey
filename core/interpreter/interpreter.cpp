@@ -496,6 +496,7 @@ bool Interpreter::hasDeclaration(const Program &classDefinition)
                 break;
 
             case LOOP:
+            case DO_LOOP:
                 if(hasDeclaration(program.elem(1)))
                     return true;
                 break;
@@ -514,6 +515,7 @@ void Interpreter::buildDependencies(const Program &program, bool modificationOnl
     case EXECUTION_BLOCK:
     case CONDITIONAL_STATEMENT:
     case LOOP:
+    case DO_LOOP:
         for(Program elem:program)
             buildDependencies(elem, modificationOnly, descriptors);
         break;
@@ -590,6 +592,7 @@ int64_t Interpreter::guessSize(const Program &classDefinition, const Module &mod
             }
 
         case LOOP:
+        case DO_LOOP:
             if(guessSize(line.elem(1), module) != 0)
                 return -1;
             break;

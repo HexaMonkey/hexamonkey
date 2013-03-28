@@ -22,7 +22,7 @@ import microsoft
 
 class AsfFile as File
 {
-	while(1) OBJECT *;
+	do OBJECT *; while(1)
 }
 
 class OBJECT(Id) 
