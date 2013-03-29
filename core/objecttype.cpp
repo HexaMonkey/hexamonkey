@@ -31,19 +31,19 @@ const ObjectTypeTemplate& ObjectType::typeTemplate() const
     return *_typeTemplate;
 }
 
-const Variant& ObjectType::parameterValue(int index) const
+const Variant& ObjectType::parameterValue(size_t index) const
 {
-    return _parametersValue[index];
+    return _parametersValue.at(index);
 }
 
-bool ObjectType::parameterSpecified(int index) const
+bool ObjectType::parameterSpecified(size_t index) const
 {
-    return (_parametersValue[index].type() != Variant::unknown);
+    return (_parametersValue.at(index).type() != Variant::unknown);
 }
 
-void ObjectType::setParameter(int index, const Variant &value)
+void ObjectType::setParameter(size_t index, const Variant &value)
 {
-    _parametersValue[index].setValue(value);
+    _parametersValue.at(index).setValue(value);
 }
 
 void ObjectType::setParameterByName(const std::string& parameterName, const Variant &value)

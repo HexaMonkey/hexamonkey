@@ -332,8 +332,11 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
 
     for(;reverseHeaderEnd != definition.rend(); ++reverseHeaderEnd)
     {
+        const Program& line = *reverseHeaderEnd;
+
+        //Check dependencies
         std::set<VariableDescriptor> variableSet;
-        interpreter().buildDependencies(*reverseHeaderEnd, true, variableSet);
+        interpreter().buildDependencies(line, true, variableSet);
         if(std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariableDescriptor& headerOnlyVar) -> bool
         {
             auto find = variableSet.find(headerOnlyVar);
@@ -351,6 +354,13 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
 
         }))
                 break;
+
+        //Check showcased declarations
+        if(line.id() == DECLARATION)
+        {
+            if(line.elem(2).payload().toInteger())
+                break;
+        }
     }
 
     Program::const_iterator headerEnd = definition.begin();

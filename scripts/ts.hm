@@ -1,0 +1,118 @@
+addSyncbyte 0x47 188
+addExtension ts
+
+import bestd
+
+class bslbf(size) extends Bitset(size)
+class uimsbf(size) extends uint(size)
+class tcimsbf(size) extends int(size)
+
+class TsFile as File
+{
+	while(1) transport_packet #;
+}
+
+class transport_packet
+{
+	sync_byte *;
+	@size = [sync_byte()].@size+8*187;
+	
+    bslbf(1) transport_error_indicator;   
+    bslbf(1) payload_unit_start_indicator;   
+    bslbf(1) transport_priority; 
+	uimsbf(13) PID showcased;
+	bslbf(2) transport_scrambling_control; 
+	bslbf(2) adaptation_field_control;
+	uimsbf(4) continuity_counter showcased;
+    if(adaptation_field_control & 0b10)
+	{     
+		adaptation_field *;  
+	}     
+	if(adaptation_field_control & 0b01) 
+	{
+		Data payload;
+    }    
+}
+
+class sync_byte
+{
+	do
+	{
+		bslbf(8) byte;
+	}
+	while(byte != 0x47)
+}
+
+class adaptation_field 
+{     
+    uimsbf(8) adaptation_field_length;   
+	@size = 8*(adaptation_field_length+1);
+	if (adaptation_field_length > 0) 
+	{     
+		bslbf(1) discontinuity_indicator; 
+		bslbf(1) random_access_indicator; 
+		bslbf(1) elementary_stream_priority_indicator; 
+		bslbf(1) PCR_flag; 
+		bslbf(1) OPCR_flag; 
+		bslbf(1) splicing_point_flag; 
+		bslbf(1) transport_private_data_flag; 
+		bslbf(1) adaptation_field_extension_flag; 
+		if (PCR_flag == 0b1) 
+		{     
+			uimsbf(33) program_clock_reference_base; 
+			bslbf(6) reserved; 
+			uimsbf(9) program_clock_reference_extension; 
+		}     
+		if (OPCR_flag == 0b1) 
+		{     
+			uimsbf(33) original_program_clock_reference_base; 
+			bslbf(6) reserved; 
+			uimsbf(9) original_program_clock_reference_extension; 
+		}     
+		if (splicing_point_flag == 0b1) 
+		{     
+			tcimsbf(8) splice_countdown; 
+		}     
+		if (transport_private_data_flag == 0b1) 
+		{     
+			uimsbf(8) transport_private_data_length;
+			Data(8*transport_private_data_length) private_data;  
+		}     
+		if (adaptation_field_extension_flag == 0b1) 
+		{     
+			adaptation_field_extension *;
+		}     
+		Data stuffing;     
+	}     
+} 
+
+class adaptation_field_extension
+{
+	uimsbf(8) adaptation_field_extension_length;
+	@size = 8*adaptation_field_extension_length;
+	bslbf(1) ltw_flag;
+	bslbf(1) piecewise_rate_flag;
+	bslbf(1) seamless_splice_flag; 
+	bslbf(5) reserved;   
+	if (ltw_flag == 0b1) 
+	{     
+		bslbf(1) ltw_valid_flag; 
+		uimsbf(15) ltw_offset; 
+	}     
+	if (piecewise_rate_flag == 0b1) 
+	{     
+		bslbf(2) reserved; 
+		uimsbf(22) piecewise_rate; 
+	}     
+	if (seamless_splice_flag == 0b1) 
+	{     
+		bslbf(4)  splice_type; 
+		bslbf(3)  DTS_next_AU_32_30; 
+		bslbf(1)  marker_bit; 
+		bslbf(15) DTS_next_AU_29_15; 
+		bslbf(1)  marker_bit; 
+		bslbf(15) DTS_next_AU_14_0; 
+		bslbf(1)  marker_bit; 
+	}
+	Data reserved;
+}

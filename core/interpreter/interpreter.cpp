@@ -466,10 +466,19 @@ ObjectType Interpreter::evaluateType(const Program &program, const Scope &scope,
     const std::string& name = program.elem(0).payload().toString();
     const ObjectTypeTemplate& parentTemplate = module.getTemplate(name);
     ObjectType type(parentTemplate);
+    if(type.isNull())
+    {
+        std::cerr<<"Type not found : "<<name<<std::endl;
+        return type;
+    }
 
     Program arguments = program.elem(1);
     for(int i = 0; i < arguments.size(); ++i)
     {
+        if(i >= type.typeTemplate().numberOfParameters())
+        {
+            std::cerr<<"For type "<<name<<" too many parameters given";
+        }
         if(arguments.elem(i).id() == RIGHT_VALUE)
         {
             Holder holder(*this);

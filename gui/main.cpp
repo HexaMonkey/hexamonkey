@@ -28,7 +28,6 @@
 #include "ebmlmodule.h"
 #include "hmcmodule.h"
 #include "mkvmodule.h"
-#include "tsmodule.h"
 #include "fromfilemodule.h"
 
 int main(int argc, char *argv[])
@@ -45,7 +44,6 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("ebml",  new EbmlModule);
     moduleLoader.addModule("mkv",   new MkvModule);
     moduleLoader.addModule("hmc",   new HmcModule);
-    moduleLoader.addModule("ts",    new TsModule);
 
     InterpreterConstructor interpreterConstructor(static_cast<const HmcModule&>(moduleLoader.loadModule("hmc")));
 

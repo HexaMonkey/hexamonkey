@@ -61,7 +61,7 @@ extern int line_number;
 "=="			{return(EQ_TOKEN);}
 "!="			{return(NE_TOKEN);}
 
-[;{}()\[\],&|+/\-*<>=.%] {return *yytext;} 
+[;{}()\[\],&|+/\-*<>=.%#] {return *yytext;} 
 
 "0b"[01]+    {yylval.u = strtoull(yytext+2, NULL, 2); return UINT_VALUE;}
 0[xX]{H}+	{yylval.u = strtoull(yytext,NULL,0); return UINT_VALUE;}
@@ -85,6 +85,7 @@ extern int line_number;
 "break"    {return BREAK_TOKEN;}
 "continue" {return CONTINUE_TOKEN;}
 "var"      {return VAR_TOKEN;}  
+"showcased" {return SHOWCASED_TOKEN;}
 "NULL"     {return NULL_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}

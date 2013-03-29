@@ -127,7 +127,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
     int realCount = realRowCount(parent);
 
-    if(realCount == 0 && !object->parsed())
+    if(realCount == 0 && (!object->parsed() || object->numberOfChildren()))
         return 1;
     else
         return realCount;

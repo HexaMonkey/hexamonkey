@@ -84,11 +84,6 @@ SOURCES += main.cpp\
     ../core/modules/mp4/mp4sampleentryparser.cpp \
     ../core/modules/mp4/mp4module.cpp \
     ../core/modules/mp4/mp4boxparser.cpp \
-    ../core/modules/ts/tspacketparser.cpp \
-    ../core/modules/ts/tsmodule.cpp \
-    ../core/modules/ts/tsjunkparser.cpp \
-    ../core/modules/ts/tsfileparser.cpp \
-    ../core/modules/ts/tsadaptationfieldparser.cpp \
     ../core/util/strutil.cpp \
     ../core/util/iterutil.cpp \
     ../core/util/fileutil.cpp \
@@ -176,12 +171,6 @@ HEADERS  += mainwindow.h \
     ../core/modules/mp4/mp4sampleentryparser.h \
     ../core/modules/mp4/mp4module.h \
     ../core/modules/mp4/mp4boxparser.h \
-    ../core/modules/ts/tstypes.h \
-    ../core/modules/ts/tspacketparser.h \
-    ../core/modules/ts/tsmodule.h \
-    ../core/modules/ts/tsjunkparser.h \
-    ../core/modules/ts/tsfileparser.h \
-    ../core/modules/ts/tsadaptationfieldparser.h \
     ../core/util/unused.h \
     ../core/util/strutil.h \
     ../core/util/str.h \

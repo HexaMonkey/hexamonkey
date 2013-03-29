@@ -112,20 +112,26 @@ QList<QVariant> display(Object& object)
     QList<QVariant> itemData;
     {
         std::stringstream S;
-        if(object.name()[0] == '#')
+        if(object.name() == "#")
         {
+            std::string rank = toStr(object.rank());
             S << "[";
             S << "<span style=\"color:#000080;\">";
-            S << object.rank();
+            S << rank;
             S << "</span>";
             S << "]";
+
+            for(size_t i = rank.size(); i < 4; ++i)
+            {
+                S<<"&nbsp;&nbsp;";
+            }
         }
         else
         {
             displayDecl(S, object.type(), object.name());
         }
 
-        S << " ";
+        S << "&nbsp;";
         if(!object.info().empty())
             displayInfo(S, object.info());
         else
@@ -160,7 +166,7 @@ QList<QVariant> display(Object& object)
 
         if(!object.showcase().empty())
         {
-            S << "\t(";
+            S << "&nbsp;&nbsp;(";
             Showcase::const_iterator it = object.showcase().begin();
             while(true)
             {
@@ -170,7 +176,7 @@ QList<QVariant> display(Object& object)
                 ++it;
                 if(it == object.showcase().end())
                     break;
-                S << ", ";
+                S << ",&nbsp;";
             }
             S << ")";
         }
@@ -266,13 +272,13 @@ std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::
     if(type.typeTemplate().name() == "Array")
     {
         displayDecl(out, type.parameterValue(0).toObjectType(), name);
-        out << " ";
+        out << "&nbsp;";
         out << "[]";
     }
     else if(type.typeTemplate().name() == "Tuple")
     {
         displayDecl(out, type.parameterValue(0).toObjectType(), name);
-        out << " ";
+        out << "&nbsp;";
         out << "[";
         out << "<span style=\"color:#000080;\">";
         out << type.parameterValue(1).toInteger();
@@ -283,7 +289,7 @@ std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::
     else
     {
         displayType(out, type);
-        out << " ";
+        out << "&nbsp;";
         displayName(out, name);
     }
 
@@ -294,7 +300,7 @@ std::ostream& displayInfo(std::ostream& out, const std::string& info)
 {
     if(!info.empty())
     {
-        out << " = ";
+        out << "&nbsp;=&nbsp;";
         unsigned int i = 0;
         if(info[0] == '"')
         {

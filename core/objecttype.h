@@ -34,9 +34,9 @@ public:
     ObjectType(const ObjectTypeTemplate& typeTemplate);
 
     const ObjectTypeTemplate &typeTemplate() const;
-    const Variant& parameterValue(int index) const;
-    bool parameterSpecified(int index) const;
-    void setParameter(int index, const Variant& value);
+    const Variant& parameterValue(size_t index) const;
+    bool parameterSpecified(size_t index) const;
+    void setParameter(size_t index, const Variant& value);
     template<typename... Args> void setParameters(Args... args){return _setParameters(0, args...);}
 
     void setParameterByName(const std::string& parameterName, const Variant& value);

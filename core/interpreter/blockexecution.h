@@ -20,7 +20,7 @@ public:
                    Scope& scope,
                    ContainerParser* parser = nullptr);
 
-    enum class ExitCode {EndReached, BreakPointReached, QuotaExhausted, Breaked, Continued, Returned};
+    enum class ExitCode {NoExit, EndReached, BreakPointReached, QuotaExhausted, Broken, Continued, Returned};
 
     ExitCode execute();
     ExitCode execute(Program::const_iterator breakpoint);
@@ -46,6 +46,8 @@ private:
     void handleCondition(const Program& condition);
     void handleLoop(const Program& loop);
     void handleDoLoop(const Program& loop);
+    bool handleBreak();
+    bool handleContinue();
 
     bool loopCondition(const Program& loop);
 
@@ -64,6 +66,7 @@ private:
     bool inLoop;
 
     std::unique_ptr<BlockExecution> subBlock;
+    ExitCode subBlockExitCode;
 };
 
 #endif // BLOCKEXECUTION_H

@@ -23,7 +23,8 @@ BlockExecution::BlockExecution(Program::const_iterator begin,
       _interpreter(interpreter),
       _scope(scope),
       _parser(parser),
-      inLoop(false)
+      inLoop(false),
+      subBlockExitCode(ExitCode::NoExit)
 {
     UNUSED(hmcElemNames);
 }
@@ -48,7 +49,7 @@ BlockExecution::ExitCode BlockExecution::execute(size_t &parseQuota)
 BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpoint, size_t &parseQuota)
 {
 
-    while(current != breakpoint && parseQuota > 0)
+    while(current != end && current != breakpoint && parseQuota > 0)
     {
         if(current!=last)
             lineRepeatCount = 0;
@@ -65,16 +66,30 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
 
                     case LOOP:
                     case DO_LOOP:
+                        if(subBlockExitCode == ExitCode::Broken)
+                        {
+                            ++current;
+                        }
                         break;
 
                     default:
+                        if(subBlockExitCode == ExitCode::Broken && handleBreak())
+                        {
+                            return ExitCode::Broken;
+                        }
+
+                        if(subBlockExitCode == ExitCode::Continued && handleContinue())
+                        {
+                            return ExitCode::Continued;
+                        }
+
                         ++current;
                         break;
                 }
             }
             else
             {
-                subBlock->execute(parseQuota);
+                subBlockExitCode = subBlock->execute(parseQuota);
             }
         }
         else
@@ -105,6 +120,15 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                 case DO_LOOP:
                     handleDoLoop(line);
                     break;
+
+                case BREAK:
+                if(handleBreak())
+                    return ExitCode::Broken;
+
+                case CONTINUE:
+                if(handleContinue())
+                    return ExitCode::Continued;
+
 
                 default:
                     ++current;
@@ -157,6 +181,7 @@ void BlockExecution::setSubBlock(Program::const_iterator subBegin, Program::cons
     subBlock.reset(new BlockExecution(subBegin, subEnd, module(), interpreter(), scope(), _parser));
     if(loop || inLoop)
         subBlock->inLoop = true;
+    subBlockExitCode = ExitCode::NoExit;
 }
 
 void BlockExecution::resetSubBlock()
@@ -171,8 +196,11 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
         Holder holder(interpreter());
         ObjectType type = holder.cevaluate(declaration.elem(0), scope(), module()).toObjectType();
         std::string name = declaration.elem(1).payload().toString();
+        bool showcased = declaration.elem(2).payload().toInteger();
         if(parser().addVariable(type, name) != nullptr)
             --parseQuota;
+        if(showcased)
+            parser().showcase().add(name);
     }
     ++current;
 }
@@ -222,8 +250,6 @@ void BlockExecution::handleLoop(const Program &loop)
 
 void BlockExecution::handleDoLoop(const Program &loop)
 {
-
-
     if(lineRepeatCount <= 1 || loopCondition(loop))
     {
         setSubBlock(loop.elem(1).begin(), loop.elem(1).end(), true);
@@ -232,6 +258,28 @@ void BlockExecution::handleDoLoop(const Program &loop)
     {
         ++current;
     }
+}
+
+bool BlockExecution::handleBreak()
+{
+    if(inLoop)
+    {
+        current = end;
+        return true;
+    }
+    ++current;
+    return false;
+}
+
+bool BlockExecution::handleContinue()
+{
+    if(inLoop)
+    {
+        current = end;
+        return true;
+    }
+    ++current;
+    return false;
 }
 
 bool BlockExecution::loopCondition(const Program &loop)
