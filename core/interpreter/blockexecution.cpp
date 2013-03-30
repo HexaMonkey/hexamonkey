@@ -23,6 +23,8 @@ BlockExecution::BlockExecution(Program::const_iterator begin,
       _interpreter(interpreter),
       _scope(scope),
       _parser(parser),
+      returnHolder(interpreter),
+      returnValue(nullptr),
       inLoop(false),
       subBlockExitCode(ExitCode::NoExit)
 {
@@ -59,32 +61,42 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
         {
             if(subBlock->done())
             {
-                resetSubBlock();
 
-                switch(line.id())
+
+                if(subBlockExitCode == ExitCode::Returned)
                 {
+                    returnValue = &returnHolder.add(subBlock->extractReturnValue());
+                    resetSubBlock();
+                    return ExitCode::Returned;
+                }
+                else
+                {
+                    resetSubBlock();
+                    switch(line.id())
+                    {
 
-                    case LOOP:
-                    case DO_LOOP:
-                        if(subBlockExitCode == ExitCode::Broken)
-                        {
+                        case LOOP:
+                        case DO_LOOP:
+                            if(subBlockExitCode == ExitCode::Broken)
+                            {
+                                ++current;
+                            }
+                            break;
+
+                        default:
+                            if(subBlockExitCode == ExitCode::Broken && handleBreak())
+                            {
+                                return ExitCode::Broken;
+                            }
+
+                            if(subBlockExitCode == ExitCode::Continued && handleContinue())
+                            {
+                                return ExitCode::Continued;
+                            }
+
                             ++current;
-                        }
-                        break;
-
-                    default:
-                        if(subBlockExitCode == ExitCode::Broken && handleBreak())
-                        {
-                            return ExitCode::Broken;
-                        }
-
-                        if(subBlockExitCode == ExitCode::Continued && handleContinue())
-                        {
-                            return ExitCode::Continued;
-                        }
-
-                        ++current;
-                        break;
+                            break;
+                    }
                 }
             }
             else
@@ -129,6 +141,9 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                 if(handleContinue())
                     return ExitCode::Continued;
 
+                case RETURN:
+                    handleReturn(line);
+                    return ExitCode::Returned;
 
                 default:
                     ++current;
@@ -174,6 +189,14 @@ bool BlockExecution::hasParser()
 ContainerParser &BlockExecution::parser()
 {
     return *_parser;
+}
+
+Variable& BlockExecution::extractReturnValue()
+{
+    if(returnValue == nullptr)
+        return interpreter().null();
+    else
+        return returnHolder.extract(*returnValue);
 }
 
 void BlockExecution::setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd, bool loop)
@@ -280,6 +303,13 @@ bool BlockExecution::handleContinue()
     }
     ++current;
     return false;
+}
+
+void BlockExecution::handleReturn(const Program &line)
+{
+    const Program& rightValue = line.elem(0);
+    returnValue = &returnHolder.add(interpreter().evaluate(rightValue, scope(), module()));
+    current = end;
 }
 
 bool BlockExecution::loopCondition(const Program &loop)

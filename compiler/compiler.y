@@ -39,7 +39,7 @@
 	double	           f;
 }
 
-%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN
+%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN
 %right IF_TOKEN ELSE_TOKEN
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN
@@ -98,6 +98,7 @@ class_declarations:
 	/*empty*/ {push_master(CLASS_DECLARATIONS,0);}
    |class_declarations class_declaration {push_master(CLASS_DECLARATIONS,2);}
    |class_declarations forward {push_master(CLASS_DECLARATIONS, 2)}
+   |class_declarations function_declaration {push_master(CLASS_DECLARATIONS,2);}
 ;
    
 format_detection_addition:
@@ -152,6 +153,31 @@ type_template_arguments:
 	  identifier {push_master(ARGUMENT_DECLARATIONS, 1);}
 	| type_template_arguments ',' identifier {push_master(ARGUMENT_DECLARATIONS, 2);}
 ;
+
+function_declaration:
+	FUNCTION_TOKEN identifier function_arguments execution_block {push_master(FUNCTION_DECLARATION, 3);}
+;
+
+function_arguments:
+	'(' function_argument_list ')'
+   |'(' ')' {push_master(FUNCTION_ARGUMENTS, 0);}
+;
+
+function_argument_list:
+	function_argument {push_master(FUNCTION_ARGUMENTS, 1);}
+   |function_argument_list function_argument {push_master(FUNCTION_ARGUMENTS, 2);}   
+;
+
+function_argument:
+	modifiable identifier default_value {push_master(FUNCTION_ARGUMENT, 3);}
+	
+modifiable:
+	/*empty*/ {push_integer(MODIFIABLE, 1);}
+   |CONST_TOKEN {push_integer(MODIFIABLE, 0);}
+   
+default_value:
+	/*empty*/ {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1);}
+   |'=' right_value
 
 type_access:
 	type {push_master(RIGHT_VALUE,1);}

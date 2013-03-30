@@ -33,7 +33,18 @@ compiler/hexacompiler:
 compiler/expcompiler:
 	cd compiler; make CFLAGS=$(CFLAGS) expcompiler
 	
-installer.msi: installer.wixobj gui/release/hexamonkey.exe dll/Qt5Core.dll dll/Qt5Gui.dll dll/Qt5Widgets.dll dll/libgcc_s_sjlj-1.dll dll/libstdc++-6.dll compiler/hexacompiler.exe compiler/expcompiler.exe  core/modules/hmc/hmcmodel.csv core/modules/mkv/mkvmodel.xml core/modules/mp4/mp4model.csv scripts/avi.hm scripts/asf.hm scripts/microsoft.hm
+installer.msi: installer.wixobj\
+ gui/release/hexamonkey.exe\
+ compiler/hexacompiler.exe\
+ compiler/expcompiler.exe\
+ core/modules/hmc/hmcmodel.csv\
+ core/modules/mkv/mkvmodel.xml\
+ core/modules/mp4/mp4model.csv\
+ scripts/avi.hm\
+ scripts/asf.hm\
+ scripts/microsoft.hm\
+ scripts/ts.hm
+ 
 	light installer.wixobj
 	
 installer.wixobj: installer.wxs

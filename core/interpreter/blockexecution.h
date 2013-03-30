@@ -2,11 +2,11 @@
 #define BLOCKEXECUTION_H
 
 class Module;
-class Interpreter;
 class ContainerParser;
 class Scope;
 
 #include "program.h"
+#include "holder.h"
 
 #include <memory>
 
@@ -36,6 +36,8 @@ public:
     bool hasParser();
     ContainerParser& parser();
 
+    Variable &extractReturnValue();
+
 private:
     void setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd, bool loop);
     void resetSubBlock();
@@ -48,6 +50,7 @@ private:
     void handleDoLoop(const Program& loop);
     bool handleBreak();
     bool handleContinue();
+    void handleReturn(const Program& line);
 
     bool loopCondition(const Program& loop);
 
@@ -62,6 +65,10 @@ private:
     Interpreter& _interpreter;
     Scope& _scope;
     ContainerParser* _parser;
+
+    Holder returnHolder;
+    Variable* returnValue;
+
 
     bool inLoop;
 

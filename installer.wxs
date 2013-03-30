@@ -111,6 +111,10 @@
 						<Component Id='MicrosoftModule' Guid='457596CE-E1BB-4149-9E8C-C2C958BBEE3D'>
 							<File Id='MicrosoftModuleHM' Name='microsoft.hm' DiskId='1' Source='scripts\microsoft.hm' KeyPath='yes' />
 						</Component>
+						
+						<Component Id='TsModule' Guid='C36661E3-255E-42ab-87DA-081ACFE8A635'>
+							<File Id='TsModuleHM' Name='ts.hm' DiskId='1' Source='scripts\ts.hm' KeyPath='yes' />
+						</Component>
 					</Directory>
 			  </Directory>
 		  </Directory>
@@ -151,6 +155,7 @@
 			<ComponentRef Id='AviModule'/>
 			<ComponentRef Id='AsfModule'/>
 			<ComponentRef Id='MicrosoftModule'/>
+			<ComponentRef Id='TsModule'/>
 			<ComponentRef Id='ProgramMenuDir' />
 		</Feature>
 		<Icon Id="hexamonkey.ico" SourceFile="gui\logo.ico" />

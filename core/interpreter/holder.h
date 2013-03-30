@@ -21,7 +21,7 @@ public:
 
 private:
     friend class Interpreter;
-    friend class ExecutionBlock;
+    friend class BlockExecution;
     Variable& add(Variable& var);
     Variable& extract(Variable& var);
 

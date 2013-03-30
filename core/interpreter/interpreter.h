@@ -61,6 +61,7 @@ public:
 private:
     friend class InterpreterConstructor;
     friend class Holder;
+    friend class BlockExecution;
     Interpreter(const HmcModule& module);
     Interpreter(const Interpreter& interpreter) = delete;
     Interpreter& operator =(const Interpreter& interpreter) = delete;
