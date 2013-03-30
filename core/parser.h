@@ -61,17 +61,33 @@ protected:
     virtual void doParseHead();
     virtual void doParse();
     virtual bool doParseSome(int hint);
-
+    virtual void cleanUp();
 
 
 private:
     friend class SimpleParser;
     friend class ContainerParser;
+    friend class ParsingInProgress;
 
     Object& _object;
 
+    bool lockObject();
+    void unlockObject();
+
     bool _headParsed;
     bool _parsed;
+
+    class Parsing
+    {
+    private:
+        Parser& parser;
+        bool hasLock;
+    public:
+        Parsing(Parser& parser) : parser(parser), hasLock(parser.lockObject()){}
+        ~Parsing() {if(hasLock) parser.unlockObject();}
+        bool available() {return hasLock;}
+    };
+
 };
 
 class SimpleParser : public Parser

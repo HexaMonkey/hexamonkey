@@ -18,6 +18,8 @@
 #ifndef FROMFILEPARSER_H
 #define FROMFILEPARSER_H
 
+#include <memory>
+
 #include "containerparser.h"
 
 #include "program.h"
@@ -34,10 +36,13 @@ class FromFileParser : public ContainerParser
 public:
     FromFileParser(Object& object, const Module& module, Interpreter& interpreter, Program program, Program::const_iterator headerEnd);
 
+    Interpreter &interpreter() const;
+
 protected:
     void doParseHead() override;
     void doParse() override;
     bool doParseSome(int hint) override;
+    void cleanUp() override;
 
 private:
     Program::const_iterator executeProgram(const Program::const_iterator& start, const Program::const_iterator& end, int64_t hint = -1);
@@ -47,18 +52,19 @@ private:
     void handleCondition(const Program& condition);
     bool handleLoop(const Program& loop);
 
-    Interpreter& interpreter();
+    Scope &scope();
+    BlockExecution& blockExecution();
+
+    Program::const_iterator headerEnd;
+
 
     Interpreter& _interpreter;
-    Program _program;
-    Program::const_iterator _index;
-    Program::const_iterator _headerEnd;
+    std::unique_ptr<Holder> holder;
+    std::unique_ptr<MutableObjectScope> objectScope;
+    std::unique_ptr<LocalScope> localScope;
+    std::unique_ptr<CompositeScope> _scope;
 
-    MutableObjectScope _objectScope;
-    LocalScope _localScope;
-    CompositeScope _scope;
-
-    BlockExecution _blockExecution;
+    std::unique_ptr<BlockExecution> _blockExecution;
 
 };
 

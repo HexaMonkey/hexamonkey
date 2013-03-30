@@ -26,15 +26,16 @@
 
 FromFileParser::FromFileParser(Object &object, const Module &module, Interpreter &interpreter, Program program, Program::const_iterator headerEnd)
     : ContainerParser(object, module),
+      headerEnd(headerEnd),
       _interpreter(interpreter),
-      _program(program),
-      _index(program.begin()),
-      _headerEnd(headerEnd),
-      _objectScope(object),
-      _blockExecution(program.begin(), program.end(), module, interpreter, _scope, this)
+      holder(new Holder(interpreter)),
+      objectScope(new MutableObjectScope(object)),
+      localScope(new LocalScope(*holder)),
+      _scope(new CompositeScope),
+      _blockExecution(new BlockExecution(program.begin(), program.end(), module, interpreter, scope(), this))
 {
-    _scope.addScope(_localScope);
-    _scope.addScope(_objectScope);
+    _scope->addScope(*localScope);
+    _scope->addScope(*objectScope);
     UNUSED(hmcElemNames);
 }
 
@@ -44,33 +45,31 @@ void FromFileParser::doParseHead()
     if(fixedSize > 0)
         setSize(fixedSize);
 
-    _blockExecution.execute(_headerEnd);
-    //_index = executeProgram(_index, _headerEnd);
+    blockExecution().execute(headerEnd);
 }
 
 void FromFileParser::doParse()
 {
-    _blockExecution.execute();
-    //_index = executeProgram(_index, _program.end());
-    interpreter().garbageCollect();
-    _localScope.clear();
+    blockExecution().execute();
 }
 
 bool FromFileParser::doParseSome(int hint)
 {
     size_t parseQuota = hint;
-    _blockExecution.execute(parseQuota);
-    //_index = executeProgram(_index, _program.end(), hint);
-    if(_blockExecution.done()/*_index == _program.end()*/)
-    {
-        interpreter().garbageCollect();
-        _localScope.clear();
+    blockExecution().execute(parseQuota);
+    if(blockExecution().done())
         return true;
-    }
-    else
-    {
-        return false;
-    }
+    return false;
+}
+
+void FromFileParser::cleanUp()
+{
+    _blockExecution.reset();
+    _scope.reset();
+    localScope.reset();
+    objectScope.reset();
+    holder.reset();
+    interpreter().garbageCollect();
 }
 
 Program::const_iterator FromFileParser::executeProgram(const Program::const_iterator &start, const Program::const_iterator &end, int64_t hint)
@@ -82,35 +81,35 @@ Program::const_iterator FromFileParser::executeProgram(const Program::const_iter
         const Program& line = *current;
         switch(line.id())
         {
-            case DECLARATION:
-                handleDeclaration(line);
-                ++current;
-                break;
+        case DECLARATION:
+            handleDeclaration(line);
+            ++current;
+            break;
 
-            case LOCAL_DECLARATION:
-                handleLocalDeclaration(line);
-                ++current;
-                break;
+        case LOCAL_DECLARATION:
+            handleLocalDeclaration(line);
+            ++current;
+            break;
 
-            case RIGHT_VALUE:
-                handleRightValue(line);
-                ++current;
-                break;
+        case RIGHT_VALUE:
+            handleRightValue(line);
+            ++current;
+            break;
 
-            case CONDITIONAL_STATEMENT:
-                handleCondition(line);
-                ++current;
-                break;
+        case CONDITIONAL_STATEMENT:
+            handleCondition(line);
+            ++current;
+            break;
 
-            case LOOP:
-            case DO_LOOP:
-                if(handleLoop(line))
-                    ++current;
-                break;
-
-            default:
+        case LOOP:
+        case DO_LOOP:
+            if(handleLoop(line))
                 ++current;
-                break;
+            break;
+
+        default:
+            ++current;
+            break;
         }
     }
     return current;
@@ -119,31 +118,31 @@ Program::const_iterator FromFileParser::executeProgram(const Program::const_iter
 void FromFileParser::handleDeclaration(const Program &declaration)
 {
     Holder holder(interpreter());
-    ObjectType type = holder.cevaluate(declaration.elem(0), _scope, module()).toObjectType();
+    ObjectType type = holder.cevaluate(declaration.elem(0), scope(), module()).toObjectType();
     std::string name = declaration.elem(1).payload().toString();
     addVariable(type, name);
 }
 
 void FromFileParser::handleLocalDeclaration(const Program &declaration)
 {
-    Variant* variant = _scope.declare(declaration.elem(0).payload());
+    Variant* variant = scope().declare(declaration.elem(0).payload());
     if(declaration.size() >= 2 && variant != nullptr)
     {
         Holder holder(interpreter());
-        *variant = holder.evaluate(declaration.elem(1), _scope, module());
+        *variant = holder.evaluate(declaration.elem(1), scope(), module());
     }
 }
 
 void FromFileParser::handleRightValue(const Program &rightValue)
 {
     Holder holder(interpreter());
-    holder.evaluate(rightValue, _scope, module());
+    holder.evaluate(rightValue, scope(), module());
 }
 
 void FromFileParser::handleCondition(const Program &condition)
 {
     Holder holder(interpreter());
-    if(holder.cevaluate(condition.elem(0), _scope, module()).toBool())
+    if(holder.cevaluate(condition.elem(0), scope(), module()).toBool())
     {
         executeProgram(condition.elem(1).begin(), condition.elem(1).end());
     }
@@ -159,7 +158,7 @@ bool FromFileParser::handleLoop(const Program &loop)
     if(interpreter().hasDeclaration(loop.elem(1)) && availableSize()<= 0)
         return true;
 
-    if(!holder.cevaluate(loop.elem(0), _scope).toBool())
+    if(!holder.cevaluate(loop.elem(0), scope()).toBool())
     {
         return true;
     }
@@ -168,7 +167,19 @@ bool FromFileParser::handleLoop(const Program &loop)
     return false;
 }
 
-Interpreter &FromFileParser::interpreter()
+Scope &FromFileParser::scope()
+{
+    return *_scope;
+}
+
+BlockExecution &FromFileParser::blockExecution()
+{
+    return *_blockExecution;
+}
+
+
+Interpreter &FromFileParser::interpreter() const
 {
     return _interpreter;
 }
+

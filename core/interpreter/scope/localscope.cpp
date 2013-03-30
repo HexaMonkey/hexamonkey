@@ -18,6 +18,12 @@
 #include "localscope.h"
 
 #include "variant.h"
+#include "holder.h"
+
+LocalScope::LocalScope(Holder &holder)
+    : holder(holder)
+{
+}
 
 void LocalScope::clear()
 {
@@ -26,8 +32,9 @@ void LocalScope::clear()
 
 Variant* LocalScope::doDeclare(const Variant &key) const
 {
-    _map.insert(std::make_pair(key.toString(), Variant()));
-    return &_map[key.toString()];
+    Variant* value = &holder.getNew();
+    _map.insert(std::make_pair(key.toString(), value));
+    return value;
 }
 
 Variant *LocalScope::doGet(const Variant &key) const
@@ -37,7 +44,7 @@ Variant *LocalScope::doGet(const Variant &key) const
         auto it = _map.find(key.toString());
         if(it != _map.end())
         {
-            return &(it->second);
+            return it->second;
         }
     }
     return nullptr;

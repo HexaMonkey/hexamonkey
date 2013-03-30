@@ -18,6 +18,13 @@ Holder::~Holder()
     }
 }
 
+Variant &Holder::getNew()
+{
+    Variable& var = _interpreter.null();
+    add(var);
+    return var.value();
+}
+
 Variable &Holder::add(Variable &var)
 {
     _held.insert(std::make_pair(&var.cvalue(), &var));

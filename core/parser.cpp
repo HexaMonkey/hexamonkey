@@ -16,7 +16,8 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "parser.h"
-#include "object.h"
+
+
 
 Parser::Parser(Object& object)
     : _object(object),
@@ -27,44 +28,34 @@ Parser::Parser(Object& object)
 
 void Parser::parseHead()
 {
-    if(!_object._parsingInProgress)
+    Parsing parsing(*this);
+    if(parsing.available() && !_headParsed)
     {
-        if(!_headParsed)
-        {
-            _object._parsingInProgress = true;
-            doParseHead();
-            _object._parsingInProgress = false;
-        }
+        doParseHead();
         _headParsed = true;
     }
 }
 
 void Parser::parse()
 {
-    if(!_object._parsingInProgress)
+    parseHead();
+    Parsing parsing(*this);
+    if(parsing.available() && !_parsed)
     {
-        parseHead();
-        if(!_parsed)
-        {
-            _object._parsingInProgress = true;
-            doParse();
-            _object._parsingInProgress = false;
-        }
+        doParse();
         _parsed = true;
+        cleanUp();
     }
 }
 
 bool Parser::parseSome(int hint)
 {
-    if(!_object._parsingInProgress)
+    parseHead();
+    Parsing parsing(*this);
+    if(parsing.available() && !_parsed && doParseSome(hint))
     {
-        parseHead();
-        _object._parsingInProgress = true;
-        if(!_parsed && doParseSome(hint))
-        {
-            _parsed = true;
-        }
-        _object._parsingInProgress = false;
+        _parsed = true;
+        cleanUp();
     }
     return _parsed;
 }
@@ -157,6 +148,26 @@ bool Parser::doParseSome(int hint)
     return true;
 }
 
+void Parser::cleanUp()
+{
+}
+
+bool Parser::lockObject()
+{
+    if(_object._parsingInProgress == true)
+        return false;
+    else
+    {
+        _object._parsingInProgress = true;
+        return true;
+    }
+}
+
+void Parser::unlockObject()
+{
+    _object._parsingInProgress = false;
+}
+
 
 SimpleParser::SimpleParser(Object &object) : Parser(object)
 {
@@ -164,24 +175,24 @@ SimpleParser::SimpleParser(Object &object) : Parser(object)
 
 void SimpleParser::parseHead()
 {
-    if(!_object._parsingInProgress)
+    Parsing parsing(*this);
+
+    if(parsing.available() && !_headParsed)
     {
-        if(!_headParsed)
-        {
-            _object._parsingInProgress = true;
-            doParseHead();
-            _object._parsingInProgress = false;
-        }
+        doParseHead();
         _headParsed = true;
         _parsed = true;
+        cleanUp();
     }
 }
 
 void SimpleParser::doParse()
 {
+    parseHead();
 }
 
-bool SimpleParser::doParseSome(int hint)
+bool SimpleParser::doParseSome(int /*hint*/)
 {
+    parseHead();
     return true;
 }

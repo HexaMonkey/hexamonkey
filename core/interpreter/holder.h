@@ -14,7 +14,7 @@ public:
     Holder(Interpreter& interpreter);
     ~Holder();
 
-
+    Variant& getNew();
     Variant& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
     const Variant& cevaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
 

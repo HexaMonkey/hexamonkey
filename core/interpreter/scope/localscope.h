@@ -22,17 +22,21 @@
 #include <string>
 
 #include "scope.h"
+class Holder;
+class Variable;
 
 class LocalScope : public MutableScope
 {
 public:
+    LocalScope(Holder& holder);
     void clear();
 
 protected:
     Variant* doDeclare(const Variant &key) const;
     Variant* doGet(const Variant &key) const;
 private:
-    mutable std::map<std::string, Variant> _map;
+    mutable std::map<std::string, Variant*> _map;
+    Holder& holder;
 };
 
 #endif // LOCALSCOPE_H
