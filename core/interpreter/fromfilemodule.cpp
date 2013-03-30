@@ -70,9 +70,25 @@ bool FromFileModule::doLoad()
     loadTemplates(classDeclarations);
     loadExtensions(classDeclarations);
     loadSpecifications(classDeclarations);
+#if 0
     addParsers(classDeclarations);
-
+#endif
     return true;
+}
+
+Parser *FromFileModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    const std::string name = type.typeTemplate().name();
+    auto it = _definitions.find(name);
+    if(it == _definitions.end())
+        return nullptr;
+
+    const Program& definition = it->second;
+
+    if(definition.size() == 0)
+        return nullptr;
+
+    return new FromFileParser(object, fromModule, interpreter(), definition, headerEnd(name));
 }
 
 int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &module) const
@@ -202,6 +218,9 @@ void FromFileModule::loadTemplates(Program& classDeclarations)
             }
             const ObjectTypeTemplate& temp = newTemplate(name, parameters);
             std::cout<<"    "<<temp<<std::endl;
+
+            Program classDefinition = classDeclaration.elem(1);
+            _definitions[name] = classDefinition;
         }
     }
 
@@ -272,7 +291,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
 
     std::cout<<std::endl;
 }
-
+#if 0
 void FromFileModule::addParsers(Program &classDeclarations)
 {
     std::cout<<"Adding parsers :"<<std::endl;
@@ -302,6 +321,7 @@ void FromFileModule::addParsers(Program &classDeclarations)
 
     std::cout<<std::endl;
 }
+#endif
 
 bool FromFileModule::sizeDependency(const std::string &name) const
 {
@@ -369,33 +389,13 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     return headerEnd;
 }
 
-#if 0
-void FromFileModule::guessSizes(Program &classDeclarations)
-{
-    std::cout<<"Guess sizes"<<std::endl;
-    for(Program classDeclaration : classDeclarations)
-    {
-        if(classDeclaration.id() == CLASS_DECLARATION)
-        {
-            Program classDefinition = classDeclaration.elem(1);
-            const std::string& name = classDeclaration.elem(0).elem(0).elem(0).payload().toString();
-            if(_nonApexTemplates.find(name) != _nonApexTemplates.end())
-                continue;
-
-            int64_t size = interpreter().guessSize(classDefinition, *this);
-            if(size>0)
-            {
-                std::cout<<"    "<<name<<" <-- "<<size<<std::endl;
-                setFixedSize(name, size);
-            }
-        }
-    }
-
-    std::cout<<std::endl;
-}
-#endif
-
 Interpreter &FromFileModule::interpreter() const
 {
     return *_interpreter;
+}
+
+
+bool FromFileModule::hasParser(const ObjectType &type) const
+{
+    return _definitions.find(type.typeTemplate().name()) != _definitions.end();
 }

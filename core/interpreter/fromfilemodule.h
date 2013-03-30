@@ -26,7 +26,7 @@
 
 class Interpreter;
 
-class FromFileModule : public MapModule
+class FromFileModule : public Module
 {
 public:
     FromFileModule(const std::string& path, Interpreter* interpreter);
@@ -35,6 +35,9 @@ protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     void requestImportations(std::vector<std::string>& formatRequested) override;
     bool doLoad() override;
+
+    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
+    virtual bool hasParser(const ObjectType &type) const;
     int64_t doGetFixedSize(const ObjectType &type, const Module &module) const override;
 
 private:  
@@ -46,8 +49,9 @@ private:
     void loadTemplates(Program &classDeclarations);
     void loadExtensions(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
+#if 0
     void addParsers(Program &classDeclarations);
-
+#endif
     bool sizeDependency(const std::string& name) const;
     Program::const_iterator headerEnd(const std::string& name) const;
 

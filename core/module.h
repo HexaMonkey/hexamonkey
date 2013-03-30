@@ -72,7 +72,7 @@ protected:
     virtual void requestImportations(std::vector<std::string>& formatRequested);
     virtual bool doLoad();
 
-    virtual Parser* getParser(const ObjectType &type, Object& data, const Module& fromModule) const;
+    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
     virtual bool hasParser(const ObjectType &type) const;
     virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
 

@@ -16,11 +16,7 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "moduleloader.h"
-#include "mp4module.h"
-#include "ebmlmodule.h"
 #include "hmcmodule.h"
-#include "mkvmodule.h"
-#include "tsmodule.h"
 #include "fromfilemodule.h"
 #include "defaultmodule.h"
 
