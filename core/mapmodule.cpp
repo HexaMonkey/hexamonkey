@@ -97,7 +97,7 @@ bool MapModule::doCanHandleFunction(const std::string &name) const
     return _functions.find(name) != _functions.end();
 }
 
-Variable *MapModule::doExecuteFunction(const std::string &name, const Scope &params, const Module &fromModule) const
+Variable *MapModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
 {
     auto it = _functions.find(name);
 

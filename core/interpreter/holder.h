@@ -22,6 +22,7 @@ public:
 private:
     friend class Interpreter;
     friend class BlockExecution;
+    friend class FromFileModule;
     Variable& add(Variable& var);
     Variable& extract(Variable& var);
 

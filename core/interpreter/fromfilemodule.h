@@ -40,29 +40,39 @@ protected:
     virtual bool hasParser(const ObjectType &type) const;
     int64_t doGetFixedSize(const ObjectType &type, const Module &module) const override;
 
+    bool doCanHandleFunction(const std::string& name) const override;
+    Variable* doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const override;
+    const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const override;
+    const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const override;
+    const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const override;
+
 private:  
+    typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Program> FunctionDescriptor;
+    typedef std::unordered_map<std::string, FunctionDescriptor> FunctionDescriptorMap;
     bool loadProgram(const std::string path);
 
     void loadFormatDetections(Program& formatDetections, StandardFormatDetector::Adder& formatAdder);
     void loadImports(Program& imports, std::vector<std::string>& formatRequested);
 
-    void loadTemplates(Program &classDeclarations);
+    void nameScan(Program &classDeclarations);
     void loadExtensions(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
-#if 0
-    void addParsers(Program &classDeclarations);
-#endif
     bool sizeDependency(const std::string& name) const;
+
     Program::const_iterator headerEnd(const std::string& name) const;
+    FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
 
     Interpreter& interpreter() const;
 
     std::unique_ptr<Interpreter> _interpreter;
-    std::map<std::string, Program> _definitions;
+
+    std::unordered_map<std::string, Program> _definitions;
+    std::unordered_map<std::string, Program> _functions;
+    mutable FunctionDescriptorMap _functionDescriptors;
+
     mutable std::map<std::string, int64_t> _fixedSizes;
     mutable std::map<std::string, bool> _sizeDependency;
     mutable std::map<std::string, Program::const_iterator> _headerEnd;
-    std::set<std::string> _nonApexTemplates;
 
     bool programLoaded;
 };

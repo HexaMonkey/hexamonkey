@@ -171,6 +171,26 @@ bool DefaultModule::doLoad()
         return Variable::copy(str);
     });
 
+    addFunction("formatDate",
+                {"date"},
+                {false},
+                {},
+                []functionLambda
+    {
+        unsigned long secs = scope.cget(0)->toUnsignedInteger();
+        return Variable::copy(formatDate(secs));
+    });
+
+    addFunction("formatDuration",
+                {"duration"},
+                {false},
+                {},
+                []functionLambda
+    {
+        unsigned long secs = scope.cget(0)->toUnsignedInteger();
+        return Variable::copy(formatDuration(secs));
+    });
+
     addFunction("substr",
                 {"string", "start", "size"},
                 {false, false, false},

@@ -62,7 +62,7 @@ public:
 
     bool canHandleFunction(const std::string &name) const;
     const Module *functionHandler(const std::string &name) const;
-    Variable* executeFunction(const std::string &name, const Scope &params) const;
+    Variable* executeFunction(const std::string &name, Scope &params) const;
     const std::vector<std::string>& getFunctionParameterNames(const std::string& name) const;
     const std::vector<bool>& getFunctionParameterModifiables(const std::string& name) const;
     const std::vector<Variant>& getFunctionParameterDefaults(const std::string& name) const;
@@ -77,7 +77,7 @@ protected:
     virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
 
     virtual bool doCanHandleFunction(const std::string& name) const;
-    virtual Variable* doExecuteFunction(const std::string& name, const Scope &params, const Module &fromModule) const;
+    virtual Variable* doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const;
     virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
     virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const;
     virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const;
@@ -108,7 +108,7 @@ private:
 
     Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
 
-    Variable* executeFunction(const std::string& name, const Scope &params, const Module& fromModule) const;
+    Variable* executeFunction(const std::string& name, Scope &params, const Module& fromModule) const;
 
     bool _loaded;
 

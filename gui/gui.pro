@@ -6,7 +6,7 @@
 
 QT       += core gui widgets
 
-CONFIG   += c++11 config
+CONFIG   += c++11
 
 TARGET = hexamonkey
 TEMPLATE = app
@@ -18,7 +18,6 @@ INCLUDEPATH += ../core \
                ../core/modules/ebml \
                ../core/modules/mkv \
                ../core/modules/hmc \
-               ../core/modules/ts \
                ../core/formatdetector \
                ../core/util \
                ../core/interpreter \

@@ -18,6 +18,7 @@
 #include "fromfilemodule.h"
 #include "model.h"
 #include "typescope.h"
+#include "localscope.h"
 #include "fromfileparser.h"
 
 #ifdef USE_QT
@@ -32,9 +33,14 @@
 #include "interpreter.h"
 #include "variabledescriptor.h"
 #include "variable.h"
+#include "blockexecution.h"
 
 const VariableDescriptor sizeDescriptor = {"@size"};
 const std::vector<VariableDescriptor> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};
+
+const std::vector<std::string> emptyParameterNames;
+const std::vector<bool> emptyParameterModifiables;
+const std::vector<Variant> emptyParameterDefaults;
 
 FromFileModule::FromFileModule(const std::string &path, Interpreter* interpreter)
     :_interpreter(interpreter)
@@ -67,12 +73,9 @@ bool FromFileModule::doLoad()
         return false;
 
     Program classDeclarations = interpreter().program().elem(2);
-    loadTemplates(classDeclarations);
+    nameScan(classDeclarations);
     loadExtensions(classDeclarations);
     loadSpecifications(classDeclarations);
-#if 0
-    addParsers(classDeclarations);
-#endif
     return true;
 }
 
@@ -126,6 +129,63 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     std::cout<<type.typeTemplate().name()<<" father's size"<<std::endl;
     _fixedSizes[type.typeTemplate().name()] = 0;
     return 0;
+}
+
+bool FromFileModule::doCanHandleFunction(const std::string &name) const
+{
+    return _functions.find(name) != _functions.end();
+}
+
+Variable *FromFileModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
+{
+    auto it = functionDescriptor(name);
+
+    if(it == _functionDescriptors.end())
+        return nullptr;
+
+    Holder holder(interpreter());
+    CompositeScope scope;
+    LocalScope localScope(holder);
+
+    scope.addScope(localScope);
+    scope.addScope(params);
+
+    const Program& definition = std::get<3>(it->second);
+    BlockExecution blockExecution(definition.begin(), definition.end(), fromModule, interpreter(), scope, nullptr);
+
+    blockExecution.execute();
+
+    return &holder.extract(blockExecution.extractReturnValue());
+}
+
+const std::vector<std::string> &FromFileModule::doGetFunctionParameterNames(const std::string &name) const
+{
+    auto it = functionDescriptor(name);
+
+    if(it == _functionDescriptors.end())
+        return emptyParameterNames;
+
+    return std::get<0>(it->second);
+}
+
+const std::vector<bool> &FromFileModule::doGetFunctionParameterModifiables(const std::string &name) const
+{
+    auto it = functionDescriptor(name);
+
+    if(it == _functionDescriptors.end())
+        return emptyParameterModifiables;
+
+    return std::get<1>(it->second);
+}
+
+const std::vector<Variant> &FromFileModule::doGetFunctionParameterDefaults(const std::string &name) const
+{
+    auto it = functionDescriptor(name);
+
+    if(it == _functionDescriptors.end())
+        return emptyParameterDefaults;
+
+    return std::get<2>(it->second);
 }
 
 bool FromFileModule::loadProgram(const std::string path)
@@ -200,16 +260,16 @@ void FromFileModule::loadImports(Program &imports, std::vector<std::string> &for
     }
 }
 
-void FromFileModule::loadTemplates(Program& classDeclarations)
+void FromFileModule::nameScan(Program& declarations)
 {
     std::cout<<"Loading templates :"<<std::endl;
 
 
-    for(Program classDeclaration : classDeclarations)
+    for(Program declaration : declarations)
     {
-        if(classDeclaration.id() == CLASS_DECLARATION)
+        if(declaration.id() == CLASS_DECLARATION)
         {
-            Program typeTemplate = classDeclaration.elem(0).elem(0);
+            Program typeTemplate = declaration.elem(0).elem(0);
             const std::string& name = typeTemplate.elem(0).payload().toString();
             std::vector<std::string> parameters;
             for(Program arg:typeTemplate.elem(1))
@@ -219,8 +279,13 @@ void FromFileModule::loadTemplates(Program& classDeclarations)
             const ObjectTypeTemplate& temp = newTemplate(name, parameters);
             std::cout<<"    "<<temp<<std::endl;
 
-            Program classDefinition = classDeclaration.elem(1);
+            Program classDefinition = declaration.elem(1);
             _definitions[name] = classDefinition;
+        }
+        else if(declaration.id() == FUNCTION_DECLARATION)
+        {
+            const std::string& name = declaration.elem(0).payload().toString();
+            _functions[name] = declaration;
         }
     }
 
@@ -249,7 +314,6 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
                     continue;
             }
 
-            _nonApexTemplates.insert(name);
            //Adding extension lambda
            Program program = extension.elem(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
@@ -291,37 +355,6 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
 
     std::cout<<std::endl;
 }
-#if 0
-void FromFileModule::addParsers(Program &classDeclarations)
-{
-    std::cout<<"Adding parsers :"<<std::endl;
-
-    for(Program classDeclaration : classDeclarations)
-    {
-        if(classDeclaration.id() == CLASS_DECLARATION)
-        {
-            Program classDefinition = classDeclaration.elem(1);
-            const std::string& name = classDeclaration.elem(0).elem(0).elem(0).payload().toString();
-            _definitions[name] = classDefinition;
-            std::cout<<"    "<<name<<std::endl;
-            if(classDefinition.size() == 0)
-            {
-                addParser(name);
-                std::cout<<"        Empty "<<std::endl;
-            }
-            else
-            {
-                addParser(name, [this, classDefinition, name](const ObjectType &type, Object &object, const Module &module) ->Parser*
-                {
-                    return new FromFileParser(object, module, interpreter(), classDefinition, headerEnd(name));
-                });
-            }
-        }
-    }
-
-    std::cout<<std::endl;
-}
-#endif
 
 bool FromFileModule::sizeDependency(const std::string &name) const
 {
@@ -387,6 +420,36 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     std::advance(headerEnd, std::distance(reverseHeaderEnd, definition.rend()));
     _headerEnd[name] = headerEnd;
     return headerEnd;
+}
+
+FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescriptor(const std::string &name) const
+{
+    auto alreadyIt = _functionDescriptors.find(name);
+    if(alreadyIt != _functionDescriptors.end())
+        return alreadyIt;
+
+    auto it = _functions.find(name);
+    if(it == _functions.end())
+        return _functionDescriptors.end();
+
+    const Program& declaration = it->second;
+    const Program& arguments = declaration.elem(1);
+    const Program& definition = declaration.elem(2);
+
+    std::vector<std::string> parameterNames;
+    std::vector<bool> parameterModifiables;
+    std::vector<Variant> parameterDefaults;
+
+    for(const Program& argument: arguments)
+    {
+        Holder holder(interpreter());
+        parameterNames.push_back(argument.elem(1).payload().toString());
+        parameterModifiables.push_back(argument.elem(0).payload().toBool());
+        parameterDefaults.push_back(holder.cevaluate(argument.elem(2), EmptyScope(), *this));
+    }
+
+    auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);
+    return _functionDescriptors.insert(std::make_pair(name, functionDescriptor)).first;
 }
 
 Interpreter &FromFileModule::interpreter() const
