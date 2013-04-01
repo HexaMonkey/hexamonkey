@@ -27,6 +27,7 @@
 #include "scope.h"
 
 #include "strutil.h"
+#include "bitutil.h"
 
 using namespace defaultTypes;
 
@@ -149,6 +150,30 @@ bool DefaultModule::doLoad()
         return Variable::copy(s);
     });
 
+    addFunction("fromAscii",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        const char ch = scope.cget(0)->toInteger();
+        const std::string s(1, ch);
+        return Variable::copy(s);
+    });
+
+    addFunction("toAscii",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        const std::string& str = scope.cget(0)->toString();
+        if(str.empty())
+            return Variable::null();
+        else
+            return Variable::copy(str[0]);
+    });
+
     addFunction("uppercase",
                 {"string"},
                 {false},
@@ -171,13 +196,23 @@ bool DefaultModule::doLoad()
         return Variable::copy(str);
     });
 
+    addFunction("popCount",
+                {"word"},
+                {false},
+                {},
+                []functionLambda
+    {
+        uint64_t word = scope.cget(0)->toUnsignedInteger();
+        return Variable::copy(popCount(word));
+    });
+
     addFunction("formatDate",
                 {"date"},
                 {false},
                 {},
                 []functionLambda
     {
-        unsigned long secs = scope.cget(0)->toUnsignedInteger();
+        uint64_t secs = scope.cget(0)->toUnsignedInteger();
         return Variable::copy(formatDate(secs));
     });
 
@@ -187,7 +222,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        unsigned long secs = scope.cget(0)->toUnsignedInteger();
+        uint64_t secs = scope.cget(0)->toUnsignedInteger();
         return Variable::copy(formatDuration(secs));
     });
 

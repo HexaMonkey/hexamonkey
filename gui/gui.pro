@@ -14,7 +14,6 @@ TEMPLATE = app
 INCLUDEPATH += ../core \
                ../core/modules/default \
                ../core/modules/standard \
-               ../core/modules/mp4 \
                ../core/modules/ebml \
                ../core/modules/mkv \
                ../core/modules/hmc \
@@ -79,10 +78,6 @@ SOURCES += main.cpp\
     ../core/modules/ebml/ebmlcontainerparser.cpp \
     ../core/modules/hmc/hmcmodule.cpp \
     ../core/modules/mkv/mkvmodule.cpp \
-    ../core/modules/mp4/mp4simpleparser.cpp \
-    ../core/modules/mp4/mp4sampleentryparser.cpp \
-    ../core/modules/mp4/mp4module.cpp \
-    ../core/modules/mp4/mp4boxparser.cpp \
     ../core/util/strutil.cpp \
     ../core/util/iterutil.cpp \
     ../core/util/fileutil.cpp \
@@ -165,11 +160,6 @@ HEADERS  += mainwindow.h \
     ../core/modules/hmc/hmcmodule.h \
     ../core/modules/mkv/mkvtypes.h \
     ../core/modules/mkv/mkvmodule.h \
-    ../core/modules/mp4/mp4types.h \
-    ../core/modules/mp4/mp4simpleparser.h \
-    ../core/modules/mp4/mp4sampleentryparser.h \
-    ../core/modules/mp4/mp4module.h \
-    ../core/modules/mp4/mp4boxparser.h \
     ../core/util/unused.h \
     ../core/util/strutil.h \
     ../core/util/str.h \
@@ -208,8 +198,6 @@ RESOURCES += \
 RC_FILE = logo.rc
 
 OTHER_FILES += \
-    ../core/modules/mp4model.csv \
-    ../core/modules/mp4/mp4model.csv \
     ../core/modules/mkv/mkvmodel.xml \
     ../core/modules/hmc/hmcmodel.csv
 

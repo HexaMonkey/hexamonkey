@@ -39,7 +39,6 @@ installer.msi: installer.wixobj\
  compiler/expcompiler.exe\
  core/modules/hmc/hmcmodel.csv\
  core/modules/mkv/mkvmodel.xml\
- core/modules/mp4/mp4model.csv\
  scripts/avi.hm\
  scripts/asf.hm\
  scripts/microsoft.hm\

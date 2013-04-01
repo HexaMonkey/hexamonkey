@@ -1,0 +1,970 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 00 00 00 xx 66 74 79 70
+addExtension mp4
+addExtension mov
+addExtension m4a
+
+import bestd
+
+class Mp4File as File
+{
+	while(1) Box *;
+}
+
+class Box(boxtype, extended_type)
+{
+	uint(32) size;
+	string(4) type;
+	@args.boxtype = type;
+	if(size == 1)
+	{
+		uint(64) largesize;
+		@size = 8*largesize;
+	}
+	else
+	{
+		@size = 8*size;
+	}
+	if(type == "uuid")
+	{
+		string(16) usertype;
+		@args.extended_type = usertype;
+	}
+}
+
+class FullBox(boxtype, v, f) extends Box(boxtype)
+{
+	uint(8) version;
+	@args.v = version;
+	bit(24) flags;
+	@args.f = flags;
+}
+
+class FileTypeBox as Box("ftyp")
+{
+	string(4) major_brand;
+	uint(32)  minor_version;
+	string(4) compatible_brands[];
+}
+
+class MediaDataBox as Box("mdat")
+{
+	Data data;
+}
+
+forward Box("free") to FreeSpaceBox
+forward Box("skip") to FreeSpaceBox
+
+class FreeSpaceBox extends Box
+{
+	Data junk;
+}
+
+class ProgressiveDownloadInfoEntry
+{
+	uint(32) rate;
+	uint(32) initial_delay;
+}
+
+class ProgressiveDownloadInfoBox extends Fullbox as Box("pdin")
+{
+	ProgressiveDownloadInfoEntry entries[];
+}
+
+class MovieBox as Box("moov")
+{
+	while(1) Box *;
+}
+
+class MovieHeaderBox extends FullBox as Box("mvhd")
+{
+	var size = version ? 64 : 32;
+		
+	date(size)                creation_time;
+	date(size)                modification_time;
+	uint(32)                  timescale;
+	duration(size, timescale) duration;
+	fixedPoint(16,16)         rate;
+	fixedPoint(8,8)           volume;
+	uint(16)                  reserved; 
+	uint(32)                  reserved[2];
+	fixedPoint(16,16)         matrix[9];
+	uint(32)                  pre_defined[6];
+	uint(32)                  next_track_ID;
+}
+
+class TrackBox as Box("trak")
+{
+	while(1) Box *;
+}
+
+class TrackHeaderBox extends FullBox as Box("tkhd")
+{
+	var size = version ? 64 : 32;
+	var timescale = @parent.@parent[MovieHeaderBox()].timescale;
+	
+	date(size)                creation_time;
+	date(size)                modification_time;
+	uint(32)                  track_ID;
+	uint(32)                  reserved;
+	duration(size, timescale) duration;
+	uint(32)                  reserved[2];
+	int(16)                   layer;
+	int(16)                   alternate_group;
+	fixedPoint(8,8)           volume;
+	uint(16)                  reserved;
+	fixedPoint(16,16)         matrix[9];
+	fixedPoint(16,16)         width;
+	fixedPoint(16,16)         height;
+}
+
+class TrackReferenceBox as Box("tref")
+{
+	while(1) Box *;
+}
+
+forward Box("hint") to TrackReferenceTypeBox
+forward Box("cdsc") to TrackReferenceTypeBox
+forward Box("hind") to TrackReferenceTypeBox
+
+class TrackReferenceTypeBox extends Box
+{
+	uint(32) track_Ids[];
+}
+
+class MediaBox as Box("mdia")
+{
+	while(1) Box *;
+}
+
+class MediaHeaderBox extends FullBox as Box("mdhd")
+{
+	var size = version ? 34 : 32;
+		
+	date(size)                creation_time;
+	date(size)                modification_time;
+	uint(32)                  timescale;
+	duration(size, timescale) duration;
+	language                  language;
+	uint(16)                  pre_defined;
+}
+
+class HandlerBox extends FullBox as Box("hdlr")
+{
+	uint(32)  pre_defined;
+	string(4) handler_type;
+	uint(32)  reserved[3];
+	string    name;
+}
+
+class MediaInformationBox as Box("minf")
+{
+	while(1) Box *;
+}
+
+class VideoMediaHeaderBox extends FullBox as Box('vmhd')
+{
+	uint(16) graphicsmode;
+	uint(16) opcolor[3];
+}
+
+class SoundMediaHeaderBox extends FullBox as Box('smhd')
+{
+	fixedPoint(8,8) balance;
+	uint(16)        reserved;
+}
+
+class HintMediaHeaderBox extends FullBox as Box('hmhd')
+{
+	uint(16) maxPDUsize;
+	uint(16) avgPDUsize;
+	uint(32) maxbitrate;
+	uint(32) avgbitrate;
+	uint(32) reserved;
+}
+
+class NullMediaHeaderBox extends FullBox as Box("nmhd")
+
+class SampleTableBox as Box("stbl")
+{
+	while(1) Box *;
+}
+
+class SampleEntry(format) extends Box(format)
+{
+	uint(8)  reserved[6];
+	uint(16) data_reference_index;
+}
+
+class HintSampleEntry extends SampleEntry
+{
+	Data data;
+}
+
+class BitRateBox as Box("btrt")
+{
+	uint(32) bufferSizeDB;
+	uint(32) maxBitrate;
+	uint(32) avgBitrate;
+}
+
+class MetaDataSampleEntry(codingname) extends SampleEntry(codingname)
+
+class XMLMetaDataSampleEntry as MetaDataSampleEntry("metx")
+{
+	string content_encoding;
+	string namespace;
+	string schema_location;
+	BitRateBox *;
+}
+
+class TextMetaDataSampleEntry as MetaDataSampleEntry("mett")
+{
+	string content_encoding;
+	string mime_format;
+	BitRateBox *;
+}
+
+class PixelAspectRatioBox as Box("pasp")
+{
+	uint(32) hSpacing;
+	uint(32) vSpacing;
+}
+
+class CleanApertureBox as Box("clap")
+{
+	uint(32) cleanApertureWidthN;
+	uint(32) cleanApertureWidthD;
+	
+	uint(32) cleanApertureHeightN;
+	uint(32) cleanApertureHeightD;
+	
+	uint(32) horizOffN;
+	uint(32) horizOffD;
+	
+	uint(32) vertOffN;
+	uint(32) vertOffD;
+}
+
+class VisualSampleEntry extends SampleEntry
+{
+	uint(16)            pre_defined;
+	uint(16)            reserved;
+	uint(32)            pre_defined[3];
+	uint(16)            width;
+	uint(16)            height;
+	fixedPoint(16,16)   horizresolution;
+	fixedPoint(16,16)   vertresolution;
+	uint(32)            reserved;
+	uint(16)            frame_count;
+	string(32)          reserved;
+	uint(16)            depth;
+	int(16)             pre_defined;
+	while(1) Box *;
+}
+
+class AudioSampleEntry extends SampleEntry
+{
+	uint(32) reserved[2];
+	uint(16) channelcount;
+	uint(16) samplesize;
+	uint(16) pre_defined;
+	uint(16) reserved;
+	uint(32) samplerate;
+}
+
+class SampleDescriptionBox extends FullBox as Box("stsd")
+{
+	uint(32) entry_count;
+
+	var handler_type = @parent.@parent.@parent[HandlerBox()].handler_type;
+	if(handler_type == "soun")
+		while(1) AudioSampleEntry *;
+	else if(handler_type == "vide")
+		while(1) VisualSampleEntry *;
+	else if(handler_type == "hint")
+		while(1) HintSampleEntry *;
+	else if(handler_type == "meta")
+		while(1) MetadataSampleEntry *;
+	else
+		while(1) Box *;
+}
+
+class DegradationPriorityBox extends FullBox as Box("stdp")
+{
+	int(16) priorities[];
+}
+
+class SampleScaleBox extends FullBox as Box("stsl")
+{
+	bit(7)  reserved;
+	bit(1)  constraint_flag;
+	uint(8) scale_method;
+	int(16) display_center_x;
+	int(16) display_center_y;
+}
+
+class TimeToSampleEntry
+{
+	uint(32) sample_count;
+	uint(32) sample_delta;
+}
+
+class TimeToSampleBox extends FullBox as Box("stts")
+{
+	uint(32) entry_count;
+	TimeToSampleEntry entries[entry_count];
+}
+
+class CompositionOffsetEntry
+{
+	uint(32) sample_count;
+	uint(32) sample_offset;
+}
+
+class CompositionOffsetBox extends FullBox as Box("ctts")
+{
+	uint(32) entry_count;
+	CompositionOffsetEntry entries[entry_count];
+}
+
+class SyncSampleBox extends FullBox as Box("stss")
+{
+	uint(32) entry_count;
+	uint(32) sample_numbers[entry_count];
+}
+
+class ShadowSyncSampleEntry
+{
+	uint(32) shadowed_sample_number;
+	uint(32) sync_sample_number;
+}
+
+class ShadowSyncSampleBox extends FullBox as Box("stsh")
+{
+	uint(32) entry_count;
+	ShadowSyncSampleEntry entries[entry_count];
+}
+
+class SampleDependencyTypeEntry
+{
+	uint(2) reserved;
+	uint(2) sample_depends_on;
+	uint(2) sample_is_depended_on;
+	uint(2) sample_has_redundancy;
+}
+
+class SampleDependencyTypeBox extends FullBox as Box("sdtp")
+{
+	SampleDependencyTypeEntry entries[];
+}
+
+class EditBox as Box("edts")
+{
+	while(1) Box *;
+}
+
+class EditListEntry(size) extends Data(2*size+32)
+{
+	duration(@args.size) segment_duration;
+	int(@args.size)      media_time;
+	int(16)              media_rate_integer;
+	int(16)              media_rate_fraction;
+}
+
+class EditListBox extends FullBox as Box("elst")
+{
+	uint(32) entry_count;
+	EditListEntry(version ? 64 : 32) entries[entry_count];
+}
+
+class DataInformationBox as Box("dinf")
+{
+	while(1) Box *;
+}
+
+class DataEntryUrlBox extends FullBox as Box("url ")
+{
+	string location;
+}
+
+class DataEntryUrnBox extends FullBox as Box("urn ")
+{
+	string name;
+	string location;
+}
+
+class DataReferenceBox extends FullBox as Box("dref")
+{
+	uint(32) entry_count;
+	while(1) Box *;
+}
+
+class SampleSizeBox extends FullBox as Box("stsz")
+{
+	uint(32) sample_size;
+	uint(32) sample_count;
+	if(sample_size == 0)
+	{
+		uint(32) entry_sizes[sample_count];
+	}
+}
+
+class CompactSampleSizeBox extends FullBox as Box("stz2")
+{
+	uint(24) reserved;
+	uint(8)  field_size;
+	uint(32) sample_count;
+	if(sample_size == 0)
+	{
+		uint(field_size) entry_sizes[sample_count];
+	}
+}
+
+class SampleToChunkEntry
+{
+	uint(32) first_chunk;
+	uint(32) sample_per_chunk;
+	uint(32) sample_description_index;
+}
+
+class SampleToChunkBox extends FullBox as Box("stsc")
+{
+	uint(32) entry_count;
+	SampleToChunkEntry entries[entry_count];
+}
+
+class ChunkOffsetBox extends FullBox as Box("stco")
+{
+	uint(32) entry_count;
+	uint(32) chunk_offsets[entry_count];
+}
+
+class ChunkLargeOffsetBox extends FullBox as Box("co64")
+{
+	uint(32) entry_count;
+	uint(64) chunk_offsets[entry_count];
+}
+
+class PaddingBitsEntry
+{
+	bit(1) reserved;
+	bit(3) pad1;
+	bit(1) reserved;
+	bit(3) pad2;
+}
+
+class PaddingBitsBox extends FullBox as Box("padb")
+{
+	uint(32) sample_count;
+	PaddingBitsEntry entries[(sample_count + 1)/2];
+}
+
+class SubSampleInformationEntry(size) extends Data(size+48)
+{
+	uint(@args.size) subsample_size;
+	uint(8)          subsample_priority;
+	uint(8)          discardable;
+	uint(32)         reserved;
+}
+
+class SampleInformationEntry(size)
+{
+	uint(32) sample_delta;
+	uint(16) subsample_count;
+	@size =  48+(%sizeof(SubSampleInformationEntry(@args.size)) * subsample_count);
+	SubSampleInformationEntry(@args.size) subsamples[subsample_count];
+}
+
+class SubSampleInformationBox extends FullBox as Box("subs")
+{
+	uint(32) entry_count;
+	SampleInformationEntry(version ? 32 : 16) entries[entry_count];
+}
+
+class MovieExtendsBox as Box("mvex")
+{
+	while(1) Box *;
+}
+
+class MovieExtendsHeaderBox extends FullBox as Box("mehd")
+{
+	duration(version ? 64 : 32) fragment_duration;
+}
+
+class SampleFlags
+{
+	bit(6)   reserved;
+	uint(2)  sample_depends_on;
+	uint(2)  sample_is_depended_on;
+	uint(2)  sample_has_redundancy;
+	bit(3)   sample_padding_value;
+	bit(1)   sample_is_difference_sample;
+	uint(16) sample_degradation_priority;
+}
+
+class TrackExtendsBox extends FullBox as Box("trex")
+{
+	uint(32)     track_ID;
+	uint(32)     default_sample_description_index;
+	duration(32) default_sample_duration;
+	uint(32)     default_sample_size;
+	SampleFlags  default_sample_flags;
+}
+
+class MovieFragmentBox as Box("moof")
+{	
+	while(1) Box *;
+}
+
+class MovieFragmentHeaderBox extends FullBox as Box("mfhd")
+{
+	uint(32) sequence_number;
+}
+
+class TrackFragmentBox as Box("traf")
+{
+	while(1) Box *;
+}
+
+class TrackFragmentHeaderBox extends FullBox as Box("tfhd")
+{
+	uint(32) track_ID;
+	if(version & 0x000001)
+		uint(64) base_data_offset;
+	if(version & 0x000002)
+		uint(32) sample_description_index;
+	if(version & 0x000008)
+		duration(32) default_sample_duration;
+	if(version & 0x000010)
+		uint(32) default_sample_size;
+	if(version & 0x000020)
+		SampleFlags default_sample_flags; 
+}
+
+class TrackRunEntry(flags) extends Data(32*%popCount(flags))
+{
+	if(@args.flags & 0x000100)
+		duration(32) sample_duration;
+	if(@args.flags & 0x000200)
+		uint(32) sample_size;
+	if(@args.flags & 0x000400)
+		SampleFlags sample_flags;
+	if(@args.flags & 0x000800)
+		uint(32) sample_composition_time_offset;
+}
+
+class TrackRunBox extends FullBox as Box("trun")
+{
+	uint(32) sample_count;
+	if(version & 0x000001)
+		int(32) data_offset;
+	if(version & 0x000004)
+		SampleFlags first_sample_flags;
+		
+	TrackRunEntry(version & 0x000f00) entries[sample_count];
+}
+
+class MovieFragmentRandomAccessBox as Box("mfra")
+{
+	while(1) Box *;
+}
+
+class TrackFragmentRandomAccessEntry(size, traf_size, trun_size, sample_size)
+extends Data(2*size + traf_size + trun_size + sample_size)
+{
+	uint(@args.size)      time;
+	uint(@args.size)      moof_offset;
+	uint(@args.traf_size) traf_number;
+	uint(@args.trun_size) sample_number;
+}
+
+class TrackFragmentRandomAccessBox extends FullBox as Box("tfra")
+{
+	uint(32) track_ID;
+	uint(26) reserved;
+	uint(2) length_size_of_traf_num;
+	uint(2) length_size_of_trun_num;
+	uint(2) length_size_of_sample_num;
+	uint(32) number_of_entry;
+	TrackFragmentRandomAccessEntry(version ? 64 : 32, 
+	                               (length_size_of_traf_num+1) * 8,
+								   (length_size_of_trun_num+1) * 8,
+								   (length_size_of_sample_num+1) * 8) entries[number_of_entry];
+}
+
+class MovieFragmentRandomAccessOffsetBox extends Fullbox as Box("mfro")
+{
+	uint(32) size;
+}
+
+class SampleToGroupEntry
+{
+	uint(32) sample_count;
+	uint(32) group_description_index;
+}
+
+class SampleToGroupBox extends FullBox as Box("sbgp")
+{
+	uint(32) grouping_type;
+	uint(32) entry_count;
+	SampleToGroupEntry entries[entry_count];
+}
+
+class UserDataBox as Box("udta")
+{
+	while(1) Box *;
+}
+
+class CopyrightBox extends FullBox("cprt")
+{
+	langage language;
+	string notice;
+}
+
+class TrackSelectionBox extends FullBox as Box("tsel")
+{
+	int(32) switch_group;
+	string(4) attribute_list[];
+}
+
+class MetaBox extends FullBox as Box("meta")
+{
+	while(1) Box *;
+} 
+
+class XMLBox extends FullBox as Box("xml ")
+{
+	string xml;
+}
+
+class BinaryXMLBox extends FullBox as Box("bxml")
+{
+	Data data;
+}
+
+class ItemLocationSubEntry(offset_size, length_size) extends Data(offset_size + length_size)
+{
+	uint(@args.offset_size) extent_offset;
+	uint(@args.length_size) extent_length;
+}
+
+class ItemLocationEntry(base_offset_size, length_size)
+{
+	uint(16) item_ID;
+	uint(16) data_reference_index;
+	uint(@args.base_offset_size) base_offset;
+	uint(16) extent_count;
+	ItemLocationSubEntry(8*base_offset, @args.length_size) entries[extent_count];
+}
+
+class ItemLocationBox extends FullBox as Box("iloc")
+{
+	uint(4)  offset_size;
+	uint(4)  length_size;
+	uint(4)  base_offset_size;
+	uint(4)  reserved;
+	uint(16) item_count;
+	ItemLocationEntry(8*base_offset_size, 8*length_size) entries[];
+}
+
+class PrimaryItemBox extends FullBox as Box("pitm")
+{
+	uint(16) item_ID;
+}
+
+class ItemProtectionBox extends FullBox as Box("ipro")
+{
+	uint(16) protection_count;
+	ProtectionSchemeInfoBox protection_informations[];
+}
+
+class ItemInfoExtension(extension_type)
+
+class FDItemInfoExtension as ItemInfoExtension("fdel")
+{
+	string content_location;
+	string content_MD4;
+	uint(64) content_length;
+	uint(64) transfer_length;
+	uint(8)  entry_count;
+	uint(32) group_ids[entry_count];
+}
+
+class ItemInfoEntry extends FullBox as Box("infe")
+{
+	uint(16) item_ID;
+	uint(16) item_protection_index;
+	string   item_name;
+	string   content_type;
+	string   content_encoding;
+	if(version == 1)
+	{
+		string(4) extension_type;
+		ItemInfoExtension(extension_type);
+	}
+}
+
+class ItemInfoBox extends FullBox as Box("iinf")
+{
+	uint(16) entry_count;
+	ItemInfoEntry item_infos[entry_count];
+}
+
+class AdditionalMetadataContainerBox as Box("meco")
+{
+	while(1) Box *;
+}
+
+class MetaboxRelationBox extends FullBox as Box("mere")
+{
+	string(4) first_metabox_handler_type;
+	string(4) second_metabox_handler_type;
+	uint(8)   metabox_relation;
+}
+
+class ProtectionSchemeInfoBox as Box("sinf")
+{
+	while(1) Box *;
+}
+
+class OriginialFormatBox as Box("frma")
+{
+	string(4) data_format;
+}
+
+class IPMPInfoBox extends FullBox as Box("imif")
+{
+	//ToDo  ISO/IEC 14496-1
+}
+
+class IPMPControlBox extends FullBox as Box("ipmc")
+{
+	//ToDo  ISO/IEC 14496-1
+}
+
+class SchemeTypeBox extends FullBox as Box("schm")
+{
+	string(4) scheme_type;
+	uint(32)  scheme_version;
+	if(version & 0x000001)
+	{
+		uint(8) scheme_uri[];
+	}
+}
+
+class SchemeInformationBox as Box("schii")
+{
+	while(1) Box *;
+}
+
+class PartitionEntry as Box('paen') 
+{ 
+	while(1) Box *;
+} 
+ 
+class FDItemInformationBox extends FullBox as Box("fiin") 
+{ 
+	uint(16)  entry_count; 
+	PartitionEntry   partition_entries[entry_count]; 
+    while(1) Box *;
+}
+
+class FilePartitionBlock
+{
+	uint(16) block_count;
+	uint(32) block_size;
+}
+
+class FilePartitionBox extends FullBox as Box("fpar")
+{
+	uint(16) item_ID;
+	uint(16) packet_payload_size;
+	uint(8)  reserved;
+	uint(8)  FEC_encoding_ID;
+	uint(16) FEC_instance_ID;
+	uint(16) max_source_block_length;
+	uint(16) encoding_symbol_length;
+	uint(16) max_number_of_encoding_symbols;
+	string   scheme_specific_info;
+	uint(16) entry_count;
+	FilePartitionBlock entries[entry_cout];
+}
+
+class FECReservoirEntry
+{
+	uint(16) item_ID;
+	uint(32) symbol_count;
+}
+
+class FECReservoirBox extends FullBox as Box("fecr")
+{
+	uint(16) entry_count;
+	FECReservoirEntry entries[entry_count];
+}
+
+class FDSessionGroupEntry
+{
+	uint(8) entry_count;
+	uint(32) group_IDs[entry_count];
+	uint(16)  num_channels_in_session_group;
+	uint(32) hint_track_ids[hint_track_id];
+}
+
+class FDSessionGroupBox as Box("segr")
+{
+	uint(16) num_session_groups;
+	FDSessionGroupEntry entries[];
+}
+
+class GroupIdToNameEntry
+{
+	uint(32) group_ID;
+	string   group_name;
+}
+
+class GroupIdToNameBox extends FullBox as Box("gitn")
+{
+	uint(16) entry_count;
+	GroupIdToNameEntry entries[entry_count];
+}
+
+class RtpHintSampleEntry extends SampleEntry as Box("rtp ")
+{
+	uint(16) hinttrackversion;
+	uint(16) highestcompatibleversion;
+	uint(32) maxpacketsize;
+	Box      additionaldata[];
+}
+
+class timescaleentry() as Box("tims")
+{
+	uint(32) timescale;
+}
+
+class timeoffset() as Box("tsro")
+{
+	int(32) offset;
+}
+
+class sequenceoffset as Box("snro")
+{
+	int(32) offset;
+}
+
+class SrtpHintSampleEntry extends SampleEntry as Box("srtp")
+{
+	uint(16) hinttrackversion;
+	uint(16) highestcompatibleversion;
+	uint(32) maxpacketsize;
+	Box      additionaldata[];
+}
+
+class AVCSequence
+{
+	uint(16) sequenceParameterSetLength;
+	@size = 16+8*sequenceParameterSetLength;
+	Data sequenceParameterSetNALUnit;
+}
+
+class AVCPicture
+{
+	uint(16) pictureParameterSetLength;
+	@size = 16+8*pictureParameterSetLength;
+	Data pictureParameterSetNALUnit;
+}
+
+class AVCConfigurationBox as Box("avcC")
+{
+	uint(8) configurationVersion;
+	uint(8) AVCProfileIndication;
+	uint(8) profile_compatibility;
+	uint(8) AVCLevelIndication;
+	bit(6)  reserved;
+	uint(2) lengthSizeMinusOne;
+	bit(3)  reserved;
+	uint(5) numOfSequenceParameterSets;
+	AVCSequence sequences[numOfSequenceParameterSets];
+	uint(5) numOfPictureParameterSets;
+	AVCPicture pictures[numOfPictureParameterSets];
+}
+
+class ItunesDescriptionBox as Box("ilst")
+{
+	while(1) ItunesTagBox *;
+}
+
+class ItunesTagBox(tag) extends Box
+{
+	if(%toAscii(type) & 0x80) //if the first letter is (c) it is replaced by c
+		@args.tag = "c"+%substr(type, 1, 3);
+	else
+		@args.tag = type;
+		
+	ItunesDataBox(@args.tag) data;
+} 
+
+class ItunesDataBox(tag) as Box("data")
+{
+	uint(32) data_type;
+	uint(32) reserved;
+	if((data_type == 0) && (@args.tag == "trkn" || @args.tag == "disk"))
+    {
+        uint(32) payload;
+    }
+    else if(data_type == 1)
+    {
+        string(@size/8 - 16) payload;
+    }
+    else
+    {
+        Data payload;
+    }
+}
+
+class bit(size) extends Bitset(size)
+class string(size) extends String(size)
+
+class date(size) extends uint(size)
+{
+	@info = '"'+%formatDate(@value - 2082844800)+'"';
+}
+
+class duration(size, scale) extends uint(size)
+{
+	if(@args.scale == NULL)
+		@info = '"'+%formatDuration(@value)+'"';
+	else
+		@info = '"'+%formatDuration(@value/@args.scale)+'"';
+}
+
+class fixedPoint(dec, frac) extends int(dec+frac)
+{
+	@info = %str(%float(@value)/(1<<@args.frac));
+}
+
+class language extends uint(16)
+{
+	@info = '"';
+	for(var i = 2; i >= 0; --i)
+	{
+		@info += %fromAscii(((@value>>(5*i))&0b11111) + 0x60);
+	}
+	@info += '"'; 
+}

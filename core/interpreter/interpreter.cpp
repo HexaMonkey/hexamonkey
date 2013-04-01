@@ -176,13 +176,16 @@ Variable& Interpreter::evaluate(const Program& rightValue, const Scope &scope, c
         switch(operatorParameterCount[op])
         {
             case 1:
-                return evaluateUnaryOperation(op,   evaluate(rightValue.elem(1), scope, module));
+                return evaluateUnaryOperation  (op, evaluate(rightValue.elem(1), scope, module));
 
             case 2:
-                return evaluateBinaryOperation(op,  evaluate(rightValue.elem(1), scope, module),
+                return evaluateBinaryOperation (op, evaluate(rightValue.elem(1), scope, module),
                                                     evaluate(rightValue.elem(2), scope, module));
 
-
+            case 3:
+                return evaluateTernaryOperation(op, evaluate(rightValue.elem(1), scope, module),
+                                                    evaluate(rightValue.elem(2), scope, module),
+                                                    evaluate(rightValue.elem(3), scope, module));
             default:
                 return null();
         }
@@ -321,6 +324,32 @@ Variable& Interpreter::evaluateBinaryOperation(int op, Variable &a, Variable &b)
 
     case MOD_OP:
         return copy(a.cvalue() % b.cvalue());
+
+    default:
+        break;
+    }
+
+    return null();
+}
+
+Variable &Interpreter::evaluateTernaryOperation(int op, Variable &a, Variable &b, Variable &c)
+{
+    Holder holder(*this);
+    const int parameterRelease = operatorParameterRelease[op];
+    if(parameterRelease&0x1)
+        holder.add(a);
+    if(parameterRelease&0x2)
+        holder.add(b);
+    if(parameterRelease&0x4)
+        holder.add(c);
+
+    switch(op)
+    {
+    case TERNARY_OP:
+        if(a.cvalue().toBool())
+            return copy(b.cvalue());
+        else
+            return copy(c.cvalue());
 
     default:
         break;

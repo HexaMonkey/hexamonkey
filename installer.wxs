@@ -95,10 +95,6 @@
 						<File Id='MkvModelXML' Name='mkvmodel.xml' DiskId='1' Source='core\modules\mkv\mkvmodel.xml' KeyPath='yes' />
 					</Component>
 					
-					<Component Id='Mp4Model' Guid='9726D004-D69A-404e-BC32-17B92CB2617F'>
-						<File Id='Mp4ModelCSV' Name='mp4model.csv' DiskId='1' Source='core\modules\mp4\mp4model.csv' KeyPath='yes' />
-					</Component>
-					
 					<Directory Id="ScriptsFolder" Name="scripts">
 						<Component Id='AviModule' Guid='9172EC4D-7497-41dd-8B4D-59822EF3EF6E'>
 							<File Id='AviModuleHM' Name='avi.hm' DiskId='1' Source='scripts\avi.hm' KeyPath='yes' />
@@ -111,9 +107,13 @@
 						<Component Id='MicrosoftModule' Guid='457596CE-E1BB-4149-9E8C-C2C958BBEE3D'>
 							<File Id='MicrosoftModuleHM' Name='microsoft.hm' DiskId='1' Source='scripts\microsoft.hm' KeyPath='yes' />
 						</Component>
-						
+
 						<Component Id='TsModule' Guid='C36661E3-255E-42ab-87DA-081ACFE8A635'>
 							<File Id='TsModuleHM' Name='ts.hm' DiskId='1' Source='scripts\ts.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='Mp4Module' Guid='5FDE29B5-0054-4514-A9F3-42011C41934D'>
+							<File Id='Mp4ModuleHM' Name='mp4.hm' DiskId='1' Source='scripts\mp4.hm' KeyPath='yes' />
 						</Component>
 					</Directory>
 			  </Directory>
@@ -151,7 +151,7 @@
 			<ComponentRef Id='ExpCompiler'/>
 			<ComponentRef Id='HmcModel'/>
 			<ComponentRef Id='MkvModel'/>
-			<ComponentRef Id='Mp4Model'/>
+			<ComponentRef Id='Mp4Module'/>
 			<ComponentRef Id='AviModule'/>
 			<ComponentRef Id='AsfModule'/>
 			<ComponentRef Id='MicrosoftModule'/>

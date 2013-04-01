@@ -81,7 +81,7 @@ Variant *MutableObjectScope::doGet(const Variant &key) const
 
     if(key.canConvertTo(Variant::objectType))
     {
-        Object* elem = _object.lookForType(key.toObjectType());
+        Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
             return &elem->value();
@@ -124,7 +124,7 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
 
     if(key.canConvertTo(Variant::integer))
     {
-        Object* elem = _object.access(key.toInteger());
+        Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
             return new MutableObjectScope(*elem);
@@ -133,7 +133,7 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
 
     if(key.canConvertTo(Variant::objectType))
     {
-        Object* elem = _object.lookForType(key.toObjectType());
+        Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
             return new MutableObjectScope(*elem);
@@ -188,7 +188,7 @@ const Variant *ConstObjectScope::doCget(const Variant &key) const
 
     if(key.canConvertTo(Variant::integer))
     {
-        Object* elem = _object.access(key.toInteger());
+        Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
             return &elem->value();
@@ -197,7 +197,7 @@ const Variant *ConstObjectScope::doCget(const Variant &key) const
 
     if(key.canConvertTo(Variant::objectType))
     {
-        Object* elem = _object.lookForType(key.toObjectType());
+        Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
             return &elem->value();
@@ -240,7 +240,7 @@ Scope *ConstObjectScope::doGetScope(const Variant &key) const
 
     if(key.canConvertTo(Variant::integer))
     {
-        Object* elem = _object.access(key.toInteger());
+        Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
             return new ConstObjectScope(*elem);
@@ -249,7 +249,7 @@ Scope *ConstObjectScope::doGetScope(const Variant &key) const
 
     if(key.canConvertTo(Variant::objectType))
     {
-        Object* elem = _object.lookForType(key.toObjectType());
+        Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
             return new ConstObjectScope(*elem);

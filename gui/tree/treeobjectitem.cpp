@@ -110,6 +110,7 @@ std::ostream& displayInfo(std::ostream& out, const std::string& info);
 QList<QVariant> display(Object& object)
 {
     QList<QVariant> itemData;
+    std::stringstream showcasePadding;
     {
         std::stringstream S;
         if(object.name() == "#")
@@ -123,7 +124,7 @@ QList<QVariant> display(Object& object)
 
             for(size_t i = rank.size(); i < 4; ++i)
             {
-                S<<"&nbsp;&nbsp;";
+                showcasePadding<<"&nbsp;&nbsp;";
             }
         }
         else
@@ -131,7 +132,6 @@ QList<QVariant> display(Object& object)
             displayDecl(S, object.type(), object.name());
         }
 
-        S << "&nbsp;";
         if(!object.info().empty())
             displayInfo(S, object.info());
         else
@@ -166,6 +166,7 @@ QList<QVariant> display(Object& object)
 
         if(!object.showcase().empty())
         {
+            S << showcasePadding.str();
             S << "&nbsp;&nbsp;(";
             Showcase::const_iterator it = object.showcase().begin();
             while(true)

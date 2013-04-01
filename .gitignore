@@ -37,10 +37,6 @@
 !core/modules/mkv/*.cpp
 !core/modules/mkv/*.h
 !core/modules/mkv/*.xml
-!core/modules/mp4
-!core/modules/mp4/*.cpp
-!core/modules/mp4/*.h
-!core/modules/mp4/*.csv
 !core/modules/standard
 !core/modules/standard/*.cpp
 !core/modules/standard/*.h

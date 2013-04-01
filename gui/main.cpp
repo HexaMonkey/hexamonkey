@@ -24,7 +24,6 @@
 #include "mainwindow.h"
 
 #include "standardmodule.h"
-#include "mp4module.h"
 #include "ebmlmodule.h"
 #include "hmcmodule.h"
 #include "mkvmodule.h"
@@ -40,7 +39,6 @@ int main(int argc, char *argv[])
 
     moduleLoader.addModule("bestd", new StandardModule(true));
     moduleLoader.addModule("lestd", new StandardModule(false));
-    moduleLoader.addModule("mp4",   new Mp4Module);
     moduleLoader.addModule("ebml",  new EbmlModule);
     moduleLoader.addModule("mkv",   new MkvModule);
     moduleLoader.addModule("hmc",   new HmcModule);

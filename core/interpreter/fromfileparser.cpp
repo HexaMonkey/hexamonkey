@@ -46,6 +46,10 @@ void FromFileParser::doParseHead()
         setSize(fixedSize);
 
     blockExecution().execute(headerEnd);
+    if(blockExecution().done())
+    {
+        setParsed();
+    }
 }
 
 void FromFileParser::doParse()
@@ -69,7 +73,6 @@ void FromFileParser::cleanUp()
     localScope.reset();
     objectScope.reset();
     holder.reset();
-    interpreter().garbageCollect();
 }
 
 Program::const_iterator FromFileParser::executeProgram(const Program::const_iterator &start, const Program::const_iterator &end, int64_t hint)

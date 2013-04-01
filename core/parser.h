@@ -38,7 +38,9 @@ public:
     virtual void parse();
     virtual bool parseSome(int hint);
 
-    bool parsed();
+    bool parsed() const;
+
+
     ObjectType& type();
     void setSize(int64_t size);
     void setName(const std::string& name);
@@ -58,6 +60,8 @@ public:
 
 
 protected:
+    void setParsed();
+
     virtual void doParseHead();
     virtual void doParse();
     virtual bool doParseSome(int hint);

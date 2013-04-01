@@ -41,4 +41,6 @@ uint8_t msbMask(int min);
  */
 uint8_t lsbMask(int max);
 
+uint8_t popCount(uint64_t word);
+
 #endif // MASKUTIL_H

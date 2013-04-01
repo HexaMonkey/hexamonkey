@@ -857,7 +857,10 @@ Variant &Variant::operator --()
         break;
 
     case unsignedInteger:
+        if(_data.ul == 0)
+            convertTo(integer);
         --_data.ul;
+
         break;
 
     case floating:

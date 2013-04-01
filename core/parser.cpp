@@ -60,7 +60,7 @@ bool Parser::parseSome(int hint)
     return _parsed;
 }
 
-bool Parser::parsed()
+bool Parser::parsed() const
 {
     return _parsed;
 }
@@ -132,6 +132,12 @@ Object *Parser::lookForType(const ObjectType &type, bool forceParse)
 Object &Parser::object()
 {
     return _object;
+}
+
+void Parser::setParsed()
+{
+    _headParsed = true;
+    _parsed = true;
 }
 
 void Parser::doParseHead()

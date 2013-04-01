@@ -45,6 +45,7 @@
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN
 
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
+%nonassoc '?' ':'
 %left OR_TOKEN  
 %left AND_TOKEN
 %left '|'
@@ -318,6 +319,7 @@ right_value:
 	|right_value AND_ASSIGN_TOKEN right_value {handle_binary_op(AND_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
 	|right_value XOR_ASSIGN_TOKEN right_value {handle_binary_op(XOR_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
 	|right_value OR_ASSIGN_TOKEN right_value {handle_binary_op(OR_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
+	|right_value '?' right_value ':' right_value {handle_ternary_op(TERNARY_OP);push_master(RIGHT_VALUE,4);}
 	|right_value OR_TOKEN right_value {handle_binary_op(OR_OP);push_master(RIGHT_VALUE,3);}
 	|right_value AND_TOKEN right_value {handle_binary_op(AND_OP);push_master(RIGHT_VALUE,3);}
 	|right_value '|' right_value {handle_binary_op(BITWISE_OR_OP);push_master(RIGHT_VALUE,3);}

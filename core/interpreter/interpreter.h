@@ -67,8 +67,10 @@ private:
     Interpreter& operator =(const Interpreter& interpreter) = delete;
 
     Variable& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
-    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b);
+
     Variable& evaluateUnaryOperation(int op, Variable& a);
+    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b);
+    Variable& evaluateTernaryOperation(int op, Variable& a, Variable& b, Variable& c);
     Variable& evaluateFunction(const Program& functionEvaluation, const Scope& scope, const Module& module);
     Variable& evaluateVariable(const Program& variable, const Scope& scope, const Module& module = Module());
 
