@@ -1,37 +1,53 @@
 CC=gcc
 QMAKE=qmake
-BUILD_DIR=./gui/release
-JOBS=-j5
+ifeq ("$(shell which $(QMAKE) 2>/dev/null)","")
+QMAKE=qmake-qt5
+endif
 
-hexamonkey: $(BUILD_DIR)/hexamonkey	hexacompiler expcompiler hmcmodel.csv mp4model.csv mkvmodel.xml
-	cp $(BUILD_DIR)/hexamonkey* .
+TMP:=$(shell $(QMAKE) --version |grep "Qt version 5")
+ifeq ("$(TMP)","")
+$(error you need QT5 to build)
+endif
 
-.PHONY: $(BUILD_DIR)/hexamonkey	
-$(BUILD_DIR)/hexamonkey:
-	mkdir -p $(BUILD_DIR); $(QMAKE) ./gui/gui.pro -r -o $(BUILD_DIR)/Makefile ; cd $(BUILD_DIR); make $(JOBS)
-	 
-hmcmodel.csv: core/modules/hmc/hmcmodel.csv
-	cp core/modules/hmc/hmcmodel.csv .
-	
-mp4model.csv: core/modules/mp4/mp4model.csv
-	cp core/modules/mp4/mp4model.csv .
+BUILD_DIR:=./gui/release
+INSTALL_DIR:=./gui/prefix
+JOBS:=-j5
+EXISTS_FILE:=.exists
+BUILD_DIR_EXISTS:=$(BUILD_DIR)/$(EXISTS_FILE)
+MAKEFILE:=$(BUILD_DIR)/Makefile
+PROGRAM:=$(BUILD_DIR)/hexamonkey
+HMCMODEL:=$(BUILD_DIR)/hmcmodel.csv
+MKVMODEL:=$(BUILD_DIR)/mkvmodel.xml
 
-mkvmodel.xml: core/modules/mkv/mkvmodel.xml
-	cp core/modules/mkv/mkvmodel.xml .
+all: $(PROGRAM)	 
 
-hexacompiler: compiler/hexacompiler
-	cp compiler/hexacompiler .
-	
-expcompiler: compiler/expcompiler
-	cp compiler/expcompiler .
-	
-.PHONY: compiler/hexacompiler		
-compiler/hexacompiler:
-	cd compiler; make CFLAGS=$(CFLAGS) hexacompiler
-	
-.PHONY: compiler/expcompiler
-compiler/expcompiler:
-	cd compiler; make CFLAGS=$(CFLAGS) expcompiler
+%/$(EXISTS_FILE):
+	mkdir -p $*
+
+$(MAKEFILE): ./gui/gui.pro compiler $(BUILD_DIR_EXISTS)
+	# stupid qmake-qt5 puts the Makefile in gui/release/gui/release/Makefile so I use redirects instead
+	# $(QMAKE) $< -o $@
+	# also I have to run it from the $(BUILD_DIR) directory
+	cd $(BUILD_DIR); $(QMAKE) ../gui.pro -o - > Makefile
+
+$(PROGRAM): $(MAKEFILE)
+	make -C $(BUILD_DIR) $(JOBS)
+
+compiler:
+	make -C compiler
+
+install: $(INSTALL_DIR)/$(EXISTS_FILE)
+	cp -rf scripts/ $(INSTALL_DIR)
+	cp $(PROGRAM) $(INSTALL_DIR)
+	cp core/modules/hmc/hmcmodel.csv $(INSTALL_DIR)
+	cp core/modules/mkv/mkvmodel.xml $(INSTALL_DIR)
+	cp compiler/hexacompiler $(INSTALL_DIR)
+	cp compiler/expcompiler $(INSTALL_DIR)
+	cp gui/logo.svg $(INSTALL_DIR)
+	@echo "***********************************************"
+	@echo "* hexamonkey is installed                     *"
+	@echo "* type cd $(INSTALL_DIR); ./hexamonkey to run it*"
+	@echo "***********************************************"
 	
 installer.msi: installer.wixobj\
  gui/release/hexamonkey.exe\
@@ -49,8 +65,11 @@ installer.msi: installer.wixobj\
 installer.wixobj: installer.wxs
 	candle installer.wxs
 	
-.PHONY: clean	
-clean:
-	rm hexamonkey  hexacompiler  expcompiler; cd compiler; make clean
+.PHONY: clean compiler all
+
+distclean:
+	rm -rf $(INSTALL_DIR)
 	
+clean:
+	rm -rf $(BUILD_DIR)
 	
