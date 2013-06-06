@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * \brief The MagicFormatDetector class
+ * @brief The MagicFormatDetector class
  */
 class MagicFormatDetector : public FormatDetector
 {

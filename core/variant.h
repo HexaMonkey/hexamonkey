@@ -26,7 +26,7 @@
 class ObjectType;
 
 /*!
- * \brief The Variant class
+ * @brief The Variant class
  */
 class Variant
 {

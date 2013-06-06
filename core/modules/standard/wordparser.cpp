@@ -29,7 +29,7 @@ void WordParser::doParseHead()
     file().read(_word, object().size());
     _word[numberOfChars] = '\0';
     setValue(std::string(_word));
-    setInfo("\""+std::string(_word)+"\"");
+    delete(_word);
 }
 
 
@@ -69,4 +69,42 @@ void Utf8StringParser::doParseHead()
     setValue(S.str());
     setInfo(S.str());
     setSize(8*stringLength);
+}
+
+
+WideStringParser::WideStringParser(Object &object, int numberOfChars, bool bigEndian)
+    : SimpleParser(object), numberOfChars(numberOfChars), bigEndian(bigEndian)
+{
+}
+
+void WideStringParser::doParseHead()
+{
+    setSize(numberOfChars * 16);
+    std::string word('?', numberOfChars);
+
+    for(int i = 0; i < numberOfChars; ++i)
+    {
+        uint16_t ch = 0;
+        if(bigEndian)
+        {
+            file().read(reinterpret_cast<char*>(&ch)+1, 8);
+            file().read(reinterpret_cast<char*>(&ch), 8);
+        }
+        else
+        {
+            file().read(reinterpret_cast<char*>(&ch), 16);
+        }
+
+        if(ch == 0)
+        {
+            word.resize(i);
+            break;
+        }
+        if(ch < 0x80)
+        {
+            word[i] = ch;
+        }
+    }
+
+    setValue(word);
 }

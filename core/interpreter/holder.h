@@ -15,6 +15,7 @@ public:
     ~Holder();
 
     Variant& getNew();
+    Variant& copy(const Variant& value);
     Variant& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
     const Variant& cevaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
 

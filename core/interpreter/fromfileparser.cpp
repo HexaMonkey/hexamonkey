@@ -29,7 +29,7 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Interpreter
       headerEnd(headerEnd),
       _interpreter(interpreter),
       holder(new Holder(interpreter)),
-      objectScope(new MutableObjectScope(object)),
+      objectScope(new MutableObjectScope(object, *holder)),
       localScope(new LocalScope(*holder)),
       _scope(new CompositeScope),
       _blockExecution(new BlockExecution(program.begin(), program.end(), module, interpreter, scope(), this))
@@ -37,6 +37,11 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Interpreter
     _scope->addScope(*localScope);
     _scope->addScope(*objectScope);
     UNUSED(hmcElemNames);
+
+    if(module.getFixedSize(type()) == -1 && headerEnd == program.begin())
+    {
+        setNoHead();
+    }
 }
 
 void FromFileParser::doParseHead()

@@ -46,7 +46,7 @@ void ContainerParser::addChild(Object *child)
 
 
         int64_t newSize = _object._contentSize + child->size();
-        if(_autogrow && newSize > _object._size)
+        if(_autogrow && newSize > _object.size())
         {
             _object._size = newSize;
         }

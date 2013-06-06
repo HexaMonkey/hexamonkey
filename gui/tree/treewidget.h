@@ -30,7 +30,7 @@
 
 class InterpreterConstructor;
 /*!
- * \brief The TreeWidget class
+ * @brief The TreeWidget class
  */
 class TreeWidget : public QWidget
 {

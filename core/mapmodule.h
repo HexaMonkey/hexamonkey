@@ -29,7 +29,7 @@
 #define functionLambda (const Scope& scope, const Module &module) ->Variable*
 
 /*!
- * \brief The MapModule class
+ * @brief The MapModule class
  */
 class MapModule : public Module
 {

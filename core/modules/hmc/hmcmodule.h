@@ -21,7 +21,7 @@
 #include "mapmodule.h"
 
 /*!
- * \brief The HmcModule class
+ * @brief The HmcModule class
  */
 class HmcModule : public MapModule
 {

@@ -19,13 +19,14 @@
 #include "treeobjectitem.h"
 #include "objecttypetemplate.h"
 
-QList<QVariant> display(Object& object);
-
-
+std::ostream& displayType(std::ostream& out, const ObjectType& type);
+std::ostream& displayName(std::ostream& out, const std::string& name);
+std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
+std::ostream& displayInfo(std::ostream& out, const std::string& info);
 
 TreeObjectItem::TreeObjectItem(Object& object, Interpreter *interpreter, TreeItem *parent) :
-    TreeItem(display(object), parent),
-    _object(&object),
+    TreeItem(QList<QVariant>({"", "", ""}), parent),
+    _object(object),
     _index(0),
     filter(interpreter),
     _synchronised(false)
@@ -33,7 +34,7 @@ TreeObjectItem::TreeObjectItem(Object& object, Interpreter *interpreter, TreeIte
     connect(this, SIGNAL(childrenRemoved()), this, SLOT(onChildrenRemoved()));
 }
 
-Object* TreeObjectItem::object()
+Object &TreeObjectItem::object() const
 {
     return _object;
 }
@@ -44,11 +45,11 @@ bool TreeObjectItem::synchronised()
     {
         return true;
     }
-    else if(!_object->parsed())
+    else if(!_object.parsed())
     {
         return false;
     }
-    else if(nextChild()==_object->end())
+    else if(nextChild()==_object.end())
     {
         _synchronised = true;
         return true;
@@ -61,14 +62,14 @@ bool TreeObjectItem::synchronised()
 
 Object::iterator TreeObjectItem::nextChild()
 {
-    Object::iterator nChild = _object->begin();
+    Object::iterator nChild = _object.begin();
     std::advance(nChild, _index);
     return nChild;
 }
 
 Object::iterator TreeObjectItem::end()
 {
-    return _object->end();
+    return _object.end();
 }
 
 void TreeObjectItem::advanceLastChild()
@@ -102,20 +103,15 @@ void TreeObjectItem::onChildrenRemoved()
     _index = 0;
 }
 
-std::ostream& displayType(std::ostream& out, const ObjectType& type);
-std::ostream& displayName(std::ostream& out, const std::string& name);
-std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
-std::ostream& displayInfo(std::ostream& out, const std::string& info);
-
-QList<QVariant> display(Object& object)
+void TreeObjectItem::doLoad() const
 {
-    QList<QVariant> itemData;
     std::stringstream showcasePadding;
     {
+
         std::stringstream S;
-        if(object.name() == "#")
+        if(object().name() == "#")
         {
-            std::string rank = toStr(object.rank());
+            std::string rank = toStr(object().rank());
             S << "[";
             S << "<span style=\"color:#000080;\">";
             S << rank;
@@ -129,14 +125,14 @@ QList<QVariant> display(Object& object)
         }
         else
         {
-            displayDecl(S, object.type(), object.name());
+            displayDecl(S, object().type(), object().name());
         }
 
-        if(!object.info().empty())
-            displayInfo(S, object.info());
+        if(!object().info().empty())
+            displayInfo(S, object().info());
         else
         {
-            const Variant& value = object.value();
+            const Variant& value = object().value();
             switch(value.type())
             {
                 case Variant::string:
@@ -164,18 +160,18 @@ QList<QVariant> display(Object& object)
         }
 
 
-        if(!object.showcase().empty())
+        if(!object().showcase().empty())
         {
             S << showcasePadding.str();
             S << "&nbsp;&nbsp;(";
-            Showcase::const_iterator it = object.showcase().begin();
+            Showcase::const_iterator it = object().showcase().begin();
             while(true)
             {
                 displayName(S, *it);
-                displayInfo(S, object.lookUp(*it)->info());
+                displayInfo(S, object().lookUp(*it)->info());
 
                 ++it;
-                if(it == object.showcase().end())
+                if(it == object().showcase().end())
                     break;
                 S << ",&nbsp;";
             }
@@ -183,24 +179,30 @@ QList<QVariant> display(Object& object)
         }
 
 
-        itemData <<S.str().c_str();
+        itemData()[0] = S.str().c_str();
     }
 
     {
         std::stringstream S;
         S << "<span style=\"color:#000080;\">";
-        S << "0x" << std::setfill('0') << std::setw(8) << std::hex << object.beginningPos()/8;
+        S << "0x" << std::setfill('0') << std::setw(8) << std::hex << object().beginningPos()/8;
         S << "</span>";
-        itemData<<S.str().c_str();
+        itemData()[1] = S.str().c_str();
     }
 
     {
         std::stringstream S;
         S << "<span style=\"color:#000080;\">";
-        S << sizeDisplay(object.size());
+        S << sizeDisplay(object().size());
         S << "</span>";
-        itemData<<S.str().c_str();
+        itemData()[2] = S.str().c_str();
     }
+}
+
+QList<QVariant> display(Object& object)
+{
+    QList<QVariant> itemData;
+
     return itemData;
 }
 

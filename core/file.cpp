@@ -27,7 +27,6 @@ File::File() : _bitPosition(0)
 void File::setPath(const std::string& path)
 {
     _path = path;
-
     open();
 }
 
@@ -79,19 +78,19 @@ void File::read(char* s, int64_t count )
             buffer[i] >>= shift;
         }
 
-        //Copying bits
+        //Copy bits
         int firstByte = (_bitPosition+shift>8)? 1 : 0;
         for(int i = firstByte; i < byteCount; ++i)
         {
             s[i-firstByte] = buffer[i];
         }
 
-        //Setting new file position
+        //Set new file position
         if ((bitCount & 0x7) != 0)
         {
             _file.seekg(-1,std::ios_base::cur);
         }
-        _bitPosition = (count + _bitPosition)  & 7;
+        _bitPosition = (count + _bitPosition)  & 0x7;
     }
 }
 
@@ -100,13 +99,13 @@ void File::seekg(int64_t off, std::ios_base::seekdir dir) {
     switch (dir)
     {
         case std::ios_base::beg :
-            _bitPosition = off & 7; // & 7 stands for % 8
+            _bitPosition = off & 0x7; // & 0x7 stands for % 8
         break;
         case std::ios_base::end :
-            _bitPosition =  off & 7;
+            _bitPosition =  off & 0x7;
         break;
         default:
-            _bitPosition = (_bitPosition + off) & 7;
+            _bitPosition = (_bitPosition + off) & 0x7;
             off += _bitPosition;
         break;
     }

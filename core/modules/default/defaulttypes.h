@@ -28,6 +28,8 @@ namespace defaultTypes
     const ObjectTypeTemplate array("Array",{"elementType", "size"});
 
     const ObjectTypeTemplate tuple("Tuple",{"elementType", "count"});
+
+    const ObjectTypeTemplate data("Data", {"size"});
 }
 
 #endif // DEFAULTTYPES_H

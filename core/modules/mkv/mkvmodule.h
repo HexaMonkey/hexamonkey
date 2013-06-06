@@ -21,7 +21,7 @@
 #include "mapmodule.h"
 
 /*!
- * \brief The MkvModule class
+ * @brief The MkvModule class
  */
 class MkvModule : public MapModule
 {

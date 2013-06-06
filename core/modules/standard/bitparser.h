@@ -21,7 +21,7 @@
 #include "parser.h"
 
 /*!
- * \brief The BitParser class
+ * @brief The BitParser class
  */
 class BitParser : public SimpleParser
 {
@@ -34,7 +34,7 @@ private:
 };
 
 /*!
- * \brief The ContentParser class
+ * @brief The ContentParser class
  */
 class ContentParser : public SimpleParser
 {

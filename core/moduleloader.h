@@ -30,7 +30,7 @@
 class Module;
 class InterpreterConstructor;
 /*!
- * \brief The ModuleGenerator class
+ * @brief The ModuleGenerator class
  */
 class ModuleLoader
 {

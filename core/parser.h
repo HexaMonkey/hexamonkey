@@ -24,7 +24,7 @@
 
 /*!
  * \class Parser
- * \brief The Parser class
+ * @brief The Parser class
  *
  * This class is used to parse the files.
  *
@@ -39,6 +39,7 @@ public:
     virtual bool parseSome(int hint);
 
     bool parsed() const;
+    bool hasHead() const;
 
 
     ObjectType& type();
@@ -61,6 +62,7 @@ public:
 
 protected:
     void setParsed();
+    void setNoHead();
 
     virtual void doParseHead();
     virtual void doParse();
@@ -80,6 +82,7 @@ private:
 
     bool _headParsed;
     bool _parsed;
+    bool _hasHead;
 
     class Parsing
     {

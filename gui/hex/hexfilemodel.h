@@ -25,7 +25,7 @@
 #include <QPalette>
 
 /*!
- * \brief The HexFileModel class
+ * @brief The HexFileModel class
  */
 class HexFileModel : public QAbstractTableModel
 {

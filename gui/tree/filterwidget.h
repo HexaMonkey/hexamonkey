@@ -26,7 +26,7 @@
 #include <string>
 
 /*!
- * \brief The FilterWidget class
+ * @brief The FilterWidget class
  */
 class FilterWidget : public QWidget
 {

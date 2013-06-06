@@ -25,7 +25,7 @@
 class ObjectTypeTemplate;
 
 /*!
- * \brief The ObjectType class
+ * @brief The ObjectType class
  */
 class ObjectType
 {

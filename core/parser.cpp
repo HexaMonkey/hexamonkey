@@ -22,7 +22,8 @@
 Parser::Parser(Object& object)
     : _object(object),
       _headParsed(false),
-      _parsed(false)
+      _parsed(false),
+      _hasHead(true)
 {
 }
 
@@ -63,6 +64,11 @@ bool Parser::parseSome(int hint)
 bool Parser::parsed() const
 {
     return _parsed;
+}
+
+bool Parser::hasHead() const
+{
+    return _hasHead;
 }
 
 ObjectType &Parser::type()
@@ -138,6 +144,11 @@ void Parser::setParsed()
 {
     _headParsed = true;
     _parsed = true;
+}
+
+void Parser::setNoHead()
+{
+    _hasHead = false;
 }
 
 void Parser::doParseHead()

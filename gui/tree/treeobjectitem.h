@@ -32,14 +32,14 @@
 #include "filter.h"
 
 /*!
- * \brief The TreeObjectItem class
+ * @brief The TreeObjectItem class
  */
 class TreeObjectItem : public TreeItem
 {
     Q_OBJECT
 public:
     TreeObjectItem(Object& object, Interpreter* interpreter, TreeItem *parent);
-    Object* object();
+    Object& object() const;
     Object::iterator nextChild();
     Object::iterator end();
     virtual bool synchronised();
@@ -50,11 +50,14 @@ public:
     bool updateFilter(const std::string& expression);
     const std::string& filterExpression();
 
+
 private slots:
     void onChildrenRemoved();
 
 private:
-   Object* _object;
+   void doLoad() const override;
+
+   Object& _object;
    int64_t _index;
    Filter filter;
    bool _synchronised;

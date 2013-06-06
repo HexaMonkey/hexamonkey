@@ -34,7 +34,7 @@ class Variable;
 class Scope;
 
 /*!
- * \brief The Module class
+ * @brief The Module class
  */
 class Module
 {

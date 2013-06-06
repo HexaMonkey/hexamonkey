@@ -23,7 +23,7 @@
 #include <QPainter>
 
 /*!
- * \brief The HexFileDelegate class
+ * @brief The HexFileDelegate class
  */
 class HexFileDelegate : public QStyledItemDelegate        
 {

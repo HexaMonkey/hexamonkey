@@ -22,7 +22,7 @@
 #include <QVariant>
 
 /*!
- * \brief The TreeItem class
+ * @brief The TreeItem class
  */
 class TreeItem : public QObject
 {
@@ -41,7 +41,13 @@ public:
     int row() const;
     TreeItem *parent();
 
+    void load() const;
     virtual bool synchronised();
+
+protected:
+    QList<QVariant>& itemData() const;
+    virtual void doLoad() const;
+
 
 signals:
     bool childrenRemoved();
@@ -50,9 +56,10 @@ private:
     TreeItem(const QList<QVariant> &data, TreeItem *parent, QObject *owner);
     void appendChild(TreeItem *child);
 
-    QList<TreeItem*> childItems;
-    TreeItem* parentItem;
-    QList<QVariant> itemData;
+    QList<TreeItem*> _childItems;
+    TreeItem* _parentItem;
+    mutable QList<QVariant> _itemData;
+    mutable bool _loaded;
 };
 
 #endif // TREEITEM_H

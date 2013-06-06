@@ -55,7 +55,7 @@ bool Filter::filterChildren(Object& object)
     if(_expression != "")
     {
         Holder holder(interpreter());
-        return holder.cevaluate(interpreter().program().elem(0), ConstObjectScope(object)).toBool();
+        return holder.cevaluate(interpreter().program().elem(0), ConstObjectScope(object, holder)).toBool();
     }
     else
         return true;

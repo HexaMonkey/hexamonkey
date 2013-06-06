@@ -85,8 +85,8 @@ extern int line_number;
 "break"     {return BREAK_TOKEN;}
 "continue"  {return CONTINUE_TOKEN;}
 "var"       {return VAR_TOKEN;}  
-"function"  {return VAR_TOKEN;}  
-"const"     {return VAR_TOKEN;}  
+"function"  {return FUNCTION_TOKEN;}  
+"const"     {return CONST_TOKEN;}  
 "showcased" {return SHOWCASED_TOKEN;}
 "NULL"      {return NULL_TOKEN;}
 

@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * \brief The SyncbyteFormatDetector class
+ * @brief The SyncbyteFormatDetector class
  */
 class SyncbyteFormatDetector : public FormatDetector
 {

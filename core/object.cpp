@@ -29,6 +29,7 @@ Object::Object(File& file) :
     _info(""),
     _children(0),
     _expandOnAddition(false),
+    _parsedCount(0),
     _parsingInProgress(false)
 {
 }
@@ -174,7 +175,10 @@ void Object::seekBeginning()
 
 void Object::seekEnd()
 {
-    _file.seekg(_beginningPos+size(),std::ios::beg);
+    if(size() != -1)
+        _file.seekg(_beginningPos+size(),std::ios::beg);
+    else
+        _file.seekg(_beginningPos,std::ios::beg);
 }
 
 void Object::seekObjectEnd()
@@ -203,24 +207,30 @@ const Variant &Object::value() const
 
 void Object::parse()
 {
-    if(!_parsers.empty())
+    while(_parsedCount < _parsers.size())
     {
-        _parsers.back()->parse();
+        _parsers[_parsedCount]->parse();
+        ++_parsedCount;
     }
 }
 
 bool Object::parseSome(int hint)
 {
-    if(!_parsers.empty())
+    size_t initialCount = _children.size();
+
+    while(_parsedCount < _parsers.size() && _children.size() < initialCount+hint)
     {
-        return _parsers.back()->parseSome(hint);
+        if(_parsers[_parsedCount]->parseSome(initialCount+hint-_children.size()))
+            ++_parsedCount;
+        else
+            return false;
     }
-    return true;
+    return parsed();
 }
 
-void Object::explore(int level)
+void Object::explore(int depth)
 {
-    if(level == 0)
+    if(depth == 0)
     {
         return;
     }
@@ -238,13 +248,13 @@ void Object::explore(int level)
 
     for(Object::iterator it = begin(); it != end(); ++it)
     {
-        if(level == -1)
+        if(depth == -1)
         {
             (*it)->explore(-1);
         }
         else
         {
-            (*it)->explore(level-1);
+            (*it)->explore(depth-1);
         }
     }
 }
@@ -318,7 +328,10 @@ std::streampos Object::beginningPos() const
 
 std::streamoff Object::size() const
 {
-    return _size.toInteger();
+    if(_size.hasNumericalType())
+        return _size.toInteger();
+    else
+        return -1LL;
 }
 
 Object* Object::parent()
@@ -336,18 +349,15 @@ int64_t Object::rank() const
     return _rank.toInteger();
 }
 
-void Object::clear()
-{
-    _children.clear();
-    _lookUpTable.clear();
-}
-
 void Object::addParser(Parser *parser)
 {
     if(parser != nullptr)
     {
-        parse();
-        parser->parseHead();
+        if(parser->hasHead())
+        {
+            parse();
+            parser->parseHead();
+        }
         _parsers.push_back(std::unique_ptr<Parser>(parser));
     }
 }

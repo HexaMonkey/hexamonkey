@@ -22,7 +22,7 @@
 #include "hexfiledelegate.h"
 
 /*!
- * \brief The HexFileView class
+ * @brief The HexFileView class
  */
 class HexFileView : public QTableView
 {

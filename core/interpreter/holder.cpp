@@ -25,6 +25,13 @@ Variant &Holder::getNew()
     return var.value();
 }
 
+Variant &Holder::copy(const Variant &value)
+{
+    Variable& var = _interpreter.copy(value);
+    add(var);
+    return var.value();
+}
+
 Variable &Holder::add(Variable &var)
 {
     _held.insert(std::make_pair(&var.cvalue(), &var));

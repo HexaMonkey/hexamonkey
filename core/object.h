@@ -32,8 +32,20 @@
 
 class Parser;
 
-/*!
- * \brief The Object class
+/** @brief Node of the tree structure associated with a \link File file\endlink
+ *
+ * The object correspond to a contiguous memory area in the \link file() file\endlink represented
+ * by a \link beginningPos() beginning position\endlink and a \link size() size\endlink.
+ *
+ * It is given an \link type() object type\endlink and a \link name() name\endlink,
+ * a \link Module module\endlink can then use the \link type() object type\endlink to associate a series
+ * of \link Parser parsers\endlink that will extract all the information from the \link file() file\endlink
+ * to construct the object.
+ *
+ * It is part of a tree structure, it can threfore have a \link parent() parent\endlink and be subdivided
+ * into children. The children can be access through iteration of the object or by using access functions.
+ * It can also have a \link value() value\endlink and an \link info() information string\endlink that formats
+ * the \link value() value\endlink displayed on screen.
  */
 class Object
 {
@@ -44,63 +56,173 @@ class Object
         typedef container::reverse_iterator reverse_iterator;
         typedef container::const_reverse_iterator const_reverse_iterator;
 
+        /** @brief Contruct the object as a memory area in the \link file() file \endlink
+         *  beginning at the current position.
+         *
+         *  The size will be specified by the parsers.
+         */
         Object(File& file);
 
+        /** @brief Access the file associated. */
+        File& file();
+
+        /** @brief Access the begining file position of the object. */
+        std::streampos beginningPos() const;
+
+        /** @brief Access the size occupied by the object in the \link file() file\endlink.
+         *
+         *  If the size is yet unknown then -1 will be returned.
+         */
+        std::streamoff size() const;
+
+        /** @brief Access the current position of the \link file() file\endlink relative to
+         *  the \link beginningPos beginning position\endlink of the \link file() file\endlink.
+         */
+        std::streamoff pos() const;
+
+        /** @brief Move the \link file() file\endlink current position to the \link beginningPos()
+         *  beginning position\endlink of the object.
+         */
+        void seekBeginning();
+
+        /** @brief Move the \link file() file\endlink current position to the ending position of the
+         *  object.
+         *
+         *  The \link size() size \endlink should be known to use this function.
+         */
+        void seekEnd();
+
+        /** @brief Move the \link file() file\endlink current position to the ending position of the
+         *  last child.
+         */
+        void seekObjectEnd();
+
+        /**
+         * @brief Use the parsers to add the children of the object
+         * @param depth is the recursive depth of the exploration. If it is set to -1 the exploration won't stop until all is explored.
+         */
+        void explore(int depth = 1);
+
+        /**
+         * @brief Use the parsers to add a limited number of children of the object
+         * @param hint is the desired number of children to add. The actual number of children added depends on the parser's implementation.
+         * @return true if the exploration is done
+         */
+        bool exploreSome(int hint);
+
+        /**
+         * @brief Add a parser at the end of the parser list
+         * @param Parsers are executed in order.
+         */
+        void addParser(Parser* parser);
+
+        /**
+         * @brief Check if the parsing is done
+         */
+        bool parsed();
+
+        /**
+         * @brief Type used by the module to generate parsers for the object
+         */
+        const ObjectType &type() const;
+        void setType(const ObjectType& type);
+
+        /**
+         * @brief Name
+         */
+        const std::string &name() const;
+        void setName(const std::string& name);
+
+        /**
+         * @brief String representation of the value
+         */
+        const std::string &info() const;
+        void setInfo(const std::string& info);
+
+        /**
+         * @brief Value of the object set during parsing
+         */
+        const Variant& value() const;
+        Variant& value();
+
+        /**
+         * @brief List of children whose value are important
+         *
+         * These children will always be parsed even if the the parsing is
+         * not done fully and the children values will be displayed prominently
+         * in the display of the object
+         */
+        const Showcase &showcase() const;
+        Showcase& showcase();
+
+        /**
+         * @brief Standard representation for the object in an out stream
+         */
+        std::ostream& display(std::ostream& out, std::string prefix = "") const;
+
+        /**
+         * @brief Pointer to the object parent returns nullptr if the object is top level
+         */
+        Object* parent();
+        const Object* parent() const;
+
+        /**
+         * @brief Index of the object as a child of its parent
+         */
+        int64_t rank() const;
+
+        /**
+         * @brief Number of children
+         */
+        int numberOfChildren() const;
+
+        /**
+         * @brief Iterator pointing to the beginning of the children container
+         */
         iterator begin();
+        /**
+         * @brief Iterator pointing to the end of the children container
+         */
         iterator end();
+        /**
+         * @brief Iterator pointing to the last member of the children container
+         */
         iterator last();
+
         const_iterator begin() const;
         const_iterator end() const;
         const_iterator last() const;
+
         reverse_iterator rbegin();
         reverse_iterator rend();
         const_reverse_iterator rbegin() const;
         const_reverse_iterator rend() const;
 
-
-        int numberOfChildren() const;
-
+        /**
+         * @brief Access a child by its index
+         *
+         * If the index is too large, the parsing is not done and forceParse is set then
+         * the object will be parsed progressively until the index is reached or the parsing is done
+         */
         Object* access(int64_t index, bool forceParse = false);
+
+        /**
+         * @brief Access a child by its name
+         *
+         * If conflict returns the last parsed. If the name is not found, the parsing is not
+         * done and forceParse is set then the object will be parsed progressively until the
+         * name is found or the parsing is done.
+         */
         Object* lookUp(const std::string& name, bool forceParse = false);
+
+        /**
+         * @brief Access a child by its type
+         *
+         * Return the first object whose type extends directly the type given. If the type is not found,
+         * the parsing is not done and forceParse is set then the object will be parsed progressively
+         * until the type is found or the parsing is done.
+         */
         Object* lookForType(const ObjectType& type, bool forceParse =false);
-
-        std::streamoff pos() const;
-
-        void seekBeginning();
-        void seekEnd();
-        void seekObjectEnd();
-
-        void explore(int level = 1);
-        bool exploreSome(int hint);
-
-        void setType(const ObjectType& type);
-        void setName(const std::string& name);
-        void setInfo(const std::string& info);
-        Showcase& showcase();
-
-        const ObjectType &type() const;
-        const std::string &name() const;
-        const std::string &info() const;
-        const Showcase &showcase() const;
-
-        std::ostream& display(std::ostream& out, std::string prefix = "") const;
-
-        bool parsed();
-
-        Variant& value();
-        const Variant& value() const;
-
-        File& file();
-        std::streampos beginningPos() const;
-        std::streamoff size() const;
-
-        Object* parent();
-        const Object* parent() const;
-        int64_t rank() const;
-
-        void clear();
-
-        void addParser(Parser* parser);
 
     private:
         friend class Parser;
@@ -137,6 +259,7 @@ class Object
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;
 
+        size_t _parsedCount;
         bool _parsingInProgress;
 
         //Non copyable

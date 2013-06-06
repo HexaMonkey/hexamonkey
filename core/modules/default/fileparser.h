@@ -4,7 +4,7 @@
 #include "parser.h"
 
 /*!
- * \brief The FileParser class
+ * @brief The FileParser class
  */
 class FileParser : public SimpleParser
 {

@@ -38,7 +38,7 @@
 class ModuleLoader;
 class InterpreterConstructor;
 /*!
- * \brief The MainWindow class
+ * @brief The MainWindow class
  */
 class MainWindow : public QMainWindow
 {

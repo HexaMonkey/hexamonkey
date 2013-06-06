@@ -24,7 +24,7 @@
 #include <QAbstractTextDocumentLayout>
 
 /*!
- * \brief The HTMLDelegate class
+ * @brief The HTMLDelegate class
  */
 class HTMLDelegate : public QStyledItemDelegate
 {

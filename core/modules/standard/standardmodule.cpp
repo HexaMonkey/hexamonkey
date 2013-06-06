@@ -132,6 +132,20 @@ bool StandardModule::doLoad()
          return -1;
     });
 
+    addTemplate(wstring);
+    addParser("WString", [this]parserLambda
+    {
+        if(type.parameterSpecified(0))
+            return new WideStringParser(object, type.parameterValue(0).toInteger(), bigEndian);
+        return new Utf8StringParser(object);
+    });
+    setFixedSize("WString", []fixedSizeLambda
+    {
+         if(type.parameterSpecified(0))
+             return 16*type.parameterValue(0).toInteger();
+         return -1;
+    });
+
 
     addTemplate(bitset);
     addParser("Bitset", []parserLambda
@@ -142,39 +156,5 @@ bool StandardModule::doLoad()
     });
     setFixedSizeFromArg("Bitset", 0);
 
-    addTemplate(data);
-    addParser("Data", []parserLambda
-    {
-        if(type.parameterSpecified(0))
-            return new ContentParser(object, type.parameterValue(0).toInteger());
-        else
-            return new ContentParser(object, -1);
-    });
-    setFixedSizeFromArg("Data", 0);
-#if 0
-    addTemplate(pair);
-    addParser("Pair", []parserLambda
-    {
-        if(type.parameterSpecified(0) && type.parameterSpecified(1))
-        {
-            if(type.parameterSpecified(2) && type.parameterSpecified(3))
-                return new PairParser(object, module, type.parameterValue(0).toObjectType(), type.parameterValue(1).toObjectType(), type.parameterValue(2).toString(), type.parameterValue(3).toString());
-            else
-                return new PairParser(object, module, type.parameterValue(0).toObjectType(), type.parameterValue(1).toObjectType());
-        }
-        return nullptr;
-    });
-    setFixedSize("Pair", [this]fixedSizeLambda
-    {
-         if(type.parameterSpecified(0) && type.parameterSpecified(1))
-         {
-             int64_t t0 = getFixedSize(type.parameterValue(0).toObjectType());
-             int64_t t1 = getFixedSize(type.parameterValue(1).toObjectType());
-             if(t0>0 && t1>0)
-                return t0 + t1;
-         }
-         return -1;
-    });
-#endif
     return true;
 }

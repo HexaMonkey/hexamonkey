@@ -38,4 +38,15 @@ protected:
     void doParseHead();
 };
 
+class WideStringParser : public SimpleParser
+{
+public:
+    WideStringParser(Object& object, int numberOfChars, bool bigEndian);
+protected:
+    void doParseHead();
+private:
+    int numberOfChars;
+    bool bigEndian;
+};
+
 #endif // WORDPARSER_H

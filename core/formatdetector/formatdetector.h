@@ -24,7 +24,7 @@
 #include "file.h"
 
 /*!
- * \brief The FormatDetector class
+ * @brief The FormatDetector class
  */
 class FormatDetector
 {

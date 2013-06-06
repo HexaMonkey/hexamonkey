@@ -22,7 +22,7 @@
 #include "hexfilewidget.h"
 
 /*!
- * \brief The HexFileDockWidget class
+ * @brief The HexFileDockWidget class
  */
 class HexFileDockWidget : public QDockWidget
 {

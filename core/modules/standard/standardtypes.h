@@ -44,10 +44,9 @@ namespace standardTypes
     const ObjectType fixed32(fixedFloat(16,16));
 
     const ObjectTypeTemplate string("String", {"charCount"});
+    const ObjectTypeTemplate wstring("WString", {"charCount"});
 
     const ObjectTypeTemplate bitset("Bitset", {"size"});
-
-    const ObjectTypeTemplate data("Data", {"size"});
 }
 
 #endif // STANDARDTYPES_H

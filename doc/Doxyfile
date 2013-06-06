@@ -703,8 +703,11 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = */compiler/* \
                          */rapidxml* \
-                         */moc_*
- 
+                         */moc_* \
+                         */archive/* \
+                         */modules/*
+
+
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
 # output. The symbol name can be a fully qualified name, a word, or if the

@@ -21,7 +21,7 @@
 #include <QTreeView>
 
 /*!
- * \brief The TreeView class
+ * @brief The TreeView class
  */
 class TreeView : public QTreeView
 {

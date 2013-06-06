@@ -123,11 +123,11 @@ int TreeModel::rowCount(const QModelIndex &parent) const
     if (!parent.isValid())
         return rootItem->childCount();
 
-    Object* object = static_cast<TreeObjectItem*>(parent.internalPointer())->object();
+    Object& object = static_cast<TreeObjectItem*>(parent.internalPointer())->object();
 
     int realCount = realRowCount(parent);
 
-    if(realCount == 0 && (!object->parsed() || object->numberOfChildren()))
+    if(realCount == 0 && (!object.parsed() || object.numberOfChildren()))
         return 1;
     else
         return realCount;
@@ -167,7 +167,7 @@ int TreeModel::updateChildren(const QModelIndex& index)
     TreeObjectItem* item = static_cast<TreeObjectItem*>(index.internalPointer());
     int count = 0;
     int first = realRowCount(index);
-    _resourceManager.lock(*(item->object()));
+    _resourceManager.lock(item->object());
     for(Object::iterator it = item->nextChild(); it != item->end(); ++it)
     {
         Object* object = *it;
@@ -187,7 +187,7 @@ int TreeModel::updateChildren(const QModelIndex& index)
     {
         emit dataChanged(index.child(0,0), index.child(count-1,columnCount(index)-1));
     }
-    _resourceManager.unlock(*(item->object()));
+    _resourceManager.unlock(item->object());
     return count;
 }
 
@@ -231,18 +231,18 @@ void TreeModel::requestExpansion(const QModelIndex &i)
 
 int TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries)
 {
-    TreeObjectItem* item = static_cast<TreeObjectItem*>(index.internalPointer());
-    Object* objectData = item->object();
+    TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+    Object& objectData = item.object();
 
     unsigned int count = 0;
     unsigned int tries = maxTries;
 
 #if 1
-    while(count<minCount && (!item->object()->parsed() || !item->synchronised()) && tries>0)
+    while(count<minCount && (!item.object().parsed() || !item.synchronised()) && tries>0)
     {
-        if(!objectData->parsed())
+        if(!objectData.parsed())
         {
-            objectData->exploreSome(nominalCount);
+            objectData.exploreSome(nominalCount);
         }
         count += updateChildren(index);
         --tries;
@@ -272,7 +272,6 @@ void TreeModel::updateCurrent(const QModelIndex &index)
         filterChanged(QString(static_cast<TreeObjectItem*>(currentItem)->filterExpression().c_str()));
         if(current.parent().isValid())
         {
-
             TreeItem* parentItem = static_cast<TreeItem*>(current.parent().internalPointer());
 
             if(!parentItem->synchronised())
@@ -288,20 +287,20 @@ void TreeModel::updateCurrent(const QModelIndex &index)
 
 QString TreeModel::path(QModelIndex index) const
 {
-    Object* dataObject = static_cast<TreeObjectItem*>(index.internalPointer())->object();
-    return QString(dataObject->file().path().c_str());
+    Object& object = static_cast<TreeObjectItem*>(index.internalPointer())->object();
+    return QString(object.file().path().c_str());
 }
 
 quint64 TreeModel::position(QModelIndex index) const
 {
-    Object* dataObject = static_cast<TreeObjectItem*>(index.internalPointer())->object();
-    return dataObject->beginningPos();
+    Object& object = static_cast<TreeObjectItem*>(index.internalPointer())->object();
+    return object.beginningPos();
 }
 
 quint64 TreeModel::size(QModelIndex index) const
 {
-    Object* dataObject = static_cast<TreeObjectItem*>(index.internalPointer())->object();
-    return dataObject->size();
+    Object& object = static_cast<TreeObjectItem*>(index.internalPointer())->object();
+    return object.size();
 }
 
 void TreeModel::addResource(Object &object)

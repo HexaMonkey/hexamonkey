@@ -31,7 +31,7 @@
 class TreeItem;
 class InterpreterConstructor;
 /*!
- * \brief The DataTreeModel class
+ * @brief The DataTreeModel class
  */
 class TreeModel : public QAbstractItemModel
 {

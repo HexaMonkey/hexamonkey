@@ -25,7 +25,7 @@
 class Module;
 
 /*!
- * \brief The ContainerParser class
+ * @brief The ContainerParser class
  */
 class ContainerParser : public Parser
 {

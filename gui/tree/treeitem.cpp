@@ -29,45 +29,55 @@ TreeItem *TreeItem::RootItem(const QList<QVariant> &data, QObject *owner)
 
 void TreeItem::appendChild(TreeItem *item)
 {
-    childItems.append(item);
+    _childItems.append(item);
 }
 
 void TreeItem::removeChildren()
 {
     emit childrenRemoved();
-    qDeleteAll(childItems);
-    childItems.clear();
+    qDeleteAll(_childItems);
+    _childItems.clear();
 }
 
 TreeItem *TreeItem::child(int row)
 {
-    return childItems.value(row);
+    return _childItems.value(row);
 }
 
 int TreeItem::childCount() const
 {
-    return childItems.count();
+    return _childItems.count();
 }
 
 int TreeItem::columnCount() const
 {
-    return itemData.count();
+    return _itemData.count();
 }
 
 QVariant TreeItem::data(int column) const
 {
-    return itemData.value(column);
+    load();
+    return _itemData.value(column);
 }
 
 TreeItem *TreeItem::parent()
 {
-    return parentItem;
+    return _parentItem;
+}
+
+void TreeItem::load() const
+{
+    if(!_loaded)
+    {
+        doLoad();
+        _loaded = true;
+    }
 }
 
 int TreeItem::row() const
 {
-    if (parentItem)
-        return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
+    if (_parentItem)
+        return _parentItem->_childItems.indexOf(const_cast<TreeItem*>(this));
 
     return 0;
 }
@@ -77,11 +87,21 @@ bool TreeItem::synchronised()
     return true;
 }
 
+QList<QVariant> &TreeItem::itemData() const
+{
+    return _itemData;
+}
+
+void TreeItem::doLoad() const
+{
+}
+
 
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent, QObject *owner)
        :QObject(owner),
-        parentItem(parent),
-        itemData(data)
+        _parentItem(parent),
+        _itemData(data),
+        _loaded(false)
 {
     if(parent != nullptr)
         parent->appendChild(this);

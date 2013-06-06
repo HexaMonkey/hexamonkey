@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * \brief The CompositeFormatDetector class
+ * @brief The CompositeFormatDetector class
  */
 class CompositeFormatDetector : public FormatDetector
 {

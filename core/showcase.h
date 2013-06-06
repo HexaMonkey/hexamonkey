@@ -22,7 +22,7 @@
 #include <string>
 
 /*!
- * \brief The Showcase class
+ * @brief The Showcase class
  */
 class Showcase
 {

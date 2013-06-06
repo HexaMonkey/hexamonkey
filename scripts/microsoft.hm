@@ -22,6 +22,7 @@ class WORD extends uint(16)
 class DWORD extends uint(32)
 class QWORD extends uint(64)
 
+class BOOL extends int(32)
 class LONG extends int(32)
 
 class FOURCC extends String(4)
@@ -32,9 +33,9 @@ class GUID
 	uint(16, 16) *;
 	uint(16, 16) *;
 	BYTE *[8];
-	@value = %uppercase(%str([0], 16, 4)) + "-"
-	       + %uppercase(%str([1], 16, 2)) + "-"
-		   + %uppercase(%str([2], 16, 2)) + "-";
+	@value = %uppercase(%str([0], 16, 8)) + "-"
+	       + %uppercase(%str([1], 16, 4)) + "-"
+		   + %uppercase(%str([2], 16, 4)) + "-";
 	for(var i = 0; i < 8; ++i)
 	{
 		if(i==2)
@@ -50,3 +51,5 @@ class RECT
 	WORD right;
 	WORD bottom;
 }
+
+class BITS(size) extends Bitset(size)

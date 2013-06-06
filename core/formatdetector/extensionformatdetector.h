@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * \brief The ExtensionFormatDetector class
+ * @brief The ExtensionFormatDetector class
  */
 class ExtensionFormatDetector : public FormatDetector
 {

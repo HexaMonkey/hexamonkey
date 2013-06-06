@@ -21,7 +21,7 @@
 #include "containerparser.h"
 
 /*!
- * \brief The ArrayParser class
+ * @brief The ArrayParser class
  */
 class ArrayParser : public ContainerParser
 {

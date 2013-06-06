@@ -53,7 +53,621 @@ class DataObject as OBJECT("75B22636-668E-11CF-A6D9-00AA0062CE6C")
 	DataPacket(packetSize) data_packets[TotalDataPackets];
 }
 
+class SimpleIndexEntry
+{
+	DWORD PacketNumber;
+	WORD  PacketCount;
+}
+
+class SimpleIndexObject as OBJECT("33000890-E5B1-11CF-89F4-00A0C90349CB")
+{
+	GUID FileID;
+	QWORD IndexEntryTimeInterval;
+	DWORD MaximumPacketCount;
+	DWORD IndexEntriesCount;
+	SimpleIndexEntry entries[];
+}
+
+class IndexSpecifier
+{
+	WORD StreamNumber;
+	WORD IndexType;
+}
+
+class IndexBlockTemplate(EntryType)
+{
+	DWORD IndexEntryCount;
+	QWORD BlockPositions[@args.specifierCount];
+	(@args.EntryType) IndexEntries[IndexEntryCount];
+}
+
+class IndexBlock(count) extends IndexBlockTemplate(Tuple(DWORD, count))
+
+class MediaIndexBlock(count) extends IndexBlockTemplate(Tuple(DWORD, count))
+
+class TimecodeEntries(count) extends Data(%sizeof(DWORD)*(count+1))
+{
+	DWORD Timecode;
+	DWORD Offsets[@args.count];
+}
+
+class TimecodeIndexBlock(count) extends IndexBlockTemplate(TimecodeEntries(count))
+
+class IndexObjectTemplate extends OBJECT
+{
+	DWORD IndexEntryTimeInterval;
+	WORD  IndexSpecifiersCount;
+	DWORD IndexBlocksCount;
+	IndexSpecifier IndexSpecifiers[IndexSpecifiersCount];
+}
+
+class IndexObject extends IndexObjectTemplate as OBJECT("D6E229D3-35DA-11D1-9034-00A0C90349BE")
+{
+	IndexBlock(IndexSpecifiersCount) IndexBlocks[];
+}
+
+class MediaObjectIndexObject extends IndexObjectTemplate as OBJECT("FEB103F8-12AD-4C64-840F-2A1D2F7AD48C")
+{
+	MediaIndexBlock(IndexSpecifiersCount) IndexBlocks[];
+}
+
+class TimecodeIndexObject extends IndexObjectTemplate as OBJECT("3CB73FD0-0C4A-4803-953D-EDF7B6228F0C")
+{
+	TimecodeIndexBlock(IndexSpecifiersCount) IndexBlocks[];
+}
+
+
+class FilePropertiesObject as OBJECT("8CABDCA1-A947-11CF-8EE4-00C00C205365")
+{
+	GUID  FileID;
+	QWORD FileSize;
+	QWORD CreationDate;
+	QWORD DataPacketsCount;
+	QWORD PlayDuration;
+	QWORD SendDuration;
+	QWORD Preroll;
+	BITS(6)  Reserved;
+	BITS(1)  BroadCastFlag;
+	BITS(1)  SeekableFlag;
+	BITS(24) Reserved;
+	DWORD MinimumDataPacketSize;
+	DWORD MaximumDataPacketSize;
+	DWORD MaximumBitrate;
+}
+
+class StreamPropertiesObject as OBJECT("B7DC0791-A9B7-11CF-8EE6-00C00C205365")
+{
+	GUID  StreamType;
+	GUID  ErrorCorrectionType;
+	QWORD TimeOffset;
+	DWORD TypeSpecificDataLength;
+	DWORD ErrorCorrectionDataLength;
+	BITS(1) Reserved;
+	BITS(7) StreamNumber;
+	BITS(1) EncryptedContentFlag;
+	BITS(7) Reserved;
+	DWORD Reserved;
+	Media(StreamType, TypeSpecificDataLength) TypeSpecificData;
+	ErrorCorrection(ErrorCorrectionType, ErrorCorrectionDataLength) ErrorCorrectionData;
+}
+
+class HeaderExtensionObject as OBJECT("5FBF03B5-A92E-11CF-8EE3-00C00C205365")
+{
+	GUID  ReservedField1;
+	WORD  ReservedField2;
+	DWORD HeaderExtensionDataSize;
+	while(1) OBJECT *;
+}
+
+class CodecEntry
+{
+	WORD Type;
+	WORD CodecNameLength;
+	WString(CodecNameLength) CodecName;
+	WORD CodecDescriptionLength;
+	WString(CodecDescriptionLength) CodecDescription;
+	WORD CodecInformationLength;
+	Data(8*CodecInformationLength) CodecInformation;
+}
+
+class CodecListObject as OBJECT("86D15240-311D-11D0-A3A4-00A0C90348F6")
+{
+	GUID  Reserved;
+	DWORD CodecEntriesCount;
+	CodecEntry CodecEntries[];
+}
+
+class CommandType
+{
+	WORD CommandTypeNameLength;
+	WString(CommandTypeNameLength) CommandTypeName;
+}
+
+class Command
+{
+	DWORD PresentationTime;
+	WORD  TypeIndex;
+	WORD CommandNameLength;
+	WString(CommandNameLength) CommandName;
+}
+
+class ScriptCommandObject as OBJECT("1EFB1A30-0B62-11D0-A39B-00A0C90348F6")
+{
+	GUID  Reserved;
+	WORD  CommandsCount;
+	WORD  CommandTypesCount;
+	CommandType CommandTypes[CommandTypesCount];
+	Command Commands[CommandsCount];
+}
+
+class Marker
+{
+	QWORD Offset;
+	QWORD PresentationTime;
+	WORD  EntryLength;
+	@size = EntryLength+144;
+	DWORD SendTime;
+	DWORD MarkerDescriptionLength;
+	WString(MarkerDescriptionLength) MarkerDescription;
+}
+
+class MarkerObject as OBJECT("F487CD01-A951-11CF-8EE6-00C00C205365")
+{
+	GUID  Reserved;
+	DWORD MarkersCount;
+	WORD  Reserved;
+	WORD  NameLength;
+	WString(NameLength/2) Name;
+	Marker Markers[];
+}
+
+class BitrateMutualExclusionObject as OBJECT("D6E229DC-35DA-11D1-9034-00A0C90349BE")
+{
+	GUID ExclusionType;
+	WORD StreamNumbersCount;
+	WORD StreamNumbers[StreamNumbersCount];
+}
+
+class ErrorCorrectionObject as OBJECT("75B22635-668E-11CF-A6D9-00AA0062CE6C")
+{
+	GUID  ErrorCorrectionType;
+	DWORD ErrorCorrectionDataLength;
+	ErrorCorrection(ErrorCorrectionType, ErrorCorrectionDataLength) ErrorCorrectionData;
+}
+
+class ContentDescriptionObject as OBJECT("75B22633-668E-11CF-A6D9-00AA0062CE6C")
+{
+	WORD TitleLength;
+	WORD AuthorLength;
+	WORD CopyrightLength;
+	WORD DescritionLength;
+	WORD RatingLength;
+	WString(TitleLength/2) Title;
+	WString(AuthorLength/2) Author;
+	WString(CopyrightLength/2) Copyright;
+	WString(DescritionLength/2) Description;
+	WString(RatingLength/2) Rating;
+}
+
+class ContentDescriptor
+{
+	WORD DescriptorNameLength;
+	WString(DescriptorNameLength/2) DescriptorName;
+	WORD DescriptorValueDataType;
+	WORD DescriptorValueLength;
+	
+	if(DescriptorValueDataType == 0x0000)
+		WString(DescriptorValueLength/2) DescriptorValue;
+	if(DescriptorValueDataType == 0x0001)
+		Data(DescriptorValueLength) DescriptorValue;
+	if(DescriptorValueDataType == 0x0002)
+		BOOL DescriptorValue;
+	if(DescriptorValueDataType == 0x0003)
+		DWORD DescriptorValue;
+	if(DescriptorValueDataType == 0x0004)
+		QWORD DescriptorValue;
+	if(DescriptorValueDataType == 0x0005)
+		WORD  DescriptorValue;
+}
+
+class ExtendedContentDescriptionObject as OBJECT("D2D0A440-E307-11D2-97F0-00A0C95EA850")
+{
+	WORD ContentDescriptorsCount;
+	ContentDescriptor ContentDescriptors[];
+}
+
+class BitrateRecord
+{
+	WORD  StreamNumber;
+	DWORD AverageBitrate;
+}
+
+class StreamBitratePropertiesObject as OBJECT("7BF875CE-468D-11D1-8D82-006097C9A2B2")
+{
+	WORD BitrateRecordsCount;
+	BitrateRecord BitrateRecords[BitrateRecordsCount];
+}
+
+class ContentBrandingObject as OBJECT("2211B3FA-BD23-11D2-B4B7-00A0C955FC6E")
+{
+	DWORD BannerImageType;
+	DWORD BannerImageDataSize;
+	Data(BannerImageDataSize) BannerImageData;
+	DWORD BannerImageURLLength;
+	String(BannerImageURLLength) BannerImageURL;
+	DWORD CopyrightURLLength;
+	String(CopyrightURLLength) CopyrightURL;
+}
+
+class ContentEncryptionObject as OBJECT("2211B3FB-BD23-11D2-B4B7-00A0C955FC6E")
+{
+	DWORD SecretDataLength;
+	Data(SecretDataLength) SecretData;
+	DWORD ProtectionTypeLength;
+	String(ProtectionTypeLength) ProtectionType;
+	DWORD KeyIDLength;
+	String(KeyIDLength) KeyID;
+	DWORD LicenseURLLength;
+	String(LicenseURLLength) LicenseURL;
+}
+
+class ExtendedContentEncryptionObject as OBJECT("298AE614-2622-4C17-B935-DAE07EE9289C")
+{
+	DWORD DataSize;
+	Data  Data;
+}
+
+class DigitalSignatureObject as OBJECT("2211B3FC-BD23-11D2-B4B7-00A0C955FC6E")
+{
+	DWORD SignatureType;
+	DWORD SignatureDataLength;
+	Data  SignatureData;
+}
+
+class PaddingObject as OBJECT("1806D474-CADF-4509-A4BA-9AABCB96AAE8")
+{
+	Data PaddingData;
+}
+
+class StreamName
+{
+	WORD LanguageIDIndex;
+	WORD StreamNameLength;
+	WString(StreamNameLength/2) StreamName;
+}
+
+class PayloadExtensionSystem
+{
+	GUID  ExtensionSystemID;
+	WORD  ExtensionDataSize;
+	DWORD ExtensionSystemInfoLength;
+	Data(ExtensionSystemInfoLength) ExtensionSystemInfo;
+}
+
+class ExtendedStreamPropertiesObject as OBJECT("14E6A5CB-C672-4332-8399-A96952065B5A")
+{
+	QWORD StartTime;
+	QWORD EndTime;
+	DWORD DataBitRate;
+	DWORD BufferSize;
+	DWORD InitialBufferFullness;
+	DWORD AlternateDataBitrate;
+	DWORD AlternateBufferSize;
+	DWORD AlternateInitialBufferFullness;
+	DWORD MaximumObjectSize;
+	BITS(4)  Reserved;
+	BITS(1)  ResendLiveCleanpointsFlag;
+	BITS(1)  NoCleanpointsFlag;
+	BITS(1)  SeekableFlag;
+	BITS(1)  ReliableFlag;
+	BITS(24) Reserved;
+	WORD  StreamNumber;
+	WORD  StreamLanguageIDIndex;
+	QWORD AverageTimePerFrame;
+	WORD  StreamNameCount;
+	WORD  PayloadExtensionSystemCount;
+	StreamName StreamNames[StreamNameCount];
+	PayloadExtensionSystem PayloadExtensionSystems[PayloadExtensionSystemCount];
+	while(1) OBJECT *;
+}
+
+class AdvancedMutualExclusionObject as OBJECT("A08649CF-4775-4670-8A16-6E35357566CD")
+{
+	GUID ExclusionType;
+	WORD StreamNumbersCount;
+	WORD StreamNumbers[];
+}
+
+class Record
+{
+	WORD StreamCount;
+	@size = 16*(StreamCount+1);
+	WORD StreamNumbers[StreamCount];
+}
+
+class GroupMutualExclusionObject as OBJECT("D1465A40-5A79-4338-B71B-E36B8FD6C249")
+{
+	GUID ExclusionType;
+	WORD RecordsCount;
+	Record Records[];
+}
+
+class PriorityRecord
+{
+	WORD StreamNumber;
+	WORD Mandatory;
+}
+
+class StreamPrioritizationObject as OBJECT("D4FED15B-88D3-454F-81F0-ED5C45999E24")
+{
+	WORD PriorityRecordsCount;
+	PriorityRecord PriorityRecords[];
+}
+
+class BandwidthSharingObject as OBJECT("A69609E6-517B-11D2-B6AF-00C04FD908E9")
+{
+	GUID  SharingType;
+	DWORD DataBitrate;
+	DWORD BufferSize;
+	WORD  StreamNumbersCount;
+	WORD  StreamNumbers[StreamNumbersCount];
+}
+
+class LanguageIDRecord
+{
+	BYTE LanguageIDLength;
+	WString(LanguageIDLength/2) LanguageID;
+}
+
+class LanguageListObject as OBJECT("7C4346A9-EFE0-4BFC-B229-393EDE415C85")
+{
+	WORD LanguageIDRecordsCount;
+	LanguageIDRecord LanguageIdRecords[];
+}
+
+class DescriptionRecord
+{
+	WORD  LanguageListIndex;
+	WORD  StreamNumber;
+	WORD  NameLength;
+	WORD  DataType;
+	DWORD DataLength;
+	WString(NameLength/2) Name;
+	
+	if(DataType == 0x0000)
+		WString(DataLength/2) DescriptorValue;
+	if(DataType == 0x0001)
+		Data(DataLength) DescriptorValue;
+	if(DataType == 0x0002)
+		BOOL DescriptorValue;
+	if(DataType == 0x0003)
+		DWORD DescriptorValue;
+	if(DataType == 0x0004)
+		QWORD DescriptorValue;
+	if(DataType == 0x0005)
+		WORD  DescriptorValue;
+}
+
+class MetadataObject as OBJECT("C5F8CBEA-5BAF-4877-8467-AA8C44FA4CCA"),
+      MetadataLibraryObject as OBJECT("44231C94-9498-49D1-A141-1D134E457054")
+{
+	WORD DescriptionRecordsCount;
+	DescriptionRecord DescriptionRecords[];
+}
+
+class IndexSpecifier
+{
+	WORD StreamNumber;
+	WORD IndexType;
+}
+
+class IndexParametersObject as OBJECT("D6E229DF-35DA-11D1-9034-00A0C90349BE")
+{
+	DWORD IndexEntryTimeInterval;
+	WORD  IndexSpecifiersCount;
+	IndexSpecifier IndexSpecifiers[];
+}
+
+class MediaObjectIndexParametersObject as OBJECT("6B203BAD-3F11-48E4-ACA8-D7613DE2CFA7"),
+      TimecodeIndexParametersObject as OBJECT("F55E496D-9797-4B5D-8C8B-604DFE9BFB24")
+{
+	DWORD IndexEntryCountInterval;
+	WORD  IndexSpecifiersCount;
+	IndexSpecifier IndexSpecifiers[];
+}
+
+class CompatibilityObject as OBJECT("26F18B5D-4584-47EC-9F5F-0E651F0452C9")
+{
+	BYTE Profile;
+	BYTE Mode;
+}
+
+class EncryptedObjectRecord
+{
+	WORD EncryptedObjectIDType;
+	WORD EncryptedObjectIDLength;
+	Data(8*EncryptedObjectIDLength) EncryptedObjectID;
+}
+
+class ContentEncryptionRecord
+{
+	GUID  SystemID;
+	DWORD SystemVersion;
+	WORD  EncryptedObjectRecordCount;
+	EncryptedObjectRecord EncryptedObjectRecords[EncryptedObjectRecordCount];
+	DWORD DataSize;
+	Data(8*DataSize) Data;
+}
+
+class AdvancedContentEncryptionObject as OBJECT("43058533-6981-49E6-9B74-AD12CB86D58C")
+{
+	WORD ContentEncryptionRecordsCount;
+	ContentEncryptionRecord ContentEncryptionRecords[];
+}
+
+class Media(Id, size)
+{
+	@size = 8*@args.size;
+}
+
+class AudioMedia as Media("F8699E40-5B4D-11CF-A8FD-00805F5C442B")
+{
+	WORD  CodecID;
+	WORD  NumberOfChannels;
+	DWORD SamplesPerSecond;
+	DWORD AverageNumberOfBytesPerSecond;
+	WORD  BlockAlignment;
+	WORD  BitsPerSample;
+	WORD  CodecSpecificDataSize;
+	Data(8*CodecSpecificDataSize) CodecSpecificData;
+}
+
+class VideoFormatData
+{
+	DWORD FormatDataSize;
+	@size = 8*FormatDataSize;
+	LONG   ImageWidth;
+	LONG   ImageHeight;
+	WORD   Reserved;
+	WORD   BitsPerPixelCount;
+	FOURCC CompressionID;
+	DWORD  ImageSize;
+	LONG   HorizontalPixelsPerMeter;
+	LONG   VerticalPixelsPerMeter;
+	DWORD  ColorsUsedCount;
+	DWORD  ImportantColorsCount;
+	Data   CodecSpecificData;
+}
+
+class VideoMedia as Media("BC19EFC0-5B4D-11CF-A8FD-00805F5C442B")
+{
+	DWORD EncodedImageWidth;
+	DWORD EncodedImageHeight;
+	BYTE  ReservedFlags;
+	WORD  FormatDataSize;
+	VideoFormatData *;
+}
+
+class CommandMedia as Media("59DACFC0-59E6-11D0-A3AC-00A0C90348F6")
+
+class JFIFMedia as Media("B61BE100-5B4E-11CF-A8FD-00805F5C442B")
+{
+	DWORD ImageWidth;
+	DWORD ImageHeight;
+	DWORD Reserved;
+}
+
+class DegradableJPEGMedia as Media("35907DE0-E415-11CF-A917-00805F5C442B")
+{
+	DWORD ImageWidth;
+	DWORD ImageHeight;
+	WORD Reserved;
+	WORD Reserved;
+	WORD Reserved;
+	WORD InterchangeDataLength;
+	Data(8*InterchangeDataLength) InterchangeData;
+}
+
+class FileTransferMedia as Media("91BD222C-F21C-497A-8B6D-5AA86BFC0185"),
+      BinaryMedia as Media("3AFB65E2-47EF-40F2-AC2C-70A90D71D343")
+{
+	GUID  MajorMediaType;
+	GUID  MediaSubtype;
+	DWORD FixedSizeSamples;
+	DWORD TemporalCompression;
+	DWORD SampleSize;
+	GUID  FormatType;
+	DWORD FormatDataSize;
+	Data(8*FormatDataSize) FormatData; 
+}
+
+class ErrorCorrection(Id, size)
+{
+	@size = 8*@args.size;
+}
+
+class NoErrorCorrection as ErrorCorrection("20FB5700-5B55-11CF-A8FD-00805F5C442B")
+
+class AudioSpread as ErrorCorrection("BFC3CD50-618F-11CF-8BB2-00AA00B4E220")
+{
+	BYTE Span;
+	WORD VirtualPacketLength;
+	WORD VirtualChunkLength;
+	WORD SilenceDataLength;
+	Data(8*SilenceDataLength) SilenceData;
+}
+
+function WORDTYPE(const flags)
+{
+	if(flags == 0b00)
+		return Data(0);
+	if(flags == 0b01)
+		return BYTE();
+	if(flags == 0b10)
+		return WORD();
+	if(flags == 0b11)
+		return DWORD();
+}
+
 class DataPacket(size) extends Data(size)
 {
-	//ToDo
+	BITS(1) ErrorCorrectionPresent;
+	if(ErrorCorrectionPresent)
+	{
+		BITS(2) ErrorCorrectionLengthType;
+		BITS(1) OpaqueDataPresent;
+		BITS(4) ErrorCorrectionDataLength;
+		
+		BITS(4) Number;
+		BITS(4) Type;
+		
+		BYTE Cycle;
+		
+		BITS(1) Reserved;
+	}
+	BITS(2) PacketLengthType;
+	BITS(2) PaddingLengthType;
+	BITS(2) SequenceType;
+	BITS(1) MultiplePayloadsPresent;
+	
+	BITS(2) StreamNumberLengthType;
+	BITS(2) MediaObjectNumberType;
+	BITS(2) OffsetIntoMediaObjectLengthType;
+	BITS(2) ReplicatedDataLengthType;
+	
+	(%WORDTYPE(PacketLengthType))  PacketLength;
+	(%WORDTYPE(SequenceType))      Sequence;
+	(%WORDTYPE(PaddingLengthType)) PaddingLength;
+	DWORD SendTime;
+	WORD  Duration;
+	
+	if(MultiplePayloadsPresent)
+	{
+		BITS(2) PayloadLengthType;
+		BITS(6) NumberOfPayloads;
+		NumberOfPayloads.@info = %str(NumberOfPayloads);//decimal representation
+		Payload Payloads[NumberOfPayloads];
+	}
+	else
+	{
+		BYTE StreamNumber;
+		(%WORDTYPE(MediaObjectNumberType))           MediaObjectNumber;
+		(%WORDTYPE(OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
+		(%WORDTYPE(ReplicatedDataLengthType))        ReplicatedDataLength;
+		Data(8*ReplicatedDataLength) ReplicatedDataLength;
+		Payload(@size-@pos-8*PaddingLength) Payload;
+		Data Padding;
+	}
+}
+
+class MPayload
+{
+	BYTE StreamNumber;
+	(%WORDTYPE(@parent.@parent.MediaObjectNumberType))           MediaObjectNumber;
+	(%WORDTYPE(@parent.@parent.OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
+	(%WORDTYPE(@parent.@parent.ReplicatedDataLengthType))        ReplicatedDataLength;
+	Data(8*ReplicatedDataLength) ReplicatedData;
+	(%WORDTYPE(@parent.@parent.PayloadLengthType)) PayloadLength;
+	//@size = 8*PayloadLength;
+	//Data PayloadData;
 }

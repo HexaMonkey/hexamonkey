@@ -18,6 +18,7 @@
 #include "ebmlsimpleparser.h"
 
 #include "standardtypes.h"
+#include "defaulttypes.h"
 #include "ebmltypes.h"
 
 EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
@@ -60,7 +61,7 @@ EbmlBinaryParser::EbmlBinaryParser(Object& object, const Module& module)
 
 void EbmlBinaryParser::doParseHead()
 {
-    addVariable(standardTypes::data(availableSize()), "payload");
+    addVariable(defaultTypes::data(availableSize()), "payload");
 }
 
 EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& module)

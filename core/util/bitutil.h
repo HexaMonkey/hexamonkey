@@ -21,21 +21,21 @@
 #include <stdint.h>
 
 /*!
- * \brief msb
+ * @brief msb
  * \param byte
  * \return
  */
 int msb(uint8_t byte);
 
 /*!
- * \brief msbMask
+ * @brief msbMask
  * \param min
  * \return
  */
 uint8_t msbMask(int min);
 
 /*!
- * \brief lsbMask
+ * @brief lsbMask
  * \param max
  * \return
  */

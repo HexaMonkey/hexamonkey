@@ -26,7 +26,7 @@
 #include "objecttype.h"
 
 /*!
- * \brief The ObjectTypeTemplate class
+ * @brief The ObjectTypeTemplate class
  */
 class ObjectTypeTemplate
 {

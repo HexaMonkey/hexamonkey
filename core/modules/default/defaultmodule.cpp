@@ -22,6 +22,7 @@
 #include "fileparser.h"
 #include "arrayparser.h"
 #include "tupleparser.h"
+#include "dataparser.h"
 
 #include "variable.h"
 #include "scope.h"
@@ -78,6 +79,16 @@ bool DefaultModule::doLoad()
          }
          return -1;
     });
+
+    addTemplate(data);
+    addParser("Data", []parserLambda
+    {
+        if(type.parameterSpecified(0))
+            return new DataParser(object, type.parameterValue(0).toInteger());
+        else
+            return new DataParser(object, -1);
+    });
+    setFixedSizeFromArg("Data", 0);
 
     addFunction("sizeof",
                 {"type"},

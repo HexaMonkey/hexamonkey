@@ -101,7 +101,8 @@ SOURCES += main.cpp\
     mt/tasklist.cpp \
     mt/resourcemanager.cpp \
     mt/resource.cpp \
-    mt/parsingtask.cpp
+    mt/parsingtask.cpp \
+    ../core/modules/default/dataparser.cpp
 
 
 		
@@ -191,6 +192,7 @@ HEADERS  += mainwindow.h \
     mt/resource.h \
     mt/parsingtask.h \
     ../compiler/model.h \
+    ../core/modules/default/dataparser.h
 
 RESOURCES += \
     ressources.qrc

@@ -20,31 +20,36 @@
 
 #include "scope.h"
 #include "typescope.h"
+#include "holder.h"
 
 class Object;
-
-class MutableObjectScope : public MutableScope
-{
-public:
-    MutableObjectScope(Object& data);
-protected:
-    Variant* doGet(const Variant &key) const override;
-    Scope* doGetScope(const Variant &key) const override;
-private:
-    Object& _object;
-    MutableTypeScope _typeScope;
-};
 
 class ConstObjectScope : public ConstScope
 {
 public:
-    ConstObjectScope(Object& data);
+    ConstObjectScope(Object& data, Holder& holder);
 protected:
     const Variant* doCget(const Variant &key) const override;
     Scope* doGetScope(const Variant &key) const override;
 private:
     Object& _object;
     ConstTypeScope _typeScope;
+    Holder& _holder;
+};
+
+class MutableObjectScope : public Scope
+{
+public:
+    MutableObjectScope(Object& data, Holder& holder);
+protected:
+    Variant* get(const Variant &key) const override;
+    const Variant* cget(const Variant &key) const override;
+    Scope* doGetScope(const Variant &key) const override;
+private:
+    Object& _object;
+    MutableTypeScope _typeScope;
+    ConstObjectScope _constScope;
+    Holder& _holder;
 };
 
 #endif // DATASCOPE_H
