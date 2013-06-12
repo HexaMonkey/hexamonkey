@@ -112,7 +112,9 @@ class Object
 
         /**
          * @brief Add a parser at the end of the parser list
-         * @param Parsers are executed in order.
+         *
+         * Parsers are executed in the order they have been added. If the parser have a head (i.e. a part that must be parsed as soon as possible,
+         * then every parsers added previously execute fully their parsing and then the new parser parses the head of its parsing
          */
         void addParser(Parser* parser);
 

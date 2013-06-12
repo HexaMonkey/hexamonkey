@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("mkv",   new MkvModule);
     moduleLoader.addModule("hmc",   new HmcModule);
 
-    InterpreterConstructor interpreterConstructor(static_cast<const HmcModule&>(moduleLoader.loadModule("hmc")));
+    InterpreterConstructor interpreterConstructor(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
 
 #ifdef __MINGW32__
     moduleLoader.addFolder(".\\scripts\\", interpreterConstructor);

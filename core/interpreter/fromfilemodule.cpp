@@ -205,17 +205,17 @@ bool FromFileModule::loadProgram(const std::string path)
             std::cerr<<"Description file not found: "<<hmPath<<std::endl;
             return false;
         }
-        std::cout<<"Loading existing description file : "<<hmcPath<<std::endl;
+        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
         return interpreter().loadFromHMC(hmcPath);
     }
     else
     {
         if(!hmcInfo.exists() || hmcInfo.lastModified() < hmInfo.lastModified())
         {
-            std::cout<<"Compiling description file"<<std::endl;
+            std::cout<<"Compile description file : "<<hmPath<<std::endl;
             return interpreter().loadFromHM(hmPath, Interpreter::file);
         }
-        std::cout<<"Loading existing description file : "<<hmcPath<<std::endl;
+        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
         return interpreter().loadFromHMC(hmcPath);
     }
 #else
@@ -262,7 +262,7 @@ void FromFileModule::loadImports(Program &imports, std::vector<std::string> &for
 
 void FromFileModule::nameScan(Program& declarations)
 {
-    std::cout<<"Loading templates :"<<std::endl;
+    std::cout<<"Load templates :"<<std::endl;
 
 
     for(Program declaration : declarations)
@@ -294,7 +294,7 @@ void FromFileModule::nameScan(Program& declarations)
 
 void FromFileModule::loadExtensions(Program &classDeclarations)
 {
-    std::cout<<"Loading extensions :"<<std::endl;
+    std::cout<<"Load extensions :"<<std::endl;
 
     for(Program classDeclaration : classDeclarations)
     {
@@ -330,7 +330,7 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
 
 void FromFileModule::loadSpecifications(Program &classDeclarations)
 {
-    std::cout<<"Loading specifications :"<<std::endl;
+    std::cout<<"Load specifications :"<<std::endl;
 
     for(Program classDeclaration : classDeclarations)
     {

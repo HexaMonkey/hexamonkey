@@ -63,12 +63,12 @@ void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectT
     });
 }
 
-void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectType &parent, const std::map<int, int> &bindings)
+void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectType &parent, const std::map<int, int> &parameterMapping)
 {
-    setExtension(childTemplate, [parent, bindings](const ObjectType& type)
+    setExtension(childTemplate, [parent, parameterMapping](const ObjectType& type)
     {
         ObjectType father = parent;
-        for(const auto& binding : bindings)
+        for(const auto& binding : parameterMapping)
         {
             father.setParameter(binding.second, type.parameterValue(binding.first));
         }
@@ -391,11 +391,6 @@ const std::vector<Variant> &Module::getFunctionParameterDefaults(const std::stri
 void Module::addTemplate(const ObjectTypeTemplate& typeTemplate)
 {
     _templates[typeTemplate.name()] = &typeTemplate;
-}
-
-const ObjectTypeTemplate &Module::newTemplate(const std::string &name)
-{
-    return newTemplate(name, std::vector<std::string>());
 }
 
 const ObjectTypeTemplate &Module::newTemplate(const std::string &name, const std::vector<std::string> &parameters)

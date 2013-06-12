@@ -30,10 +30,10 @@
 
 ModuleLoader::ModuleLoader()
 {
-    addModule(""     , new DefaultModule);
+    addModule("", new DefaultModule);
 }
 
-const Module &ModuleLoader::loadModule(File &file) const
+const Module &ModuleLoader::getModule(File &file) const
 {
     return loadModule(formatDetector.getFormat(file));
 }
@@ -48,7 +48,7 @@ const Module &ModuleLoader::loadModule(const std::string &key) const
         Module& module = *(it->second);
         if(!module._loaded)
         {
-            std::cout<<"load <"<<key<<">"<<std::endl;
+
             std::vector<std::string> importRequirements;
             module.requestImportations(importRequirements);
             if(!importRequirements.empty())
@@ -62,6 +62,7 @@ const Module &ModuleLoader::loadModule(const std::string &key) const
             {
                 module.import(loadModule(""));
             }
+            std::cout<<"Load module : <"<<key<<">"<<std::endl;
             module.load();
         }
         return module;

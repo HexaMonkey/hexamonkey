@@ -97,7 +97,7 @@ void MainWindow::openFile(const std::string& path)
         updateRecentFileActions();
 
 
-        const Module& module = moduleLoader.loadModule(files[nfiles]);
+        const Module& module = moduleLoader.getModule(files[nfiles]);
         Object* fileObject = module.handle(defaultTypes::file(), files[nfiles]);
         fileObject->explore(0);
         treeWidget->setCurrentIndex(treeWidget->addObject(*fileObject));
