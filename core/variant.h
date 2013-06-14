@@ -26,7 +26,18 @@
 class ObjectType;
 
 /*!
- * @brief The Variant class
+ * @brief Tagged union for holding values
+ *
+ * Can hold: 64 bits integers (Type::integer), 64 bits unsigned integers (Type::unsignedInteger),
+ * 64 bits floating points (Type::floating), strings (Type::string) and \link ObjectType object types\endlink (Type::objectType).
+ * By default the \link Variant variant\endlink's value is not defined and the type is Type::unknown, in which case
+ * most operations will fail.
+ *
+ * Explicit conversion are allowed in some cases : you can check if a conversion is possible
+ * using canConvertTo and then convert the internal value using convertTo.
+ *
+ * Most usual operators have been overloaded and behave as exepcted is c/c++, errors are thrown when the opearator is
+ * not allowed for the types (such as multiplying two strings)
  */
 class Variant
 {
