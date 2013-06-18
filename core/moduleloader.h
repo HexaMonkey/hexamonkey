@@ -48,11 +48,11 @@ public:
     /**
      * @brief Add a module and register its \link Module::addFormatDetection format detection methods\endlink
      *
-     * @param key unique identifier for the module, used to \link loadModule load a module explicitly\endlink
+     * @param key unique identifier for the module, used to \link getModule load a module explicitly\endlink
      * or \link Module::requestImportations request importations\endlink.
      *
      * @param module A pointer to the module is given and the \link ModuleLoader\endlink takes ownership of the module,
-     * the module is then destroyed when the \link Moduleloader module loader\endlink itself is destroyed.
+     * the module is then destroyed when the \link ModuleLoader module loader\endlink itself is destroyed.
      */
     void addModule(const std::string& key, Module* module);
 

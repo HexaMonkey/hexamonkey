@@ -56,12 +56,6 @@ class Object
         typedef container::reverse_iterator reverse_iterator;
         typedef container::const_reverse_iterator const_reverse_iterator;
 
-        /** @brief Contruct the object as a memory area in the \link file() file \endlink
-         *  beginning at the current position.
-         *
-         *  The size will be specified by the parsers.
-         */
-        Object(File& file);
 
         /** @brief Access the file associated. */
         File& file();
@@ -224,7 +218,7 @@ class Object
          * the parsing is not done and forceParse is set then the object will be parsed progressively
          * until the type is found or the parsing is done.
          */
-        Object* lookForType(const ObjectType& type, bool forceParse =false);
+        Object* lookForType(const ObjectType& type, bool forceParse = false);
 
     private:
         friend class Parser;
@@ -235,6 +229,8 @@ class Object
 
         friend class ConstObjectScope;
         friend class MutableObjectScope;
+
+        Object(File& file);
 
         void parse();
         bool parseSome(int hint);

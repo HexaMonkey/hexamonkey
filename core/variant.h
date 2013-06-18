@@ -28,9 +28,9 @@ class ObjectType;
 /*!
  * @brief Tagged union for holding values
  *
- * Can hold: 64 bits integers (Type::integer), 64 bits unsigned integers (Type::unsignedInteger),
- * 64 bits floating points (Type::floating), strings (Type::string) and \link ObjectType object types\endlink (Type::objectType).
- * By default the \link Variant variant\endlink's value is not defined and the type is Type::unknown, in which case
+ * Can hold: 64 bits signed integers (integer), 64 bits unsigned integers (unsignedInteger),
+ * 64 bits floating points (floating), strings (string) and \link ObjectType object types\endlink (objectType).
+ * By default the \link Variant variant\endlink's value is not defined and the type is unknown, in which case
  * most operations will fail.
  *
  * Explicit conversion are allowed in some cases : you can check if a conversion is possible
@@ -43,11 +43,20 @@ class Variant
 {
 public:
     enum Type{
+        ///Default type with no value, no conversion possible
         unknown = 0,
+        ///64 bits signed integer, conversion with other numerical
+        ///types possible (ie unsignedInteger and floating)
         integer = 1,
+        ///64 bits unsigned integer, conversion with other numerical
+        ///types possible (ie integer and floating)
         unsignedInteger = 2,
+        ///64 bits floating point, conversion with other numerical
+        ///types possible (ie integer and unsignedInteger)
         floating = 3,
+        ///std::string, no conversion possible
         string = 4,
+        ///Objectype, no conversion possible
         objectType = 5
     };
 

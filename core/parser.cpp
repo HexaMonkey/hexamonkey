@@ -120,21 +120,6 @@ void Parser::setExpandOnAddition()
     _object._expandOnAddition = true;
 }
 
-Object *Parser::access(int64_t index, bool forceParse)
-{
-    return _object.access(index, forceParse);
-}
-
-Object *Parser::lookUp(const std::string& name, bool forceParse)
-{
-    return _object.lookUp(name, forceParse);
-}
-
-Object *Parser::lookForType(const ObjectType &type, bool forceParse)
-{
-    return _object.lookForType(type, forceParse);
-}
-
 Object &Parser::object()
 {
     return _object;

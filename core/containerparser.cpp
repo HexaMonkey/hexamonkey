@@ -141,11 +141,6 @@ const Module &ContainerParser::module() const
     return _module;
 }
 
-ContainerParser &ContainerParser::containerParser(Object &object)
-{
-    return static_cast<ContainerParser&>(*object._parsers.back());
-}
-
 
 void ContainerParser::setAutogrow()
 {

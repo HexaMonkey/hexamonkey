@@ -22,58 +22,148 @@
 
 #include "object.h"
 
-/*!
- * \class Parser
- * @brief The Parser class
+/**
+ * @brief Parse a bit of \link File file\endlink into an \link Object object\endlink
  *
- * This class is used to parse the files.
+ * The parsing is done in two phases : first the head is parse, which correspond to the
+ * operations that must be executed as soon as possible which donne with parseHead
+ * and then the rest can be parsed whenever either full with parse or little by little
+ * with parseSome. For a \link Parser parser\endlink that is always parsed fully as soon
+ * as possible subclass SimpleParser for convenience.
  *
+ * The \link Parser parser\endlink can modify most of the \link Object object\endlink's
+ * attributes, however it cannot add children : for this functionnality subclass
+ * ContainerParser.
+ *
+ * The class is virtual and
  */
 class Parser
 {
 public:
-    Parser(Object& object);
     virtual ~Parser(){}
+
+    /**
+     * @brief Parse what must be parsed as soon as possible
+     */
     virtual void parseHead();
+
+    /**
+     * @brief Parse everything
+     */
     virtual void parse();
+
+    /**
+     * @brief Parse the amount indicated by the hint
+     */
     virtual bool parseSome(int hint);
 
+    /**
+     * @brief Check if the parsing is done
+     */
     bool parsed() const;
+
+    /**
+     * @brief Check if the \link Parser parser\endlink requires anything to be parsed
+     * as soon as possible
+     */
     bool hasHead() const;
 
-
-    ObjectType& type();
-    void setSize(int64_t size);
-    void setName(const std::string& name);
-    void setInfo(const std::string& info);
-    void setValue(const Variant& value);
-    Showcase& showcase();
-    File& file();
-
-    int64_t availableSize() const;
-    void setExpandOnAddition();
-
-    Object* access(int64_t index, bool forceParse = false);
-    Object* lookUp(const std::string &name, bool forceParse = false);
-    Object* lookForType(const ObjectType& type, bool forceParse = false);
-
+    /**
+     * @brief Get the \link Object object\endlink manipulated by the \link Parser parser\endlink
+     */
     Object &object();
 
 
 protected:
+    Parser(Object& object);
+
+    /**
+     * @brief Get the \link Object::type type\endlink of the \link Object object\endlink
+     */
+    ObjectType& type();
+
+    /**
+     * @brief Set the \link Object::size size\endlink of the \link Object object\endlink
+     */
+    void setSize(int64_t size);
+
+    /**
+     * @brief Set the \link Object::name name \endlink of the \link Object object\endlink
+     */
+    void setName(const std::string& name);
+
+    /**
+     * @brief Set the \link Object::info info \endlink of the \link Object object\endlink
+     */
+    void setInfo(const std::string& info);
+
+    /**
+     * @brief Set the \link Object::value value \endlink of the \link Object object\endlink
+     */
+    void setValue(const Variant& value);
+
+    /**
+     * @brief Get the \link Object::showcase showcase \endlink of the \link Object object\endlink
+     */
+    Showcase& showcase();
+
+    /**
+     * @brief Get the \link File file\endlink used for parsing
+     */
+    File& file();
+
+    /**
+     * @brief Get the number of bits between the current position in the \link File file\endlink and
+     * the end of the \link Object object\endlink
+     */
+    int64_t availableSize() const;
+
+    /**
+     * @brief Insure that when the object is added into its father its size will
+     * expand to occupy the father's available space.
+     */
+    void setExpandOnAddition();
+
+    /**
+     * @brief Mark the parser as done
+     */
     void setParsed();
+
+    /**
+     * @brief Mark the parser as headless, meaning that no operation have to be executed as soon as possible
+     */
     void setNoHead();
 
+
+    /**
+     * @brief [Virtual] Parse what must be parsed as soon as possible (do nothing by default)
+     */
     virtual void doParseHead();
+
+    /**
+     * @brief [Virtual] Parse everything remaining, assuming that the head and only the head as been parsed (do nothing by default)
+     */
     virtual void doParse();
+
+    /**
+     * @brief [Virtual] Parse the amount indicated by the hint (if not reimplemented calls doParse)
+     * @param hint The exact meaning of the hint is to be defined by the subclass implementing the function, for most
+     * \link ContainerParser container parsers\endlink it simply is the number of children to be added. However the
+     * only requirement is that for any hint>0, "while(doParseSome(hint)){}" finishes.
+     * @return true if the parsing is done false otherwise
+     */
     virtual bool doParseSome(int hint);
+
+    /**
+     * @brief [Virtual] Clean up once the parsing is done (do nothing by default)
+     */
     virtual void cleanUp();
 
 
 private:
     friend class SimpleParser;
     friend class ContainerParser;
-    friend class ParsingInProgress;
+    friend class BlockExecution;
 
     Object& _object;
 
@@ -97,17 +187,23 @@ private:
 
 };
 
+/**
+ * @brief Parser that is that is always parsed fully as soon
+ * as possible. Only doParseHead needs to be reimplemented.
+ */
 class SimpleParser : public Parser
 {
 public:
-    SimpleParser(Object& object);
     virtual ~SimpleParser() {}
 
-    virtual void parseHead();
+    void parseHead() override;
 
 protected:
-    void doParse();
-    bool doParseSome(int hint);
+    SimpleParser(Object& object);
+
+private:
+    void doParse() override;
+    bool doParseSome(int hint) override;
 };
 
 #endif // PARSER_H

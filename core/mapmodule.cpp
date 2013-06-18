@@ -56,9 +56,13 @@ void MapModule::setFixedSizeFromArg(const std::string &name, int arg)
 };
 }
 
-void MapModule::addFunction(const std::string &name, const std::vector<std::string> &parameterNames, const std::vector<bool> &parameterModifiables, const std::vector<Variant> &parameterDefaults, const MapModule::FunctionGenerator &function)
+void MapModule::addFunction(const std::string &name,
+                            const std::vector<std::string> &parameterNames,
+                            const std::vector<bool> &parameterModifiables,
+                            const std::vector<Variant> &parameterDefaults,
+                            const MapModule::Functor &functor)
 {
-    _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, function);
+    _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, functor);
 }
 
 bool MapModule::hasParser(const ObjectType &type) const
@@ -104,7 +108,7 @@ Variable *MapModule::doExecuteFunction(const std::string &name, Scope &params, c
     if(it == _functions.end())
         return nullptr;
 
-    const FunctionGenerator& function = std::get<3>(it->second);
+    const Functor& function = std::get<3>(it->second);
 
     return function(params, fromModule);
 }

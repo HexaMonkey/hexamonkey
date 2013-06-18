@@ -25,29 +25,69 @@
 class Module;
 
 /*!
- * @brief The ContainerParser class
+ * @brief Parser able to add children to the object
  */
 class ContainerParser : public Parser
 {
 public:
-    ContainerParser(Object& object, const Module& module);
+
     virtual ~ContainerParser() {}
 
+    /**
+     * @brief Add a child to the \link Object object\endlink
+     * 
+     * The object will be in charge of managing the child's memory
+     */
     void addChild(Object* child);
+
+    /**
+     * @brief Add a child and set its name
+     */
     void addChild(Object* child, const std::string& name);
 
+    /**
+     * @brief Generate an \link Object object\endlink to be subsequently added (or not)
+     */
     Object* getVariable(const ObjectType& type);
+
+    /**
+     * @brief Generate an \link Object object\endlink and add it
+     */
     Object* addVariable(const ObjectType& type);
+
+    /**
+     * @brief Generate an \link Object object\endlink, set its name, and add it
+     */
     Object* addVariable(const ObjectType& type, const std::string& name);
 
+    /**
+     * @brief Add an \link Object object\endlink, with a parser executing
+     * a function while there is still available space
+     */
     void addLoop(const std::function<void(ContainerParser&)>& body, const std::string& name = "");
+
+    /**
+     * @brief Add an \link Object object\endlink, with a parser executing
+     * a function while there is still available space and the guard return true
+     */
     void addLoop(const std::function<bool()>& guard, const std::function<void(ContainerParser&)>& body, const std::string& name = "");
+
+    /**
+     * @brief Add an \link Object object\endlink, with a parser executing
+     * a function while there is still available space and the function has been
+     * executed less than max times
+     */
     void addForLoop(int64_t max, const std::function<void(ContainerParser&, int64_t)>& body, const std::string& name = "");
 
     const Module& module() const;
 
 protected:
-    static ContainerParser& containerParser(Object& object);
+    ContainerParser(Object& object, const Module& module);
+
+    /**
+     * @brief Insure that when children are added past the end of the object that its
+     * size grows automaticaly
+     */
     void setAutogrow();
 
 private:

@@ -35,10 +35,10 @@ ModuleLoader::ModuleLoader()
 
 const Module &ModuleLoader::getModule(File &file) const
 {
-    return loadModule(formatDetector.getFormat(file));
+    return getModule(formatDetector.getFormat(file));
 }
 
-const Module &ModuleLoader::loadModule(const std::string &key) const
+const Module &ModuleLoader::getModule(const std::string &key) const
 {
 
     auto it = modules.find(key);
@@ -55,12 +55,12 @@ const Module &ModuleLoader::loadModule(const std::string &key) const
             {
                 for(const std::string& importRequirement : importRequirements)
                 {
-                    module.import(loadModule(importRequirement));
+                    module.import(getModule(importRequirement));
                 }
             }
             else if(!key.empty())
             {
-                module.import(loadModule(""));
+                module.import(getModule(""));
             }
             std::cout<<"Load module : <"<<key<<">"<<std::endl;
             module.load();
@@ -68,7 +68,7 @@ const Module &ModuleLoader::loadModule(const std::string &key) const
         return module;
     }
 
-    return loadModule("");
+    return getModule("");
 }
 
 void ModuleLoader::addModule(const std::string &key, Module *module)
