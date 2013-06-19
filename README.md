@@ -5,19 +5,19 @@ HexaMonkey is a freely distributed framework which goal is to provide tools to v
 
 It relies on lazy and asynchronous parsing to offer a pleasant experience to the user. It is highly exentensible thanks to its modular architecture and a powerful scripting langage : HMscript. For the time being the mpeg4, mpeg2-ts, matrovska and avi formats are implemented and you are welcome to implement other and share them.
 
-Installing the project on windows
+Installing the project on Windows
 =================================
 There is an installer available on http://www.hexamonkey.com/, browse the download section.
 
 Building the project
 ====================
-Under linux
+Under Linux
 -----------
 
 You need qt5, gcc>=4.7, bison and flex on your computer, make sure qmake is available in your PATH. Then just type make in the root of the project, that should do it. As of now there are no install or uninstall target so just run hexamonkey from where it has been built.
 
 
-Under windows
+Under Windows
 -------------
 
 Build the .exe files
