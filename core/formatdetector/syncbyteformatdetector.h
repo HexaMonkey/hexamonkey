@@ -21,18 +21,32 @@
 #include "formatdetector.h"
 
 /*!
- * @brief The SyncbyteFormatDetector class
+ * @brief Implementation for \link FormatDetector format detection\endlink that
+ * look for the periodic repetition of a byte.
+ *
+ * This is typically used to detect a format using packets of fixed length each
+ * beginning with a fixed byte called syncbyte.
  */
 class SyncbyteFormatDetector : public FormatDetector
 {
 public:
+    /**
+     * @brief Construct a \link SyncbyteFormatDetector syncbyte detector\endlink
+     * and specifiy the number of periods (or packets) that needs to be checked
+     * to sucessfully detect a format.
+     */
+    SyncbyteFormatDetector(int numberOfPeriods);
+
+    /**
+     * @brief Map a syncbyte to a format
+     */
     void addSyncbyte(const std::string &format, uint8_t syncbyte, int packetlength);
 protected:
     virtual std::string doGetFormat(File& file) const override;
 private:
     std::map<std::string, std::pair<uint8_t, int> > _formats;
 
-    static const int check = 64;
+    const int numberOfPeriods;
 };
 
 #endif // SYNCBYTEFORMATDETECTOR_H

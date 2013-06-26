@@ -31,7 +31,7 @@ class ObjectType;
  * Can hold: 64 bits signed integers (integer), 64 bits unsigned integers (unsignedInteger),
  * 64 bits floating points (floating), strings (string) and \link ObjectType object types\endlink (objectType).
  * By default the \link Variant variant\endlink's value is not defined and the type is unknown, in which case
- * most operations will fail.
+ * most operations will fail, and the value is value is null.
  *
  * Explicit conversion are allowed in some cases : you can check if a conversion is possible
  * using canConvertTo and then convert the internal value using convertTo.
@@ -43,7 +43,7 @@ class Variant
 {
 public:
     enum Type{
-        ///Default type with no value, no conversion possible
+        ///Default type with no value, can be use as a null value, no conversion possible
         unknown = 0,
         ///64 bits signed integer, conversion with other numerical
         ///types possible (ie unsignedInteger and floating)

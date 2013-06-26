@@ -20,9 +20,10 @@
 
 #include "object.h"
 
+class Interpreter;
+
 class Program
 {
-public:
     template<class It>
     class _const_iterator : public std::iterator<std::input_iterator_tag, Program>
     {
@@ -41,11 +42,11 @@ public:
             bool operator!=(const _const_iterator<It>& other) const {return !(*this==other);}
     };
 
+public:
     typedef _const_iterator< Object::iterator > const_iterator;
     typedef _const_iterator< Object::reverse_iterator > const_reverse_iterator;
 
     Program();
-    Program(Object& object);
 
     uint32_t id() const;
     const Variant& payload() const;
@@ -58,7 +59,12 @@ public:
     const_reverse_iterator rend() const;
 
 private:
+    friend class Interpreter;
+
+    Program(Object& object);
+
     Object* _object;
+    Interpreter* _interpreter;
 };
 
 #endif // EBMLOBJECT_H

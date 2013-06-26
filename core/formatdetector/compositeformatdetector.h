@@ -21,15 +21,25 @@
 #include "formatdetector.h"
 
 /*!
- * @brief The CompositeFormatDetector class
+ * @brief Implementation for \link FormatDetector format detection\endlink that
+ * uses several other \link FormatDetector detectors\endlink.
+ *
+ * The \link FormatDetector detectors\endlink are used on the file one after the
+ * other until one succeed.
  */
 class CompositeFormatDetector : public FormatDetector
 {
 public:
+    /**
+     * @brief Put a \link FormatDetector detectors\endlink in the end of the detection list.
+     *
+     * The \link FormatDetector detectors\endlink added will be used last and therefore will
+     * have the lowest priority.
+     */
     void addDetector(FormatDetector& detector);
-protected:
-    virtual std::string doGetFormat(File& file) const override;
 private:
+    std::string doGetFormat(File& file) const override;
+
     std::vector<FormatDetector*> _detectors;
 };
 

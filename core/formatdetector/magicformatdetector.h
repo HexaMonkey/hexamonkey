@@ -21,16 +21,34 @@
 #include "formatdetector.h"
 
 /*!
- * @brief The MagicFormatDetector class
+ * @brief Implementation for \link FormatDetector format detection\endlink that
+ * uses magic number (or file signature).
+ *
+ * A magic number is a byte string, found in the beginning of the file and unique to
+ * a format. A list can be found here : http://www.garykessler.net/library/file_sigs.html
+ *
+ * When two magic numbers match a \link File file\endlink the longest will have priority
  */
 class MagicFormatDetector : public FormatDetector
 {
 public:
+    /**
+     * @brief Map a magic number matching the beginning of the file to a format
+     *
+     * @param magicNumber the magic number shall be given as a string with space
+     * separated bytes given as two-digit hex numbers. "xx" can be given instead
+     * of a number to specify that there is no requirement for the byte.
+     */
     void addMagicNumber(const std::string &format, const std::string& magicNumber);
+    /**
+     * @brief Shift a magic number and map it to a format.
+     *
+     * Equivalent to addMagicNumber(format, "xx "+magicNumber, offset-1) if offset > 0
+     */
     void addMagicNumber(const std::string &format, const std::string& magicNumber, int offset);
-protected:
-    virtual std::string doGetFormat(File& file) const override;
+
 private:
+    virtual std::string doGetFormat(File& file) const override;
     std::map<std::string, std::string> _magicNumbers;
 };
 

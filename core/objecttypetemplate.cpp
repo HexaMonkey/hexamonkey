@@ -46,7 +46,7 @@ int ObjectTypeTemplate::numberOfParameters() const
 
 const std::string& ObjectTypeTemplate::parameterName(int index) const
 {
-    return _parametersNames[index];
+    return _parametersNames.at(index);
 }
 
 int ObjectTypeTemplate::parameterNumber(const std::string &name) const

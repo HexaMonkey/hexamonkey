@@ -24,11 +24,20 @@
 #include "file.h"
 
 /*!
- * @brief The FormatDetector class
+ * @brief Class used to identify the format of a \link File file\endlink.
+ * The format is a string, which is used by the \link ModuleLoader module loader\endlink
+ * to assign a \link Module module\endlink to a \link File file\endlink.
+ *
+ * The class must be subclassed to implement a detection method.
  */
 class FormatDetector
 {
 public:
+    /**
+     * @brief Identify the format of the file
+     *
+     * Return an empty string if the format hasn't been detected.
+     */
     std::string getFormat(File& file) const;
 protected:
     virtual std::string doGetFormat(File& file) const = 0;

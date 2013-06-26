@@ -23,16 +23,35 @@
 #include "syncbyteformatdetector.h"
 #include "extensionformatdetector.h"
 
-
+/*!
+ * @brief Practical implementation for \link FormatDetector format detection\endlink used by
+ * the \link ModuleLoader module loader\endlink.
+ *
+ * The class is a \link CompositeFormatDetector Composite detector\link composed of a
+ * \link MagicFormatDetector magic number detector\endlink, a
+ * \link SyncbyteFormatDetector syncbyte detector\endlink  and a
+ * \link ExtensionFormatDetector extension detector\endlink.
+ *
+ * The class can generate adders that give an interface for the \link Module modules\endlink
+ * to add detection methods.
+ */
 class StandardFormatDetector : public CompositeFormatDetector
 {
 public:
+    /**
+     * @brief Interface for the \link Module modules\endlink
+     * to add detection methods.
+     */
     class Adder
     {
     public:
+        /** @brief See MagicFormatDetector**/
         void addMagicNumber(const std::string& magicNumber);
+        /** @brief See MagicFormatDetector**/
         void addMagicNumber(const std::string& magicNumber, int offset);
+        /** @brief See SyncbyteFormatDetector**/
         void addSyncbyte(uint8_t syncbyte, int packetlength);
+        /** @brief See ExtensionDetector**/
         void addExtension(const std::string& extension);
     private:
         friend class StandardFormatDetector;
@@ -43,11 +62,11 @@ public:
 
 
     StandardFormatDetector();
-    ExtensionFormatDetector& extensionDetector();
-    MagicFormatDetector&     magicDetector();
-    SyncbyteFormatDetector&  syncbyteDetector();
 
-    Adder* newAdder(const std::string& key);
+    /**
+     * @brief Generate a new adder with the given format
+     */
+    Adder* newAdder(const std::string& format);
 
 
 private:

@@ -24,29 +24,94 @@
 
 class ObjectTypeTemplate;
 
-/*!
- * @brief The ObjectType class
+/**
+ * @brief Symbol representing a class of \link Object objects\endlink that have the
+ * same semantics and are to be parsed in the same way.
+ *
+ * The \link Module modules\endlink use the object's \link ObjectType type\link and its
+ * inheritence model for \link ObjectType types\link to generate \link Parser parser\endlink.
+ *
+ * A \link ObjectType type\endlink is defined by a \link ObjectTypeTemplate type template\endlink
+ * and values stored as \link Variant variants\endlink specified for some of its parameters. The easiest way to construct a
+ * \link ObjectType type\endlink is to use the \link ObjectTypeTemplate type template\endlink's
+ * operator().
  */
 class ObjectType
 {
 public:
+    /**
+     * @brief Construct a \link ObjectType type\endlink with the null
+     * \link type template ObjectTypeTemplate\endlink
+     */
     ObjectType();
+    /**
+     * @brief Construct a \link ObjectType type\endlink with the
+     * \link type template ObjectTypeTemplate\endlink given.
+     *
+     * The parameters are set to the null \link Variant variant\endlink, and can be
+     * set to other values subsequently.
+     */
     ObjectType(const ObjectTypeTemplate& typeTemplate);
 
+    /**
+     * @brief Get the \link ObjectTypeTemplate type template\endlink the \link ObjectType type\endlink implements
+     * @return
+     */
     const ObjectTypeTemplate &typeTemplate() const;
+    /**
+     * @brief Get the value of a parameter by its index.
+     *
+     * Raise an exception if out of bound
+     */
     const Variant& parameterValue(size_t index) const;
+
+    /**
+     * @brief Check if a parameter is non-null
+     */
     bool parameterSpecified(size_t index) const;
+
+    /**
+     * @brief Set the value of a parameter
+     *
+     * Raise an exception if out of bound
+     */
     void setParameter(size_t index, const Variant& value);
+
+    /**
+     * @brief Set a value for the first parameters
+     */
     template<typename... Args> void setParameters(Args... args){return _setParameters(0, args...);}
 
-    void setParameterByName(const std::string& parameterName, const Variant& value);
+    /**
+     * @brief Set the parameters not specified (i.e. with a null value)
+     * with the value of the other type's parameter with the same name
+     */
+    const ObjectType &importParameters(const ObjectType& other);
 
-    const ObjectType &importParameters(const ObjectType& type);
-
+    /**
+     * @brief Check if the \link ObjectTypeTemplate type template\endlink is null
+     */
     bool isNull() const;
 
+    /**
+     * @brief Check if the \link ObjectType other type\endlink has the same
+     * \link ObjectTypeTemplate type template\endlink and that the value for
+     * all of the parameters specified by the \link ObjectType other type\endlink
+     * are the same.
+     *
+     * The \link ObjectType type\endlink can have however parameters specified that
+     * are not by the other.
+     *
+     * This function define the basis of extension for two \link ObjectType types\endlink
+     * with the same \link ObjectTypeTemplate type template\endlink.
+     */
     bool extendsDirectly(const ObjectType& other) const;
 
+    /**
+     * @brief Output a representation of the \link ObjectType type\endlink into a stream
+     *
+     * Same effect as <<
+     */
     std::ostream& display(std::ostream& out) const;
 
     friend void swap(ObjectType& a, ObjectType& b);

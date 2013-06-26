@@ -46,11 +46,6 @@ void ObjectType::setParameter(size_t index, const Variant &value)
     _parametersValue.at(index).setValue(value);
 }
 
-void ObjectType::setParameterByName(const std::string& parameterName, const Variant &value)
-{
-    setParameter(_typeTemplate->parameterNumber(parameterName), value);
-}
-
 const ObjectType& ObjectType::importParameters(const ObjectType& other)
 {
     for(int i = 0; i < typeTemplate().numberOfParameters();++i)

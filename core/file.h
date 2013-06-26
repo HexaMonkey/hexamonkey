@@ -83,4 +83,18 @@ private:
     char _bitPosition;
 };
 
+/**
+ * @brief RAII object that insure that the \link File file\endlink returns to its
+ * original position when the ressource is liberated
+ */
+class FileAnchor
+{
+public:
+    FileAnchor(File& file);
+    ~FileAnchor();
+private:
+    File& file;
+    int64_t position;
+};
+
 #endif // FILE_H

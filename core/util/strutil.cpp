@@ -71,34 +71,6 @@ std::string formatDuration(unsigned long duration)
     return S.str();
 }
 
-std::string fixedPointRepresentation( int16_t i)
-{
-    double d = i;
-    d /= pow(2.0,8);
-    return toStr(d);
-}
-
-std::string fixedPointRepresentation(uint16_t i)
-{
-    double d = i;
-    d /= pow(2.0,8);
-    return toStr(d);
-}
-
-std::string fixedPointRepresentation( int32_t i)
-{
-    double d = i;
-    d /= pow(2.0,16);
-    return toStr(d);
-}
-
-std::string fixedPointRepresentation(uint32_t i)
-{
-    double d = i;
-    d /= pow(2.0,16);
-    return toStr(d);
-}
-
 std::string langageRepresentation(uint16_t isoCode)
 {
     std::stringstream S;
@@ -184,19 +156,3 @@ std::string sizeDisplay(int64_t bitCount)
     return S.str();
 }
 
-std::string defineStyle(const std::string& name)
-{
-    std::stringstream S;
-    for(unsigned int i = 0; i < name.size(); ++i)
-    {
-        if('a' <= name[i] && name[i] <= 'z')
-        {
-            S<<(char) toupper(name[i]);
-        }
-        else
-        {
-            S<<'_'<<name[i];
-        }
-    }
-    return S.str();
-}

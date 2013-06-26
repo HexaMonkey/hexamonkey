@@ -118,14 +118,31 @@ int64_t File::tellg() {return _file.tellg() * 8 + _bitPosition;}
 
 int64_t File::size()
 {
-    int64_t pos = tellg();
+    FileAnchor fileAnchor(*this);
     _file.seekg(0, std::ios::end);
-    int64_t s = tellg();
-    seekg(pos, std::ios::beg);
-    return s;
+    return tellg();
 }
 
 bool File::good()
 {
     return _file.is_open()&&!_file.fail()&&!_file.bad()&&!_file.eof();
+}
+
+
+FileAnchor::FileAnchor(File &file)
+    :file(file),
+     position(file.tellg())
+{
+
+}
+
+FileAnchor::~FileAnchor()
+{
+    if(!file.good())
+    {
+        file.clear();
+        file.close();
+        file.open();
+    }
+    file.seekg(position, std::ios_base::beg);
 }

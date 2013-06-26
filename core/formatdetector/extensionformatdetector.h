@@ -21,15 +21,18 @@
 #include "formatdetector.h"
 
 /*!
- * @brief The ExtensionFormatDetector class
+ * @brief Implementation for \link FormatDetector format detection\endlink that uses the
+ * extension of the file to detect a FormatDetector
  */
 class ExtensionFormatDetector : public FormatDetector
 {
 public:
+    /**
+     * @brief Map an extension to a format
+     */
     void addExtension(const std::string& format, const std::string& extension);
-protected:
-    virtual std::string doGetFormat(File& file) const override;
 private:
+    std::string doGetFormat(File& file) const override;
     std::map<std::string, std::string> _extensions;
 };
 

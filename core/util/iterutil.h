@@ -20,6 +20,9 @@
 
 #include <utility>
 
+/**
+ * Iteration wrapper to
+ */
 template<class Cont>
 class const_reverse_wrapper
 {

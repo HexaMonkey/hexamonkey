@@ -705,7 +705,8 @@ EXCLUDE_PATTERNS       = */compiler/* \
                          */rapidxml* \
                          */moc_* \
                          */archive/* \
-                         */modules/*
+                         */modules/* \
+                         */iterutil.h
 
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names

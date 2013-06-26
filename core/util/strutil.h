@@ -27,6 +27,9 @@
 #include <bitset>
 #include <stdint.h>
 
+/**
+ * @brief Convert a string into another type using standard stream conversion
+ */
 template <class T>
 T strTo(std::string s)
 {
@@ -37,6 +40,9 @@ T strTo(std::string s)
     return r;
 }
 
+/**
+ * @brief Convert a object into a string using standard stream conversion
+ */
 template <class T>
 std::string toStr(T t)
 {
@@ -45,6 +51,9 @@ std::string toStr(T t)
     return S.str();
 }
 
+/**
+ * Get an hex representation of a number
+ */
 template <class T>
 std::string toHex(T t, int size = 0)
 {
@@ -53,6 +62,9 @@ std::string toHex(T t, int size = 0)
     return S.str();
 }
 
+/**
+ * Get a representation of a number
+ */
 template <class T>
 std::string intDisplay(T t, int base = 10)
 {
@@ -61,25 +73,42 @@ std::string intDisplay(T t, int base = 10)
     return S.str();
 }
 
+/**
+ * @brief Parse a number from an hex digit
+ */
 int fromHex(char ch);
+
+/**
+ * @brief Parse a number from an hex string
+ */
 uint64_t fromHex(const std::string& s);
 
 const unsigned long secsFrom1904To1970 = 2082844800L;
 const unsigned long secsFrom1970to2001 = 978307200L;
+
+/**
+ * @brief Format a date as "{day}-{month}-{year} {hour}:{minute}:{second} GMT"
+ */
 std::string formatDate(unsigned long secsFrom1970);
+
+/**
+ * @brief Format a duration as "{hour}h{minutes}m{second}s"
+ */
 std::string formatDuration(unsigned long duration);
 
-std::string fixedPointRepresentation( int16_t i);
-std::string fixedPointRepresentation(uint16_t i);
-
+/**
+ * @brief Unpack a 3-letter language code from a 16 bits representation
+ */
 std::string langageRepresentation(uint16_t isoCode);
-std::string fixedPointRepresentation( int32_t i);
-std::string fixedPointRepresentation(uint32_t i);
 
+/**
+ * @brief Get the extension of a file name
+ */
 std::string extension(const std::string& path);
 
+/**
+ * @brief Get a representation of a file size
+ */
 std::string sizeDisplay(int64_t bitCount);
-
-std::string defineStyle(const std::string& name);
 
 #endif // STRUTIL_H_INCLUDED

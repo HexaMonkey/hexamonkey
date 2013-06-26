@@ -27,20 +27,10 @@ int msb(uint8_t byte)
     return 0;
 }
 
-uint8_t msbMask(int min)
+uint8_t lsbMask(int n)
 {
     uint8_t mask = 0;
-    for(int i = min; i<8; ++i)
-    {
-        mask|= 1<<i;
-    }
-    return mask;
-}
-
-uint8_t lsbMask(int max)
-{
-    uint8_t mask = 0;
-    for(int i = 0; i<max; ++i)
+    for(int i = 0; i < n; ++i)
     {
         mask|= 1<<i;
     }

@@ -34,6 +34,9 @@ class Variable;
 class Scope;
 class VariableDescriptor;
 
+/**
+ * @brief
+ */
 class Interpreter
 {
 public:

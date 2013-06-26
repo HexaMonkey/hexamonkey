@@ -163,7 +163,6 @@ HEADERS  += mainwindow.h \
     ../core/modules/mkv/mkvmodule.h \
     ../core/util/unused.h \
     ../core/util/strutil.h \
-    ../core/util/str.h \
     ../core/util/iterutil.h \
     ../core/util/fileutil.h \
     ../core/util/csvreader.h \

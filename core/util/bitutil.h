@@ -21,26 +21,18 @@
 #include <stdint.h>
 
 /*!
- * @brief msb
- * \param byte
- * \return
+ * @brief Get the index of the most signifigant bit
  */
 int msb(uint8_t byte);
 
 /*!
- * @brief msbMask
- * \param min
- * \return
+ * @brief Get a bit mask with the n least siginifigant bits set
  */
-uint8_t msbMask(int min);
+uint8_t lsbMask(int n);
 
-/*!
- * @brief lsbMask
- * \param max
- * \return
+/**
+ * @brief Get the number of bits in a byte
  */
-uint8_t lsbMask(int max);
-
 uint8_t popCount(uint64_t word);
 
 #endif // MASKUTIL_H

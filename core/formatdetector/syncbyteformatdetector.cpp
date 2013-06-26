@@ -18,6 +18,10 @@
 #include "syncbyteformatdetector.h"
 #include <algorithm>
 
+SyncbyteFormatDetector::SyncbyteFormatDetector(int numberOfPeriods) : numberOfPeriods(numberOfPeriods)
+{
+}
+
 void SyncbyteFormatDetector::addSyncbyte(const std::string& format, uint8_t syncbyte, int packetlength)
 {
     _formats[format] = std::make_pair(syncbyte, packetlength);
@@ -33,7 +37,7 @@ std::string SyncbyteFormatDetector::doGetFormat(File &file) const
         int packetlength = entry.second.second;
 
         std::vector<int> occurences(packetlength,0);
-        for(int i = 0; i < check; ++i)
+        for(int i = 0; i < numberOfPeriods; ++i)
         {
             for(int j = 0; j < packetlength; ++j)
             {
@@ -44,7 +48,7 @@ std::string SyncbyteFormatDetector::doGetFormat(File &file) const
             }
         }
 
-        if(std::any_of(occurences.begin(), occurences.end(), [](int i){return i==check;}))
+        if(std::any_of(occurences.begin(), occurences.end(), [this](int i){return i==numberOfPeriods;}))
         {
             return format;
         }

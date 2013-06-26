@@ -35,7 +35,7 @@
  * attributes, however it cannot add children : for this functionnality subclass
  * ContainerParser.
  *
- * The class is virtual and
+ * The class is virtual and needs to be reimplemented
  */
 class Parser
 {

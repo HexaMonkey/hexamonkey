@@ -21,7 +21,14 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Check if a file exists
+ */
 bool fileExists(const std::string& path);
+
+/**
+ * @brief Get a list of the files in a directory
+ */
 void getDirContent(const std::string& path, std::vector<std::string>& content);
 
 

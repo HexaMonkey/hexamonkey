@@ -22,11 +22,29 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Parse a cvs file
+ */
 class CSVReader {
 public:
+    /**
+     * @brief Construct a reader from an input stream
+     */
     CSVReader(std::istream &input);
+
+    /**
+     * @brief Check if the input stream still has a line
+     */
     bool hasNextLine();
+
+    /**
+     * @brief Parse a line into a string vector
+     */
     void readNextLine(std::vector<std::string> &fields);
+
+    /**
+     * @brief Ignore the next line in the input stream
+     */
     void ignoreNextLine();
 private:
     std::istream &_input;

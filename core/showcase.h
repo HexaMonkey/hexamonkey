@@ -22,7 +22,8 @@
 #include <string>
 
 /*!
- * @brief The Showcase class
+ * @brief List of names for children of \link Object objects\endlink
+ * that should be displayed prominently.
  */
 class Showcase
 {

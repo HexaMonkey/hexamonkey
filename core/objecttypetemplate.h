@@ -25,8 +25,11 @@
 #include "variant.h"
 #include "objecttype.h"
 
-/*!
- * @brief The ObjectTypeTemplate class
+/**
+ * @brief Template for a \link ObjectType type\endlink
+ *
+ * A \link ObjectTypeTemplate type template\endlink is defined by a unique
+ * name and a number of named parameters
  */
 class ObjectTypeTemplate
 {
@@ -34,20 +37,53 @@ public:
     ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames);
     ObjectTypeTemplate(const std::string &name);
 
+    /**
+     * @brief Get the name used as a unique identifiers
+     */
     const std::string& name() const;
+
+    /**
+     * @brief Get the number of parameters
+     */
     int numberOfParameters() const;
+
+    /**
+     * @brief Get the name of a parameter given its name
+     *
+     * Raise an exception if out of bounds
+     */
     const std::string& parameterName(int index) const;
+
+    /**
+     * @brief Get the index of a parameter given its name
+     *
+     * Returns -1 if no parameter of this name exists
+     */
     int parameterNumber(const std::string& name) const;
+
+    /**
+     * @brief Check if the template has the name "". \link ObjectType Types\endlink when constructed
+     * by default have a null \link ObjectTypeTemplate template\endlink.
+     */
     bool isNull() const;
 
+    /**
+     * @brief Push back a new parameter
+     */
     void addParameter(const std::string& parameterName);
 
+    /**
+     * @brief Instanciate a \link ObjectType type\endlink with the
+     * \link ObjectTypeTemplate template\endlink and set values for a number of its parameters
+     */
     template<typename... Args> ObjectType operator()(Args... args) const
     {
         ObjectType type(*this);
         type.setParameters(args...);
         return type;
     }
+
+
     friend bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
     friend bool operator< (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
 
