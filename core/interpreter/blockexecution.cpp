@@ -8,22 +8,20 @@
 
 #include <limits>
 
-BlockExecution::BlockExecution(Program::const_iterator begin,
-                               Program::const_iterator end,
+BlockExecution::BlockExecution(Program program,
                                const Module &module,
-                               Interpreter &interpreter,
                                Scope& scope,
                                ContainerParser *parser)
-    : begin(begin),
-      end(end),
-      current(begin),
-      last(end),
+    : program(program),
+      begin(program.begin()),
+      end(program.end()),
+      current(program.begin()),
+      last(program.end()),
       lineRepeatCount(0),
       _module(module),
-      _interpreter(interpreter),
       _scope(scope),
       _parser(parser),
-      returnHolder(interpreter),
+      returnHolder(program),
       returnValue(nullptr),
       inLoop(false),
       subBlockExitCode(ExitCode::NoExit)
@@ -171,11 +169,6 @@ const Module &BlockExecution::module()
     return _module;
 }
 
-Interpreter &BlockExecution::interpreter()
-{
-    return _interpreter;
-}
-
 Scope &BlockExecution::scope()
 {
     return _scope;
@@ -194,14 +187,14 @@ ContainerParser &BlockExecution::parser()
 Variable& BlockExecution::extractReturnValue()
 {
     if(returnValue == nullptr)
-        return interpreter().null();
+        return program.null();
     else
         return returnHolder.extract(*returnValue);
 }
 
-void BlockExecution::setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd, bool loop)
+void BlockExecution::setSubBlock(Program program, bool loop)
 {
-    subBlock.reset(new BlockExecution(subBegin, subEnd, module(), interpreter(), scope(), _parser));
+    subBlock.reset(new BlockExecution(program, module(), scope(), _parser));
     if(loop || inLoop)
         subBlock->inLoop = true;
     subBlockExitCode = ExitCode::NoExit;
@@ -216,8 +209,8 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 {
     if(hasParser())
     {
-        Holder holder(interpreter());
-        ObjectType type = holder.cevaluate(declaration.elem(0), scope(), module()).toObjectType();
+        Holder holder(declaration.elem(0));
+        ObjectType type = holder.cevaluate(scope(), module()).toObjectType();
         std::string name = declaration.elem(1).payload().toString();
         bool showcased = declaration.elem(2).payload().toInteger();
         if(parser().addVariable(type, name) != nullptr)
@@ -233,29 +226,29 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
     Variant* variant = scope().declare(declaration.elem(0).payload());
     if(declaration.size() >= 2 && variant != nullptr)
     {
-        Holder holder(interpreter());
-        *variant = holder.evaluate(declaration.elem(1), scope(), module());
+        Holder holder(declaration.elem(1));
+        *variant = holder.evaluate(scope(), module());
     }
     ++current;
 }
 
 void BlockExecution::handleRightValue(const Program &rightValue)
 {
-    Holder holder(interpreter());
-    holder.evaluate(rightValue, scope(), module());
+    Holder holder(rightValue);
+    holder.evaluate(scope(), module());
     ++current;
 }
 
 void BlockExecution::handleCondition(const Program &condition)
 {
-    Holder holder(interpreter());
-    if(holder.cevaluate(condition.elem(0), scope(), module()).toBool())
+    Holder holder(condition.elem(0));
+    if(holder.cevaluate(scope(), module()).toBool())
     {
-        setSubBlock(condition.elem(1).begin(), condition.elem(1).end(), false);
+        setSubBlock(condition.elem(1), false);
     }
     else
     {
-        setSubBlock(condition.elem(2).begin(), condition.elem(2).end(), false);
+        setSubBlock(condition.elem(2), false);
     }
 }
 
@@ -263,7 +256,7 @@ void BlockExecution::handleLoop(const Program &loop)
 {
     if(loopCondition(loop))
     {
-        setSubBlock(loop.elem(1).begin(), loop.elem(1).end(), true);
+        setSubBlock(loop.elem(1), true);
     }
     else
     {
@@ -275,7 +268,7 @@ void BlockExecution::handleDoLoop(const Program &loop)
 {
     if(lineRepeatCount <= 1 || loopCondition(loop))
     {
-        setSubBlock(loop.elem(1).begin(), loop.elem(1).end(), true);
+        setSubBlock(loop.elem(1), true);
     }
     else
     {
@@ -308,14 +301,14 @@ bool BlockExecution::handleContinue()
 void BlockExecution::handleReturn(const Program &line)
 {
     const Program& rightValue = line.elem(0);
-    returnValue = &returnHolder.add(interpreter().evaluate(rightValue, scope(), module()));
+    returnValue = &returnHolder.add(rightValue.evaluate(scope(), module()));
     current = end;
 }
 
 bool BlockExecution::loopCondition(const Program &loop)
 {
-    Holder holder(interpreter());
+    Holder holder(loop.elem(0));
 
-    return holder.cevaluate(loop.elem(0), scope()).toBool()
-           && ((!interpreter().hasDeclaration(loop.elem(1)) || parser().availableSize()> 0));
+    return holder.cevaluate(scope()).toBool()
+           && ((!loop.elem(1).hasDeclaration() || parser().availableSize()> 0));
 }

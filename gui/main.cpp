@@ -20,7 +20,7 @@
 #include <QIcon>
 
 #include "moduleloader.h"
-#include "interpreterconstructor.h"
+#include "interpreter.h"
 #include "mainwindow.h"
 
 #include "standardmodule.h"
@@ -43,17 +43,17 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("mkv",   new MkvModule);
     moduleLoader.addModule("hmc",   new HmcModule);
 
-    InterpreterConstructor interpreterConstructor(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
+    Interpreter interpreter(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
 
 #ifdef __MINGW32__
-    moduleLoader.addFolder(".\\scripts\\", interpreterConstructor);
-    moduleLoader.addFolder("..\\scripts\\", interpreterConstructor);
+    moduleLoader.addFolder(".\\scripts\\", interpreter);
+    moduleLoader.addFolder("..\\scripts\\", interpreter);
 #else
-    moduleLoader.addFolder("./scripts/", interpreterConstructor);
-    moduleLoader.addFolder("../scripts/", interpreterConstructor);
+    moduleLoader.addFolder("./scripts/", interpreter);
+    moduleLoader.addFolder("../scripts/", interpreter);
 #endif
 
-    MainWindow window(moduleLoader, interpreterConstructor);
+    MainWindow window(moduleLoader, interpreter);
 
     window.setWindowTitle("HexaMonkey");
     window.setWindowIcon(QIcon(":/logo.svg"));

@@ -29,7 +29,7 @@ class Object;
 class Filter
 {
 public:
-    Filter(Interpreter* interpreter);
+    Filter(const Interpreter &interpreter);
 
     bool setExpression(const std::string& expression);
     const std::string& expression();
@@ -37,9 +37,8 @@ public:
     bool filterChildren(Object &object);
 
 private:
-    Interpreter& interpreter();
-
-    std::unique_ptr<Interpreter> _interpreter;
+    const Interpreter& _interpreter;
+    Program _program;
     std::string _expression;
 };
 

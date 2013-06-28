@@ -22,14 +22,11 @@
 
 #include "mapmodule.h"
 #include "program.h"
-#include "interpreter.h"
-
-class Interpreter;
 
 class FromFileModule : public Module
 {
 public:
-    FromFileModule(const std::string& path, Interpreter* interpreter);
+    FromFileModule(Program program);
 
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
@@ -62,9 +59,9 @@ private:
     Program::const_iterator headerEnd(const std::string& name) const;
     FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
 
-    Interpreter& interpreter() const;
+    const Program& program() const;
 
-    std::unique_ptr<Interpreter> _interpreter;
+    Program _program;
 
     std::unordered_map<std::string, Program> _definitions;
     std::unordered_map<std::string, Program> _functions;
@@ -74,7 +71,6 @@ private:
     mutable std::map<std::string, bool> _sizeDependency;
     mutable std::map<std::string, Program::const_iterator> _headerEnd;
 
-    bool programLoaded;
 };
 
 #endif // FROMFILEMODULE_H

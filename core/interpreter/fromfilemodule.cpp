@@ -42,37 +42,36 @@ const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;
 const std::vector<Variant> emptyParameterDefaults;
 
-FromFileModule::FromFileModule(const std::string &path, Interpreter* interpreter)
-    :_interpreter(interpreter)
+FromFileModule::FromFileModule(Program program)
+    :_program(program)
 {
     UNUSED(hmcElemNames);
-    programLoaded = loadProgram(path);
 }
 
 void FromFileModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
-    if(programLoaded)
+    if(program().isValid())
     {
-        Program formatDetections = interpreter().program().elem(0);
+        Program formatDetections = program().elem(0);
         loadFormatDetections(formatDetections, formatAdder);
     }
 }
 
 void FromFileModule::requestImportations(std::vector<std::string> &formatRequested)
 {
-    if(programLoaded)
+    if(program().isValid())
     {
-        Program imports = interpreter().program().elem(1);
+        Program imports = program().elem(1);
         loadImports(imports, formatRequested);
     }
 }
 
 bool FromFileModule::doLoad()
 {
-    if(!programLoaded)
+    if(!program().isValid())
         return false;
 
-    Program classDeclarations = interpreter().program().elem(2);
+    Program classDeclarations = program().elem(2);
     nameScan(classDeclarations);
     loadExtensions(classDeclarations);
     loadSpecifications(classDeclarations);
@@ -91,7 +90,7 @@ Parser *FromFileModule::getParser(const ObjectType &type, Object &object, const 
     if(definition.size() == 0)
         return nullptr;
 
-    return new FromFileParser(object, fromModule, interpreter(), definition, headerEnd(name));
+    return new FromFileParser(object, fromModule, definition, headerEnd(name));
 }
 
 int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &module) const
@@ -107,7 +106,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     Program definition = definitionIt->second;
     std::set<VariableDescriptor> descriptors;
-    interpreter().buildDependencies(definition, true, descriptors);
+    definition.buildDependencies(true, descriptors);
     if(sizeDependency(name))
     {
         std::cout<<type.typeTemplate().name()<<" unknown size"<<std::endl;
@@ -117,7 +116,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     if(module.getFather(type).isNull())
     {
-        int64_t size = interpreter().guessSize(definition, module);
+        int64_t size = definition.guessSize(module);
         if(size>0)
         {
             std::cout<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
@@ -143,7 +142,7 @@ Variable *FromFileModule::doExecuteFunction(const std::string &name, Scope &para
     if(it == _functionDescriptors.end())
         return nullptr;
 
-    Holder holder(interpreter());
+    Holder holder(program());
     CompositeScope scope;
     LocalScope localScope(holder);
 
@@ -151,7 +150,7 @@ Variable *FromFileModule::doExecuteFunction(const std::string &name, Scope &para
     scope.addScope(params);
 
     const Program& definition = std::get<3>(it->second);
-    BlockExecution blockExecution(definition.begin(), definition.end(), fromModule, interpreter(), scope, nullptr);
+    BlockExecution blockExecution(definition, fromModule, scope, nullptr);
 
     blockExecution.execute();
 
@@ -186,46 +185,6 @@ const std::vector<Variant> &FromFileModule::doGetFunctionParameterDefaults(const
         return emptyParameterDefaults;
 
     return std::get<2>(it->second);
-}
-
-bool FromFileModule::loadProgram(const std::string path)
-{
-
-    std::string hmPath  = path+".hm";
-    std::string hmcPath = path+".hmc";
-
-#ifdef USE_QT
-
-    QFileInfo hmInfo(hmPath.c_str());
-    QFileInfo hmcInfo(hmcPath.c_str());
-    if(!hmInfo.exists())
-    {
-        if(!hmcInfo.exists())
-        {
-            std::cerr<<"Description file not found: "<<hmPath<<std::endl;
-            return false;
-        }
-        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
-        return interpreter().loadFromHMC(hmcPath);
-    }
-    else
-    {
-        if(!hmcInfo.exists() || hmcInfo.lastModified() < hmInfo.lastModified())
-        {
-            std::cout<<"Compile description file : "<<hmPath<<std::endl;
-            return interpreter().loadFromHM(hmPath, Interpreter::file);
-        }
-        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
-        return interpreter().loadFromHMC(hmcPath);
-    }
-#else
-    if(fileExists(hmPath))
-        return interpreter().loadFromHM(hmPath, Interpreter::file);
-    else if(fileExists(hmcPath))
-        return interpreter().loadFromHMC(hmcPath);
-    else
-        return false;
-#endif
 }
 
 void FromFileModule::loadFormatDetections(Program &formatDetections, StandardFormatDetector::Adder &formatAdder)
@@ -318,7 +277,7 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            Program program = extension.elem(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               return interpreter().evaluateType(program, ConstTypeScope(type), *this);
+               return program.evaluateType(ConstTypeScope(type), *this);
            });
 
            std::cout<<"    "<<childTemplate<<" extends "<<program.elem(0).payload()<<"(...)"<<std::endl;
@@ -339,15 +298,15 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             ObjectType child = getTemplate(classDeclaration.elem(0).elem(0).elem(0).payload().toString())();
             for(Program type : classDeclaration.elem(0).elem(2))
             {
-                ObjectType parent(interpreter().evaluateType(type, EmptyScope(), *this));
+                ObjectType parent(type.evaluateType(EmptyScope(), *this));
                 setSpecification(parent, child);
                 std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
             }
         }
         else if(classDeclaration.id() == FORWARD)
         {
-            ObjectType parent(interpreter().evaluateType(classDeclaration.elem(0), EmptyScope(), *this));
-            ObjectType child(interpreter().evaluateType(classDeclaration.elem(1),  EmptyScope(), *this));
+            ObjectType parent(classDeclaration.elem(0).evaluateType(EmptyScope(), *this));
+            ObjectType child(classDeclaration.elem(1).evaluateType(EmptyScope(), *this));
             setSpecification(parent, child);
             std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
         }
@@ -368,7 +327,7 @@ bool FromFileModule::sizeDependency(const std::string &name) const
 
     Program definition = definitionIt->second;
     std::set<VariableDescriptor> descriptors;
-    interpreter().buildDependencies(definition, true, descriptors);
+    definition.buildDependencies(true, descriptors);
     bool result = descriptors.find(sizeDescriptor) != descriptors.end();
     _sizeDependency[name] = result;
     return result;
@@ -389,7 +348,7 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
 
         //Check dependencies
         std::set<VariableDescriptor> variableSet;
-        interpreter().buildDependencies(line, true, variableSet);
+        line.buildDependencies(true, variableSet);
         if(std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariableDescriptor& headerOnlyVar) -> bool
         {
             auto find = variableSet.find(headerOnlyVar);
@@ -442,19 +401,19 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
 
     for(const Program& argument: arguments)
     {
-        Holder holder(interpreter());
+        Holder holder(argument.elem(2));
         parameterNames.push_back(argument.elem(1).payload().toString());
         parameterModifiables.push_back(argument.elem(0).payload().toBool());
-        parameterDefaults.push_back(holder.cevaluate(argument.elem(2), EmptyScope(), *this));
+        parameterDefaults.push_back(holder.cevaluate(EmptyScope(), *this));
     }
 
     auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);
     return _functionDescriptors.insert(std::make_pair(name, functionDescriptor)).first;
 }
 
-Interpreter &FromFileModule::interpreter() const
+const Program &FromFileModule::program() const
 {
-    return *_interpreter;
+    return _program;
 }
 
 

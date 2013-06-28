@@ -24,14 +24,21 @@
 #include "parser.h"
 #include "holder.h"
 
-Filter::Filter(Interpreter* interpreter): _interpreter(interpreter)
+Filter::Filter(const Interpreter& interpreter): _interpreter(interpreter)
 {
 }
 
 bool Filter::setExpression(const std::string &expression)
 {
-    bool success = !expression.empty() && interpreter().loadFromString(expression);
-    if(success)
+    if(expression.empty())
+    {
+        _expression = "";
+        return false;
+    }
+
+    _program = _interpreter.loadFromString(expression);
+
+    if(_program.isValid())
     {
         _expression = expression;
         return true;
@@ -39,7 +46,6 @@ bool Filter::setExpression(const std::string &expression)
     else
     {
         _expression = "";
-        interpreter().clear();
         return false;
     }
 }
@@ -54,14 +60,10 @@ bool Filter::filterChildren(Object& object)
 
     if(_expression != "")
     {
-        Holder holder(interpreter());
-        return holder.cevaluate(interpreter().program().elem(0), ConstObjectScope(object, holder)).toBool();
+        Holder holder(_program.elem(0));
+        return holder.cevaluate(ConstObjectScope(object, holder)).toBool();
     }
     else
         return true;
 }
 
-Interpreter &Filter::interpreter()
-{
-    return *_interpreter;
-}

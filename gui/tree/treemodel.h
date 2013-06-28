@@ -29,7 +29,7 @@
 
 
 class TreeItem;
-class InterpreterConstructor;
+class Interpreter;
 /*!
  * @brief The DataTreeModel class
  */
@@ -37,7 +37,7 @@ class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    TreeModel(const QString &data, const InterpreterConstructor& interpreterConstructor, QObject *parent = 0);
+    TreeModel(const QString &data, const Interpreter& interpreter, QObject *parent = 0);
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -81,7 +81,7 @@ private:
 
     TreeItem *rootItem;
     QModelIndex current;
-    const InterpreterConstructor& interpreterConstructor;
+    const Interpreter& interpreter;
     ResourceManager _resourceManager;
 };
 

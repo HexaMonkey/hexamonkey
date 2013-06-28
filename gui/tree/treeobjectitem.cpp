@@ -24,7 +24,7 @@ std::ostream& displayName(std::ostream& out, const std::string& name);
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
 std::ostream& displayInfo(std::ostream& out, const std::string& info);
 
-TreeObjectItem::TreeObjectItem(Object& object, Interpreter *interpreter, TreeItem *parent) :
+TreeObjectItem::TreeObjectItem(Object& object, const Interpreter &interpreter, TreeItem *parent) :
     TreeItem(QList<QVariant>({"", "", ""}), parent),
     _object(object),
     _index(0),

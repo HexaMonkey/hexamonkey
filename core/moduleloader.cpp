@@ -23,8 +23,9 @@
 #include "strutil.h"
 #include "fileutil.h"
 
-#include "interpreterconstructor.h"
+#include "interpreter.h"
 #include "objecttypetemplate.h"
+
 
 #define loaderLambda () -> Module*
 
@@ -82,7 +83,7 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
     }
 }
 
-void ModuleLoader::addFolder(const std::string &folderName, const InterpreterConstructor& interpreterConstructor)
+void ModuleLoader::addFolder(const std::string &folderName, const Interpreter &interpreter)
 {
     std::vector<std::string> files;
     getDirContent(folderName, files);
@@ -98,7 +99,7 @@ void ModuleLoader::addFolder(const std::string &folderName, const InterpreterCon
 
     for(const std::string& file : selected)
     {
-        addModule(file, new FromFileModule(folderName+file, interpreterConstructor.newInstance()));
+        addModule(file, new FromFileModule(interpreter.loadFromFile(folderName+file)));
     }
 }
 

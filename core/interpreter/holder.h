@@ -3,31 +3,34 @@
 
 #include <map>
 #include "module.h"
-class Interpreter;
+#include "program.h"
 class Variable;
 class Variant;
-class Program;
 
 class Holder
 {
 public:
-    Holder(Interpreter& interpreter);
+    Holder(Program program);
     ~Holder();
 
     Variant& getNew();
     Variant& copy(const Variant& value);
-    Variant& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
-    const Variant& cevaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
+    Variant& evaluate(const Scope& scope, const Module& module = Module());
+    const Variant& cevaluate(const Scope& scope, const Module& module = Module());
 
 
 private:
-    friend class Interpreter;
+    Holder(const Holder&) = delete;
+    Holder& operator=(Holder other) = delete;
+
+    friend class Program;
     friend class BlockExecution;
     friend class FromFileModule;
-    Variable& add(Variable& var);
-    Variable& extract(Variable& var);
+    Variable& add(Variable& variable);
+    Variable& extract(Variable& variable);
 
-    Interpreter& _interpreter;
+
+    Program _program;
     std::multimap<const Variant*, Variable*> _held;
 
 };

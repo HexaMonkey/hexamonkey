@@ -48,7 +48,6 @@ SOURCES += main.cpp\
     ../core/interpreter/variabledescriptor.cpp \
     ../core/interpreter/variable.cpp \
     ../core/interpreter/program.cpp \
-    ../core/interpreter/interpreterconstructor.cpp \
     ../core/interpreter/interpreter.cpp \
     ../core/interpreter/holder.cpp \
     ../core/interpreter/fromfileparser.cpp \
@@ -127,7 +126,6 @@ HEADERS  += mainwindow.h \
     ../core/interpreter/variabledescriptor.h \
     ../core/interpreter/variable.h \
     ../core/interpreter/program.h \
-    ../core/interpreter/interpreterconstructor.h \
     ../core/interpreter/interpreter.h \
     ../core/interpreter/fromfileparser.h \
     ../core/interpreter/fromfilemodule.h \

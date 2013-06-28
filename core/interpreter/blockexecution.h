@@ -13,10 +13,8 @@ class Scope;
 class BlockExecution
 {
 public:
-    BlockExecution(Program::const_iterator begin,
-                   Program::const_iterator end,
+    BlockExecution(Program program,
                    const Module& module,
-                   Interpreter& interpreter,
                    Scope& scope,
                    ContainerParser* parser = nullptr);
 
@@ -30,7 +28,6 @@ public:
     bool done();
 
     const Module& module();
-    Interpreter& interpreter();
     Scope& scope();
 
     bool hasParser();
@@ -39,7 +36,7 @@ public:
     Variable &extractReturnValue();
 
 private:
-    void setSubBlock(Program::const_iterator subBegin, Program::const_iterator subEnd, bool loop);
+    void setSubBlock(Program program, bool loop);
     void resetSubBlock();
 
     void handleDeclaration(const Program& declaration, size_t& parseQuota);
@@ -54,7 +51,7 @@ private:
 
     bool loopCondition(const Program& loop);
 
-
+    Program program;
     const Program::const_iterator begin;
     const Program::const_iterator end;
     Program::const_iterator current;
@@ -62,7 +59,6 @@ private:
     unsigned int lineRepeatCount;
 
     const Module& _module;
-    Interpreter& _interpreter;
     Scope& _scope;
     ContainerParser* _parser;
 

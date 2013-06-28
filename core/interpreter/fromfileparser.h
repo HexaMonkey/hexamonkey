@@ -29,14 +29,11 @@
 #include "compositescope.h"
 #include "blockexecution.h"
 
-class Interpreter;
 
 class FromFileParser : public ContainerParser
 {
 public:
-    FromFileParser(Object& object, const Module& module, Interpreter& interpreter, Program program, Program::const_iterator headerEnd);
-
-    Interpreter &interpreter() const;
+    FromFileParser(Object& object, const Module& module, Program program, Program::const_iterator headerEnd);
 
 protected:
     void doParseHead() override;
@@ -57,8 +54,6 @@ private:
 
     Program::const_iterator headerEnd;
 
-
-    Interpreter& _interpreter;
     std::unique_ptr<Holder> holder;
     std::unique_ptr<MutableObjectScope> objectScope;
     std::unique_ptr<LocalScope> localScope;

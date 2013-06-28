@@ -19,25 +19,48 @@
 #define EBMLOBJECT_H
 
 #include "object.h"
+#include "module.h"
+#include "variabledescriptor.h"
+
+
+#include <memory>
+#include <set>
 
 class Interpreter;
 
+
 class Program
 {
+    class Memory
+    {
+        friend class Interpreter;
+        friend class Program;
+
+        Variable& registerVariable(Variable* variable);
+        void releaseVariable(Variable& variable);
+        File& file();
+        Object& setFileObject(Object* fileObject);
+
+        File _file;
+        std::unique_ptr<Object> _fileObject;
+        std::map<Variable*, std::unique_ptr<Variable> > _variables;
+    };
+
     template<class It>
     class _const_iterator : public std::iterator<std::input_iterator_tag, Program>
     {
         friend class Program;
         It _it;
+        std::shared_ptr<Memory> _memory;
 
-        _const_iterator<It>(const It& it):_it(it){}
+        _const_iterator<It>(const It& it, std::shared_ptr<Memory> memory):_it(it), _memory(memory){}
         public:
             _const_iterator<It>(){}
             _const_iterator<It>& operator++() {++_it; return *this;}
             _const_iterator<It> operator++(int) {const_iterator dup(*this); ++_it; return dup;}
             _const_iterator<It>& operator--() {--_it; return *this;}
             _const_iterator<It> operator--(int) {const_iterator dup(*this); --_it; return dup;}
-            Program operator*() const {return Program(**_it);}
+            Program operator*() const {return Program(**_it, _memory);}
             bool operator==(const _const_iterator<It>& other) const {return _it==other._it;}
             bool operator!=(const _const_iterator<It>& other) const {return !(*this==other);}
     };
@@ -48,6 +71,7 @@ public:
 
     Program();
 
+    bool isValid() const;
     uint32_t id() const;
     const Variant& payload() const;
     int size() const;
@@ -58,13 +82,40 @@ public:
     const_reverse_iterator rbegin() const;
     const_reverse_iterator rend() const;
 
+    ObjectType evaluateType(const Scope& scope, const Module& module) const;
+    bool hasDeclaration() const;
+
+    void buildDependencies(bool modificationOnly, std::set<VariableDescriptor>& descriptors) const;
+
+    int64_t guessSize(const Module& module) const;
+
 private:
     friend class Interpreter;
+    friend class Holder;
+    friend class BlockExecution;
+    Program(Object& object, std::shared_ptr<Memory> memory);
 
-    Program(Object& object);
+    Variable& copy(const Variant& value) const;
+    Variable& constReference(const Variant& value) const;
+    Variable& reference(Variant& value) const;
+    Variable& null() const;
+    Variable& registerVariable(Variable* variable) const;
+    void releaseVariable(Variable& variable) const;
+
+    Variable& evaluate(const Scope& scope, const Module& module = Module()) const;
+
+    Variable& evaluateUnaryOperation(int op, Variable& a) const;
+    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b) const;
+    Variable& evaluateTernaryOperation(int op, Variable& a, Variable& b, Variable& c) const;
+    Variable& evaluateFunction(const Scope& scope, const Module& module) const;
+    Variable& evaluateVariable(const Scope& scope, const Module& module = Module()) const;
+
+    void buildVariableDescriptor(const Scope& scope, const Module& module, VariableDescriptor& variableDescriptor) const;
+
+    Program::Memory& memory() const;
 
     Object* _object;
-    Interpreter* _interpreter;
+    std::shared_ptr<Program::Memory> _memory;
 };
 
 #endif // EBMLOBJECT_H

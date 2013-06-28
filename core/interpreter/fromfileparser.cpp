@@ -24,15 +24,14 @@
 #include "holder.h"
 #include "unused.h"
 
-FromFileParser::FromFileParser(Object &object, const Module &module, Interpreter &interpreter, Program program, Program::const_iterator headerEnd)
+FromFileParser::FromFileParser(Object &object, const Module &module, Program program, Program::const_iterator headerEnd)
     : ContainerParser(object, module),
       headerEnd(headerEnd),
-      _interpreter(interpreter),
-      holder(new Holder(interpreter)),
+      holder(new Holder(program)),
       objectScope(new MutableObjectScope(object, *holder)),
       localScope(new LocalScope(*holder)),
       _scope(new CompositeScope),
-      _blockExecution(new BlockExecution(program.begin(), program.end(), module, interpreter, scope(), this))
+      _blockExecution(new BlockExecution(program, module, scope(), this))
 {
     _scope->addScope(*localScope);
     _scope->addScope(*objectScope);
@@ -125,8 +124,8 @@ Program::const_iterator FromFileParser::executeProgram(const Program::const_iter
 
 void FromFileParser::handleDeclaration(const Program &declaration)
 {
-    Holder holder(interpreter());
-    ObjectType type = holder.cevaluate(declaration.elem(0), scope(), module()).toObjectType();
+    Holder holder(declaration.elem(0));
+    ObjectType type = holder.cevaluate(scope(), module()).toObjectType();
     std::string name = declaration.elem(1).payload().toString();
     addVariable(type, name);
 }
@@ -136,21 +135,21 @@ void FromFileParser::handleLocalDeclaration(const Program &declaration)
     Variant* variant = scope().declare(declaration.elem(0).payload());
     if(declaration.size() >= 2 && variant != nullptr)
     {
-        Holder holder(interpreter());
-        *variant = holder.evaluate(declaration.elem(1), scope(), module());
+        Holder holder(declaration.elem(1));
+        *variant = holder.evaluate(scope(), module());
     }
 }
 
 void FromFileParser::handleRightValue(const Program &rightValue)
 {
-    Holder holder(interpreter());
-    holder.evaluate(rightValue, scope(), module());
+    Holder holder(rightValue);
+    holder.evaluate(scope(), module());
 }
 
 void FromFileParser::handleCondition(const Program &condition)
 {
-    Holder holder(interpreter());
-    if(holder.cevaluate(condition.elem(0), scope(), module()).toBool())
+    Holder holder(condition.elem(0));
+    if(holder.cevaluate(scope(), module()).toBool())
     {
         executeProgram(condition.elem(1).begin(), condition.elem(1).end());
     }
@@ -162,11 +161,12 @@ void FromFileParser::handleCondition(const Program &condition)
 
 bool FromFileParser::handleLoop(const Program &loop)
 {
-    Holder holder(interpreter());
-    if(interpreter().hasDeclaration(loop.elem(1)) && availableSize()<= 0)
+
+    if(loop.elem(1).hasDeclaration() && availableSize()<= 0)
         return true;
 
-    if(!holder.cevaluate(loop.elem(0), scope()).toBool())
+    Holder holder(loop.elem(0));
+    if(!holder.cevaluate(scope()).toBool())
     {
         return true;
     }
@@ -183,11 +183,5 @@ Scope &FromFileParser::scope()
 BlockExecution &FromFileParser::blockExecution()
 {
     return *_blockExecution;
-}
-
-
-Interpreter &FromFileParser::interpreter() const
-{
-    return _interpreter;
 }
 

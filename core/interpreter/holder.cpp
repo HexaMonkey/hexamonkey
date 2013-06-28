@@ -3,8 +3,8 @@
 #include "variable.h"
 
 
-Holder::Holder(Interpreter& interpreter)
-    : _interpreter(interpreter)
+Holder::Holder(Program program)
+    : _program(program)
 {
 }
 
@@ -13,50 +13,52 @@ Holder::~Holder()
     while(!_held.empty())
     {
         auto it = _held.begin();
-        _interpreter.release(*it->second);
+        _program.releaseVariable(*it->second);
         _held.erase(it);
     }
 }
 
 Variant &Holder::getNew()
 {
-    Variable& var = _interpreter.null();
+    Variable& var = _program.null();
     add(var);
     return var.value();
 }
 
 Variant &Holder::copy(const Variant &value)
 {
-    Variable& var = _interpreter.copy(value);
+    Variable& var = _program.copy(value);
     add(var);
     return var.value();
 }
 
-Variable &Holder::add(Variable &var)
+Variable &Holder::add(Variable &variable)
 {
-    _held.insert(std::make_pair(&var.cvalue(), &var));
-    return var;
+    _held.insert(std::make_pair(&variable.cvalue(), &variable));
+    return variable;
 }
 
-Variant &Holder::evaluate(const Program &rightValue, const Scope &scope, const Module &module)
+Variant &Holder::evaluate(const Scope &scope, const Module &module)
 {
-    Variable& var = _interpreter.evaluate(rightValue, scope, module);
+    Variable& var = _program.evaluate(scope, module);
     add(var);
     return var.value();
 }
 
-const Variant &Holder::cevaluate(const Program &rightValue, const Scope &scope, const Module &module)
+const Variant &Holder::cevaluate(const Scope &scope, const Module &module)
 {
-    Variable& var = _interpreter.evaluate(rightValue, scope, module);
+    Variable& var = _program.evaluate(scope, module);
     add(var);
     return var.cvalue();
 }
 
 
-Variable &Holder::extract(Variable &var)
+Variable &Holder::extract(Variable &variable)
 {
-    auto range = _held.equal_range(&var.cvalue());
+    auto range = _held.equal_range(&variable.cvalue());
 
+    //Looks through the variable held with the same variant
+    //and returns an owner
     for(auto it = range.first; it != range.second; ++it)
     {
         Variable& extracted = *it->second;\
@@ -67,6 +69,7 @@ Variable &Holder::extract(Variable &var)
         }
     }
 
+    //If there is no owner, return any reference
     if(range.first != range.second)
     {
         Variable& extracted = *range.first->second;\
@@ -74,5 +77,5 @@ Variable &Holder::extract(Variable &var)
         return extracted;
     }
 
-    return var;
+    return variable;
 }

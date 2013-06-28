@@ -36,7 +36,7 @@
 
 
 class ModuleLoader;
-class InterpreterConstructor;
+class Interpreter;
 /*!
  * @brief The MainWindow class
  */
@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    MainWindow(const ModuleLoader& moduleLoader, const InterpreterConstructor& interpreterConstructor, QWidget *parent = 0);
+    MainWindow(const ModuleLoader& moduleLoader, const Interpreter& interpreter, QWidget *parent = 0);
     void openFile(const std::string& path);
 
 protected slots:
@@ -76,7 +76,7 @@ private:
     int nfiles;
 
     const ModuleLoader& moduleLoader;
-    const InterpreterConstructor& interpreterConstructor;
+    const Interpreter& interpreter;
 
     static const int maxRecentFiles = 5;
     QAction *recentFileActs[maxRecentFiles];

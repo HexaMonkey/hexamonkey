@@ -28,7 +28,7 @@
 #include "filterwidget.h"
 #include "resourcemanager.h"
 
-class InterpreterConstructor;
+class Interpreter;
 /*!
  * @brief The TreeWidget class
  */
@@ -36,7 +36,7 @@ class TreeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TreeWidget(const InterpreterConstructor& interpreterConstructor, QWidget *parent = 0);
+    explicit TreeWidget(const Interpreter &interpreter, QWidget *parent = 0);
     QSize sizeHint() const;
     void setColumnsWidths();
 
@@ -62,8 +62,6 @@ private:
     TreeModel* model;
     HTMLDelegate* delegate;
     FilterWidget* filterWidget;
-
-    const InterpreterConstructor& interpreterConstructor;
 
     QString path;
     quint64 position;

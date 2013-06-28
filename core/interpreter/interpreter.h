@@ -28,11 +28,7 @@
 #include "module.h"
 #include "program.h"
 
-class Object;
 class HmcModule;
-class Variable;
-class Scope;
-class VariableDescriptor;
 
 /**
  * @brief
@@ -40,67 +36,17 @@ class VariableDescriptor;
 class Interpreter
 {
 public:
+    Interpreter(const HmcModule &module);
+
     enum Mode {file, expression};
 
-    bool loadFromString(const std::string &exp);
-    bool loadFromHM (const std::string& path, int mode);
-    bool loadFromHMC(const std::string& path);
-    const std::string& error() const;
-
-    Program& program();
-
-    ObjectType evaluateType(const Program& type, const Scope& scope, const Module& module);
-    bool hasDeclaration(const Program& classDefinition);
-
-    void buildDependencies(const Program& program, bool modificationOnly, std::set<VariableDescriptor>& descriptors);
-
-    int64_t guessSize(const Program& classDefinition, const Module& module);
-
-    void garbageCollect();
-    void clear();
-
-
+    Program loadFromString(const std::string &exp) const;
+    Program loadFromHM (const std::string& path, int mode) const;
+    Program loadFromHMC(const std::string& path) const;
+    Program loadFromFile(const std::string& path) const;
 
 private:
-    friend class InterpreterConstructor;
-    friend class Holder;
-    friend class BlockExecution;
-    Interpreter(const HmcModule& module);
-    Interpreter(const Interpreter& interpreter) = delete;
-    Interpreter& operator =(const Interpreter& interpreter) = delete;
-
-    Variable& evaluate(const Program& rightValue, const Scope& scope, const Module& module = Module());
-
-    Variable& evaluateUnaryOperation(int op, Variable& a);
-    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b);
-    Variable& evaluateTernaryOperation(int op, Variable& a, Variable& b, Variable& c);
-    Variable& evaluateFunction(const Program& functionEvaluation, const Scope& scope, const Module& module);
-    Variable& evaluateVariable(const Program& variable, const Scope& scope, const Module& module = Module());
-
-    Variable& copy(const Variant& value);
-    Variable& constReference(const Variant& value);
-    Variable& reference(Variant& value);
-    Variable& null();
-    Variable& registerVariable(Variable* variable);
-
-    void release(Variable& var);
-
-    void buildVariableDescriptor(const Program& variable, const Scope& scope, const Module& module, VariableDescriptor& variableDescriptor);
-
-
-
     const HmcModule& _module;
-    std::unique_ptr<Program> _program;
-
-    File _file;
-    std::unique_ptr<Object> _fileObject;
-
-    const Variant nullVariant;
-    const Variant emptyString;
-
-    std::map<Variable*, std::unique_ptr<Variable> > _vars;
-
-    std::string _error;
 };
 
 #endif // INTERPRETER_H
