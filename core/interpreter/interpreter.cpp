@@ -38,7 +38,6 @@
 #include "functionscope.h"
 #include "objecttypetemplate.h"
 #include "parser.h"
-#include "holder.h"
 
 
 Interpreter::Interpreter(const HmcModule &module) : _module(module)

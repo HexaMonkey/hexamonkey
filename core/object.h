@@ -227,8 +227,7 @@ class Object
 
         friend class Module;
 
-        friend class ConstObjectScope;
-        friend class MutableObjectScope;
+        friend class ObjectScope;
 
         Object(File& file);
 

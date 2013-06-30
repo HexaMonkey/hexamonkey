@@ -22,7 +22,6 @@
 #include "interpreter.h"
 #include "variable.h"
 #include "parser.h"
-#include "holder.h"
 
 Filter::Filter(const Interpreter& interpreter): _interpreter(interpreter)
 {
@@ -60,8 +59,7 @@ bool Filter::filterChildren(Object& object)
 
     if(_expression != "")
     {
-        Holder holder(_program.elem(0));
-        return holder.cevaluate(ConstObjectScope(object, holder)).toBool();
+        return _program.elem(0).evaluateValue(ObjectScope(object, false)).toBool();
     }
     else
         return true;

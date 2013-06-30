@@ -21,6 +21,7 @@
 #include <string>
 
 #include "object.h"
+#include "objecttypetemplate.h"
 
 #define A_SIZE 0
 #define A_PARENT 1
@@ -32,75 +33,76 @@
 
 const std::map<std::string, int> reserved = {{"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO}, {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK}, {"@pos",A_POS}};
 
-MutableObjectScope::MutableObjectScope(Object &object, Holder &holder)
-    :_object(object), _typeScope(_object._type.toObjectType()), _constScope(object, holder), _holder(holder)
+ObjectScope::ObjectScope(Object &object, bool modifiable)
+    : _object(object),
+      _modifiable(modifiable),
+      _typeScope(object._type.toObjectType(), modifiable)
+
 {
 }
 
-Variant *MutableObjectScope::get(const Variant &key) const
+Variable ObjectScope::doGet(const Variant &key) const
 {
     if(key.canConvertTo(Variant::string))
     {
         const std::string& name = key.toString();
-        if(name[0]=='@')
+        if(!name.empty() && name[0]=='@')
         {
             auto it = reserved.find(name);
             if(it == reserved.end())
-                return nullptr;
+                return Variable();
 
             switch(it->second)
             {
                 case A_SIZE:
-                    return &_object._size;
+                    return Variable::ref(_object._size, _modifiable);
 
                 case A_VALUE:
-                    return &_object._value;
+                    return Variable::ref(_object._value, _modifiable);
 
                 case A_INFO:
-                    return &_object._info;
+                    return Variable::ref(_object._info, _modifiable);
 
                 case A_POS:
-                    return &_holder.copy(_object.pos());
+                    return Variable::copy(_object.pos());
 
                 default:
-                    return nullptr;
+                    return Variable();
             }
         }
 
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return &elem->value();
+            return Variable::ref(elem->value(), _modifiable);
         }
     }
-
-    if(key.canConvertTo(Variant::integer))
+    else if(key.canConvertTo(Variant::integer))
     {
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
-            return &elem->value();
+            return Variable::ref(elem->value(), _modifiable);
         }
     }
-
-    if(key.canConvertTo(Variant::objectType))
+    else if(key.canConvertTo(Variant::objectType))
     {
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return &elem->value();
+            return Variable::ref(elem->value(), _modifiable);
         }
     }
 
-    return nullptr;
+    return Variable();
 }
 
-Scope *MutableObjectScope::doGetScope(const Variant &key) const
+Scope *ObjectScope::doGetScope(const Variant &key) const
 {
     if(key.canConvertTo(Variant::string))
     {
         const std::string& name = key.toString();
-        if(name[0]=='@')
+        if(!name.empty() && name[0]=='@')
         {
             auto it = reserved.find(name);
             if(it == reserved.end())
@@ -109,10 +111,10 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
             switch(it->second)
             {
                 case A_PARENT:
-                    return new MutableObjectScope(*_object._parent, _holder);
+                return new ObjectScope(*_object._parent, _modifiable);
 
                 case A_ARGS:
-                return new MutableTypeScope(_object._type.toObjectType());
+                return new TypeScope(_object._type.toObjectType(), _modifiable);
 
                 default:
                     return nullptr;
@@ -122,7 +124,7 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return new MutableObjectScope(*elem, _holder);
+            return new ObjectScope(*elem, _modifiable);
         }
     }
 
@@ -131,7 +133,7 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
-            return new MutableObjectScope(*elem, _holder);
+            return new ObjectScope(*elem, _modifiable);
         }
     }
 
@@ -140,132 +142,9 @@ Scope *MutableObjectScope::doGetScope(const Variant &key) const
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return new MutableObjectScope(*elem, _holder);
+            return new ObjectScope(*elem, _modifiable);
         }
     }
 
     return nullptr;
-}
-
-ConstObjectScope::ConstObjectScope(Object &object, Holder &holder)
-    : _object(object), _typeScope(_object._type.toObjectType()), _holder(holder)
-{
-}
-
-const Variant *ConstObjectScope::doCget(const Variant &key) const
-{
-    if(key.canConvertTo(Variant::string))
-    {
-        const std::string& name = key.toString();
-        if(name[0]=='@')
-        {
-            auto it = reserved.find(name);
-            if(it == reserved.end())
-                return nullptr;
-
-            switch(it->second)
-            {
-                case A_SIZE:
-                    return &_object._size;
-
-                case A_VALUE:
-                    return &_object._value;
-
-                case A_INFO:
-                    return &_object._info;
-
-                case A_RANK:
-                    return &_object._rank;
-
-                case A_POS:
-                    return &_holder.copy(_object.pos());
-
-                default:
-                    return nullptr;
-            }
-        }
-
-        Object* elem = _object.lookUp(name, true);
-        if(elem != nullptr)
-        {
-            return &elem->value();
-        }
-    }
-
-    if(key.canConvertTo(Variant::integer))
-    {
-        Object* elem = _object.access(key.toInteger(), true);
-        if(elem != nullptr)
-        {
-            return &elem->value();
-        }
-    }
-
-    if(key.canConvertTo(Variant::objectType))
-    {
-        Object* elem = _object.lookForType(key.toObjectType(), true);
-        if(elem != nullptr)
-        {
-            return &elem->value();
-        }
-    }
-
-    return nullptr;
-}
-
-Scope *ConstObjectScope::doGetScope(const Variant &key) const
-{
-    if(key.canConvertTo(Variant::string))
-    {
-        const std::string& name = key.toString();
-        if(name[0]=='@')
-        {
-            auto it = reserved.find(name);
-            if(it == reserved.end())
-                return nullptr;
-
-            switch(it->second)
-            {
-                case A_PARENT:
-                return new ConstObjectScope(*_object._parent, _holder);
-
-                case A_ARGS:
-                return new ConstTypeScope(_object._type.toObjectType());
-
-                default:
-                    return nullptr;
-            }
-        }
-
-        Object* elem = _object.lookUp(name, true);
-        if(elem != nullptr)
-        {
-            return new ConstObjectScope(*elem, _holder);
-        }
-    }
-
-    if(key.canConvertTo(Variant::integer))
-    {
-        Object* elem = _object.access(key.toInteger(), true);
-        if(elem != nullptr)
-        {
-            return new ConstObjectScope(*elem, _holder);
-        }
-    }
-
-    if(key.canConvertTo(Variant::objectType))
-    {
-        Object* elem = _object.lookForType(key.toObjectType(), true);
-        if(elem != nullptr)
-        {
-            return new ConstObjectScope(*elem, _holder);
-        }
-    }
-
-    return nullptr;
-}
-
-const Variant *MutableObjectScope::cget(const Variant &key) const
-{
-    return _constScope.cget(key);
 }

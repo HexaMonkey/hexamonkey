@@ -18,23 +18,21 @@
 #include "variable.h"
 #include "variant.h"
 
-Variant nullVariant;
+const Variant undefinedVariant;
+const Variant nullVariant;
 
-Variable::~Variable()
+Variable::Variable()
+    : Variable(false, false, nullptr, &undefinedVariant)
 {
-    if(_own)
-    {
-        delete _var;
-    }
 }
 
-Variant &Variable::value()
+Variant &Variable::value() const
 {
-    if(_constant)
+    if(!_modifiable)
     {
         Variant* newValue = new Variant(*_constVar);
-        _own = true;
-        _constant = false;
+        _owner.reset(newValue);
+        _modifiable = true;
         _var = newValue;
         _constVar = newValue;
     }
@@ -46,46 +44,61 @@ const Variant &Variable::cvalue() const
     return *_constVar;
 }
 
-bool Variable::isConst() const
+void Variable::setConstant()
 {
-    return _constant;
+    _modifiable = false;
 }
 
-bool Variable::isOwner() const
+bool Variable::isDefined() const
 {
-    return _own;
+    return _constVar != &undefinedVariant;
 }
 
-Variable *Variable::copy(const Variant &value)
+Variable Variable::copy(const Variant &value, bool modifiable)
 {
-    Variant* newValue = new Variant(value);
-    return new Variable(true, false, newValue, newValue);
+    return Variable(true, modifiable, new Variant(value));
 }
 
-Variable *Variable::move(Variant *value)
+Variable Variable::move(Variant *value, bool modifiable)
 {
-    return new Variable(true, false, value, value);
+    return Variable(true, modifiable, value);
 }
 
-Variable *Variable::constReference(const Variant &value)
+Variable Variable::ref(Variant &value, bool modifiable)
 {
-    return new Variable(false, true, nullptr, &value);
+    return Variable(false, modifiable, &value);
 }
 
-Variable *Variable::null()
+Variable Variable::constRef(const Variant &value)
 {
-    return constReference(nullVariant);
+    return Variable(false, false, nullptr, &value);
 }
 
-Variable *Variable::reference(Variant &value)
+Variable Variable::null()
 {
-    return new Variable(false, false, &value, &value);
+    return Variable(true, true, new Variant);
 }
 
-Variable::Variable(bool own, bool constant , Variant* var, const Variant* constVar)
-    : _own(own),
-      _constant(constant),
+Variable Variable::nullConstant()
+{
+    return Variable(false, false, nullptr, &nullVariant);
+}
+
+Variable::Variable(bool own, bool modifiable , Variant* var)
+    : Variable(own, modifiable, var, var)
+{
+}
+
+Variable::Variable(bool own, bool modifiable , Variant* var, const Variant* constVar)
+    : _modifiable(modifiable),
       _var(var),
       _constVar(constVar)
 {
+    if(own)
+    {
+        _owner.reset(var);
+    }
 }
+
+
+

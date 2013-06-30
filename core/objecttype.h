@@ -118,8 +118,7 @@ public:
     ObjectType& operator=(ObjectType other);
 
 private:
-    friend class MutableTypeScope;
-    friend class ConstTypeScope;
+    friend class TypeScope;
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
 

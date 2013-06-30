@@ -101,12 +101,12 @@ bool MapModule::doCanHandleFunction(const std::string &name) const
     return _functions.find(name) != _functions.end();
 }
 
-Variable *MapModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
+Variable MapModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
 {
     auto it = _functions.find(name);
 
     if(it == _functions.end())
-        return nullptr;
+        return Variable();
 
     const Functor& function = std::get<3>(it->second);
 

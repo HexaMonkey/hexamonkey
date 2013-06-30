@@ -22,25 +22,22 @@
 
 class ObjectType;
 
-class MutableTypeScope : public MutableScope
+class TypeScope : public Scope
 {
 public:
-    MutableTypeScope(ObjectType& type);
+    TypeScope(ObjectType& type, bool modifiable);
+    TypeScope(const ObjectType& type);
 protected:
-    Variant* doGet(const Variant &key) const override;
+    virtual Variable doGet(const Variant &key) const override;
+
+    const ObjectType& type() const;
 private:
-    ObjectType& _type;
+    ObjectType* _type;
+    const ObjectType* _constType;
+    bool _modifiable;
 };
 
-class ConstTypeScope : public ConstScope
-{
-public:
-    ConstTypeScope(const ObjectType& type);
-protected:
-    const Variant* doCget(const Variant &key) const override;
-private:
-    const ObjectType& _type;
-};
+
 
 
 

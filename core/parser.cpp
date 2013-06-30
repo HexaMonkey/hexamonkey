@@ -45,7 +45,6 @@ void Parser::parse()
     {
         doParse();
         _parsed = true;
-        cleanUp();
     }
 }
 
@@ -56,7 +55,6 @@ bool Parser::parseSome(int hint)
     if(parsing.available() && !_parsed && doParseSome(hint))
     {
         _parsed = true;
-        cleanUp();
     }
     return _parsed;
 }
@@ -150,10 +148,6 @@ bool Parser::doParseSome(int hint)
     return true;
 }
 
-void Parser::cleanUp()
-{
-}
-
 bool Parser::lockObject()
 {
     if(_object._parsingInProgress == true)
@@ -184,7 +178,6 @@ void SimpleParser::parseHead()
         doParseHead();
         _headParsed = true;
         _parsed = true;
-        cleanUp();
     }
 }
 

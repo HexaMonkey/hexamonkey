@@ -17,7 +17,12 @@
 
 #include "scope.h"
 
-Variant* Scope::declare(const Variant &key) const
+Variable Scope::get(const Variant &key) const
+{
+    return doGet(key);
+}
+
+Variable Scope::declare(const Variant &key) const
 {
     return doDeclare(key);
 }
@@ -27,38 +32,17 @@ Scope *Scope::getScope(const Variant &key) const
     return doGetScope(key);
 }
 
-Variant *Scope::doDeclare(const Variant &/*key*/) const
+Variable Scope::doGet(const Variant &/*key*/) const
 {
-    return nullptr;
+    return Variable();
+}
+
+Variable Scope::doDeclare(const Variant &/*key*/) const
+{
+    return Variable();
 }
 
 Scope *Scope::doGetScope(const Variant &/*key*/) const
-{
-    return nullptr;
-}
-
-Variant *MutableScope::get(const Variant &key) const
-{
-    return doGet(key);
-}
-
-const Variant *MutableScope::cget(const Variant &key) const
-{
-    return doGet(key);
-}
-
-
-Variant *ConstScope::get(const Variant &/*key*/) const
-{
-    return nullptr;
-}
-
-const Variant *ConstScope::cget(const Variant &key) const
-{
-    return doCget(key);
-}
-
-Variant *EmptyScope::doGet(const Variant &/*key*/) const
 {
     return nullptr;
 }

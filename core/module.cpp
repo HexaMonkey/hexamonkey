@@ -160,7 +160,6 @@ void Module::addParsers(Object &object, const ObjectType &type, const Module &fr
             object.addParser(parser);
         }
     }
-
     //Type specification
     ObjectType specification = specify(object.type());
     if(!specification.isNull())
@@ -283,7 +282,7 @@ const Module *Module::functionHandler(const std::string &name) const
     return nullptr;
 }
 
-Variable *Module::executeFunction(const std::string &name, Scope &params) const
+Variable Module::executeFunction(const std::string &name, Scope &params) const
 {
     return executeFunction(name, params, *this);
 }
@@ -331,9 +330,9 @@ bool Module::doCanHandleFunction(const std::string &/*name*/) const
     return false;
 }
 
-Variable *Module::doExecuteFunction(const std::string &/*name*/, Scope &/*params*/, const Module &/*fromModule*/) const
+Variable Module::doExecuteFunction(const std::string &/*name*/, Scope &/*params*/, const Module &/*fromModule*/) const
 {
-    return nullptr;
+    return Variable();
 }
 
 const std::vector<std::string> &Module::doGetFunctionParameterNames(const std::string& /*name*/) const
@@ -351,11 +350,11 @@ const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::st
     return emptyParameterDefaults;
 }
 
-Variable *Module::executeFunction(const std::string &name, Scope &params, const Module &fromModule) const
+Variable Module::executeFunction(const std::string &name, Scope &params, const Module &fromModule) const
 {
     const Module* handlerModule = functionHandler(name);
     if(handlerModule == nullptr)
-        return nullptr;
+        return Variable();
 
     return handlerModule->doExecuteFunction(name, params, fromModule);
 }

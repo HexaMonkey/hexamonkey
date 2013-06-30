@@ -87,6 +87,7 @@ void ContainerParser::addChild(Object *child, const std::string &name)
 
 Object *ContainerParser::getVariable(const ObjectType &type)
 {
+   // std::cout<<"Get variable"<<std::endl;
     return _module.handle(type, file(), &_object);
 }
 
@@ -99,6 +100,7 @@ Object *ContainerParser::addVariable(const ObjectType &type)
 
 Object *ContainerParser::addVariable(const ObjectType &type, const std::string &name)
 {
+   // std::cout<<"Add variable"<<std::endl;
     _object.seekObjectEnd();
     Object* child = getVariable(type);
     addChild(child, name);

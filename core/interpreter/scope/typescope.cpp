@@ -22,49 +22,45 @@
 #include "objecttypetemplate.h"
 
 
-MutableTypeScope::MutableTypeScope(ObjectType &type)
-    : _type(type)
+TypeScope::TypeScope(ObjectType &type, bool modifiable)
+    : _type(&type),
+      _constType(&type),
+      _modifiable(modifiable)
 {
 }
 
-Variant *MutableTypeScope::doGet(const Variant &key) const
+TypeScope::TypeScope(const ObjectType &type)
+    : _type(nullptr),
+      _constType(&type),
+      _modifiable(false)
+{
+}
+
+Variable TypeScope::doGet(const Variant &key) const
 {
     int i = -1;
 
     if(key.canConvertTo(Variant::integer))
         i = key.toInteger();
     else if (key.canConvertTo(Variant::string))
-        i = _type.typeTemplate().parameterNumber(key.toString());
+        i = type().typeTemplate().parameterNumber(key.toString());
 
-
-    if(i != -1)
+    if(i != -1 && (size_t) i < type()._parametersValue.size())
     {
-        return &_type._parametersValue[i];
+        if(_modifiable)
+        {
+            return Variable::ref(_type->_parametersValue[i]);
+        }
+        else
+        {
+            return Variable::constRef(_constType->_parametersValue[i]);
+        }
     }
 
-    return nullptr;
+    return Variable();
 }
 
-
-ConstTypeScope::ConstTypeScope(const ObjectType &type)
-    :_type(type)
+const ObjectType &TypeScope::type() const
 {
-}
-
-const Variant *ConstTypeScope::doCget(const Variant &key) const
-{
-    int i = -1;
-
-    if(key.canConvertTo(Variant::integer))
-        i = key.toInteger();
-    else if (key.canConvertTo(Variant::string))
-        i = _type.typeTemplate().parameterNumber(key.toString());
-
-
-    if(i != -1)
-    {
-        return &_type._parametersValue[i];
-    }
-
-    return nullptr;
+    return *_constType;
 }

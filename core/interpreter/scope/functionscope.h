@@ -27,17 +27,14 @@
 class FunctionScope : public Scope
 {
 public:
-    void addModifiableParameter(const std::string& name, Variant& variant);
-    void addConstantParameter(const std::string& name, const Variant& variant);
+    void addParameter(const std::string& name, Variable variable);
 protected:
-    Variant* get(const Variant& key) const override;
-    const Variant* cget(const Variant& key) const override;
+    virtual Variable doGet(const Variant& key) const override;
 
 private:
     unsigned int getIndex(const Variant& key) const;
 
-    std::vector<Variant*> modifiableParameters;
-    std::vector<const Variant*> constantParameters;
+    std::vector<Variable> parameters;
 
     std::unordered_map<std::string, int> parameterIndex;
 };

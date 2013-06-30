@@ -98,11 +98,15 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     const std::string& name = type.typeTemplate().name();
     auto alreadyIt = _fixedSizes.find(name);
     if(alreadyIt != _fixedSizes.end())
+    {
         return alreadyIt->second;
+    }
 
     auto definitionIt = _definitions.find(name);
     if(definitionIt == _definitions.end())
+    {
         return -1;
+    }
 
     Program definition = definitionIt->second;
     std::set<VariableDescriptor> descriptors;
@@ -135,16 +139,15 @@ bool FromFileModule::doCanHandleFunction(const std::string &name) const
     return _functions.find(name) != _functions.end();
 }
 
-Variable *FromFileModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
+Variable FromFileModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
 {
     auto it = functionDescriptor(name);
 
     if(it == _functionDescriptors.end())
-        return nullptr;
+        return Variable();
 
-    Holder holder(program());
     CompositeScope scope;
-    LocalScope localScope(holder);
+    LocalScope localScope;
 
     scope.addScope(localScope);
     scope.addScope(params);
@@ -154,7 +157,7 @@ Variable *FromFileModule::doExecuteFunction(const std::string &name, Scope &para
 
     blockExecution.execute();
 
-    return &holder.extract(blockExecution.extractReturnValue());
+    return blockExecution.returnValue();
 }
 
 const std::vector<std::string> &FromFileModule::doGetFunctionParameterNames(const std::string &name) const
@@ -277,7 +280,7 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            Program program = extension.elem(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               return program.evaluateType(ConstTypeScope(type), *this);
+               return program.evaluateType(TypeScope(type), *this);
            });
 
            std::cout<<"    "<<childTemplate<<" extends "<<program.elem(0).payload()<<"(...)"<<std::endl;
@@ -298,15 +301,15 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             ObjectType child = getTemplate(classDeclaration.elem(0).elem(0).elem(0).payload().toString())();
             for(Program type : classDeclaration.elem(0).elem(2))
             {
-                ObjectType parent(type.evaluateType(EmptyScope(), *this));
+                ObjectType parent(type.evaluateType(Scope(), *this));
                 setSpecification(parent, child);
                 std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
             }
         }
         else if(classDeclaration.id() == FORWARD)
         {
-            ObjectType parent(classDeclaration.elem(0).evaluateType(EmptyScope(), *this));
-            ObjectType child(classDeclaration.elem(1).evaluateType(EmptyScope(), *this));
+            ObjectType parent(classDeclaration.elem(0).evaluateType(Scope(), *this));
+            ObjectType child(classDeclaration.elem(1).evaluateType(Scope(), *this));
             setSpecification(parent, child);
             std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
         }
@@ -401,10 +404,9 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
 
     for(const Program& argument: arguments)
     {
-        Holder holder(argument.elem(2));
         parameterNames.push_back(argument.elem(1).payload().toString());
         parameterModifiables.push_back(argument.elem(0).payload().toBool());
-        parameterDefaults.push_back(holder.cevaluate(EmptyScope(), *this));
+        parameterDefaults.push_back(argument.elem(2).evaluateValue(Scope(), *this));
     }
 
     auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);

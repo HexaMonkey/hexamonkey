@@ -49,7 +49,6 @@ SOURCES += main.cpp\
     ../core/interpreter/variable.cpp \
     ../core/interpreter/program.cpp \
     ../core/interpreter/interpreter.cpp \
-    ../core/interpreter/holder.cpp \
     ../core/interpreter/fromfileparser.cpp \
     ../core/interpreter/fromfilemodule.cpp \
     ../core/interpreter/filter.cpp \
@@ -135,7 +134,6 @@ HEADERS  += mainwindow.h \
     ../core/interpreter/scope/scope.h \
     ../core/interpreter/scope/objectscope.h \
     ../core/interpreter/scope/localscope.h \
-    ../core/interpreter/holder.h \
     ../core/interpreter/scope/functionscope.h \
     ../core/interpreter/scope/compositescope.h \
     ../core/modules/default/tupleparser.h \

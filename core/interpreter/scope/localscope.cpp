@@ -17,27 +17,7 @@
 
 #include "localscope.h"
 
-#include "variant.h"
-#include "holder.h"
-
-LocalScope::LocalScope(Holder &holder)
-    : holder(holder)
-{
-}
-
-void LocalScope::clear()
-{
-    _map.clear();
-}
-
-Variant* LocalScope::doDeclare(const Variant &key) const
-{
-    Variant* value = &holder.getNew();
-    _map.insert(std::make_pair(key.toString(), value));
-    return value;
-}
-
-Variant *LocalScope::doGet(const Variant &key) const
+Variable LocalScope::doGet(const Variant &key) const
 {
     if(key.canConvertTo(Variant::string))
     {
@@ -47,5 +27,12 @@ Variant *LocalScope::doGet(const Variant &key) const
             return it->second;
         }
     }
-    return nullptr;
+    return Variable();
+}
+
+Variable LocalScope::doDeclare(const Variant &key) const
+{
+    Variable value = Variable::null();
+    _map.insert(std::make_pair(key.toString(), value));
+    return value;
 }

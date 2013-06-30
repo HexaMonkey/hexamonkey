@@ -39,27 +39,19 @@ protected:
     void doParseHead() override;
     void doParse() override;
     bool doParseSome(int hint) override;
-    void cleanUp() override;
 
 private:
-    Program::const_iterator executeProgram(const Program::const_iterator& start, const Program::const_iterator& end, int64_t hint = -1);
-    void handleDeclaration(const Program& declaration);
-    void handleLocalDeclaration(const Program& declaration);
-    void handleRightValue(const Program& rightValue);
-    void handleCondition(const Program& condition);
-    bool handleLoop(const Program& loop);
-
     Scope &scope();
     BlockExecution& blockExecution();
+    Program::const_iterator _headerEnd;
 
-    Program::const_iterator headerEnd;
+    ObjectScope _objectScope;
+    LocalScope _localScope;
+    CompositeScope _scope;
 
-    std::unique_ptr<Holder> holder;
-    std::unique_ptr<MutableObjectScope> objectScope;
-    std::unique_ptr<LocalScope> localScope;
-    std::unique_ptr<CompositeScope> _scope;
+    BlockExecution _blockExecution;
 
-    std::unique_ptr<BlockExecution> _blockExecution;
+    Object& _object;
 
 };
 

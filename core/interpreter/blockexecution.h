@@ -6,7 +6,6 @@ class ContainerParser;
 class Scope;
 
 #include "program.h"
-#include "holder.h"
 
 #include <memory>
 
@@ -33,7 +32,7 @@ public:
     bool hasParser();
     ContainerParser& parser();
 
-    Variable &extractReturnValue();
+    Variable returnValue();
 
 private:
     void setSubBlock(Program program, bool loop);
@@ -62,14 +61,13 @@ private:
     Scope& _scope;
     ContainerParser* _parser;
 
-    Holder returnHolder;
-    Variable* returnValue;
+    Variable _returnValue;
 
 
-    bool inLoop;
+    bool _inLoop;
 
     std::unique_ptr<BlockExecution> subBlock;
-    ExitCode subBlockExitCode;
+    ExitCode _subBlockExitCode;
 };
 
 #endif // BLOCKEXECUTION_H

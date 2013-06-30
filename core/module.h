@@ -27,10 +27,10 @@
 #include "objecttype.h"
 #include "objecttypetemplate.h"
 #include "standardformatdetector.h"
+#include "variable.h"
 
 class Object;
 class Parser;
-class Variable;
 class Scope;
 
 /*!
@@ -167,7 +167,7 @@ public:
     /**
      * @brief Execute the function with the parameters given as a \link Scope scope\endlink
      */
-    Variable* executeFunction(const std::string &name, Scope &params) const;
+    Variable executeFunction(const std::string &name, Scope &params) const;
 
     /**
      * @brief Get the names of the parameters as a vector of strings
@@ -226,7 +226,7 @@ protected:
 
 
     virtual bool doCanHandleFunction(const std::string& name) const;
-    virtual Variable* doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const;
+    virtual Variable doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const;
     virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
     virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const;
     virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const;
@@ -268,7 +268,7 @@ private:
 
     Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
 
-    Variable* executeFunction(const std::string& name, Scope &params, const Module& fromModule) const;
+    Variable executeFunction(const std::string& name, Scope &params, const Module& fromModule) const;
 
     bool _loaded;
 

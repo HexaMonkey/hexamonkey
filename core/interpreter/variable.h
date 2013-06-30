@@ -18,35 +18,36 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-class Variant;
+#include <memory>
+
+#include "variant.h"
 
 class Variable
 {
 public:
-    ~Variable();
+    Variable();
 
-    Variant& value();
+    Variant& value() const;
     const Variant& cvalue() const;
 
-    bool isConst() const;
-    bool isOwner() const;
+    void setConstant();
 
-    static Variable* copy(const Variant& value);
-    static Variable* move(Variant* value);
-    static Variable* reference(Variant& value);
-    static Variable* constReference(const Variant& value);
-    static Variable* null();
+    bool isDefined() const;
+
+    static Variable copy(const Variant& value, bool modifiable = true);
+    static Variable move(Variant* value, bool modifiable = true);
+    static Variable ref(Variant& value, bool modifiable = true);
+    static Variable constRef(const Variant& value);
+    static Variable null();
+    static Variable nullConstant();
 private:
+    Variable(bool own, bool modifiable , Variant* var);
     Variable(bool own, bool constant , Variant* var, const Variant* constVar);
-    Variable() = delete;
-    Variable(const Variable&) = delete;
-    Variable& operator =(const Variable&) = delete;
 
-    bool _own;
-    bool _constant;
-    Variant* _var;
-    const Variant* _constVar;
-
+    mutable bool _modifiable;
+    mutable Variant* _var;
+    mutable const Variant* _constVar;
+    mutable std::shared_ptr<Variant> _owner;
 };
 
 #endif // VARIABLE_H

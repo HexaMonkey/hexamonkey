@@ -154,11 +154,6 @@ protected:
      */
     virtual bool doParseSome(int hint);
 
-    /**
-     * @brief [Virtual] Clean up once the parsing is done (do nothing by default)
-     */
-    virtual void cleanUp();
-
 
 private:
     friend class SimpleParser;

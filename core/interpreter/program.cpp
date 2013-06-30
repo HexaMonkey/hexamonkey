@@ -17,12 +17,12 @@
 
 #include "program.h"
 #include "model.h"
-#include "holder.h"
 #include "variable.h"
 #include "variant.h"
 #include "scope.h"
 #include "functionscope.h"
 #include "parser.h"
+#include "unused.h"
 
 const Variant nullVariant;
 const Variant emptyString("");
@@ -30,6 +30,7 @@ const Variant emptyString("");
 Program::Program()
     : _object(nullptr)
 {
+    UNUSED(hmcElemNames);
 }
 
 Program::Program(Object &object, std::shared_ptr<Memory> memory)
@@ -94,6 +95,13 @@ Program::const_reverse_iterator Program::rend() const
     return const_reverse_iterator(it, _memory);
 }
 
+Variant Program::evaluateValue(const Scope &scope, const Module &module) const
+{
+    Variable variable = evaluate(scope, module);
+    Variant value = variable.cvalue();
+    return value;
+}
+
 ObjectType Program::evaluateType(const Scope &scope, const Module &module) const
 {
     const std::string& name = elem(0).payload().toString();
@@ -114,8 +122,7 @@ ObjectType Program::evaluateType(const Scope &scope, const Module &module) const
         }
         if(arguments.elem(i).id() == RIGHT_VALUE)
         {
-            Holder holder(arguments.elem(i));
-            type.setParameter(i, holder.cevaluate(scope, module));
+            type.setParameter(i, arguments.elem(i).evaluateValue(scope, module));
         }
     }
     return type;
@@ -197,7 +204,7 @@ void Program::buildDependencies(bool modificationOnly, std::set<VariableDescript
         case VARIABLE:
             {
                 VariableDescriptor descriptor;
-                buildVariableDescriptor(EmptyScope(), Module(), descriptor);
+                buildVariableDescriptor(Scope(), Module(), descriptor);
                 descriptors.insert(descriptor);
             }
             break;
@@ -220,8 +227,7 @@ int64_t Program::guessSize(const Module &module) const
         {
         case DECLARATION:
             {
-                Holder holder(line.elem(0));
-                const ObjectType& type = holder.cevaluate(EmptyScope(), module).toObjectType();
+                ObjectType type = line.elem(0).evaluateValue(Scope(), module).toObjectType();
                 if(type.isNull())
                     return -1;
                 int64_t elemSize = module.getFixedSize(type);
@@ -234,12 +240,14 @@ int64_t Program::guessSize(const Module &module) const
 
         case LOOP:
         case DO_LOOP:
+            std::cout<<"Guess loop"<<std::endl;
             if(line.elem(1).guessSize(module) != 0)
                 return -1;
             break;
 
         case CONDITIONAL_STATEMENT:
             {
+                std::cout<<"Guess condition"<<std::endl;
                 int64_t size1 = line.elem(1).guessSize(module);
                 if(size1 == -1)
                     return -1;
@@ -261,37 +269,7 @@ int64_t Program::guessSize(const Module &module) const
     return size;
 }
 
-Variable &Program::copy(const Variant &value) const
-{
-    return registerVariable(Variable::copy(value));
-}
-
-Variable &Program::constReference(const Variant &value) const
-{
-    return registerVariable(Variable::constReference(value));
-}
-
-Variable &Program::reference(Variant &value) const
-{
-    return registerVariable(Variable::reference(value));
-}
-
-Variable &Program::null() const
-{
-    return registerVariable(Variable::null());
-}
-
-Variable &Program::registerVariable(Variable *variable) const
-{
-    return memory().registerVariable(variable);
-}
-
-void Program::releaseVariable(Variable &variable) const
-{
-    memory().releaseVariable(variable);
-}
-
-Variable &Program::evaluate(const Scope &scope, const Module &module) const
+Variable Program::evaluate(const Scope &scope, const Module &module) const
 {
     Program first = elem(0);
     switch(first.id())
@@ -313,7 +291,7 @@ Variable &Program::evaluate(const Scope &scope, const Module &module) const
                                                         elem(2).evaluate(scope, module),
                                                         elem(3).evaluate(scope, module));
                 default:
-                    return null();
+                    return Variable();
             }
 
         }
@@ -325,40 +303,35 @@ Variable &Program::evaluate(const Scope &scope, const Module &module) const
         case UINT_CONSTANT:
         case STRING_CONSTANT:
         case FLOAT_CONSTANT:
-            return constReference(first.payload());
+            return Variable::constRef(first.payload());
 
         case NULL_CONSTANT:
-            return null();
+            return Variable::nullConstant();
 
         case EMPTY_STRING_CONSTANT:
-            return constReference(emptyString);
+            return Variable::constRef(emptyString);
 
         case VARIABLE:
             return first.evaluateVariable(scope, module);
 
         case TYPE:
-            return copy(first.evaluateType(scope, module));
+            return Variable::copy(first.evaluateType(scope, module));
     }
-    return null();
+    return Variable();
 }
 
-Variable &Program::evaluateUnaryOperation(int op, Variable &a) const
+Variable Program::evaluateUnaryOperation(int op, Variable a) const
 {
-    Holder holder(*this);
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease)
-        holder.add(a);
-
     switch(op)
     {
         case NOT_OP:
-            return copy(!a.cvalue());
+            return Variable::copy(!a.cvalue());
 
         case BITWISE_NOT_OP:
-            return copy(~a.cvalue());
+            return Variable::copy(~a.cvalue());
 
         case OPP_OP:
-            return copy(-a.cvalue());;
+            return Variable::copy(-a.cvalue());;
             break;
 
         case PRE_INC_OP:
@@ -370,27 +343,20 @@ Variable &Program::evaluateUnaryOperation(int op, Variable &a) const
             return a;
 
         case SUF_INC_OP:
-            return copy(a.value()++);
+            return Variable::copy(a.value()++);
 
         case SUF_DEC_OP:
-            return copy(a.value()--);
+            return Variable::copy(a.value()--);
 
         default:
             break;
     }
-    return null();
+    return Variable();
 
 }
 
-Variable &Program::evaluateBinaryOperation(int op, Variable &a, Variable &b) const
+Variable Program::evaluateBinaryOperation(int op, Variable a, Variable b) const
 {
-    Holder holder(*this);
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease&0x1)
-        holder.add(a);
-    if(parameterRelease&0x2)
-        holder.add(b);
-
     switch(op)
     {
         case ASSIGN_OP:
@@ -438,96 +404,86 @@ Variable &Program::evaluateBinaryOperation(int op, Variable &a, Variable &b) con
             return a;
 
         case OR_OP:
-            return copy(a.cvalue() || b.cvalue());
+            return Variable::copy(a.cvalue() || b.cvalue());
 
         case AND_OP:
-            return copy(a.cvalue() && b.cvalue());
+            return Variable::copy(a.cvalue() && b.cvalue());
 
         case BITWISE_OR_OP:
-            return copy(a.cvalue() | b.cvalue());
+            return Variable::copy(a.cvalue() | b.cvalue());
 
         case BITWISE_XOR_OP:
-            return copy(a.cvalue() ^ b.cvalue());
+            return Variable::copy(a.cvalue() ^ b.cvalue());
 
         case BITWISE_AND_OP:
-            return copy(a.cvalue() & b.cvalue());
+            return Variable::copy(a.cvalue() & b.cvalue());
 
         case EQ_OP:
-            return copy(a.cvalue() == b.cvalue());
+            return Variable::copy(a.cvalue() == b.cvalue());
 
         case NE_OP:
-            return copy(a.cvalue() != b.cvalue());
+            return Variable::copy(a.cvalue() != b.cvalue());
 
         case GE_OP:
-            return copy(a.cvalue() >= b.cvalue());
+            return Variable::copy(a.cvalue() >= b.cvalue());
 
         case GT_OP:
-            return copy(a.cvalue() > b.cvalue());
+            return Variable::copy(a.cvalue() > b.cvalue());
 
         case LE_OP:
-            return copy(a.cvalue() <= b.cvalue());
+            return Variable::copy(a.cvalue() <= b.cvalue());
 
         case LT_OP:
-            return copy(a.cvalue() < b.cvalue());
+            return Variable::copy(a.cvalue() < b.cvalue());
 
         case RIGHT_OP:
-            return copy(a.cvalue() >> b.cvalue());
+            return Variable::copy(a.cvalue() >> b.cvalue());
 
         case LEFT_OP:
-            return copy(a.cvalue() << b.cvalue());
+            return Variable::copy(a.cvalue() << b.cvalue());
 
         case ADD_OP:
-            return copy(a.cvalue() + b.cvalue());
+            return Variable::copy(a.cvalue() + b.cvalue());
 
         case SUB_OP:
-            return copy(a.cvalue() - b.cvalue());
+            return Variable::copy(a.cvalue() - b.cvalue());
 
         case MUL_OP:
-            return copy(a.cvalue() * b.cvalue());
+            return Variable::copy(a.cvalue() * b.cvalue());
 
         case DIV_OP:
-            return copy(a.cvalue() / b.cvalue());
+            return Variable::copy(a.cvalue() / b.cvalue());
 
         case MOD_OP:
-            return copy(a.cvalue() % b.cvalue());
+            return Variable::copy(a.cvalue() % b.cvalue());
 
         default:
             break;
     }
 
-    return null();
+    return Variable();
 
 }
 
-Variable &Program::evaluateTernaryOperation(int op, Variable &a, Variable &b, Variable &c) const
+Variable Program::evaluateTernaryOperation(int op, Variable a, Variable b, Variable c) const
 {
-    Holder holder(*this);
-    const int parameterRelease = operatorParameterRelease[op];
-    if(parameterRelease&0x1)
-        holder.add(a);
-    if(parameterRelease&0x2)
-        holder.add(b);
-    if(parameterRelease&0x4)
-        holder.add(c);
-
     switch(op)
     {
         case TERNARY_OP:
             if(a.cvalue().toBool())
-                return copy(b.cvalue());
+                return Variable::copy(b.cvalue());
             else
-                return copy(c.cvalue());
+                return Variable::copy(c.cvalue());
 
         default:
             break;
     }
 
-    return null();
+    return Variable();
 }
 
-Variable &Program::evaluateFunction(const Scope &scope, const Module &module) const
+Variable Program::evaluateFunction(const Scope &scope, const Module &module) const
 {
-    Holder holder(*this);
     const std::string& name = elem(0).payload().toString() ;
     Program arguments = elem(1);
     const std::vector<std::string>& parametersNames = module.getFunctionParameterNames(name);
@@ -542,48 +498,36 @@ Variable &Program::evaluateFunction(const Scope &scope, const Module &module) co
         if(i>=size)
             break;
 
-        Variable& arg = holder.add(argument.evaluate(scope, module));
+        Variable argumentVariable = argument.evaluate(scope, module);
         const std::string& argName = parametersNames[i];
-        if(parameterModifiables[i])
+        if(!parameterModifiables[i])
         {
-            functionScope.addModifiableParameter(argName, arg.value());
+            argumentVariable.setConstant();
         }
-        else
-        {
-            functionScope.addConstantParameter(argName, arg.cvalue());
-        }
+        functionScope.addParameter(argName, argumentVariable);
+
         ++i;
     }
 
     while(i < parametersDefaults.size())
     {
-        functionScope.addConstantParameter(parametersNames[i], parametersDefaults[i]);
+        functionScope.addParameter(parametersNames[i], Variable::constRef(parametersDefaults[i]));
         ++i;
     }
 
     while(i < size)
     {
-        functionScope.addConstantParameter(parametersNames[i], nullVariant);
+        functionScope.addParameter(parametersNames[i], Variable());
         ++i;
     }
 
-    Variable* pvar = module.executeFunction(name, functionScope);
-    if(pvar != nullptr)
-    {
-        Variable& variable = registerVariable(pvar);
-        return holder.extract(variable);
-    }
-    else
-    {
-        std::cerr<<"function not found : "<<name<<std::endl;
-        return null();
-    }
+    return module.executeFunction(name, functionScope);
 }
 
-Variable &Program::evaluateVariable(const Scope &scope, const Module &module) const
+Variable Program::evaluateVariable(const Scope &scope, const Module &module) const
 {
     const Scope* toUseScope = &scope;
-    Scope* toDeleteScope    = nullptr;
+    std::unique_ptr<Scope> toDeleteScope;
 
     VariableDescriptor descriptor;
     buildVariableDescriptor(scope, module, descriptor);
@@ -593,28 +537,13 @@ Variable &Program::evaluateVariable(const Scope &scope, const Module &module) co
     {
         Scope* s = toUseScope->getScope(descriptor[i]);
         if(s == nullptr)
-            return null();
-        delete toDeleteScope;
-        toDeleteScope = s;
+            return Variable();
         toUseScope = s;
+        toDeleteScope.reset(s);
     }
 
     const Variant& key = descriptor[i];
-    Variant* value = toUseScope->get(key);
-    if(value != nullptr)
-    {
-        delete toDeleteScope;
-        return reference(*value);
-    }
-
-    const Variant* cvalue = toUseScope->cget(key);
-    if(cvalue != nullptr)
-    {
-        delete toDeleteScope;
-        return constReference(*cvalue);
-    }
-
-    return copy(Variant());
+    return toUseScope->get(key);
 }
 
 void Program::buildVariableDescriptor(const Scope &scope, const Module &module, VariableDescriptor &variableDescriptor) const
@@ -628,10 +557,7 @@ void Program::buildVariableDescriptor(const Scope &scope, const Module &module, 
                 break;
 
             case RIGHT_VALUE:
-                {
-                    Holder holder(elem);
-                    variableDescriptor.push_back(holder.cevaluate(scope, module));
-                }
+                variableDescriptor.push_back(elem.evaluateValue(scope, module));
                 break;
 
             case TYPE:
@@ -642,27 +568,11 @@ void Program::buildVariableDescriptor(const Scope &scope, const Module &module, 
                 break;
         }
     }
-
 }
 
 Program::Memory &Program::memory() const
 {
     return *_memory.get();
-}
-
-
-Variable &Program::Memory::registerVariable(Variable *variable)
-{
-    if(_variables.find(variable) == _variables.end())
-    {
-        _variables[variable] = std::unique_ptr<Variable>(variable);
-    }
-    return *variable;
-}
-
-void Program::Memory::releaseVariable(Variable &variable)
-{
-    _variables.erase(&variable);
 }
 
 File &Program::Memory::file()

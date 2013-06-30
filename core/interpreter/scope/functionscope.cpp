@@ -19,38 +19,11 @@
 
 #include "variant.h"
 
-void FunctionScope::addModifiableParameter(const std::string &name, Variant &variant)
+void FunctionScope::addParameter(const std::string &name, Variable variable)
 {
-    parameterIndex[name]=modifiableParameters.size();
-    modifiableParameters.push_back(&variant);
-    constantParameters.push_back(&variant);
+    parameterIndex[name]=parameters.size();
+    parameters.push_back(variable);
 }
-
-void FunctionScope::addConstantParameter(const std::string &name, const Variant &variant)
-{
-    parameterIndex[name]=modifiableParameters.size();
-    modifiableParameters.push_back(nullptr);
-    constantParameters.push_back(&variant);
-}
-
-Variant *FunctionScope::get(const Variant &key) const
-{
-    unsigned int index = getIndex(key);
-    if(index < modifiableParameters.size())
-        return modifiableParameters[index];
-
-    return nullptr;
-}
-
-const Variant *FunctionScope::cget(const Variant &key) const
-{
-    unsigned int index = getIndex(key);
-    if(index < constantParameters.size())
-        return constantParameters[index];
-
-    return nullptr;
-}
-
 
 unsigned int FunctionScope::getIndex(const Variant &key) const
 {
@@ -70,5 +43,13 @@ unsigned int FunctionScope::getIndex(const Variant &key) const
     return index;
 }
 
+Variable FunctionScope::doGet(const Variant &key) const
+{
+    unsigned int index = getIndex(key);
+    if(index < parameters.size())
+        return parameters[index];
+
+    return Variable();
+}
 
 

@@ -36,8 +36,6 @@ class Program
         friend class Interpreter;
         friend class Program;
 
-        Variable& registerVariable(Variable* variable);
-        void releaseVariable(Variable& variable);
         File& file();
         Object& setFileObject(Object* fileObject);
 
@@ -82,6 +80,7 @@ public:
     const_reverse_iterator rbegin() const;
     const_reverse_iterator rend() const;
 
+    Variant evaluateValue(const Scope& scope, const Module& module = Module()) const;
     ObjectType evaluateType(const Scope& scope, const Module& module) const;
     bool hasDeclaration() const;
 
@@ -95,20 +94,13 @@ private:
     friend class BlockExecution;
     Program(Object& object, std::shared_ptr<Memory> memory);
 
-    Variable& copy(const Variant& value) const;
-    Variable& constReference(const Variant& value) const;
-    Variable& reference(Variant& value) const;
-    Variable& null() const;
-    Variable& registerVariable(Variable* variable) const;
-    void releaseVariable(Variable& variable) const;
+    Variable evaluate(const Scope& scope, const Module& module = Module()) const;
 
-    Variable& evaluate(const Scope& scope, const Module& module = Module()) const;
-
-    Variable& evaluateUnaryOperation(int op, Variable& a) const;
-    Variable& evaluateBinaryOperation(int op, Variable& a, Variable& b) const;
-    Variable& evaluateTernaryOperation(int op, Variable& a, Variable& b, Variable& c) const;
-    Variable& evaluateFunction(const Scope& scope, const Module& module) const;
-    Variable& evaluateVariable(const Scope& scope, const Module& module = Module()) const;
+    Variable evaluateUnaryOperation(int op, Variable a) const;
+    Variable evaluateBinaryOperation(int op, Variable a, Variable b) const;
+    Variable evaluateTernaryOperation(int op, Variable a, Variable b, Variable c) const;
+    Variable evaluateFunction(const Scope& scope, const Module& module) const;
+    Variable evaluateVariable(const Scope& scope, const Module& module = Module()) const;
 
     void buildVariableDescriptor(const Scope& scope, const Module& module, VariableDescriptor& variableDescriptor) const;
 

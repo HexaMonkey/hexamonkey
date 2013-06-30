@@ -26,6 +26,7 @@
 #include "interpreter.h"
 #include "objecttypetemplate.h"
 
+#include <memory>
 
 #define loaderLambda () -> Module*
 
@@ -76,10 +77,9 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
 {
     if (module != nullptr)
     {
-        StandardFormatDetector::Adder* adder = formatDetector.newAdder(key);
+        std::unique_ptr<StandardFormatDetector::Adder> adder(formatDetector.newAdder(key));
         module->addFormatDetection(*adder);
-        delete adder;
-        modules[key] = std::shared_ptr<Module>(module);
+        modules[key].reset(module);
     }
 }
 

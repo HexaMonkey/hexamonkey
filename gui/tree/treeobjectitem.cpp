@@ -159,7 +159,11 @@ void TreeObjectItem::doLoad() const
 
         }
 
-
+        if(itemData().length() <3)
+        {
+            std::cerr<<"Error: item data too short"<<std::endl;
+                return;
+        }
         if(!object().showcase().empty())
         {
             S << showcasePadding.str();

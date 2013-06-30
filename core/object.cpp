@@ -209,7 +209,9 @@ void Object::parse()
 {
     while(_parsedCount < _parsers.size())
     {
-        _parsers[_parsedCount]->parse();
+        auto& parser = _parsers[_parsedCount];
+        parser->parse();
+        parser.reset();
         ++_parsedCount;
     }
 }
@@ -220,10 +222,15 @@ bool Object::parseSome(int hint)
 
     while(_parsedCount < _parsers.size() && _children.size() < initialCount+hint)
     {
-        if(_parsers[_parsedCount]->parseSome(initialCount+hint-_children.size()))
+        auto& parser = _parsers[_parsedCount];
+        if(parser->parseSome(initialCount+hint-_children.size()))
+        {
             ++_parsedCount;
+        }
         else
+        {
             return false;
+        }
     }
     return parsed();
 }

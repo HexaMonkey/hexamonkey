@@ -25,13 +25,12 @@
 class CompositeScope : public Scope
 {
 public:
-    void addScope(Scope&scope);
-    Variant* get(const Variant &key) const override;
-    const Variant* cget(const Variant &key) const override;
+    void addScope(Scope& scope);
 
 protected:
+    Variable doGet(const Variant &key) const override;
     Scope* doGetScope(const Variant &key) const override;
-    Variant* doDeclare(const Variant &key) const override;
+    Variable doDeclare(const Variant &key) const override;
 private:
     std::vector<Scope*> _scopes;
 };

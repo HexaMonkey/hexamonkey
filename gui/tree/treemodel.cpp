@@ -18,7 +18,6 @@
 #include "treemodel.h"
 #include "treeitem.h"
 #include "treeobjectitem.h"
-#include "interpreterconstructor.h"
 #include "resourcemanager.h"
 #include "resource.h"
 
