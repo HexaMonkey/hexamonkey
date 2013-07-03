@@ -388,11 +388,7 @@ std::ostream& Object::display(std::ostream& out, std::string prefix) const
 
 bool Object::parsed()
 {
-    if(!_parsers.empty())
-    {
-        return _parsers.back()->parsed();
-    }
-    return true;
+    return _parsers.empty() || _parsers.back().get() == nullptr || _parsers.back()->parsed();
 }
 
 std::ostream& operator <<(std::ostream& out, const Object& object)

@@ -30,7 +30,7 @@ Variable LocalScope::doGet(const Variant &key) const
     return Variable();
 }
 
-Variable LocalScope::doDeclare(const Variant &key) const
+Variable LocalScope::doDeclare(const Variant &key)
 {
     Variable value = Variable::null();
     _map.insert(std::make_pair(key.toString(), value));

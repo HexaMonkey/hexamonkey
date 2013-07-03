@@ -21,9 +21,9 @@
 #include "resourcemanager.h"
 #include "resource.h"
 
-TreeModel::TreeModel(const QString &/*data*/, const Interpreter &interpreter, QObject *parent) :
+TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, QObject *parent) :
     QAbstractItemModel(parent),
-    interpreter(interpreter),
+    programLoader(programLoader),
     _resourceManager(*this)
 {
     QList<QVariant> rootData;
@@ -150,7 +150,7 @@ QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
     else
         parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
-    new TreeObjectItem(object, interpreter, parentItem);
+    new TreeObjectItem(object, programLoader, parentItem);
 
     QModelIndex itemIndex = index(realRowCount(parent)-1, 0, parent);
 

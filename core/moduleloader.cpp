@@ -23,7 +23,7 @@
 #include "strutil.h"
 #include "fileutil.h"
 
-#include "interpreter.h"
+#include "programloader.h"
 #include "objecttypetemplate.h"
 
 #include <memory>
@@ -83,7 +83,7 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
     }
 }
 
-void ModuleLoader::addFolder(const std::string &folderName, const Interpreter &interpreter)
+void ModuleLoader::addFolder(const std::string &folderName, const ProgramLoader &programLoader)
 {
     std::vector<std::string> files;
     getDirContent(folderName, files);
@@ -99,7 +99,7 @@ void ModuleLoader::addFolder(const std::string &folderName, const Interpreter &i
 
     for(const std::string& file : selected)
     {
-        addModule(file, new FromFileModule(interpreter.loadFromFile(folderName+file)));
+        addModule(file, new FromFileModule(programLoader.fromFile(folderName+file)));
     }
 }
 

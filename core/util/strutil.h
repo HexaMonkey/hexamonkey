@@ -111,4 +111,9 @@ std::string extension(const std::string& path);
  */
 std::string sizeDisplay(int64_t bitCount);
 
+/**
+ * @brief camelCase to DEFINE_STYLE
+ */
+std::string defineStyle(const std::string& name);
+
 #endif // STRUTIL_H_INCLUDED

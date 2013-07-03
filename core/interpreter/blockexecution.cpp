@@ -1,24 +1,25 @@
 #include "blockexecution.h"
-#include "interpreter.h"
+#include "programloader.h"
 #include "model.h"
 #include "scope.h"
 #include "containerparser.h"
 #include "unused.h"
+#include "evaluator.h"
 
 #include <limits>
 
-BlockExecution::BlockExecution(Program program,
-                               const Module &module,
+BlockExecution::BlockExecution(Program block,
+                               const Evaluator &evaluator,
                                Scope& scope,
                                ContainerParser *parser)
-    : program(program),
-      begin(program.begin()),
-      end(program.end()),
-      current(program.begin()),
-      last(program.end()),
+    : program(block),
+      begin(block.begin()),
+      end(block.end()),
+      current(block.begin()),
+      last(block.end()),
       lineRepeatCount(0),
-      _module(module),
-      _scope(scope),
+      eval(evaluator),
+      scope(scope),
       _parser(parser),
       _inLoop(false),
       _subBlockExitCode(ExitCode::NoExit)
@@ -65,7 +66,7 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                 else
                 {
                     resetSubBlock();
-                    switch(line.id())
+                    switch(line.tag())
                     {
 
                         case LOOP:
@@ -100,7 +101,7 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
         else
         {
             ++lineRepeatCount;
-            switch(line.id())
+            switch(line.tag())
             {
                 case DECLARATION:
                     handleDeclaration(line, parseQuota);
@@ -159,15 +160,6 @@ bool BlockExecution::done()
     return current == end;
 }
 
-const Module &BlockExecution::module()
-{
-    return _module;
-}
-
-Scope &BlockExecution::scope()
-{
-    return _scope;
-}
 
 bool BlockExecution::hasParser()
 {
@@ -186,7 +178,7 @@ Variable BlockExecution::returnValue()
 
 void BlockExecution::setSubBlock(Program program, bool loop)
 {
-    subBlock.reset(new BlockExecution(program, module(), scope(), _parser));
+    subBlock.reset(new BlockExecution(program, eval, scope, _parser));
     if(loop || _inLoop)
         subBlock->_inLoop = true;
     _subBlockExitCode = ExitCode::NoExit;
@@ -201,9 +193,9 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 {
     if(hasParser())
     {
-        ObjectType type = declaration.elem(0).evaluateValue(scope(), module()).toObjectType();
-        std::string name = declaration.elem(1).payload().toString();
-        bool showcased = declaration.elem(2).payload().toInteger();
+        ObjectType type = eval.rightValue(declaration.node(0)).cvalue().toObjectType();
+        std::string name = declaration.node(1).payload().toString();
+        bool showcased = declaration.node(2).payload().toInteger();
 #ifdef EXECUTION_TRACE
         std::cout<<"Declaration "<<type<<" "<<name<<std::endl;
 #endif
@@ -218,17 +210,20 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 
 void BlockExecution::handleLocalDeclaration(const Program &declaration)
 {
-    Variable variable = scope().declare(declaration.elem(0).payload());
+    Variable variable = scope.declare(declaration.node(0).payload());
 #ifdef EXECUTION_TRACE
     std::cout<<"Local declaration "<<declaration.elem(0).payload();
 #endif
 
     if(declaration.size() >= 2 && variable.isDefined())
     {
-        variable.value() = declaration.elem(1).evaluateValue(scope(), module());
+        variable.value() = eval.rightValue(declaration.node(1)).cvalue();
         std::cout<<" = "<<variable.cvalue();
     }
+#ifdef EXECUTION_TRACE
     std::cout<<std::endl;
+#endif
+
     ++current;
 }
 
@@ -237,7 +232,7 @@ void BlockExecution::handleRightValue(const Program &rightValue)
 #ifdef EXECUTION_TRACE
     Variant value =
 #endif
-    rightValue.evaluateValue(scope(), module());
+    eval.rightValue(rightValue);
 #ifdef EXECUTION_TRACE
     std::cout<<"Right value "<<value<<std::endl;
 #endif
@@ -249,19 +244,19 @@ void BlockExecution::handleCondition(const Program &condition)
 #ifdef EXECUTION_TRACE
     std::cout<<"Condition"<<std::endl;
 #endif
-    if(condition.elem(0).evaluateValue(scope(), module()).toBool())
+    if(eval.rightValue(condition.node(0)).cvalue().toBool())
     {
 #ifdef EXECUTION_TRACE
         std::cout<<" then";
 #endif
-        setSubBlock(condition.elem(1), false);
+        setSubBlock(condition.node(1), false);
     }
     else
     {
 #ifdef EXECUTION_TRACE
         std::cout<<" else";
 #endif
-        setSubBlock(condition.elem(2), false);
+        setSubBlock(condition.node(2), false);
     }
 #ifdef EXECUTION_TRACE
     std::cout<<std::endl;
@@ -278,7 +273,7 @@ void BlockExecution::handleLoop(const Program &loop)
 #ifdef EXECUTION_TRACE
         std::cout<<" continue";
 #endif
-        setSubBlock(loop.elem(1), true);
+        setSubBlock(loop.node(1), true);
     }
     else
     {
@@ -287,7 +282,10 @@ void BlockExecution::handleLoop(const Program &loop)
 #endif
         ++current;
     }
+#ifdef EXECUTION_TRACE
     std::cout<<std::endl;
+#endif
+
 }
 
 void BlockExecution::handleDoLoop(const Program &loop)
@@ -300,7 +298,7 @@ void BlockExecution::handleDoLoop(const Program &loop)
 #ifdef EXECUTION_TRACE
         std::cout<<" continue";
 #endif
-        setSubBlock(loop.elem(1), true);
+        setSubBlock(loop.node(1), true);
     }
     else
     {
@@ -342,8 +340,8 @@ bool BlockExecution::handleContinue()
 
 void BlockExecution::handleReturn(const Program &line)
 {
-    const Program& rightValue = line.elem(0);
-    _returnValue = rightValue.evaluate(scope(), module());
+    const Program& rightValue = line.node(0);
+    _returnValue = eval.rightValue(rightValue);
 #ifdef EXECUTION_TRACE
     std::cout<<"Return "<<_returnValue.cvalue()<<std::endl;
 #endif
@@ -352,6 +350,35 @@ void BlockExecution::handleReturn(const Program &line)
 
 bool BlockExecution::loopCondition(const Program &loop)
 {
-    return loop.elem(0).evaluateValue(scope()).toBool()
-           && ((!loop.elem(1).hasDeclaration() || parser().availableSize()> 0));
+    return eval.rightValue(loop.node(0)).cvalue().toBool()
+            && ((!hasDeclaration(loop.node(1)) || (hasParser() && parser().availableSize()> 0)));
+}
+
+bool BlockExecution::hasDeclaration(const Program &instructions)
+{
+    for(Program program: instructions)
+    {
+        switch(program.tag())
+        {
+            case DECLARATION:
+                return true;
+
+            case CONDITIONAL_STATEMENT:
+                if(hasDeclaration(program.node(1)))
+                    return true;
+                if(hasDeclaration(program.node(2)))
+                    return true;
+                break;
+
+            case LOOP:
+            case DO_LOOP:
+                if(hasDeclaration(program.node(1)))
+                    return true;
+                break;
+
+            default:
+                break;
+        }
+    }
+    return false;
 }

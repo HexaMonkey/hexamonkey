@@ -24,11 +24,11 @@ std::ostream& displayName(std::ostream& out, const std::string& name);
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
 std::ostream& displayInfo(std::ostream& out, const std::string& info);
 
-TreeObjectItem::TreeObjectItem(Object& object, const Interpreter &interpreter, TreeItem *parent) :
+TreeObjectItem::TreeObjectItem(Object& object, const ProgramLoader &programLoader, TreeItem *parent) :
     TreeItem(QList<QVariant>({"", "", ""}), parent),
     _object(object),
     _index(0),
-    filter(interpreter),
+    filter(programLoader),
     _synchronised(false)
 {
     connect(this, SIGNAL(childrenRemoved()), this, SLOT(onChildrenRemoved()));
@@ -84,7 +84,7 @@ void TreeObjectItem::setLastChildIndex(int64_t l)
 
 bool TreeObjectItem::filterObject(Object& object)
 {
-    return filter.filterChildren(object);
+    return filter(object);
 }
 
 bool TreeObjectItem::updateFilter(const std::string &expression)

@@ -24,16 +24,19 @@
 #include "variable.h"
 class Variant;
 
+/**
+ * @brief
+ */
 class Scope
 {
 public:
     virtual ~Scope() {}
     Variable get(const Variant& key) const;
-    Variable declare(const Variant& key) const;
+    Variable declare(const Variant& key);
     Scope *getScope(const Variant& key) const;
 protected:
     virtual Variable doGet(const Variant& key) const;
-    virtual Variable doDeclare(const Variant& key) const;
+    virtual Variable doDeclare(const Variant& key);
     virtual Scope *doGetScope(const Variant& key) const;
 };
 

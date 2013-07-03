@@ -22,7 +22,7 @@ Variable Scope::get(const Variant &key) const
     return doGet(key);
 }
 
-Variable Scope::declare(const Variant &key) const
+Variable Scope::declare(const Variant &key)
 {
     return doDeclare(key);
 }
@@ -37,7 +37,7 @@ Variable Scope::doGet(const Variant &/*key*/) const
     return Variable();
 }
 
-Variable Scope::doDeclare(const Variant &/*key*/) const
+Variable Scope::doDeclare(const Variant &/*key*/)
 {
     return Variable();
 }

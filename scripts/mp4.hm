@@ -20,7 +20,7 @@ addExtension mp4
 addExtension mov
 addExtension m4a
 
-import bestd
+import bestd uuid
 
 class Mp4File as File
 {
@@ -43,7 +43,7 @@ class Box(boxtype, extended_type)
 	}
 	if(type == "uuid")
 	{
-		string(16) usertype;
+		uuid usertype;
 		@args.extended_type = usertype;
 	}
 }

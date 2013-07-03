@@ -20,24 +20,28 @@
 
 #include <memory>
 #include <string>
-#include "interpreter.h"
+#include "programloader.h"
 #include "variable.h"
 #include "parser.h"
+#include "evaluator.h"
 
 class Object;
 
+/**
+ * @brief Evaluate an HMScript statement on an object
+ */
 class Filter
 {
 public:
-    Filter(const Interpreter &interpreter);
+    Filter(const ProgramLoader &_programLoader);
 
     bool setExpression(const std::string& expression);
     const std::string& expression();
 
-    bool filterChildren(Object &object);
+    bool operator()(Object &object);
 
 private:
-    const Interpreter& _interpreter;
+    const ProgramLoader& _programLoader;
     Program _program;
     std::string _expression;
 };

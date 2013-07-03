@@ -22,28 +22,36 @@
 
 #include "mapmodule.h"
 #include "program.h"
+#include "evaluator.h"
 
+/**
+ * @brief Implementation of a module created from an HMScript file
+ *
+ * The module generates instances of FromFileParser as parsers.
+ */
 class FromFileModule : public Module
 {
 public:
+    /**
+     * @param program given by the \link ProgramLoader program loader\endlink.
+     */
     FromFileModule(Program program);
 
-protected:
-    void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
-    void requestImportations(std::vector<std::string>& formatRequested) override;
-    bool doLoad() override;
+private:
+    virtual void addFormatDetection(StandardFormatDetector::Adder& formatAdder) final;
+    virtual void requestImportations(std::vector<std::string>& formatRequested) final;
+    virtual bool doLoad() final;
 
-    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
-    virtual bool hasParser(const ObjectType &type) const;
-    int64_t doGetFixedSize(const ObjectType &type, const Module &module) const override;
+    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const final;
+    virtual bool hasParser(const ObjectType &type) const final;
+    virtual int64_t doGetFixedSize(const ObjectType &type, const Module &module) const final;
 
-    bool doCanHandleFunction(const std::string& name) const override;
-    Variable doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const override;
-    const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const override;
-    const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const override;
-    const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const override;
+    virtual bool doCanHandleFunction(const std::string& name) const final;
+    virtual Variable doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const final;
+    virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const final;
+    virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const final;
+    virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const final;
 
-private:  
     typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Program> FunctionDescriptor;
     typedef std::unordered_map<std::string, FunctionDescriptor> FunctionDescriptorMap;
     bool loadProgram(const std::string path);
@@ -55,6 +63,11 @@ private:
     void loadExtensions(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
     bool sizeDependency(const std::string& name) const;
+
+    int64_t guessSize(const Program& instructions) const;
+
+    static std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly);
+    static void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors);
 
     Program::const_iterator headerEnd(const std::string& name) const;
     FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
@@ -70,6 +83,8 @@ private:
     mutable std::map<std::string, int64_t> _fixedSizes;
     mutable std::map<std::string, bool> _sizeDependency;
     mutable std::map<std::string, Program::const_iterator> _headerEnd;
+
+    Evaluator eval;
 
 };
 

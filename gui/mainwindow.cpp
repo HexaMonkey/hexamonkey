@@ -26,17 +26,17 @@
 
 const int MainWindow::maxRecentFiles;
 
-MainWindow::MainWindow(const ModuleLoader &moduleLoader, const Interpreter &interpreter, QWidget *parent)
+MainWindow::MainWindow(const ModuleLoader &moduleLoader, const ProgramLoader &programLoader, QWidget *parent)
     : QMainWindow(parent),
       nfiles(0),
       moduleLoader(moduleLoader),
-      interpreter(interpreter)
+      programLoader(programLoader)
 {
     createActions();
     createMenus();
     setAcceptDrops(true);
 
-    treeWidget = new TreeWidget(interpreter, this);
+    treeWidget = new TreeWidget(programLoader, this);
     hexFileWidget = new HexFileWidget(this);
 
     setCentralWidget(new QWidget(this));

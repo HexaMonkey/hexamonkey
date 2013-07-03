@@ -30,20 +30,21 @@
 
 #include "unused.h"
 
-#include "interpreter.h"
-#include "variabledescriptor.h"
+#include "programloader.h"
+#include "variablepath.h"
 #include "variable.h"
 #include "blockexecution.h"
 
-const VariableDescriptor sizeDescriptor = {"@size"};
-const std::vector<VariableDescriptor> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};
+const VariablePath sizeDescriptor = {"@size"};
+const std::vector<VariablePath> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;
 const std::vector<Variant> emptyParameterDefaults;
 
 FromFileModule::FromFileModule(Program program)
-    :_program(program)
+    :_program(program),
+      eval(Scope(), *this)
 {
     UNUSED(hmcElemNames);
 }
@@ -52,7 +53,7 @@ void FromFileModule::addFormatDetection(StandardFormatDetector::Adder &formatAdd
 {
     if(program().isValid())
     {
-        Program formatDetections = program().elem(0);
+        Program formatDetections = program().node(0);
         loadFormatDetections(formatDetections, formatAdder);
     }
 }
@@ -61,7 +62,7 @@ void FromFileModule::requestImportations(std::vector<std::string> &formatRequest
 {
     if(program().isValid())
     {
-        Program imports = program().elem(1);
+        Program imports = program().node(1);
         loadImports(imports, formatRequested);
     }
 }
@@ -71,7 +72,7 @@ bool FromFileModule::doLoad()
     if(!program().isValid())
         return false;
 
-    Program classDeclarations = program().elem(2);
+    Program classDeclarations = program().node(2);
     nameScan(classDeclarations);
     loadExtensions(classDeclarations);
     loadSpecifications(classDeclarations);
@@ -109,8 +110,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     }
 
     Program definition = definitionIt->second;
-    std::set<VariableDescriptor> descriptors;
-    definition.buildDependencies(true, descriptors);
+
     if(sizeDependency(name))
     {
         std::cout<<type.typeTemplate().name()<<" unknown size"<<std::endl;
@@ -120,7 +120,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     if(module.getFather(type).isNull())
     {
-        int64_t size = definition.guessSize(module);
+        int64_t size = guessSize(definition);
         if(size>0)
         {
             std::cout<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
@@ -153,7 +153,8 @@ Variable FromFileModule::doExecuteFunction(const std::string &name, Scope &param
     scope.addScope(params);
 
     const Program& definition = std::get<3>(it->second);
-    BlockExecution blockExecution(definition, fromModule, scope, nullptr);
+    Evaluator eval(scope, fromModule);
+    BlockExecution blockExecution(definition, eval, scope, nullptr);
 
     blockExecution.execute();
 
@@ -194,18 +195,18 @@ void FromFileModule::loadFormatDetections(Program &formatDetections, StandardFor
 {
     for(Program formatDetection: formatDetections)
     {
-        switch(formatDetection.elem(0).payload().toInteger())
+        switch(formatDetection.node(0).payload().toInteger())
         {
             case ADD_MAGIC_NUMBER_OP:
-                formatAdder.addMagicNumber(formatDetection.elem(1).payload().toString());
+                formatAdder.addMagicNumber(formatDetection.node(1).payload().toString());
                 break;
 
             case ADD_EXTENSION_OP:
-                formatAdder.addExtension(formatDetection.elem(1).payload().toString());
+                formatAdder.addExtension(formatDetection.node(1).payload().toString());
                 break;
 
             case ADD_SYNCBYTE_OP:
-                formatAdder.addSyncbyte(formatDetection.elem(0).payload().toInteger(), formatDetection.elem(1).payload().toInteger());
+                formatAdder.addSyncbyte(formatDetection.node(0).payload().toInteger(), formatDetection.node(1).payload().toInteger());
                 break;
 
             default:
@@ -229,24 +230,24 @@ void FromFileModule::nameScan(Program& declarations)
 
     for(Program declaration : declarations)
     {
-        if(declaration.id() == CLASS_DECLARATION)
+        if(declaration.tag() == CLASS_DECLARATION)
         {
-            Program typeTemplate = declaration.elem(0).elem(0);
-            const std::string& name = typeTemplate.elem(0).payload().toString();
+            Program typeTemplate = declaration.node(0).node(0);
+            const std::string& name = typeTemplate.node(0).payload().toString();
             std::vector<std::string> parameters;
-            for(Program arg:typeTemplate.elem(1))
+            for(Program arg:typeTemplate.node(1))
             {
                 parameters.push_back(arg.payload().toString());
             }
             const ObjectTypeTemplate& temp = newTemplate(name, parameters);
             std::cout<<"    "<<temp<<std::endl;
 
-            Program classDefinition = declaration.elem(1);
+            Program classDefinition = declaration.node(1);
             _definitions[name] = classDefinition;
         }
-        else if(declaration.id() == FUNCTION_DECLARATION)
+        else if(declaration.tag() == FUNCTION_DECLARATION)
         {
-            const std::string& name = declaration.elem(0).payload().toString();
+            const std::string& name = declaration.node(0).payload().toString();
             _functions[name] = declaration;
         }
     }
@@ -260,30 +261,30 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
 
     for(Program classDeclaration : classDeclarations)
     {
-        if(classDeclaration.id() == CLASS_DECLARATION)
+        if(classDeclaration.tag() == CLASS_DECLARATION)
         {
-            const std::string& name = classDeclaration.elem(0).elem(0).elem(0).payload().toString();
+            const std::string& name = classDeclaration.node(0).node(0).node(0).payload().toString();
             const ObjectTypeTemplate& childTemplate = getTemplate(name);
 
             //Choose extension program
             //By defaut "extension"
-            Program extension = classDeclaration.elem(0).elem(1);
+            Program extension = classDeclaration.node(0).node(1);
             //If there is no "extension" then "specification" is taken
             if(extension.size() == 0)
             {
-                extension = classDeclaration.elem(0).elem(2);
+                extension = classDeclaration.node(0).node(2);
                 if(extension.size() == 0)
                     continue;
             }
 
            //Adding extension lambda
-           Program program = extension.elem(0);
+           Program program = extension.node(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               return program.evaluateType(TypeScope(type), *this);
+               return Evaluator(TypeScope(type), *this).type(program);
            });
 
-           std::cout<<"    "<<childTemplate<<" extends "<<program.elem(0).payload()<<"(...)"<<std::endl;
+           std::cout<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;
         }
     }
 
@@ -296,20 +297,20 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
 
     for(Program classDeclaration : classDeclarations)
     {
-        if(classDeclaration.id() == CLASS_DECLARATION)
+        if(classDeclaration.tag() == CLASS_DECLARATION)
         {
-            ObjectType child = getTemplate(classDeclaration.elem(0).elem(0).elem(0).payload().toString())();
-            for(Program type : classDeclaration.elem(0).elem(2))
+            ObjectType child = getTemplate(classDeclaration.node(0).node(0).node(0).payload().toString())();
+            for(Program type : classDeclaration.node(0).node(2))
             {
-                ObjectType parent(type.evaluateType(Scope(), *this));
+                ObjectType parent(eval.type(type));
                 setSpecification(parent, child);
                 std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
             }
         }
-        else if(classDeclaration.id() == FORWARD)
+        else if(classDeclaration.tag() == FORWARD)
         {
-            ObjectType parent(classDeclaration.elem(0).evaluateType(Scope(), *this));
-            ObjectType child(classDeclaration.elem(1).evaluateType(Scope(), *this));
+            ObjectType parent(eval.type(classDeclaration.node(0)));
+            ObjectType child(eval.type(classDeclaration.node(1)));
             setSpecification(parent, child);
             std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
         }
@@ -329,11 +330,63 @@ bool FromFileModule::sizeDependency(const std::string &name) const
         return -1;
 
     Program definition = definitionIt->second;
-    std::set<VariableDescriptor> descriptors;
-    definition.buildDependencies(true, descriptors);
-    bool result = descriptors.find(sizeDescriptor) != descriptors.end();
+    std::set<VariablePath> dependencies = variableDependencies(definition, true);
+
+    bool result = dependencies.find(sizeDescriptor) != dependencies.end();
     _sizeDependency[name] = result;
     return result;
+}
+
+int64_t FromFileModule::guessSize(const Program &instructions) const
+{
+    if(instructions.size() == 0)
+        return 0;
+
+    int64_t size = 0;
+    for(const Program& line : instructions)
+    {
+        switch(line.tag())
+        {
+        case DECLARATION:
+            {
+                ObjectType type = eval.rightValue(line.node(0)).cvalue().toObjectType();
+                if(type.isNull())
+                    return -1;
+                int64_t elemSize = getFixedSize(type);
+                if(elemSize == -1)
+                    return -1;
+
+                size += elemSize;
+                break;
+            }
+
+        case LOOP:
+        case DO_LOOP:
+            if(guessSize(line.node(1)) != 0)
+                return -1;
+            break;
+
+        case CONDITIONAL_STATEMENT:
+            {
+                int64_t size1 = guessSize(line.node(1));
+                if(size1 == -1)
+                    return -1;
+                int64_t size2 = guessSize(line.node(2));
+                if(size2 == -1 ||size2 != size1)
+                    return -1;
+                size += size1;
+                break;
+            }
+
+        case RIGHT_VALUE:
+        case LOCAL_DECLARATION:
+            break;
+
+        default:
+            return -1;
+        }
+    }
+    return size;
 }
 
 Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
@@ -350,9 +403,9 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
         const Program& line = *reverseHeaderEnd;
 
         //Check dependencies
-        std::set<VariableDescriptor> variableSet;
-        line.buildDependencies(true, variableSet);
-        if(std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariableDescriptor& headerOnlyVar) -> bool
+        std::set<VariablePath> variableSet = variableDependencies(line, true);
+
+        if(std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariablePath& headerOnlyVar) -> bool
         {
             auto find = variableSet.find(headerOnlyVar);
             if(find != variableSet.end())
@@ -371,9 +424,9 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
                 break;
 
         //Check showcased declarations
-        if(line.id() == DECLARATION)
+        if(line.tag() == DECLARATION)
         {
-            if(line.elem(2).payload().toInteger())
+            if(line.node(2).payload().toInteger())
                 break;
         }
     }
@@ -395,8 +448,8 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
         return _functionDescriptors.end();
 
     const Program& declaration = it->second;
-    const Program& arguments = declaration.elem(1);
-    const Program& definition = declaration.elem(2);
+    const Program& arguments = declaration.node(1);
+    const Program& definition = declaration.node(2);
 
     std::vector<std::string> parameterNames;
     std::vector<bool> parameterModifiables;
@@ -404,9 +457,9 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
 
     for(const Program& argument: arguments)
     {
-        parameterNames.push_back(argument.elem(1).payload().toString());
-        parameterModifiables.push_back(argument.elem(0).payload().toBool());
-        parameterDefaults.push_back(argument.elem(2).evaluateValue(Scope(), *this));
+        parameterNames.push_back(argument.node(1).payload().toString());
+        parameterModifiables.push_back(argument.node(0).payload().toBool());
+        parameterDefaults.push_back(eval.rightValue(argument.node(2)).cvalue());
     }
 
     auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);
@@ -422,4 +475,67 @@ const Program &FromFileModule::program() const
 bool FromFileModule::hasParser(const ObjectType &type) const
 {
     return _definitions.find(type.typeTemplate().name()) != _definitions.end();
+}
+
+
+void FromFileModule::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors)
+{
+    switch(instructions.tag())
+    {
+        case EXECUTION_BLOCK:
+        case CONDITIONAL_STATEMENT:
+        case LOOP:
+        case DO_LOOP:
+            for(Program elem : instructions)
+                buildDependencies(elem, modificationOnly, descriptors);
+            break;
+
+        case TYPE:
+            for(Program arg : instructions.node(1))
+                buildDependencies(arg, modificationOnly, descriptors);
+            break;
+
+        case DECLARATION:
+            buildDependencies(instructions.node(0), modificationOnly, descriptors);
+            break;
+
+        case LOCAL_DECLARATION:
+            if(instructions.size()>=2)
+                buildDependencies(instructions.node(1), modificationOnly, descriptors);
+            break;
+
+        case RIGHT_VALUE:
+            if(instructions.node(0).tag() == OPERATOR)
+            {
+                int op = instructions.node(0).payload().toInteger();
+                for(int i = 0; i < operatorParameterCount[op]; ++i)
+                {
+                    if(!modificationOnly || !((1<<i)&operatorParameterRelease[op]))
+                    {
+                        buildDependencies(instructions.node(1+i), modificationOnly, descriptors);
+                    }
+                }
+            }
+            else if(instructions.node(0).tag() == VARIABLE || instructions.node(0).tag() == TYPE)
+            {
+                buildDependencies(instructions.node(0), modificationOnly, descriptors);
+            }
+            break;
+
+        case VARIABLE:
+            descriptors.insert(Evaluator().variablePath(instructions));
+            break;
+
+        default:
+            break;
+
+    }
+}
+
+
+std::set<VariablePath> FromFileModule::variableDependencies(const Program &instructions, bool modificationOnly)
+{
+    std::set<VariablePath> dependencies;
+    buildDependencies(instructions, modificationOnly, dependencies);
+    return dependencies;
 }

@@ -15,9 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "variabledescriptor.h"
+#include "variablepath.h"
 
-bool operator==(const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator==(const VariablePath& a, const VariablePath& b)
 {
 
     if(a.size() != b.size())
@@ -30,12 +30,12 @@ bool operator==(const VariableDescriptor& a, const VariableDescriptor& b)
     return true;
 }
 
-bool operator!=(const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator!=(const VariablePath& a, const VariablePath& b)
 {
     return !(a==b);
 }
 
-bool operator< (const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator< (const VariablePath& a, const VariablePath& b)
 {
     for(unsigned int i = 0; i < a.size(); ++i)
     {
@@ -55,7 +55,7 @@ bool operator< (const VariableDescriptor& a, const VariableDescriptor& b)
     return false;
 }
 
-bool operator<=(const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator<=(const VariablePath& a, const VariablePath& b)
 {
     for(unsigned int i = 0; i < a.size(); ++i)
     {
@@ -71,18 +71,18 @@ bool operator<=(const VariableDescriptor& a, const VariableDescriptor& b)
     return true;
 }
 
-bool operator> (const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator> (const VariablePath& a, const VariablePath& b)
 {
     return !(a<=b);
 }
 
-bool operator>=(const VariableDescriptor& a, const VariableDescriptor& b)
+bool operator>=(const VariablePath& a, const VariablePath& b)
 {
     return !(a<b);
 }
 
 
-bool VariableDescriptor::inScopeOf(const VariableDescriptor &other) const
+bool VariablePath::inScopeOf(const VariablePath &other) const
 {
     for(unsigned int i = 0; i < other.size(); ++i)
     {
@@ -96,21 +96,21 @@ bool VariableDescriptor::inScopeOf(const VariableDescriptor &other) const
 }
 
 
-VariableDescriptor::VariableDescriptor()
+VariablePath::VariablePath()
 {
 }
 
-VariableDescriptor::VariableDescriptor(const std::vector<Variant> &other)
+VariablePath::VariablePath(const std::vector<Variant> &other)
     : std::vector<Variant>(other)
 {
 }
 
-VariableDescriptor::VariableDescriptor(std::initializer_list<Variant> l)
+VariablePath::VariablePath(std::initializer_list<Variant> l)
     : std::vector<Variant>(l)
 {
 }
 
-std::ostream& operator << (std::ostream& out, const VariableDescriptor& descriptor)
+std::ostream& operator << (std::ostream& out, const VariablePath& descriptor)
 {
     for(unsigned int i = 0; i < descriptor.size(); ++i)
     {

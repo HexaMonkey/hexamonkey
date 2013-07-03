@@ -20,7 +20,7 @@
 #include <QIcon>
 
 #include "moduleloader.h"
-#include "interpreter.h"
+#include "programloader.h"
 #include "mainwindow.h"
 
 #include "standardmodule.h"
@@ -31,6 +31,7 @@
 
 int main(int argc, char *argv[])
 {
+    std::cout<<std::endl;
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("HexaMonkey");
     QCoreApplication::setApplicationName("HexaMonkey");
@@ -43,17 +44,17 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("mkv",   new MkvModule);
     moduleLoader.addModule("hmc",   new HmcModule);
 
-    Interpreter interpreter(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
+    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
 
 #ifdef __MINGW32__
-    moduleLoader.addFolder(".\\scripts\\", interpreter);
-    moduleLoader.addFolder("..\\scripts\\", interpreter);
+    moduleLoader.addFolder(".\\scripts\\", programLoader);
+    moduleLoader.addFolder("..\\scripts\\", programLoader);
 #else
-    moduleLoader.addFolder("./scripts/", interpreter);
-    moduleLoader.addFolder("../scripts/", interpreter);
+    moduleLoader.addFolder("./scripts/", programLoader);
+    moduleLoader.addFolder("../scripts/", programLoader);
 #endif
 
-    MainWindow window(moduleLoader, interpreter);
+    MainWindow window(moduleLoader, programLoader);
 
     window.setWindowTitle("HexaMonkey");
     window.setWindowIcon(QIcon(":/logo.svg"));

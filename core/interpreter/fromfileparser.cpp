@@ -18,23 +18,24 @@
 #include "fromfileparser.h"
 
 #include "model.h"
-#include "interpreter.h"
+#include "programloader.h"
 #include "variable.h"
 #include "objecttypetemplate.h"
 #include "unused.h"
 
-FromFileParser::FromFileParser(Object &object, const Module &module, Program program, Program::const_iterator headerEnd)
+FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd)
     : ContainerParser(object, module),
       _headerEnd(headerEnd),
       _objectScope(object, true),
-      _blockExecution(program, module, scope(), this),
+      _evaluator(_scope, module),
+      _blockExecution(classDefinition, _evaluator, _scope, this),
       _object(object)
 {
     _scope.addScope(_localScope);
     _scope.addScope(_objectScope);
     UNUSED(hmcElemNames);
 
-    if(module.getFixedSize(type()) == -1 && headerEnd == program.begin())
+    if(module.getFixedSize(type()) == -1 && headerEnd == classDefinition.begin())
     {
         setNoHead();
     }

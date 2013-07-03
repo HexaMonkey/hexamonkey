@@ -30,7 +30,7 @@ public:
 protected:
     Variable doGet(const Variant &key) const override;
     Scope* doGetScope(const Variant &key) const override;
-    Variable doDeclare(const Variant &key) const override;
+    Variable doDeclare(const Variant &key) override;
 private:
     std::vector<Scope*> _scopes;
 };

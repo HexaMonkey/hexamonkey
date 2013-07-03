@@ -28,19 +28,25 @@
 #include "localscope.h"
 #include "compositescope.h"
 #include "blockexecution.h"
+#include "evaluator.h"
 
-
-class FromFileParser : public ContainerParser
+/**
+ * @brief Implementation using an HMScript class definition
+ *
+ * Uses an instance of BlockExecution to execute the program.
+ * A breakpoint is given to isolate the head, which is computed
+ * statically by the module.
+ */
+class FromFileParser final : public ContainerParser
 {
 public:
-    FromFileParser(Object& object, const Module& module, Program program, Program::const_iterator headerEnd);
-
-protected:
-    void doParseHead() override;
-    void doParse() override;
-    bool doParseSome(int hint) override;
+    FromFileParser(Object& object, const Module &module, Program classDefinition, Program::const_iterator headerEnd);
 
 private:
+    virtual void doParseHead() final;
+    virtual void doParse() final;
+    virtual bool doParseSome(int hint) final;
+
     Scope &scope();
     BlockExecution& blockExecution();
     Program::const_iterator _headerEnd;
@@ -48,6 +54,8 @@ private:
     ObjectScope _objectScope;
     LocalScope _localScope;
     CompositeScope _scope;
+
+    Evaluator _evaluator;
 
     BlockExecution _blockExecution;
 

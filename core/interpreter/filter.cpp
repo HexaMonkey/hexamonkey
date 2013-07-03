@@ -19,11 +19,11 @@
 #include "object.h"
 #include "objecttypetemplate.h"
 #include "objectscope.h"
-#include "interpreter.h"
+#include "programloader.h"
 #include "variable.h"
 #include "parser.h"
 
-Filter::Filter(const Interpreter& interpreter): _interpreter(interpreter)
+Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {
 }
 
@@ -35,18 +35,20 @@ bool Filter::setExpression(const std::string &expression)
         return false;
     }
 
-    _program = _interpreter.loadFromString(expression);
+    _program = _programLoader.fromString(expression);
 
-    if(_program.isValid())
+    if(_program.isValid() && _program.size() > 0)
     {
-        _expression = expression;
-        return true;
+        _program = _program.node(0);
+        if(_program.isValid())
+        {
+            _expression = expression;
+            return true;
+        }
     }
-    else
-    {
-        _expression = "";
-        return false;
-    }
+
+    _expression = "";
+    return false;
 }
 
 const std::string &Filter::expression()
@@ -54,12 +56,11 @@ const std::string &Filter::expression()
     return _expression;
 }
 
-bool Filter::filterChildren(Object& object)
+bool Filter::operator()(Object& object)
 {
-
     if(_expression != "")
     {
-        return _program.elem(0).evaluateValue(ObjectScope(object, false)).toBool();
+        return Evaluator(ObjectScope(object, false)).rightValue(_program).cvalue().toBool();
     }
     else
         return true;

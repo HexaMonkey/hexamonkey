@@ -29,10 +29,10 @@ class LocalScope : public Scope
 {
 protected:
     virtual Variable doGet(const Variant& key) const;
-    virtual Variable doDeclare(const Variant& key) const;
+    virtual Variable doDeclare(const Variant& key);
 
 private:
-    mutable std::map<std::string, Variable> _map;
+    std::map<std::string, Variable> _map;
 };
 
 #endif // LOCALSCOPE_H

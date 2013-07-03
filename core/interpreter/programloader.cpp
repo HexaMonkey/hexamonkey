@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "interpreter.h"
+#include "programloader.h"
 #include <sstream>
 #ifdef USE_QT
 #include <QProcess>
@@ -33,27 +33,32 @@
 #include "unused.h"
 #include "hmcmodule.h"
 #include "variable.h"
-#include "variabledescriptor.h"
+#include "variablepath.h"
 #include "scope.h"
 #include "functionscope.h"
 #include "objecttypetemplate.h"
 #include "parser.h"
 
 
-Interpreter::Interpreter(const HmcModule &module) : _module(module)
+ProgramLoader::ProgramLoader(const HmcModule &module) : _module(module)
 {
     UNUSED(hmcElemNames);
 }
 
-Program Interpreter::loadFromString(const std::string &exp) const
+Program ProgramLoader::fromString(const std::string &exp) const
 {
     std::ofstream f("temp.hm");
     f<<exp<<std::endl;
     f.close();
-    return loadFromHM("temp.hm", expression);
+    return fromHM("temp.hm", expression);
 }
 
-Program Interpreter::loadFromHM(const std::string &path, int mode) const
+Program ProgramLoader::fromHM(const std::string &path) const
+{
+    return fromHM(path, file);
+}
+
+Program ProgramLoader::fromHM(const std::string &path, int mode) const
 {
     const std::string outputName = path+"c";
 
@@ -132,10 +137,10 @@ Program Interpreter::loadFromHM(const std::string &path, int mode) const
     pclose(popen(command, "r"));
 #endif
 #endif
-    return loadFromHMC(outputName);
+    return fromHMC(outputName);
 }
 
-Program Interpreter::loadFromHMC(const std::string &path) const
+Program ProgramLoader::fromHMC(const std::string &path) const
 {
     auto pmemory = std::make_shared<Program::Memory>();
     Program::Memory& memory = *pmemory;
@@ -157,7 +162,7 @@ Program Interpreter::loadFromHMC(const std::string &path) const
     }
 }
 
-Program Interpreter::loadFromFile(const std::string &path) const
+Program ProgramLoader::fromFile(const std::string &path) const
 {
     std::string hmPath  = path+".hm";
     std::string hmcPath = path+".hmc";
@@ -174,23 +179,23 @@ Program Interpreter::loadFromFile(const std::string &path) const
             return Program();
         }
         std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
-        return loadFromHMC(hmcPath);
+        return fromHMC(hmcPath);
     }
     else
     {
         if(!hmcInfo.exists() || hmcInfo.lastModified() < hmInfo.lastModified())
         {
             std::cout<<"Compile description file : "<<hmPath<<std::endl;
-            return loadFromHM(hmPath, Interpreter::file);
+            return fromHM(hmPath, ProgramLoader::file);
         }
         std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
-        return loadFromHMC(hmcPath);
+        return fromHMC(hmcPath);
     }
 #else
     if(fileExists(hmPath))
-        return loadFromHM(hmPath, Interpreter::file);
+        return fromHM(hmPath, ProgramLoader::file);
     else if(fileExists(hmcPath))
-        return loadFromHMC(hmcPath);
+        return fromHMC(hmcPath);
     else
         return false;
 #endif

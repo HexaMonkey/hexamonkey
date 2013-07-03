@@ -17,13 +17,13 @@
 
 #include "treewidget.h"
 
-TreeWidget::TreeWidget(const Interpreter& interpreter, QWidget *parent) :
+TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     QWidget(parent)
 {
     setAcceptDrops(true);
 
     view =  new TreeView(this);
-    model = new TreeModel("Tree", interpreter, this);
+    model = new TreeModel("Tree", programLoader, this);
 
     view->setModel(model);
 

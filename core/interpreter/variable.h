@@ -19,28 +19,91 @@
 #define VARIABLE_H
 
 #include <memory>
+#include <vector>
 
 #include "variant.h"
 
+/**
+ * @brief Holds the memory for valued object used during program
+ * interpretation.
+ *
+ * The variable can either own the value or be a reference to it.
+ * In the case of owning, reference counting is used to keep track
+ * of shared memory, in case of copying.
+ *
+ * The variable can also be constant or modifiable. When the variable
+ * is constant and a modifiable reference is requested then a copy
+ * reference to a copy will be given.
+ */
 class Variable
 {
 public:
+    /**
+     * @brief Construct an undefined \link Variable variable\endlink.
+     */
     Variable();
 
+    /**
+     * @brief Get a modifiable reference to the value
+     *
+     * If the \link Variable variable\endlink is constant, then a copy
+     * is made. The variable becomes modifiable.
+     *
+     * The reference is valid as long as the variable lives and no operation
+     * are done on it.
+     */
     Variant& value() const;
+
+    /**
+     * @brief Get a constant reference to the value
+     *
+     * The reference is valid as long as the \link Variable variable\endlink lives and no operation
+     * are done on it.
+     */
     const Variant& cvalue() const;
 
+    /**
+     * @brief Set the variable as constant which prevents modification of the value
+     */
     void setConstant();
 
+    /**
+     * @brief Check if the variable not been constructed by the default constructor.
+     */
     bool isDefined() const;
 
+    /**
+     * @brief Construct a \link Variable variable\endlink copying and then owning a value
+     */
     static Variable copy(const Variant& value, bool modifiable = true);
+
+    /**
+     * @brief Construct a \link Variable variable\endlink managing the value given as a pointer
+     */
     static Variable move(Variant* value, bool modifiable = true);
+
+    /**
+     * @brief Construct a \link Variable variable\endlink referencing a value (modifiable or constant reference)
+     */
     static Variable ref(Variant& value, bool modifiable = true);
+
+    /**
+     * @brief Construct a \link Variable variable\endlink referencing a value (always constant reference)
+     */
     static Variable constRef(const Variant& value);
+
+    /**
+     * @brief Construct a \link Variable variable\endlink owning a null value
+     */
     static Variable null();
+
+    /**
+     * @brief Construct a \link Variable variable\endlink referencing the null constant (HMScript's NULL)
+     */
     static Variable nullConstant();
+
 private:
+
     Variable(bool own, bool modifiable , Variant* var);
     Variable(bool own, bool constant , Variant* var, const Variant* constVar);
 

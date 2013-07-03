@@ -22,25 +22,27 @@
 #include <ostream>
 #include "variant.h"
 
-
-class VariableDescriptor : public std::vector<Variant>
+/**
+ * @brief Representation for a path giving access to a variable
+ */
+class VariablePath : public std::vector<Variant>
 {
 public:
-    VariableDescriptor();
-    VariableDescriptor(const std::vector<Variant>& other);
-    VariableDescriptor(std::initializer_list<Variant> l);
+    VariablePath();
+    VariablePath(const std::vector<Variant>& other);
+    VariablePath(std::initializer_list<Variant> l);
 
-    bool inScopeOf(const VariableDescriptor& other) const;
+    bool inScopeOf(const VariablePath& other) const;
 };
 
 
-bool operator==(const VariableDescriptor& a, const VariableDescriptor& b);
-bool operator!=(const VariableDescriptor& a, const VariableDescriptor& b);
-bool operator< (const VariableDescriptor& a, const VariableDescriptor& b);
-bool operator<=(const VariableDescriptor& a, const VariableDescriptor& b);
-bool operator> (const VariableDescriptor& a, const VariableDescriptor& b);
-bool operator>=(const VariableDescriptor& a, const VariableDescriptor& b);
+bool operator==(const VariablePath& a, const VariablePath& b);
+bool operator!=(const VariablePath& a, const VariablePath& b);
+bool operator< (const VariablePath& a, const VariablePath& b);
+bool operator<=(const VariablePath& a, const VariablePath& b);
+bool operator> (const VariablePath& a, const VariablePath& b);
+bool operator>=(const VariablePath& a, const VariablePath& b);
 
-std::ostream& operator << (std::ostream& out, const VariableDescriptor& descriptor);
+std::ostream& operator << (std::ostream& out, const VariablePath& descriptor);
 
 #endif // VARIABLEDESCRIPTOR_H

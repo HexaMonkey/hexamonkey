@@ -113,12 +113,12 @@ public:
     ObjectType specify(const ObjectType& parent) const;
 
     /**
-     * @brief set the specification for the parent
+     * @brief Set the specification for the parent
      */
     void setSpecification(const ObjectType& parent, const ObjectType& child);
 
     /**
-     * @brief create an object beginning at the current position of the file and add the appropriate \link Parser
+     * @brief Create an object beginning at the current position of the file and add the appropriate \link Parser
      * parsers\endlink according to the inheritance structure for the type
      */
     Object* handle(const ObjectType& type, File& file, Object* parent = nullptr) const;

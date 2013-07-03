@@ -706,6 +706,7 @@ EXCLUDE_PATTERNS       = */compiler/* \
                          */moc_* \
                          */archive/* \
                          */modules/* \
+                         */mt/* \
                          */iterutil.h
 
 

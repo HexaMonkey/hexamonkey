@@ -20,20 +20,25 @@
 
 #include "object.h"
 #include "module.h"
-#include "variabledescriptor.h"
+#include "variablepath.h"
 
 
 #include <memory>
 #include <set>
 
-class Interpreter;
-
-
+/**
+ *ProgramLoadere of the abstract syntaxing tree of an HmScript file
+ *
+ * The root of a \link Program program\endlink can be loaded by the
+ * \link PorgramLoader program loader\endlink. The children nodes can then be generated
+ * by iterating over the node or accessing them by their index. Leaf nodes
+ * and memory of the whole tree is shared by all the nodes generated.
+ */
 class Program
 {
     class Memory
     {
-        friend class Interpreter;
+        friend class ProgramLoader;
         friend class Program;
 
         File& file();
@@ -41,7 +46,6 @@ class Program
 
         File _file;
         std::unique_ptr<Object> _fileObject;
-        std::map<Variable*, std::unique_ptr<Variable> > _variables;
     };
 
     template<class It>
@@ -69,40 +73,67 @@ public:
 
     Program();
 
+    /**
+     * @brief Check if the program has been successfully loaded
+     */
     bool isValid() const;
-    uint32_t id() const;
-    const Variant& payload() const;
-    int size() const;
-    Program elem(int index) const;
+    /**
+     * @brief Get the type representing the type of the node.
+     *
+     * The macros for the tags are defined in model.h
+     */
+    uint32_t tag() const;
 
+    /**
+     * @brief Get the value of the leaf node
+     *
+     * The behaviour is undefined if the node is not a leaf
+     */
+    const Variant& payload() const;
+
+    /**
+     * @brief Get the number of children node
+     */
+    int size() const;
+
+    /**
+     * @brief Get a child node by its index
+     *
+     * Returns an invalid \link Program program\endlink if out of bound
+     */
+    Program node(int index) const;
+
+    /**
+    * @brief Get a child node by its index
+     *
+     * Returns an invalid \link Program program\endlink if out of bound
+     */
+    Program operator[](int index) const;
+
+    /**
+     * @brief Get an iterator to the beginning of the children nodes
+     */
     const_iterator begin() const;
+
+    /**
+     * @brief Get an iterator to the ending of the children nodes
+     */
     const_iterator end() const;
+
+    /**
+     * @brief Get a reverse iterator to the beginning of the children nodes
+     */
     const_reverse_iterator rbegin() const;
+
+    /**
+     * @brief Get a reverse iterator to the ending of the children nodes
+     */
     const_reverse_iterator rend() const;
 
-    Variant evaluateValue(const Scope& scope, const Module& module = Module()) const;
-    ObjectType evaluateType(const Scope& scope, const Module& module) const;
-    bool hasDeclaration() const;
-
-    void buildDependencies(bool modificationOnly, std::set<VariableDescriptor>& descriptors) const;
-
-    int64_t guessSize(const Module& module) const;
-
 private:
-    friend class Interpreter;
-    friend class Holder;
-    friend class BlockExecution;
+    friend class ProgramLoader;
+
     Program(Object& object, std::shared_ptr<Memory> memory);
-
-    Variable evaluate(const Scope& scope, const Module& module = Module()) const;
-
-    Variable evaluateUnaryOperation(int op, Variable a) const;
-    Variable evaluateBinaryOperation(int op, Variable a, Variable b) const;
-    Variable evaluateTernaryOperation(int op, Variable a, Variable b, Variable c) const;
-    Variable evaluateFunction(const Scope& scope, const Module& module) const;
-    Variable evaluateVariable(const Scope& scope, const Module& module = Module()) const;
-
-    void buildVariableDescriptor(const Scope& scope, const Module& module, VariableDescriptor& variableDescriptor) const;
 
     Program::Memory& memory() const;
 

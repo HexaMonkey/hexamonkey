@@ -45,13 +45,14 @@ SOURCES += main.cpp\
     ../core/formatdetector/formatdetector.cpp \
     ../core/formatdetector/extensionformatdetector.cpp \
     ../core/formatdetector/compositeformatdetector.cpp \
-    ../core/interpreter/variabledescriptor.cpp \
+    ../core/interpreter/variablepath.cpp \
     ../core/interpreter/variable.cpp \
     ../core/interpreter/program.cpp \
-    ../core/interpreter/interpreter.cpp \
+    ../core/interpreter/programloader.cpp \
     ../core/interpreter/fromfileparser.cpp \
     ../core/interpreter/fromfilemodule.cpp \
     ../core/interpreter/filter.cpp \
+    ../core/interpreter/evaluator.cpp \
     ../core/interpreter/blockexecution.cpp \
     ../core/interpreter/scope/typescope.cpp \
     ../core/interpreter/scope/scope.cpp \
@@ -122,13 +123,14 @@ HEADERS  += mainwindow.h \
     ../core/formatdetector/formatdetector.h \
     ../core/formatdetector/extensionformatdetector.h \
     ../core/formatdetector/compositeformatdetector.h \
-    ../core/interpreter/variabledescriptor.h \
+    ../core/interpreter/variablepath.h \
     ../core/interpreter/variable.h \
     ../core/interpreter/program.h \
-    ../core/interpreter/interpreter.h \
+    ../core/interpreter/programloader.h \
     ../core/interpreter/fromfileparser.h \
     ../core/interpreter/fromfilemodule.h \
     ../core/interpreter/filter.h \
+    ../core/interpreter/evaluator.h \
     ../core/interpreter/blockexecution.h \
     ../core/interpreter/scope/typescope.h \
     ../core/interpreter/scope/scope.h \

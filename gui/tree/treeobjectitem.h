@@ -38,7 +38,7 @@ class TreeObjectItem : public TreeItem
 {
     Q_OBJECT
 public:
-    TreeObjectItem(Object& object, const Interpreter& interpreter, TreeItem *parent);
+    TreeObjectItem(Object& object, const ProgramLoader& programLoader, TreeItem *parent);
     Object& object() const;
     Object::iterator nextChild();
     Object::iterator end();

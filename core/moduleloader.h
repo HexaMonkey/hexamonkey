@@ -28,7 +28,7 @@
 #include "formatdetector.h"
 
 class Module;
-class Interpreter;
+class ProgramLoader;
 /*!
  * @brief Manage the loading of modules
  *
@@ -63,7 +63,7 @@ public:
      *
      * The files are compiled again only if the compiled file is less recent than the original file
      */
-    void addFolder(const std::string& folderName, const Interpreter& interpreter);
+    void addFolder(const std::string& folderName, const ProgramLoader& programLoader);
 
     /**
      * @brief Give constant access to a module and loads it has not yet been loaded
