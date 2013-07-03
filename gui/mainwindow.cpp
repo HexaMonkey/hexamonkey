@@ -61,7 +61,7 @@ MainWindow::MainWindow(const ModuleLoader &moduleLoader, const ProgramLoader &pr
 
 void MainWindow::open()
 {
-    QStringList paths = QFileDialog::getOpenFileNames(this, tr("Open File"), "", tr("Video (*.*)"));
+    QStringList paths = QFileDialog::getOpenFileNames(this, tr("Open File"));
     openFiles(paths);
 }
 
