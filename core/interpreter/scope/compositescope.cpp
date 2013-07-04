@@ -26,7 +26,7 @@ Variable CompositeScope::doGet(const Variant &key) const
 {
     for(Scope* scope : _scopes)
     {
-        Variable variable = scope->doGet(key);
+        Variable variable = scope->get(key);
         if(variable.isDefined())
             return variable;
     }
