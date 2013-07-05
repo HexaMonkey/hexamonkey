@@ -23,13 +23,22 @@
 
 class Object;
 
+/**
+ * @brief Scope implementation that gives acces to an \link Object object\endlink members and
+ * reserved \link Variable variables\endlink/\link Scope scopes\endlink.
+ *
+ * The members can either be accesses by their index, name or \link Object type\link
+ *
+ * See the HMScript language documentation for reserved
+ * \link Variable variables\endlink/\link Scope scopes\endlink
+ */
 class ObjectScope : public Scope
 {
 public:
     ObjectScope(Object& object, bool modifiable);
 protected:
     virtual Variable doGet(const Variant &key) const override;
-    Scope* doGetScope(const Variant &key) const override;
+    const Ptr doGetScope(const Variant &key) const override;
 private:
     Object& _object;
     bool _modifiable;

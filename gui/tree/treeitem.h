@@ -21,9 +21,6 @@
 #include <QList>
 #include <QVariant>
 
-/*!
- * @brief The TreeItem class
- */
 class TreeItem : public QObject
 {
     Q_OBJECT

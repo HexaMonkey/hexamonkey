@@ -20,9 +20,6 @@
 
 #include <QTreeView>
 
-/*!
- * @brief The TreeView class
- */
 class TreeView : public QTreeView
 {
     Q_OBJECT

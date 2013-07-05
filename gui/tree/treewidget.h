@@ -29,9 +29,7 @@
 #include "resourcemanager.h"
 
 class ProgramLoader;
-/*!
- * @brief The TreeWidget class
- */
+
 class TreeWidget : public QWidget
 {
     Q_OBJECT

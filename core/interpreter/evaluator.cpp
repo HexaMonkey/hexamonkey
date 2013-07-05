@@ -317,21 +317,5 @@ Variable Evaluator::function(const Program &program) const
 
 Variable Evaluator::variable(const Program &program) const
 {
-    const Scope* toUseScope = &scope;
-    std::unique_ptr<Scope> toDeleteScope;
-
-    VariablePath path = variablePath(program);
-
-    unsigned int i = 0;
-    for(;i < path.size() - 1; ++i)
-    {
-        Scope* s = toUseScope->getScope(path[i]);
-        if(s == nullptr)
-            return Variable();
-        toUseScope = s;
-        toDeleteScope.reset(s);
-    }
-
-    const Variant& key = path[i];
-    return toUseScope->get(key);
+    return scope.get(variablePath(program));
 }

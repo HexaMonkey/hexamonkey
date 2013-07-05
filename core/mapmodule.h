@@ -29,7 +29,7 @@
 #define functionLambda (const Scope& scope, const Module &module) ->Variable
 
 /*!
- * @brief Practical implementation of the Module object using maps to generate parsers and functions
+ * @brief Practical \link Module module\endlink implementation object using maps to generate parsers and functions
  */
 class MapModule : public Module
 {

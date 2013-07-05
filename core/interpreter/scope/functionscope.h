@@ -24,6 +24,12 @@
 #include <vector>
 #include <unordered_map>
 
+/**
+ * @brief Scope implementation that represents gives access to a
+ * function's parameters
+ *
+ * The parameter can either by its index or its name
+ */
 class FunctionScope : public Scope
 {
 public:

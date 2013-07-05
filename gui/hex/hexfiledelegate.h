@@ -22,9 +22,6 @@
 #include <QPen>
 #include <QPainter>
 
-/*!
- * @brief The HexFileDelegate class
- */
 class HexFileDelegate : public QStyledItemDelegate        
 {
 public:

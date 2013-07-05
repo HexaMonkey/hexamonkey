@@ -21,9 +21,6 @@
 #include <QDockWidget>
 #include "hexfilewidget.h"
 
-/*!
- * @brief The HexFileDockWidget class
- */
 class HexFileDockWidget : public QDockWidget
 {
     Q_OBJECT

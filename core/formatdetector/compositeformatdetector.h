@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * @brief Implementation for \link FormatDetector format detection\endlink that
+ * @brief \link FormatDetector Format detection\endlink implementation that
  * uses several other \link FormatDetector detectors\endlink.
  *
  * The \link FormatDetector detectors\endlink are used on the file one after the

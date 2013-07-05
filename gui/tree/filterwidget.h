@@ -25,9 +25,6 @@
 
 #include <string>
 
-/*!
- * @brief The FilterWidget class
- */
 class FilterWidget : public QWidget
 {
     Q_OBJECT

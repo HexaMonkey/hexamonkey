@@ -24,9 +24,6 @@
 #include <QFile>
 #include <QPalette>
 
-/*!
- * @brief The HexFileModel class
- */
 class HexFileModel : public QAbstractTableModel
 {
     Q_OBJECT

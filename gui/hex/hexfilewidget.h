@@ -28,9 +28,6 @@
 
 class HexFileDockWidget;
 
-/*!
- * @brief The HexFileWidget class
- */
 class HexFileWidget : public QWidget
 {
     Q_OBJECT

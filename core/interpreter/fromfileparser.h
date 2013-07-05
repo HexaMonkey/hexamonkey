@@ -31,13 +31,13 @@
 #include "evaluator.h"
 
 /**
- * @brief Implementation using an HMScript class definition
+ * @brief Parser implementation using an HMScript class definition
  *
  * Uses an instance of BlockExecution to execute the program.
  * A breakpoint is given to isolate the head, which is computed
  * statically by the module.
  */
-class FromFileParser final : public ContainerParser
+class FromFileParser : public ContainerParser
 {
 public:
     FromFileParser(Object& object, const Module &module, Program classDefinition, Program::const_iterator headerEnd);

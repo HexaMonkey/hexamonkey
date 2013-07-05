@@ -24,10 +24,10 @@
 #include "extensionformatdetector.h"
 
 /*!
- * @brief Practical implementation for \link FormatDetector format detection\endlink used by
+ * @brief Practical \link FormatDetector format detection\endlink implementation used by
  * the \link ModuleLoader module loader\endlink.
  *
- * The class is a \link CompositeFormatDetector Composite detector\link composed of a
+ * The class is a \link CompositeFormatDetector Composite detector\endlink composed of a
  * \link MagicFormatDetector magic number detector\endlink, a
  * \link SyncbyteFormatDetector syncbyte detector\endlink  and a
  * \link ExtensionFormatDetector extension detector\endlink.

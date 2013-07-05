@@ -19,12 +19,17 @@
 
 void CompositeScope::addScope(Scope &scope)
 {
-    _scopes.push_back(&scope);
+    _scopes.push_back(Ptr::ref(scope));
+}
+
+void CompositeScope::addScope(Scope *scope)
+{
+    _scopes.push_back(Ptr::move(scope));
 }
 
 Variable CompositeScope::doGet(const Variant &key) const
 {
-    for(Scope* scope : _scopes)
+    for(auto& scope : _scopes)
     {
         Variable variable = scope->get(key);
         if(variable.isDefined())
@@ -33,20 +38,20 @@ Variable CompositeScope::doGet(const Variant &key) const
     return Variable();
 }
 
-Scope *CompositeScope::doGetScope(const Variant &key) const
+const Scope::Ptr CompositeScope::doGetScope(const Variant &key) const
 {
-    for(Scope* scope : _scopes)
+    for(auto& scope : _scopes)
     {
-        Scope* s = scope->getScope(key);
-        if(s != nullptr)
+        Scope::Ptr s = scope->getScope(key);
+        if(s)
             return s;
     }
-    return nullptr;
+    return Ptr();
 }
 
 Variable CompositeScope::doDeclare(const Variant &key)
 {
-    for(Scope* scope : _scopes)
+    for(auto& scope : _scopes)
     {
         Variable variable = scope->declare(key);
         if(variable.isDefined())

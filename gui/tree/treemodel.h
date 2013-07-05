@@ -30,9 +30,7 @@
 
 class TreeItem;
 class ProgramLoader;
-/*!
- * @brief The DataTreeModel class
- */
+
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT

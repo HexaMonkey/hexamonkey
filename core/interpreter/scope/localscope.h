@@ -25,6 +25,11 @@
 
 class Variable;
 
+/**
+ * @brief Scope implementation that allows for variables to be declared
+ *
+ * The keys can only be strings
+ */
 class LocalScope : public Scope
 {
 protected:

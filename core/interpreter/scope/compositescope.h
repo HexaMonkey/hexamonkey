@@ -22,17 +22,33 @@
 
 #include "scope.h"
 
+/**
+ * @brief Scope implementation that combines other scopes.
+ *
+ * When a request is made the scopes added are enqueried
+ * consecutively in the order that they have been added
+ * until a query is successful in which case the response
+ * of the scope is transferred.
+ *
+ */
 class CompositeScope : public Scope
 {
 public:
+    /**
+     * @brief Add a scope without owning the memory
+     */
     void addScope(Scope& scope);
+    /**
+     * @brief Add a scope without and owns the memory
+     */
+    void addScope(Scope* scope);
 
 protected:
     Variable doGet(const Variant &key) const override;
-    Scope* doGetScope(const Variant &key) const override;
+    Ptr const doGetScope(const Variant &key) const override;
     Variable doDeclare(const Variant &key) override;
 private:
-    std::vector<Scope*> _scopes;
+    std::vector<Scope::Ptr> _scopes;
 };
 
 #endif // COMPOSITESCOPE_H

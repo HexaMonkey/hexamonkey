@@ -189,7 +189,8 @@ HEADERS  += mainwindow.h \
     mt/resource.h \
     mt/parsingtask.h \
     ../compiler/model.h \
-    ../core/modules/default/dataparser.h
+    ../core/modules/default/dataparser.h \
+    ../core/util/ptrutil.h
 
 RESOURCES += \
     ressources.qrc

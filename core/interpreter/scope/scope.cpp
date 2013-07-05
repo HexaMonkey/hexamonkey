@@ -17,9 +17,31 @@
 
 #include "scope.h"
 
+Scope::Scope()
+{
+    pthis = Ptr::ref(*this);
+}
+
 Variable Scope::get(const Variant &key) const
 {
     return doGet(key);
+}
+
+Variable Scope::get(const VariablePath &path) const
+{
+    if(path.empty())
+        return Variable();
+
+    Ptr scope = getScope(path, path.size()-1);
+
+    if(scope)
+    {
+        return scope->get(path.back());
+    }
+    else
+    {
+        return Variable();
+    }
 }
 
 Variable Scope::declare(const Variant &key)
@@ -27,7 +49,7 @@ Variable Scope::declare(const Variant &key)
     return doDeclare(key);
 }
 
-Scope *Scope::getScope(const Variant &key) const
+const Scope::Ptr Scope::getScope(const Variant &key) const
 {
     return doGetScope(key);
 }
@@ -42,7 +64,22 @@ Variable Scope::doDeclare(const Variant &/*key*/)
     return Variable();
 }
 
-Scope *Scope::doGetScope(const Variant &/*key*/) const
+const Scope::Ptr Scope::doGetScope(const Variant &/*key*/) const
 {
-    return nullptr;
+    return Ptr();
 }
+
+const Scope::Ptr Scope::getScope(const VariablePath &path, int max) const
+{
+    Ptr current = pthis;
+    for(int i = 0; i < max; ++i)
+    {
+        if(!current)
+        {
+            return Ptr();
+        }
+        current = current->getScope(path[i]);
+    }
+    return current;
+}
+

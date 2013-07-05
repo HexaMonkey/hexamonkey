@@ -21,9 +21,6 @@
 #include <QTableView>
 #include "hexfiledelegate.h"
 
-/*!
- * @brief The HexFileView class
- */
 class HexFileView : public QTableView
 {
     Q_OBJECT

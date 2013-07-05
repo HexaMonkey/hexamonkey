@@ -31,9 +31,6 @@
 #include "treeitem.h"
 #include "filter.h"
 
-/*!
- * @brief The TreeObjectItem class
- */
 class TreeObjectItem : public TreeItem
 {
     Q_OBJECT

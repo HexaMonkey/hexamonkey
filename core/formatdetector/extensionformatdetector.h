@@ -21,7 +21,7 @@
 #include "formatdetector.h"
 
 /*!
- * @brief Implementation for \link FormatDetector format detection\endlink that uses the
+ * @brief \link FormatDetector Format detection\endlink implementation  that uses the
  * extension of the file to detect a FormatDetector
  */
 class ExtensionFormatDetector : public FormatDetector

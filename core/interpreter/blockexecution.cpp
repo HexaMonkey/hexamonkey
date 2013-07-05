@@ -218,7 +218,9 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
     if(declaration.size() >= 2 && variable.isDefined())
     {
         variable.value() = eval.rightValue(declaration.node(1)).cvalue();
+#ifdef EXECUTION_TRACE
         std::cout<<" = "<<variable.cvalue();
+#endif
     }
 #ifdef EXECUTION_TRACE
     std::cout<<std::endl;

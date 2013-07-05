@@ -37,9 +37,7 @@
 
 class ModuleLoader;
 class ProgramLoader;
-/*!
- * @brief The MainWindow class
- */
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

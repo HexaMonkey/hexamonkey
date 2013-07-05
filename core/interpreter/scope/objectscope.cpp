@@ -97,7 +97,7 @@ Variable ObjectScope::doGet(const Variant &key) const
     return Variable();
 }
 
-Scope *ObjectScope::doGetScope(const Variant &key) const
+const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
 {
     if(key.canConvertTo(Variant::string))
     {
@@ -106,25 +106,25 @@ Scope *ObjectScope::doGetScope(const Variant &key) const
         {
             auto it = reserved.find(name);
             if(it == reserved.end())
-                return nullptr;
+                return Ptr();
 
             switch(it->second)
             {
                 case A_PARENT:
-                return new ObjectScope(*_object._parent, _modifiable);
+                return Ptr::move(new ObjectScope(*_object._parent, _modifiable));
 
                 case A_ARGS:
-                return new TypeScope(_object._type.toObjectType(), _modifiable);
+                return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
 
                 default:
-                    return nullptr;
+                    return Ptr();
             }
         }
 
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return new ObjectScope(*elem, _modifiable);
+            return Ptr::move(new ObjectScope(*elem, _modifiable));
         }
     }
 
@@ -133,7 +133,7 @@ Scope *ObjectScope::doGetScope(const Variant &key) const
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
-            return new ObjectScope(*elem, _modifiable);
+            return Ptr::move(new ObjectScope(*elem, _modifiable));
         }
     }
 
@@ -142,9 +142,9 @@ Scope *ObjectScope::doGetScope(const Variant &key) const
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return new ObjectScope(*elem, _modifiable);
+            return Ptr::move(new ObjectScope(*elem, _modifiable));
         }
     }
 
-    return nullptr;
+    return Ptr();
 }

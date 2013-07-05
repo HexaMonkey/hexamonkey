@@ -21,7 +21,11 @@
 #include "scope.h"
 
 class ObjectType;
-
+/**
+ * @brief Scope implementation that gives access to a \link ObjectType type\endlink's parameters
+ *
+ * The arguments can either be access by their index or name.
+ */
 class TypeScope : public Scope
 {
 public:

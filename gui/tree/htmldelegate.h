@@ -23,9 +23,6 @@
 #include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
 
-/*!
- * @brief The HTMLDelegate class
- */
 class HTMLDelegate : public QStyledItemDelegate
 {
     Q_OBJECT

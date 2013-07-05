@@ -18,26 +18,75 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-
-#include <utility>
-
+#include "ptrutil.h"
 #include "variable.h"
+#include "variablepath.h"
+
 class Variant;
 
 /**
- * @brief
+ * @brief Hold \link Variable variables\endlink and other \link Scope scopes\endlink
+ * using various \link Variant values\endlink as key
+ *
+ * Variables are typically access using a \link VariablePath path\endlink that accesses
+ * first navigates through \link Scope scopes\endlink by their keys and then accesses
+ * the variable.
+ *
+ * This implementation cannot have any variable or scopes, the class needs to be
+ * subclass for pratical implementations.
  */
 class Scope
 {
 public:
+    typedef OptOwnPtr<Scope> Ptr;
+    Scope();
     virtual ~Scope() {}
+    /**
+     * @brief Get a variable by its key
+     *
+     * Returns an invalid \link Variable variable\endlink if the key isn't handled
+     */
     Variable get(const Variant& key) const;
+
+    /**
+     * @brief Get a variable using a path describing the \link Scope scopes\endlink
+     * indirection
+     *
+     * get({a, b, c}) is equivalent to getScope(a).getScope(b).get(c)
+     */
+    Variable get(const VariablePath& path) const;
+
+    /**
+     * @brief Declare a new variable to be handled and return it
+     *
+     * Returns an invalid \link Variable variable\endlink if it cannot be declared
+     */
     Variable declare(const Variant& key);
-    Scope *getScope(const Variant& key) const;
+
+    /**
+     * @brief Get a reference to a \link Scope subscope\endlink by its key
+     *
+     * Returns a null reference if the subscope isn't handled
+     */
+    const Ptr getScope(const Variant& key) const;
+
 protected:
+    /**
+     * @brief Implentation for get
+     */
     virtual Variable doGet(const Variant& key) const;
+    /**
+     * @brief Implentation for declare
+     */
     virtual Variable doDeclare(const Variant& key);
-    virtual Scope *doGetScope(const Variant& key) const;
+    /**
+     * @brief Implentation for getScope
+     */
+    virtual const Ptr doGetScope(const Variant& key) const;
+
+private :
+    const Ptr getScope(const VariablePath& path, int max) const;
+    Ptr pthis;
 };
 
 #endif // SCOPE_H

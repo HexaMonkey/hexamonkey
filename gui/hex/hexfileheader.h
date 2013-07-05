@@ -20,9 +20,6 @@
 
 #include "hexfileview.h"
 
-/*!
- * @brief The HexFileHeader class
- */
 class HexFileHeader : public QWidget
 {
     Q_OBJECT
