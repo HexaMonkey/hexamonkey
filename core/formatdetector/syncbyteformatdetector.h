@@ -21,8 +21,8 @@
 #include "formatdetector.h"
 
 /*!
- * @brief \link FormatDetector Format detection\endlink implementation  that
- * look for the periodic repetition of a byte.
+ * @brief \link FormatDetector Format detection\endlink implementation that
+ * looks for the periodic repetition of a byte.
  *
  * This is typically used to detect a format using packets of fixed length each
  * beginning with a fixed byte called syncbyte.

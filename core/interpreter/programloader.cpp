@@ -25,6 +25,7 @@
 #else
 #include <cstdlib>
 #include <cstdio>
+#include "fileutil.h"
 #endif
 
 #include "defaulttypes.h"
@@ -196,7 +197,7 @@ Program ProgramLoader::fromFile(const std::string &path) const
         return fromHM(hmPath, ProgramLoader::file);
     else if(fileExists(hmcPath))
         return fromHMC(hmcPath);
-    else
-        return false;
+
+    return Program();
 #endif
 }

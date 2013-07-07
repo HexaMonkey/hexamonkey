@@ -21,8 +21,8 @@
 #include "formatdetector.h"
 
 /*!
- * @brief \link FormatDetector Format detection\endlink implementation  that
- * uses magic number (or file signature).
+ * @brief \link FormatDetector Format detection\endlink implementation that
+ * uses magic numbers.
  *
  * A magic number is a byte string, found in the beginning of the file and unique to
  * a format. A list can be found here : http://www.garykessler.net/library/file_sigs.html

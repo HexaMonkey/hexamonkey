@@ -51,13 +51,13 @@
 #Documentation generation (file for doxygen)
 !doc
 !doc/Doxyfile
-
+!doc/header.html
+!doc/footer.html
+!doc/doc.css
 
 #Scripts for analyse
 !scripts
-!/scripts/*.hm
-
-
+!scripts/*.hm
 
 #Compiler part of the program
 !compiler
@@ -99,4 +99,11 @@
 !compiler/compiler.flex
 !compiler/compiler.y
 
+#Pictures
+!media
+!media/*.svg
 
+#Site
+!site
+!site/*.php
+!site/*.css

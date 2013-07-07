@@ -51,7 +51,7 @@ public:
         void addMagicNumber(const std::string& magicNumber, int offset);
         /** @brief See SyncbyteFormatDetector**/
         void addSyncbyte(uint8_t syncbyte, int packetlength);
-        /** @brief See ExtensionDetector**/
+        /** @brief See ExtensionFormatDetector**/
         void addExtension(const std::string& extension);
     private:
         friend class StandardFormatDetector;

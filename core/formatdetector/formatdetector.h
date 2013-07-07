@@ -25,6 +25,7 @@
 
 /*!
  * @brief Class used to identify the format of a \link File file\endlink.
+ *
  * The format is a string, which is used by the \link ModuleLoader module loader\endlink
  * to assign a \link Module module\endlink to a \link File file\endlink.
  *

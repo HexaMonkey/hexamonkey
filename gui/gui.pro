@@ -201,6 +201,5 @@ OTHER_FILES += \
     ../core/modules/mkv/mkvmodel.xml \
     ../core/modules/hmc/hmcmodel.csv
 
-DEFINES += USE_QT
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
