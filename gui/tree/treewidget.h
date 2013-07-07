@@ -30,6 +30,18 @@
 
 class ProgramLoader;
 
+/**
+ * @brief Widget controlling the parsing and display of files into
+ * tree structures.
+ *
+ * The tree is managed by two main classes : the TreeModel responsible
+ * for managing the data model of the tree and the TreeView responsible
+ * for displaying and controlling the tree.
+ *
+ * The widget also contain a FilterWidget that allows to filter nodes based
+ * on the evaluation of an HMScript expression on the corresponding \link
+ * Object objects\endlink.
+ */
 class TreeWidget : public QWidget
 {
     Q_OBJECT
@@ -49,13 +61,12 @@ public slots:
     void updatePosition(QModelIndex currentIndex);
     void setCurrentIndex(QModelIndex index);
 
-protected:
-    void dropEvent(QDropEvent *event);
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dragMoveEvent(QDragMoveEvent* event);
-    void dragLeaveEvent(QDragLeaveEvent* event);
-
 private:
+    virtual void dropEvent(QDropEvent *event) final;
+    virtual void dragEnterEvent(QDragEnterEvent* event) final;
+    virtual void dragMoveEvent(QDragMoveEvent* event) final;
+    virtual void dragLeaveEvent(QDragLeaveEvent* event) final;
+
     TreeView* view;
     TreeModel* model;
     HTMLDelegate* delegate;

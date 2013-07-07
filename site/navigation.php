@@ -15,6 +15,7 @@
 				<h1>Documentation</h1>
 				<ul>
 					<li><a href="hmdoc.php">HMscript</a></li>
+					<li><a href="doc/">Developer</a></li>
 				</ul>
 			</div>
 		</div>

@@ -34,7 +34,7 @@ class ProgramLoader;
  *
  * When a \link Module module\endlink is \link addModule added\endlink the \link ModuleLoader module loader\endlink register the format detection
  * methods for the \link Module module\endlink (see Module::addFormatDetection). Then when a file needs to be parsed the \link ModuleLoader
- * module loader\link uses its \link StandardFormatDetector format detector\endlink to choose which \link Module module\endlink to assign.
+ * module loader\endlink uses its \link StandardFormatDetector format detector\endlink to choose which \link Module module\endlink to assign.
  *
  * When a \link Module module\endlink is needed, the \link ModuleLoader module loader\endlink ask for requested \link Module modules to import\endlink
  * (see Module::requestImportations), load them, import them to the \link Module module\endlink and then loads the \link Module module\endlink itself

@@ -21,11 +21,20 @@
 #include <QList>
 #include <QVariant>
 
+/**
+ * @brief Model data for a node in the \link TreeModel tree model\endlink
+ *
+ * The class is mostly virtual : except for the root item, all items are
+ * instances of TreeObjectItem.
+ *
+ * The item write the data in html and then relies on the \link HTMLDelegate
+ * HTML delegate\endlink to display it.
+ */
 class TreeItem : public QObject
 {
     Q_OBJECT
 public:
-    TreeItem(const QList<QVariant> &data, TreeItem *parent);
+
     static TreeItem* RootItem(const QList<QVariant> &data, QObject *owner);
     virtual ~TreeItem() {}
 
@@ -42,6 +51,7 @@ public:
     virtual bool synchronised();
 
 protected:
+    TreeItem(const QList<QVariant> &data, TreeItem *parent);
     QList<QVariant>& itemData() const;
     virtual void doLoad() const;
 

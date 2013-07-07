@@ -73,7 +73,7 @@ protected:
     void setFixedSizeFromArg(const std::string& name, int arg);
 
     /**
-     * @brief Define a function signature and define a \link Functor functor\link to execute the function
+     * @brief Define a function signature and define a \link Functor functor\endlink to execute the function
      */
     void addFunction(const std::string& name,
                      const std::vector<std::string>& parameterNames,

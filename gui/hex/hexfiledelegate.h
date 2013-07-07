@@ -22,6 +22,9 @@
 #include <QPen>
 #include <QPainter>
 
+/**
+ * @brief Delegate responsible for drawing a byte cell
+ */
 class HexFileDelegate : public QStyledItemDelegate        
 {
 public:

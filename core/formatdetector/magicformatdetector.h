@@ -35,6 +35,7 @@ public:
     /**
      * @brief Map a magic number matching the beginning of the file to a format
      *
+     * @param format
      * @param magicNumber the magic number shall be given as a string with space
      * separated bytes given as two-digit hex numbers. "xx" can be given instead
      * of a number to specify that there is no requirement for the byte.

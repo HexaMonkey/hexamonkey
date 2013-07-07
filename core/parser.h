@@ -184,7 +184,9 @@ private:
 
 /**
  * @brief Parser that is that is always parsed fully as soon
- * as possible. Only doParseHead needs to be reimplemented.
+ * as possible.
+ *
+ * Only doParseHead needs to be reimplemented.
  */
 class SimpleParser : public Parser
 {

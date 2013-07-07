@@ -27,10 +27,10 @@
 #include <set>
 
 /**
- *ProgramLoadere of the abstract syntaxing tree of an HmScript file
+ * @brief Node of the abstract syntaxing tree of an HmScript file
  *
  * The root of a \link Program program\endlink can be loaded by the
- * \link PorgramLoader program loader\endlink. The children nodes can then be generated
+ * \link ProgramLoader program loader\endlink. The children nodes can then be generated
  * by iterating over the node or accessing them by their index. Leaf nodes
  * and memory of the whole tree is shared by all the nodes generated.
  */

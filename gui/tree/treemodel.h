@@ -31,22 +31,34 @@
 class TreeItem;
 class ProgramLoader;
 
+/**
+ * @brief Model managing the data structure of the tree
+ *
+ * The items populating the tree are instances of TreeObjectItem
+ * and is directly linked with an instance of Object. The exception
+ * being the root item which is merely an instance of TreeItem.
+ *
+ * The model uses lazy population. This means that the model waits
+ * that a node get expanded to populate its children. This also
+ * means that when there is a large number of children only a limited
+ * number are added, and the rest is then added progressively.
+ */
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
     TreeModel(const QString &data, const ProgramLoader& programLoader, QObject *parent = 0);
 
-    QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    int realRowCount(const QModelIndex &parent = QModelIndex()) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual QVariant data(const QModelIndex &index, int role) const final;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const final;
+    virtual QVariant headerData(int section, Qt::Orientation orientation,
+                                int role = Qt::DisplayRole) const final;
+    virtual QModelIndex index(int row, int column,
+                              const QModelIndex &parent = QModelIndex()) const final;
+    virtual QModelIndex parent(const QModelIndex &index) const final;
+    virtual int realRowCount(const QModelIndex &parent = QModelIndex()) const final;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const final;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const final;
 
     QModelIndex addObject(Object &object);
 

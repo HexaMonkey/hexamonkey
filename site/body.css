@@ -49,6 +49,7 @@ a.installer, a.installer:hover
 	font-weight:bold;
 	vertical-align:middle;
 	text-decoration:none;
+	border-radius: 10px;
 }
 
 .installer p, .installer img
@@ -79,6 +80,8 @@ a.installer, a.installer:hover
 	background-color: #0044aa;
 	margin-top: 0px;
 	padding: 6px 20px;
+	border-radius : 10px;
+	text-align : center;
 }
 
 #spacing

@@ -26,13 +26,27 @@
 #include "hexfileheader.h"
 #include "hexfilesearchwidget.h"
 
-class HexFileDockWidget;
-
+/**
+ * @brief Widget responsible for displaying the content of the file
+ *
+ * The content is displayed as a table with bytes written in
+ * hexidecimal on the 16 first cells of a line and in ASCII on
+ * the 16 last cells of a line.
+ *
+ * The current file is displayed, and the area of the file corresponding
+ * to the \link Object object\endlink of the current \link TreeObjectItem
+ * item \endlink the \link TreeWidget tree\endlink is highlighted.
+ *
+ * The hex widget is managed by two main classes : the HexFileModel responsible
+ * for managing the data model of the table and the HexFileView responsible
+ * for displaying it.
+ *
+ * The hex widget also contains a \link HexFileSearchWidget search widget\endlink that
+ * allows the search for strings.
+ */
 class HexFileWidget : public QWidget
 {
     Q_OBJECT
-
-
 
 public:
     HexFileWidget(QWidget *parent = 0);

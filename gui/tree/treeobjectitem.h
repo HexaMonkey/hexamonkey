@@ -31,6 +31,15 @@
 #include "treeitem.h"
 #include "filter.h"
 
+/**
+ * @brief \link TreeItem Tree item\endlink linked with an \link Object object\endlink
+ *
+ * The children of the item are mapped to the children of the object.
+ * The item is responsible for parsing the object if necessary.
+ *
+ * The item also holds a \link Filter filter\endlink that it can use to filter its children
+ * when requested.
+ */
 class TreeObjectItem : public TreeItem
 {
     Q_OBJECT

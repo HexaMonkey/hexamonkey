@@ -20,6 +20,11 @@
 
 #include "hexfileview.h"
 
+/**
+ * @brief Header for the \link HexFileWidget hex widget\endlink
+ *
+ * Display the byte numbers modulo 16 as hexadecimal digits.
+ */
 class HexFileHeader : public QWidget
 {
     Q_OBJECT

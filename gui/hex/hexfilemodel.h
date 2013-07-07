@@ -24,6 +24,9 @@
 #include <QFile>
 #include <QPalette>
 
+/**
+ * @brief Model providing data for the table of the \link HexFileWidget hex widget\endlink.
+ */
 class HexFileModel : public QAbstractTableModel
 {
     Q_OBJECT

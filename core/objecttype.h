@@ -25,11 +25,10 @@
 class ObjectTypeTemplate;
 
 /**
- * @brief Symbol representing a class of \link Object objects\endlink that have the
- * same semantics and are to be parsed in the same way.
+ * @brief Symbol representing a class of \link Object objects\endlink that are to be parsed in the same way.
  *
- * The \link Module modules\endlink use the object's \link ObjectType type\link and its
- * inheritence model for \link ObjectType types\link to generate \link Parser parser\endlink.
+ * The \link Module modules\endlink use the object's \link ObjectType type\endlink and its
+ * inheritence model for \link ObjectType types\endlink to generate \link Parser parser\endlink.
  *
  * A \link ObjectType type\endlink is defined by a \link ObjectTypeTemplate type template\endlink
  * and values stored as \link Variant variants\endlink specified for some of its parameters. The easiest way to construct a
@@ -41,12 +40,12 @@ class ObjectType
 public:
     /**
      * @brief Construct a \link ObjectType type\endlink with the null
-     * \link type template ObjectTypeTemplate\endlink
+     * \link ObjectTypeTemplate type template\endlink
      */
     ObjectType();
     /**
      * @brief Construct a \link ObjectType type\endlink with the
-     * \link type template ObjectTypeTemplate\endlink given.
+     * \link ObjectTypeTemplate type template\endlink given.
      *
      * The parameters are set to the null \link Variant variant\endlink, and can be
      * set to other values subsequently.

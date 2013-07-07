@@ -55,7 +55,7 @@ class Scope;
  * The life cycle of the \link Module module\endlink is handled by a \link ModuleLoader module loader\endlink : on construction the \link Module module\endlink must
  * have the smallest memory footprint possible abd the shortest runtime, when added to the \link ModuleLoader module loader\endlink format detection will be added so
  * that the module loader knows on which file the \link Module module\endlink should be used (reimplement addFormatDetection). Then when when the \link ModuleLoader
- * module loader\link uses the module for the first time, it first ask for importation request to see which \link Module modules\endlink must be loaded and imported
+ * module loader\endlink uses the module for the first time, it first ask for importation request to see which \link Module modules\endlink must be loaded and imported
  * (reimplement requestImportations) and then the actual loading is done (reimplement doLoad).
  *
  * The class is virtual and must be subclassed to be used. For most usages MapModule is the right class to subclass.

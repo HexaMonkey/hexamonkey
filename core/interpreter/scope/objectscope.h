@@ -27,7 +27,7 @@ class Object;
  * @brief Scope implementation that gives acces to an \link Object object\endlink members and
  * reserved \link Variable variables\endlink/\link Scope scopes\endlink.
  *
- * The members can either be accesses by their index, name or \link Object type\link
+ * The members can either be accesses by their index, name or \link ObjectType type\endlink
  *
  * See the HMScript language documentation for reserved
  * \link Variable variables\endlink/\link Scope scopes\endlink

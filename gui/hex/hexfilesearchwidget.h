@@ -24,6 +24,11 @@
 #include <QPushButton>
 #include <QByteArray>
 
+/**
+ * @brief Wigdet responsible for entering a search string
+ *
+ * The string can either be entered as ASCII or hexadecimal.
+ */
 class HexFileSearchWidget : public QWidget
 {
     Q_OBJECT

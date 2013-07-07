@@ -25,6 +25,12 @@
 
 #include <string>
 
+/**
+ * @brief Widget responsible for entering the expression for \link Filter filters\endlink
+ *
+ * The filters are used by the \link TreeWidget tree widget\endlink to filter the nodes
+ * displayed by evaluating an HMScript evaluation on their \link Object object\endlink.
+ */
 class FilterWidget : public QWidget
 {
     Q_OBJECT

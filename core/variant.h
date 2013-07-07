@@ -60,6 +60,7 @@ public:
         objectType = 5
     };
 
+    /// @cond HIDDEN_SYMBOL
     class InvalidTypeConversionException: public std::exception
     {
       virtual const char* what() const throw()
@@ -75,6 +76,7 @@ public:
         return "Variant: invalid operation";
       }
     };
+    /// @endcond
 
     Variant();
 

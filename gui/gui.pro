@@ -181,7 +181,6 @@ HEADERS  += mainwindow.h \
     hex/hexfilesearchwidget.h \
     hex/hexfilemodel.h \
     hex/hexfileheader.h \
-    hex/hexfiledockwidget.h \
     hex/hexfiledelegate.h \
     mt/worker.h \
     mt/tasklist.h \
@@ -201,5 +200,6 @@ OTHER_FILES += \
     ../core/modules/mkv/mkvmodel.xml \
     ../core/modules/hmc/hmcmodel.csv
 
+DEFINES += USE_QT
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter

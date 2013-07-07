@@ -20,6 +20,9 @@
 
 #include <QTreeView>
 
+/**
+ * @brief Widget responsible for displaying and manipulating the tree
+ */
 class TreeView : public QTreeView
 {
     Q_OBJECT
@@ -28,11 +31,9 @@ public:
     
 signals:
     void selected(QModelIndex);
-    
-public slots:
 
-protected:
-    void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+private:
+    virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) final;
     
 };
 

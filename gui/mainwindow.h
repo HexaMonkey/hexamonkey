@@ -38,20 +38,33 @@
 class ModuleLoader;
 class ProgramLoader;
 
+/**
+ * @brief Controller for all widget
+ *
+ * The main window is mostly composed of two widgets :
+ * the TreeWidget and the HexFileWidget
+ *
+ * The main window is also composed of a menu bar.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
     
 public:
     MainWindow(const ModuleLoader& moduleLoader, const ProgramLoader& programLoader, QWidget *parent = 0);
+
+    /**
+     * @brief Open a file and set it as the current file in
+     * the tree and hex widgets.
+     */
     void openFile(const std::string& path);
 
-protected slots:
-    void dropEvent(QDropEvent *event);
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dragMoveEvent(QDragMoveEvent* event);
-    void dragLeaveEvent(QDragLeaveEvent* event);
 private slots:
+    virtual void dropEvent(QDropEvent *event) final;
+    virtual void dragEnterEvent(QDragEnterEvent* event) final;
+    virtual void dragMoveEvent(QDragMoveEvent* event) final;
+    virtual void dragLeaveEvent(QDragLeaveEvent* event) final;
+
     void open();
     void openRecentFile();
     void updateRecentFileActions();

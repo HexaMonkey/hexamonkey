@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief Compile \link Program program\endlink from a compiled HmScript file to be
-     * used as a \link Module module.
+     * used as a \link Module module\endlink.
      */
     Program fromHMC(const std::string& path) const;
 
