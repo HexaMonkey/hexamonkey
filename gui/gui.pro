@@ -94,7 +94,6 @@ SOURCES += main.cpp\
     hex/hexfilesearchwidget.cpp \
     hex/hexfilemodel.cpp \
     hex/hexfileheader.cpp \
-    hex/hexfiledockwidget.cpp \
     hex/hexfiledelegate.cpp \
     mt/worker.cpp \
     mt/tasklist.cpp \
