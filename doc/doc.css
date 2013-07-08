@@ -24,7 +24,6 @@ body, table, div, p, dl {
 {
 	border-radius: 10px;
 }
-
 #page
 {
 	margin : 0px;
@@ -33,6 +32,7 @@ body, table, div, p, dl {
 	-moz-box-shadow:    0px 0px 10px 4px #666;
 	-webkit-box-shadow: 0px 0px 10px 4px #666;
 	box-shadow:         0px 0px 10px 4px #666;
+	border-radius : 0px 0px 10px 10px;
 }
 
 #footer
@@ -185,7 +185,7 @@ pre.fragment {
 }
 
 div.ah {
-	background-color: #0044aa;
+	background-color: #44aa00;
 	font-weight: bold;
 	color: #ffffff;
 	margin-bottom: 3px;
@@ -213,8 +213,8 @@ td.indexkey {
 	color: #fff;
 	padding: 2px 10px;
     vertical-align: top;
-	background-color: #0044aa;
-	border : 1px solid #0044aa;
+	background-color: #44aa00;
+	border : 1px solid #44aa00;
 	border-radius: 10px 0px 0px 10px;
 }
 
@@ -224,7 +224,7 @@ td.indexkey a.el{
 
 td.indexvalue {
 	padding: 2px 10px;
-	border : 1px solid #0044aa;
+	border : 1px solid #44aa00;
 	border-radius: 0px 10px 10px 0px;
 }
 
@@ -410,7 +410,7 @@ table.memberdecls {
 
 .memitem {
 	padding: 0;
-	border: 1px solid #0044aa;
+	border: 1px solid #44aa00;
 	border-radius: 10px;
 	margin-bottom: 10px;
 	margin-right: 5px;
@@ -425,7 +425,7 @@ table.memberdecls {
 
 .memproto, dl.reflist dt {
 	padding: 6px 0px 6px 0px;
-	background-color: #0044aa;
+	background-color: #44aa00;
 	color: #fff;
 	border-radius: 7px 7px 0px 0px;
 }
@@ -470,20 +470,20 @@ dl.reflist dd {
 
 .params .paramname, .retval .paramname {
 	font-weight:bold;
-	color : #0044aa;
+	color : #44aa00;
 	padding : 0px 4px;
     vertical-align: top;
 }
         
 .params .paramtype {
     font-style: italic;
-	color : #0044aa;
+	color : #44aa00;
     vertical-align: top;
 }       
         
 .params .paramdir {
     font-family: "courier new",courier,monospace;
-	color : #0044aa;
+	color : #44aa00;
     vertical-align: top;
 }
 
@@ -665,7 +665,7 @@ table.fieldtable {
 .navpath ul
 {
 	font-size: 11px;
-	background-color:#0044aa;
+	background-color:#44aa00;
 	height:30px;
 	line-height:30px;
 	overflow:hidden;
@@ -873,7 +873,7 @@ dl.citelist dd {
 
 .tabs, .tabs2, .tabs3 {
     background-image: url('');
-	background-color:#0044aa;
+	background-color:#44aa00;
     width: 100%;
     z-index: 101;
     font-size: 13px;
