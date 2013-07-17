@@ -28,8 +28,6 @@
 #include "treewidget.h"
 #include "htmldelegate.h"
 #include "hexfilewidget.h"
-#include "hexfiledockwidget.h"
-
 
 #include "formatdetector.h"
 
