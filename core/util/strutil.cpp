@@ -16,11 +16,11 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "strutil.h"
-
+#include "../osutil.h"
 
 std::string formatDate(unsigned long secsFrom1970)
 {
-    #ifdef __linux
+    #ifdef PLATFORM_LINUX
     struct tm MacTime = {0,0,0,0,0,0,0,0,0,0,0};
     #else
     struct tm MacTime = {0,0,0,0,0,0,0,0,0};

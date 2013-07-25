@@ -28,6 +28,10 @@
 
 using namespace ebmlTypes;
 
+HmcModule::HmcModule(std::string dataDir) : _dataDir(dataDir)
+{
+}
+
 void HmcModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
     formatAdder.addMagicNumber("1a 45 df a3 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx 68 65 78 61 6d 6f 6e 6b 65 79");
@@ -41,12 +45,9 @@ void HmcModule::requestImportations(std::vector<std::string> &formatRequested)
 
 bool HmcModule::doLoad()
 {
-    std::string path = "hmcmodel.csv";
+    std::string path = _dataDir + "hmcmodel.csv";
+    
     if(!fileExists(path))
-    {
-        path = "../core/modules/hmc/hmcmodel.csv";
-    }
-    else if(!fileExists(path))
     {
         std::cerr<<"HMC model file not found"<<std::endl;
         return false;

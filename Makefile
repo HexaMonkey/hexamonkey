@@ -9,8 +9,9 @@ ifeq ("$(TMP)","")
 $(error you need QT5 to build)
 endif
 
-BUILD_DIR:=./gui/release
-INSTALL_DIR:=./gui/prefix
+BUILD_DIR:=./objs
+INSTALL_DATADIR:=/usr/local/share/hexamonkey
+INSTALL_BINDIR:=/usr/local/bin
 JOBS:=-j5
 EXISTS_FILE:=.exists
 BUILD_DIR_EXISTS:=$(BUILD_DIR)/$(EXISTS_FILE)
@@ -25,10 +26,10 @@ all: $(PROGRAM)
 	mkdir -p $*
 
 $(MAKEFILE): ./gui/gui.pro compiler $(BUILD_DIR_EXISTS)
-	# stupid qmake-qt5 puts the Makefile in gui/release/gui/release/Makefile so I use redirects instead
-	# $(QMAKE) $< -o $@
-	# also I have to run it from the $(BUILD_DIR) directory
-	cd $(BUILD_DIR); $(QMAKE) ../gui.pro -o - > Makefile
+# stupid qmake-qt5 puts the Makefile in gui/release/gui/release/Makefile so I use redirects instead
+# $(QMAKE) $< -o $@
+# also I have to run it from the $(BUILD_DIR) directory
+	cd $(BUILD_DIR); $(QMAKE) ../gui/gui.pro -o - > Makefile
 
 $(PROGRAM): $(MAKEFILE)
 	make -C $(BUILD_DIR) $(JOBS)
@@ -36,18 +37,20 @@ $(PROGRAM): $(MAKEFILE)
 compiler:
 	make -C compiler
 
-install: $(INSTALL_DIR)/$(EXISTS_FILE)
-	cp -rf scripts/ $(INSTALL_DIR)
-	cp $(PROGRAM) $(INSTALL_DIR)
-	cp core/modules/hmc/hmcmodel.csv $(INSTALL_DIR)
-	cp core/modules/mkv/mkvmodel.xml $(INSTALL_DIR)
-	cp compiler/hexacompiler $(INSTALL_DIR)
-	cp compiler/expcompiler $(INSTALL_DIR)
-	cp gui/logo.svg $(INSTALL_DIR)
-	@echo "***********************************************"
-	@echo "* hexamonkey is installed                     *"
-	@echo "* type cd $(INSTALL_DIR); ./hexamonkey to run it*"
-	@echo "***********************************************"
+uninstall:
+	rm -rf $(INSTALL_DATADIR)
+	rm $(INSTALL_BINDIR)/hexamonkey
+
+install:
+	mkdir -p $(INSTALL_DATADIR)
+	mkdir -p $(INSTALL_BINDIR)
+	cp -rf scripts/ $(INSTALL_DATADIR)
+	cp $(PROGRAM) $(INSTALL_BINDIR)
+	cp core/modules/hmc/hmcmodel.csv $(INSTALL_DATADIR)
+	cp core/modules/mkv/mkvmodel.xml $(INSTALL_DATADIR)
+	cp compiler/hexacompiler $(INSTALL_DATADIR)
+	cp compiler/expcompiler $(INSTALL_DATADIR)
+	cp gui/logo.svg $(INSTALL_DATADIR)
 	
 installer.msi: installer.wixobj\
  gui/release/hexamonkey.exe\
