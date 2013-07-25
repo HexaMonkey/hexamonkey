@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")),
                                 dataDir, userDir);
 
-#ifdef __MINGW32__
+#if defined(PLATFORM_WIN32)
     moduleLoader.addFolder(dataDir + ".\\scripts\\", programLoader);    
     moduleLoader.addFolder(dataDir + "..\\scripts\\", programLoader);
 #else
@@ -121,7 +121,8 @@ int main(int argc, char *argv[])
     MainWindow window(moduleLoader, programLoader);
 
     window.setWindowTitle("HexaMonkey");
-    window.setWindowIcon(QIcon(":/logo.svg"));
+    QIcon icon((dataDir + "logo.svg").c_str());
+    window.setWindowIcon(icon);
     window.showMaximized();
 
     for(int i = 1; i < argc; ++i)
