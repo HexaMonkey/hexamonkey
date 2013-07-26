@@ -25,6 +25,8 @@
  */
 class MkvModule : public MapModule
 {
+public:
+    MkvModule(std::string dataDir);
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     void requestImportations(std::vector<std::string>& formatRequested) override;
@@ -32,6 +34,7 @@ protected:
 
 private:
     static int64_t parseId(char* str);
+    std::string _dataDir;
 };
 
 #endif // MKVMODULE_H

@@ -14,7 +14,11 @@ Building the project
 Under Linux
 -----------
 
-You need qt5, gcc>=4.7, bison and flex on your computer, make sure qmake is available in your PATH. Then just type make in the root of the project, that should do it. As of now there are no install or uninstall target so just run hexamonkey from where it has been built.
+You need qt5, gcc>=4.7, bison and flex on your computer, make sure qmake is available in your PATH. Then just type make in the root of the project, that should do it. 
+
+Then type 'sudo make install'. That will install hexamonkey and related files to /usr/local/.
+
+Type 'hexamonkey' to start the program.
 
 
 Under Windows

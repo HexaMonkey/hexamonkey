@@ -1,9 +1,9 @@
-/* The standard CSS for doxygen */
+/* Modified CSS for doxygen */
 
 html, body 
 {
 	height: 100%;
-	background-color: #888;
+	background: -moz-linear-gradient(center top , rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.5) 17%, rgba(38, 38, 38, 0) 100%) repeat-x fixed 0 0 / auto 450px #E0DED7;
 }
 
 body
@@ -32,10 +32,10 @@ table, div, p, dl {
 	margin : 0px;
 	padding : 0px 10px;
 	background-color: #fff;
+    border-radius: 0 0 10px 10px;
 	-moz-box-shadow:    0px 0px 10px 4px #666;
 	-webkit-box-shadow: 0px 0px 10px 4px #666;
 	box-shadow:         0px 0px 10px 4px #666;
-	border-radius : 0px 0px 10px 10px;
 }
 
 #footer

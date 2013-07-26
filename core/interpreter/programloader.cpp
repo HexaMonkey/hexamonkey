@@ -41,7 +41,9 @@
 #include "parser.h"
 
 
-ProgramLoader::ProgramLoader(const HmcModule &module) : _module(module)
+ProgramLoader::ProgramLoader(const HmcModule &module, std::string &dataDir, std::string &userDir)
+                            : _module(module), _dataDir(dataDir), _userDir(userDir)
+                        
 {
     UNUSED(hmcElemNames);
 }
@@ -61,7 +63,12 @@ Program ProgramLoader::fromHM(const std::string &path) const
 
 Program ProgramLoader::fromHM(const std::string &path, int mode) const
 {
-    const std::string outputName = path+"c";
+    size_t pos;
+    pos = path.find_last_of('/');
+    if (pos == std::string::npos) {
+        return Program();
+    }
+    const std::string outputName = _userDir + path.substr(pos) + "c";
 
 #ifdef USE_QT
     QProcess process;
@@ -80,11 +87,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
 
 
-    compiler.setFile(QString("./%1%2").arg(base).arg(extension));
-    if(!compiler.exists())
-    {
-        compiler.setFile(QString("../compiler/%1%2").arg(base).arg(extension));
-    }
+    compiler.setFile(QString((_dataDir + "./%1%2").c_str()).arg(base).arg(extension));
     if(!compiler.exists())
     {
         std::cerr<<"Compiler not found"<<std::endl;
@@ -95,7 +98,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
     QStringList arguments;
     QFileInfo inputFile(path.c_str());
     QString arg1 = inputFile.absoluteFilePath();
-    QString arg2 = QString("%1c").arg(arg1);
+    QString arg2 = QString(outputName.c_str());
     arguments<<arg1<<arg2;
     std::cout<<"Program "<<compiler.absoluteFilePath().toStdString()<<std::endl;
     std::cout<<"Arguments "<<arg1.toStdString()<<" "<<arg2.toStdString()<<std::endl;
@@ -132,11 +135,12 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
     commandStream<<" "<<path<<" "<<outputName;
     const char* command = commandStream.str().c_str();
 
-#ifndef linux
-    _pclose(_popen(command, "r"));
-#else
+#ifdef PLATFORM_LINUX
     pclose(popen(command, "r"));
+#else
+    _pclose(_popen(command, "r"));
 #endif
+
 #endif
     return fromHMC(outputName);
 }

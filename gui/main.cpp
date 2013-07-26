@@ -70,6 +70,12 @@
 #include "hmcmodule.h"
 #include "mkvmodule.h"
 #include "fromfilemodule.h"
+#include "osutil.h"
+
+/* place where the *.hm *.csv and compilers are stored */
+std::string dataDir;
+/* place where the *.hmc are created */
+std::string userDir;
 
 int main(int argc, char *argv[])
 {
@@ -78,28 +84,45 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("HexaMonkey");
     QCoreApplication::setApplicationName("HexaMonkey");
 
+#if defined(PLATFORM_WIN32)
+    dataDir = ".\\";
+    userDir = ".\\";
+#elif defined(PLATFORM_LINUX)
+    /* XXX: use autotools ? */
+    dataDir = "/usr/local/share/hexamonkey/";
+    userDir = getenv("HOME");
+    userDir += "/.hexamonkey/";
+#else
+    dataDir = "./";
+    userDir = "./";
+#endif
+
+    QDir dir = QDir::root();
+    dir.mkdir(QString(userDir.c_str()));
+
     ModuleLoader moduleLoader;
 
     moduleLoader.addModule("bestd", new StandardModule(true));
     moduleLoader.addModule("lestd", new StandardModule(false));
     moduleLoader.addModule("ebml",  new EbmlModule);
-    moduleLoader.addModule("mkv",   new MkvModule);
-    moduleLoader.addModule("hmc",   new HmcModule);
+    moduleLoader.addModule("mkv",   new MkvModule(dataDir));
+    moduleLoader.addModule("hmc",   new HmcModule(dataDir));
 
-    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")));
+    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")),
+                                dataDir, userDir);
 
-#ifdef __MINGW32__
-    moduleLoader.addFolder(".\\scripts\\", programLoader);
-    moduleLoader.addFolder("..\\scripts\\", programLoader);
+#if defined(PLATFORM_WIN32)
+    moduleLoader.addFolder(dataDir + ".\\scripts\\", programLoader);    
+    moduleLoader.addFolder(dataDir + "..\\scripts\\", programLoader);
 #else
-    moduleLoader.addFolder("./scripts/", programLoader);
-    moduleLoader.addFolder("../scripts/", programLoader);
+    moduleLoader.addFolder(dataDir + "./scripts/", programLoader);
 #endif
 
     MainWindow window(moduleLoader, programLoader);
 
     window.setWindowTitle("HexaMonkey");
-    window.setWindowIcon(QIcon(":/logo.svg"));
+    QIcon icon((dataDir + "logo.svg").c_str());
+    window.setWindowIcon(icon);
     window.showMaximized();
 
     for(int i = 1; i < argc; ++i)

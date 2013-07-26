@@ -30,10 +30,12 @@
 #include "ebmltypes.h"
 
 
-
-
 using namespace rapidxml;
 using namespace ebmlTypes;
+
+MkvModule::MkvModule(std::string dataDir) : _dataDir(dataDir)
+{
+}
 
 void MkvModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
@@ -48,12 +50,9 @@ void MkvModule::requestImportations(std::vector<std::string> &formatRequested)
 
 bool MkvModule::doLoad()
 {
-    std::string path = "mkvmodel.xml";
+    std::string path = _dataDir + "mkvmodel.xml";
+
     if(!fileExists(path))
-    {
-        path = "../core/modules/mkv/mkvmodel.xml";
-    }
-    else if(!fileExists(path))
     {
         std::cerr<<"MKV model file not found"<<std::endl;
         return false;
