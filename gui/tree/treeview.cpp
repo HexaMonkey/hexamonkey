@@ -16,9 +16,11 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "treeview.h"
+#include "treewidget.h"
 
-TreeView::TreeView(QWidget *parent) :
-    QTreeView(parent)
+TreeView::TreeView(TreeWidget &parent) :
+    QTreeView(&parent),
+    parent(parent)
 {
 }
 
@@ -29,5 +31,18 @@ void TreeView::currentChanged(const QModelIndex &current, const QModelIndex & pr
     {
         QModelIndex realCurrent = current.sibling(current.row(), 0);
         emit selected(realCurrent);
+    }
+}
+
+
+void TreeView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::Copy))
+    {
+        parent.copy();
+    }
+    else
+    {
+        QTreeView::keyPressEvent(event);
     }
 }

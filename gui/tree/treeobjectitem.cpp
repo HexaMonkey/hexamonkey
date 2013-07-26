@@ -24,19 +24,23 @@ std::ostream& displayName(std::ostream& out, const std::string& name);
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
 std::ostream& displayInfo(std::ostream& out, const std::string& info);
 
-TreeObjectItem::TreeObjectItem(Object& object, const ProgramLoader &programLoader, TreeItem *parent) :
+TreeObjectItem::TreeObjectItem(const ProgramLoader &programLoader, TreeItem *parent) :
     TreeItem(QList<QVariant>({"", "", ""}), parent),
-    _object(object),
     _index(0),
     filter(programLoader),
     _synchronised(false)
 {
-    connect(this, SIGNAL(childrenRemoved()), this, SLOT(onChildrenRemoved()));
+}
+
+TreeObjectItem::TreeObjectItem(Object& object, const ProgramLoader &programLoader, TreeItem *parent) :
+    TreeObjectItem(programLoader, parent)
+{
+    setObject(object);
 }
 
 Object &TreeObjectItem::object() const
 {
-    return _object;
+    return *_object;
 }
 
 bool TreeObjectItem::synchronised()
@@ -45,11 +49,11 @@ bool TreeObjectItem::synchronised()
     {
         return true;
     }
-    else if(!_object.parsed())
+    else if(!_object->parsed())
     {
         return false;
     }
-    else if(nextChild()==_object.end())
+    else if(nextChild()==_object->end())
     {
         _synchronised = true;
         return true;
@@ -62,14 +66,14 @@ bool TreeObjectItem::synchronised()
 
 Object::iterator TreeObjectItem::nextChild()
 {
-    Object::iterator nChild = _object.begin();
+    Object::iterator nChild = _object->begin();
     std::advance(nChild, _index);
     return nChild;
 }
 
 Object::iterator TreeObjectItem::end()
 {
-    return _object.end();
+    return _object->end();
 }
 
 void TreeObjectItem::advanceLastChild()
@@ -97,10 +101,41 @@ const std::string &TreeObjectItem::filterExpression()
     return filter.expression();
 }
 
+QVariant TreeObjectItem::clipboardValue() const
+{
+    const Variant& info = object().info();
+    if(!info.isNull())
+    {
+       const std::string& infoString = info.toString();
+       if(!infoString.empty() && infoString[0] == '"' && infoString[infoString.size() - 1] == '"')
+           return QString(infoString.substr(1, infoString.size()-2).c_str());
+       else
+           return QString(infoString.c_str());
+    }
+    else
+    {
+
+        const Variant& value = object().value();
+        if(!value.isNull())
+        {
+            return QString(toStr(value).c_str());
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
+}
+
 void TreeObjectItem::onChildrenRemoved()
 {
     _synchronised=false;
     _index = 0;
+}
+
+void TreeObjectItem::setObject(Object &object)
+{
+    _object = &object;
 }
 
 void TreeObjectItem::doLoad() const
@@ -128,8 +163,8 @@ void TreeObjectItem::doLoad() const
             displayDecl(S, object().type(), object().name());
         }
 
-        if(!object().info().empty())
-            displayInfo(S, object().info());
+        if(!object().info().isNull())
+            displayInfo(S, object().info().toString());
         else
         {
             const Variant& value = object().value();
@@ -156,7 +191,6 @@ void TreeObjectItem::doLoad() const
                 default:
                     break;
             }
-
         }
 
         if(itemData().length() <3)
@@ -172,7 +206,7 @@ void TreeObjectItem::doLoad() const
             while(true)
             {
                 displayName(S, *it);
-                displayInfo(S, object().lookUp(*it)->info());
+                displayInfo(S, object().lookUp(*it)->info().toString());
 
                 ++it;
                 if(it == object().showcase().end())
@@ -201,13 +235,6 @@ void TreeObjectItem::doLoad() const
         S << "</span>";
         itemData()[2] = S.str().c_str();
     }
-}
-
-QList<QVariant> display(Object& object)
-{
-    QList<QVariant> itemData;
-
-    return itemData;
 }
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type)

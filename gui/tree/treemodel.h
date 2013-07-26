@@ -26,6 +26,7 @@
 #include "hmcmodule.h"
 #include "object.h"
 #include "resourcemanager.h"
+#include "treefileitem.h"
 
 
 class TreeItem;
@@ -49,6 +50,8 @@ class TreeModel : public QAbstractItemModel
 public:
     TreeModel(const QString &data, const ProgramLoader& programLoader, QObject *parent = 0);
 
+    TreeItem& item(const QModelIndex &index) const;
+
     virtual QVariant data(const QModelIndex &index, int role) const final;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const final;
     virtual QVariant headerData(int section, Qt::Orientation orientation,
@@ -60,7 +63,10 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const final;
 
-    QModelIndex addObject(Object &object);
+    QModelIndex addFile(const std::string &path, const Module &module);
+    virtual bool removeRows(int position, int rows, const QModelIndex &parent) override;
+
+    void removeItem(QModelIndex index);
 
     int populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
 

@@ -17,12 +17,16 @@
 
 #include "treewidget.h"
 
+#include <QMenu>
+#include <QApplication>
+#include <QClipboard>
+
 TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     QWidget(parent)
 {
     setAcceptDrops(true);
 
-    view =  new TreeView(this);
+    view =  new TreeView(*this);
     model = new TreeModel("Tree", programLoader, this);
 
     view->setModel(model);
@@ -51,6 +55,39 @@ TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     connect(model, SIGNAL(filterChanged(QString)), filterWidget, SLOT(changeText(QString)));
     connect(filterWidget, SIGNAL(textChanged(QString)), model, SLOT(updateFilter(QString)));
     connect(model, SIGNAL(invalidFilter()), filterWidget, SLOT(invalidateText()));
+
+    // in the constructor
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(displayMenu(QPoint)));
+}
+
+void TreeWidget::displayMenu(const QPoint &pos)
+{
+    QModelIndex current = view->currentIndex();
+    if(current.isValid())
+    {
+        QMenu menu(this);
+
+        QAction *copyAction = nullptr;
+        if(!currentItem().clipboardValue().isNull())
+            copyAction = menu.addAction("Copy Value");
+
+        QAction *closeFileAction = menu.addAction("Close File");
+
+        QAction *trigeredAction = menu.exec(view->viewport()->mapToGlobal(pos));
+
+        if(!trigeredAction)
+            return;
+
+        if(trigeredAction == copyAction)
+        {
+            copy();
+        }
+        else if (trigeredAction == closeFileAction)
+        {
+            closeFile();
+        }
+    }
 }
 
 void TreeWidget::dragEnterEvent(QDragEnterEvent* event)
@@ -91,10 +128,33 @@ void TreeWidget::setColumnsWidths()
     view->setColumnWidth(2, 120);
 }
 
-QModelIndex TreeWidget::addObject(Object& object)
+TreeItem &TreeWidget::currentItem() const
 {
-    model->addResource(object);
-    return model->addObject(object);
+    return model->item(view->currentIndex());
+}
+
+void TreeWidget::copy() const
+{
+    QVariant value = currentItem().clipboardValue();
+    if(!value.isNull())
+    {
+        QApplication::clipboard()->setText(value.toString());
+    }
+}
+
+void TreeWidget::closeFile()
+{
+    QModelIndex file = view->currentIndex();
+    while(file.parent().isValid())
+        file = file.parent();
+
+    setCurrentIndex(QModelIndex());
+    model->removeItem(file);
+}
+
+QModelIndex TreeWidget::addFile(const std::string &path, const Module &module)
+{
+    return model->addFile(path, module);
 }
 
 void TreeWidget::updatePath(QModelIndex currentIndex)
@@ -111,7 +171,6 @@ void TreeWidget::updatePosition(QModelIndex currentIndex)
 {
     quint64 newPosition = model->position(currentIndex);
     quint64 newSize     = model->size(currentIndex);
-
 
     if(newPosition != position || newSize != size)
     {

@@ -32,11 +32,23 @@ void TreeItem::appendChild(TreeItem *item)
     _childItems.append(item);
 }
 
-void TreeItem::removeChildren()
+bool TreeItem::removeChildren()
 {
-    emit childrenRemoved();
+    onChildrenRemoved();
     qDeleteAll(_childItems);
     _childItems.clear();
+    return true;
+}
+
+bool TreeItem::removeChildren(int position, int count)
+{
+    if (position < 0 || position + count > _childItems.size())
+        return false;
+
+    for (int row = 0; row < count; ++row)
+        delete _childItems.takeAt(position);
+
+    return true;
 }
 
 TreeItem *TreeItem::child(int row)
@@ -58,6 +70,11 @@ QVariant TreeItem::data(int column) const
 {
     load();
     return _itemData.value(column);
+}
+
+QVariant TreeItem::clipboardValue() const
+{
+    return QVariant();
 }
 
 TreeItem *TreeItem::parent()
@@ -93,6 +110,10 @@ QList<QVariant> &TreeItem::itemData() const
 }
 
 void TreeItem::doLoad() const
+{
+}
+
+void TreeItem::onChildrenRemoved()
 {
 }
 

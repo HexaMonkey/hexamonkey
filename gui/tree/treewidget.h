@@ -29,6 +29,7 @@
 #include "resourcemanager.h"
 
 class ProgramLoader;
+class TreeItem;
 
 /**
  * @brief Widget controlling the parsing and display of files into
@@ -49,6 +50,9 @@ public:
     explicit TreeWidget(const ProgramLoader &programLoader, QWidget *parent = 0);
     QSize sizeHint() const;
     void setColumnsWidths();
+    TreeItem& currentItem() const;
+    void copy() const;
+    void closeFile();
 
 signals:
     void pathChanged(QString);
@@ -56,10 +60,11 @@ signals:
     void eventDropped(QDropEvent*);
 
 public slots:
-    QModelIndex addObject(Object& object);
+    QModelIndex addFile(const std::string& path, const Module &module);
     void updatePath(QModelIndex currentIndex);
     void updatePosition(QModelIndex currentIndex);
     void setCurrentIndex(QModelIndex index);
+    void displayMenu(const QPoint &pos);
 
 private:
     virtual void dropEvent(QDropEvent *event) final;

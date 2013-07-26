@@ -18,8 +18,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define FILE_SLOTS 512
-
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDockWidget>
@@ -80,9 +78,6 @@ private:
     QAction *openAct;
     QMenu *recentFilesMenu;
     QAction *separatorAct;
-
-    File files[FILE_SLOTS];
-    int nfiles;
 
     const ModuleLoader& moduleLoader;
     const ProgramLoader& programLoader;

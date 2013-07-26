@@ -100,7 +100,8 @@ SOURCES += main.cpp\
     mt/resourcemanager.cpp \
     mt/resource.cpp \
     mt/parsingtask.cpp \
-    ../core/modules/default/dataparser.cpp
+    ../core/modules/default/dataparser.cpp \
+    tree/treefileitem.cpp
 
 
 		
@@ -188,7 +189,8 @@ HEADERS  += mainwindow.h \
     mt/parsingtask.h \
     ../compiler/model.h \
     ../core/modules/default/dataparser.h \
-    ../core/util/ptrutil.h
+    ../core/util/ptrutil.h \
+    tree/treefileitem.h
 
 RESOURCES += \
     ressources.qrc

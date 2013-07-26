@@ -20,6 +20,7 @@
 #include "treeobjectitem.h"
 #include "resourcemanager.h"
 #include "resource.h"
+#include "defaulttypes.h"
 
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, QObject *parent) :
     QAbstractItemModel(parent),
@@ -31,12 +32,52 @@ TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader
     rootItem = TreeItem::RootItem(rootData, this);
 }
 
+TreeItem &TreeModel::item(const QModelIndex &index) const
+{
+    if(index.isValid())
+        return *static_cast<TreeItem*>(index.internalPointer());
+    else
+        return *rootItem;
+}
+
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-    else
-        return rootItem->columnCount();
+    return item(parent).columnCount();
+}
+
+QModelIndex TreeModel::addFile(const std::string &path, const Module& module)
+{
+    beginInsertRows(QModelIndex(),0,0);
+
+    TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem));
+    item.file().setPath(path);
+    item.setObjectMemory(module.handle(defaultTypes::file, item.file()));
+
+    QModelIndex itemIndex = index(realRowCount(QModelIndex())-1, 0, QModelIndex());
+
+    endInsertRows();
+    return itemIndex;
+}
+
+bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
+{
+    TreeItem &parentItem = item(parent);
+
+    bool success = true;
+
+    beginRemoveRows(parent, position, position + rows - 1);
+    success = parentItem.removeChildren(position, rows);
+    endRemoveRows();
+
+    return success;
+
+}
+
+void TreeModel::removeItem(QModelIndex index)
+{
+    QModelIndex parent = index.parent();
+    int row = index.row();
+    removeRow(row, parent);
 }
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
@@ -47,9 +88,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-
-    return item->data(index.column());
+    return item(index).data(index.column());
 }
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
@@ -75,14 +114,7 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    TreeItem *parentItem;
-
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
-
-    TreeItem *childItem = parentItem->child(row);
+    TreeItem *childItem =item(parent).child(row);
     if (childItem)
         return createIndex(row, column, childItem);
     else
@@ -105,16 +137,10 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 
 int TreeModel::realRowCount(const QModelIndex &parent) const
 {
-    TreeItem *parentItem;
     if (parent.column() > 0)
         return 0;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
-
-    return parentItem->childCount();
+    return item(parent).childCount();
 }
 
 
@@ -133,29 +159,11 @@ int TreeModel::rowCount(const QModelIndex &parent) const
         return realCount;
 }
 
-QModelIndex TreeModel::addObject(Object& object)
-{
-    beginInsertRows(QModelIndex(),0,0);
-    QModelIndex index = addObject(object, QModelIndex());
-    endInsertRows();
-    return index;
-}
-
 QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
 {
-    TreeItem *parentItem;
-
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
-
-    new TreeObjectItem(object, programLoader, parentItem);
+    new TreeObjectItem(object, programLoader, &item(parent));
 
     QModelIndex itemIndex = index(realRowCount(parent)-1, 0, parent);
-
-
-    //updateChildren(itemIndex);
 
     return itemIndex;
 }
@@ -164,22 +172,22 @@ QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
 
 int TreeModel::updateChildren(const QModelIndex& index)
 {
-    TreeObjectItem* item = static_cast<TreeObjectItem*>(index.internalPointer());
+    TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
     int count = 0;
     int first = realRowCount(index);
-    _resourceManager.lock(item->object());
-    for(Object::iterator it = item->nextChild(); it != item->end(); ++it)
+    _resourceManager.lock(item.object());
+    for(Object::iterator it = item.nextChild(); it != item.end(); ++it)
     {
         Object* object = *it;
         if(object != nullptr)
         {
-            if(item->filterObject(*object))
+            if(item.filterObject(*object))
             {
                 addObject(*object, index);
                 count++;
             }
         }
-        item->advanceLastChild();
+        item.advanceLastChild();
     }
     beginInsertRows(index, first, first+count);
     endInsertRows();
@@ -187,7 +195,7 @@ int TreeModel::updateChildren(const QModelIndex& index)
     {
         emit dataChanged(index.child(0,0), index.child(count-1,columnCount(index)-1));
     }
-    _resourceManager.unlock(item->object());
+    _resourceManager.unlock(item.object());
     return count;
 }
 
@@ -198,9 +206,9 @@ void TreeModel::deleteChildren(const QModelIndex &index)
     endRemoveRows();
     if(index.isValid())
     {
-        TreeObjectItem* item = static_cast<TreeObjectItem*>(index.internalPointer());
-        item->removeChildren();
-        item->setLastChildIndex(0);
+        TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+        item.removeChildren();
+        item.setLastChildIndex(0);
     }
 
 
@@ -211,8 +219,8 @@ void TreeModel::updateFilter(QString expression)
     if(current.isValid())
     {
         deleteChildren(current);
-        TreeObjectItem* item = static_cast<TreeObjectItem*>(current.internalPointer());
-        if(!item->updateFilter(expression.toStdString()) && expression != "")
+        TreeObjectItem& item = *static_cast<TreeObjectItem*>(current.internalPointer());
+        if(!item.updateFilter(expression.toStdString()) && expression != "")
             emit invalidFilter();
 
         populate(current, defaultPopulation, defaultPopulation/minPopulationRatio, populationTries);
@@ -268,15 +276,15 @@ void TreeModel::updateCurrent(const QModelIndex &index)
     current = index;
     if(current.isValid())
     {
-        TreeItem* currentItem = static_cast<TreeItem*>(current.internalPointer());
-        filterChanged(QString(static_cast<TreeObjectItem*>(currentItem)->filterExpression().c_str()));
+        TreeItem& currentItem = *static_cast<TreeItem*>(current.internalPointer());
+        filterChanged(QString(static_cast<TreeObjectItem&>(currentItem).filterExpression().c_str()));
         if(current.parent().isValid())
         {
             TreeItem* parentItem = static_cast<TreeItem*>(current.parent().internalPointer());
 
             if(!parentItem->synchronised())
             {
-                int row = currentItem->row();
+                int row = currentItem.row();
                 int totalRowCount = realRowCount(current.parent());
                 if(row>=3*totalRowCount/4)
                     populate(current.parent(), totalRowCount, totalRowCount/minPopulationRatio, populationTries);

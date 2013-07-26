@@ -527,6 +527,11 @@ bool Variant::hasNumericalType() const
     return _type == integer || _type == unsignedInteger || _type == floating;
 }
 
+bool Variant::isNull() const
+{
+    return _type == unknown;
+}
+
 std::ostream& Variant::display(std::ostream& out) const
 {
     switch(_type)

@@ -26,7 +26,6 @@ Object::Object(File& file) :
     _parent(nullptr),
     _rank(-1),
     _name("*"),
-    _info(""),
     _children(0),
     _expandOnAddition(false),
     _parsedCount(0),
@@ -318,9 +317,9 @@ const std::string &Object::name() const
     return _name.toString();
 }
 
-const std::string &Object::info() const
+const Variant &Object::info() const
 {
-    return _info.toString();
+    return _info;
 }
 
 File& Object::file()
@@ -372,7 +371,7 @@ void Object::addParser(Parser *parser)
 std::ostream& Object::display(std::ostream& out, std::string prefix) const
 {
     out << prefix << type() << " " << name();
-    if(!info().empty())
+    if(!info().isNull())
         out << " = " << info();
     out<<std::endl;
 

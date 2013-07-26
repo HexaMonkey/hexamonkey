@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.48.2 r9819"
    sodipodi:docname="title.svg"
-   inkscape:export-filename="C:\Projets\hexamonkey\logo\title.png"
+   inkscape:export-filename="C:\Projets\hexamonkey\media\title.png"
    inkscape:export-xdpi="54.001469"
    inkscape:export-ydpi="54.001469">
   <defs
@@ -69,8 +69,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="199.07453"
+     inkscape:zoom="7.0349275"
+     inkscape:cx="44.78467"
      inkscape:cy="111.65262"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -103,7 +103,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

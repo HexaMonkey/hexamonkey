@@ -20,6 +20,8 @@
 
 #include <QTreeView>
 
+class TreeWidget;
+
 /**
  * @brief Widget responsible for displaying and manipulating the tree
  */
@@ -27,14 +29,16 @@ class TreeView : public QTreeView
 {
     Q_OBJECT
 public:
-    explicit TreeView(QWidget *parent = 0);
+    explicit TreeView(TreeWidget& parent);
     
 signals:
     void selected(QModelIndex);
 
 private:
+    virtual void keyPressEvent(QKeyEvent *event) final;
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) final;
-    
+
+    TreeWidget& parent;
 };
 
 #endif // TREEVIEW_H

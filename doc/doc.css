@@ -221,7 +221,7 @@ td.indexkey {
 	border-radius: 10px 0px 0px 10px;
 }
 
-td.indexkey a.el{
+td.indexkey a.el, td.indexkey a{
 	color: #fff;
 }
 

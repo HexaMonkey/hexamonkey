@@ -55,15 +55,16 @@ public:
     bool filterObject(Object &object);
     bool updateFilter(const std::string& expression);
     const std::string& filterExpression();
+    virtual QVariant clipboardValue() const override;
 
-
-private slots:
-    void onChildrenRemoved();
+protected:
+    TreeObjectItem(const ProgramLoader& programLoader, TreeItem *parent);
+    virtual void onChildrenRemoved() override;
+    void setObject(Object& object);
 
 private:
    void doLoad() const override;
-
-   Object& _object;
+   Object* _object;
    int64_t _index;
    Filter filter;
    bool _synchronised;

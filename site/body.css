@@ -3,7 +3,7 @@ html, body
 {
 	height: 100%;
 	margin: 0;
-	background-color: #888;
+	background: -moz-linear-gradient(center top , rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.5) 17%, rgba(38, 38, 38, 0) 100%) repeat-x fixed 0 0 / auto 450px #E0DED7;
 }
 
 body
@@ -78,7 +78,7 @@ a.installer, a.installer:hover
 {
 	font-size:16px;
 	color:white;
-	background-color: #44aa00;
+	background-color: #44AA00;
 	margin-top: 0px;
 	padding: 6px 20px;
 	border-radius : 10px;

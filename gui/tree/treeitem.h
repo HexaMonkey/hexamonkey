@@ -38,12 +38,15 @@ public:
     static TreeItem* RootItem(const QList<QVariant> &data, QObject *owner);
     virtual ~TreeItem() {}
 
-    void removeChildren();
+    bool removeChildren();
+    bool removeChildren(int position, int count);
+
 
     TreeItem *child(int row);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
+    virtual QVariant clipboardValue() const;
     int row() const;
     TreeItem *parent();
 
@@ -55,6 +58,7 @@ protected:
     QList<QVariant>& itemData() const;
     virtual void doLoad() const;
 
+    virtual void onChildrenRemoved();
 
 signals:
     bool childrenRemoved();

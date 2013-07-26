@@ -28,7 +28,6 @@ const int MainWindow::maxRecentFiles;
 
 MainWindow::MainWindow(const ModuleLoader &moduleLoader, const ProgramLoader &programLoader, QWidget *parent)
     : QMainWindow(parent),
-      nfiles(0),
       moduleLoader(moduleLoader),
       programLoader(programLoader)
 {
@@ -74,7 +73,7 @@ void MainWindow::openRecentFile()
 
 void MainWindow::openFiles(QStringList paths)
 {
-    for(int i = 0; i < paths.size() && nfiles < FILE_SLOTS; ++i)
+    for(int i = 0; i < paths.size(); ++i)
     {
         openFile(paths[i].toStdString());
     }
@@ -82,13 +81,15 @@ void MainWindow::openFiles(QStringList paths)
 
 void MainWindow::openFile(const std::string& path)
 {
-    files[nfiles].setPath(path);
-    if (!files[nfiles].good())
+    File file;
+    file.setPath(path);
+    if (!file.good())
     {
         std::cerr << "File not found" <<std::endl;
     }
     else
     {
+        //Add File to recent file list
         QString qPath = path.c_str();
         QSettings settings;
         QStringList fileList = settings.value("recentFileList").toStringList();
@@ -99,12 +100,9 @@ void MainWindow::openFile(const std::string& path)
         settings.setValue("recentFileList", fileList);
         updateRecentFileActions();
 
-
-        const Module& module = moduleLoader.getModule(files[nfiles]);
-        Object* fileObject = module.handle(defaultTypes::file(), files[nfiles]);
-        fileObject->explore(0);
-        treeWidget->setCurrentIndex(treeWidget->addObject(*fileObject));
-        nfiles++;
+        //Create new tree node
+        const Module& module = moduleLoader.getModule(file);
+        treeWidget->setCurrentIndex(treeWidget->addFile(path, module));
     }
 }
 

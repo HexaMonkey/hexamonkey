@@ -142,6 +142,7 @@ public:
 
     Type type() const;
     bool hasNumericalType() const;
+    bool isNull() const;
 
     friend bool operator==(const Variant& a, const Variant& b);
     friend bool operator< (const Variant& a, const Variant& b);

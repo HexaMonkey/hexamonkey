@@ -132,7 +132,7 @@ class Object
         /**
          * @brief String representation of the value
          */
-        const std::string &info() const;
+        const Variant &info() const;
         void setInfo(const std::string& info);
 
         /**
