@@ -88,11 +88,11 @@
 					</Component>
 					
 					<Component Id='HmcModel' Guid='C42E9F91-6233-498b-A492-E20A4D794C4E'>
-						<File Id='HmcModelCSV' Name='hmcmodel.csv' DiskId='1' Source='core\modules\hmc\hmcmodel.csv' KeyPath='yes' />
+						<File Id='HmcModelCSV' Name='hmcmodel.csv' DiskId='1' Source='models\hmcmodel.csv' KeyPath='yes' />
 					</Component>
 					
 					<Component Id='MkvModel' Guid='B003227F-8A80-4116-8483-A7D55660DBD8'>
-						<File Id='MkvModelXML' Name='mkvmodel.xml' DiskId='1' Source='core\modules\mkv\mkvmodel.xml' KeyPath='yes' />
+						<File Id='MkvModelXML' Name='mkvmodel.xml' DiskId='1' Source='models\mkvmodel.xml' KeyPath='yes' />
 					</Component>
 					
 					<Directory Id="ScriptsFolder" Name="scripts">
@@ -115,6 +115,11 @@
 						<Component Id='Mp4Module' Guid='5FDE29B5-0054-4514-A9F3-42011C41934D'>
 							<File Id='Mp4ModuleHM' Name='mp4.hm' DiskId='1' Source='scripts\mp4.hm' KeyPath='yes' />
 						</Component>
+						
+						<Component Id='UuidModule' Guid='3AC410B5-9C71-4fc0-B2F3-E4585D830FD5'>
+							<File Id='UuidModuleHM' Name='uuid.hm' DiskId='1' Source='scripts\uuid.hm' KeyPath='yes' />
+						</Component>
+
 					</Directory>
 			  </Directory>
 		  </Directory>
@@ -156,6 +161,7 @@
 			<ComponentRef Id='AsfModule'/>
 			<ComponentRef Id='MicrosoftModule'/>
 			<ComponentRef Id='TsModule'/>
+			<ComponentRef Id='UuidModule'/>
 			<ComponentRef Id='ProgramMenuDir' />
 		</Feature>
 		<Icon Id="hexamonkey.ico" SourceFile="gui\logo.ico" />

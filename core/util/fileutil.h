@@ -22,9 +22,15 @@
 #include <vector>
 
 /**
- * @brief Check if a file exists
+ * @brief Check if a file can be read at the location specified
+ * on the file system
  */
 bool fileExists(const std::string& path);
+
+/**
+ * Look for a file in one of the directories starting with the last one
+ */
+std::string getFile(const std::vector<std::string>& directories, const std::string& fileName);
 
 /**
  * @brief Get a list of the files in a directory

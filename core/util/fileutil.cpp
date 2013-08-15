@@ -16,14 +16,33 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "fileutil.h"
+#include "iterutil.h"
 
 #include <fstream>
 #include <dirent.h>
 
+
 bool fileExists(const std::string& path)
 {
+    if(path.empty())
+        return false;
+
     std::ifstream file(path);
     return file.is_open();
+}
+
+
+std::string getFile(const std::vector<std::string>& directories, const std::string& fileName)
+{
+    for(const std::string& directory : reverse(directories))
+    {
+        std::string path = directory+fileName;
+        if(fileExists(path))
+        {
+            return path;
+        }
+    }
+    return "";
 }
 
 void getDirContent(const std::string& path, std::vector<std::string>& content)

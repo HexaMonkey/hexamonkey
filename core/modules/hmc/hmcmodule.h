@@ -26,14 +26,15 @@
 class HmcModule : public MapModule
 {
 public:
-    HmcModule(std::string dataDir);
+    HmcModule(std::string modelPath);
 
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     void requestImportations(std::vector<std::string>& formatRequested) override;
     bool doLoad() override;
 private:
-    std::string _dataDir;
+
+    std::string _modelPath;
 };
 
 #endif // HMCMODULE_H

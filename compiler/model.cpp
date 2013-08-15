@@ -7,8 +7,8 @@
 #include "../core/util/strutil.h"
 #include "../core/util/csvreader.h"
 
-const std::string modelFileName = "../core/modules/hmc/hmcmodel.csv";
-const std::string opFileName = "../core/modules/hmc/hmcoperators.csv";
+const std::string modelFileName = "../models/hmcmodel.csv";
+const std::string opFileName = "../models/hmcoperators.csv";
 
 int main()
 {

@@ -70,12 +70,11 @@
 #include "hmcmodule.h"
 #include "mkvmodule.h"
 #include "fromfilemodule.h"
+
+#include "fileutil.h"
 #include "osutil.h"
 
-/* place where the *.hm *.csv and compilers are stored */
-std::string dataDir;
-/* place where the *.hmc are created */
-std::string userDir;
+
 
 int main(int argc, char *argv[])
 {
@@ -84,44 +83,53 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("HexaMonkey");
     QCoreApplication::setApplicationName("HexaMonkey");
 
+
+
 #if defined(PLATFORM_WIN32)
-    dataDir = ".\\";
-    userDir = ".\\";
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string installDir = std::string(buffer);
+    std::string::size_type pos = installDir.find_last_of( "\\/" );
+    installDir = installDir.substr( 0, pos)+"\\";
+
+    std::vector<std::string> modelsDirs = {installDir, "..\\models\\"};
+    std::vector<std::string> scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
+    std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
+    std::vector<std::string> logoDirs = {installDir, "..\\logo\\"};
+
 #elif defined(PLATFORM_LINUX)
     /* XXX: use autotools ? */
-    dataDir = "/usr/local/share/hexamonkey/";
-    userDir = getenv("HOME");
-    userDir += "/.hexamonkey/";
-#else
-    dataDir = "./";
-    userDir = "./";
-#endif
 
-    QDir dir = QDir::root();
-    dir.mkdir(QString(userDir.c_str()));
+    std::string installDir = "/usr/local/share/hexamonkey/";
+    std::string userDir = getenv("HOME")+"/.hexamonkey/";
+    QDir::root().mkdir(QString(userDir.c_str()));
+
+    std::vector<std::string> modelsDirs = {installDir, "../models/"};
+    std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
+    std::vector<std::string> compilerDirs = {installDir, "../compiler/"};
+    std::vector<std::string> logoDirs = {installDir, "../logo/"};
+
+#else
+    std::cerr<<"Error: unsuported operating system"<<std::endl;
+    return 0;
+#endif
 
     ModuleLoader moduleLoader;
 
     moduleLoader.addModule("bestd", new StandardModule(true));
     moduleLoader.addModule("lestd", new StandardModule(false));
     moduleLoader.addModule("ebml",  new EbmlModule);
-    moduleLoader.addModule("mkv",   new MkvModule(dataDir));
-    moduleLoader.addModule("hmc",   new HmcModule(dataDir));
+    moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
+    moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
 
-    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")),
-                                dataDir, userDir);
+    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs);
 
-#if defined(PLATFORM_WIN32)
-    moduleLoader.addFolder(dataDir + ".\\scripts\\", programLoader);    
-    moduleLoader.addFolder(dataDir + "..\\scripts\\", programLoader);
-#else
-    moduleLoader.addFolder(dataDir + "./scripts/", programLoader);
-#endif
+    moduleLoader.addDirectories(scriptsDirs, programLoader);
 
     MainWindow window(moduleLoader, programLoader);
 
     window.setWindowTitle("HexaMonkey");
-    QIcon icon((dataDir + "logo.svg").c_str());
+    QIcon icon(getFile(logoDirs, "logo.svg").c_str());
     window.setWindowIcon(icon);
     window.showMaximized();
 

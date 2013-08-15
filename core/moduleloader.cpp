@@ -83,23 +83,29 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
     }
 }
 
-void ModuleLoader::addFolder(const std::string &folderName, const ProgramLoader &programLoader)
+void ModuleLoader::addDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader)
 {
-    std::vector<std::string> files;
-    getDirContent(folderName, files);
-    std::set<std::string> selected;
-    for(const std::string& file : files)
+    std::map<std::string, std::string> selected;
+
+    for(const std::string& directory : directories)
     {
-        std::string ext = extension(file);
-        if(ext == "hm")
-            selected.insert(file.substr(0, file.size()-3));
-        else if(ext == "hmc")
-            selected.insert(file.substr(0, file.size()-4));
+        std::vector<std::string> files;
+        getDirContent(directory, files);
+
+        for(const std::string& file : files)
+        {
+            std::string ext = extension(file);
+            if(ext == "hm" || ext == "hmc")
+            {
+                std::string key = file.substr(0, file.size()-ext.size()-1);
+                selected[key] = directory+key;
+            }
+        }
     }
 
-    for(const std::string& file : selected)
+    for(const auto& entry: selected)
     {
-        addModule(file, new FromFileModule(programLoader.fromFile(folderName+file)));
+        addModule(entry.first, new FromFileModule(programLoader.fromFile(entry.second)));
     }
 }
 

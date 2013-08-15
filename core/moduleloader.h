@@ -57,13 +57,13 @@ public:
     void addModule(const std::string& key, Module* module);
 
     /**
-     * @brief Generate and add \link FromFileModule HMScript modules\endlink from a folder
+     * @brief Generate and add \link FromFileModule HMScript modules\endlink from a directories
      *
      * The key for the module are the name of the files (extension excluded)
      *
      * The files are compiled again only if the compiled file is less recent than the original file
      */
-    void addFolder(const std::string& folderName, const ProgramLoader& programLoader);
+    void addDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader);
 
     /**
      * @brief Give constant access to a module and loads it has not yet been loaded

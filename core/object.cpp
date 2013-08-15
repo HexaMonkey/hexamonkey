@@ -15,8 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#include <algorithm>
+
 #include "object.h"
 #include "parser.h"
+
+#define BUFFER_SIZE 1048576
 
 Object::Object(File& file) :
     _file(file),
@@ -164,6 +168,34 @@ Object* Object::lookForType(const ObjectType &targetType, bool forceParse)
     else
     {
         return nullptr;
+    }
+}
+
+void Object::dumpToFile(const std::string &path) const
+{
+    std::ifstream in  (file().path(), std::ios::in | std::ios::binary);
+    std::ofstream out (path, std::ios::out | std::ios::binary);
+
+    if(size() == -1)
+    {
+        return;
+    }
+
+    size_t done = 0;
+    size_t n = size()/8;
+
+    in.seekg(beginningPos()/8);
+
+    char buffer[BUFFER_SIZE];
+    //Copy file part by chunks
+    while(done < n)
+    {
+
+        size_t chunkSize = std::min<size_t>(n - done, BUFFER_SIZE);
+        in.read(buffer, chunkSize);
+
+        out.write(buffer, chunkSize);
+        done += chunkSize;
     }
 }
 
@@ -322,7 +354,12 @@ const Variant &Object::info() const
     return _info;
 }
 
-File& Object::file()
+File &Object::file()
+{
+    return _file;
+}
+
+const File &Object::file() const
 {
     return _file;
 }

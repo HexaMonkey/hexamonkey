@@ -386,6 +386,11 @@ const std::vector<Variant> &Module::getFunctionParameterDefaults(const std::stri
     return handlerModule->doGetFunctionParameterDefaults(name);
 }
 
+bool Module::isLoaded() const
+{
+    return _loaded;
+}
+
 
 void Module::addTemplate(const ObjectTypeTemplate& typeTemplate)
 {

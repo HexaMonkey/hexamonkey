@@ -184,6 +184,12 @@ public:
      */
     const std::vector<Variant>& getFunctionParameterDefaults(const std::string& name) const;
 
+    /**
+     * @brief Check if the module has been successfully loaded by the
+     * \link ModuleLoader module loader\endlink
+     */
+    bool isLoaded() const;
+
 protected:
     /**
      * @brief [Pure Virtual] Use the \link StandardFormatDetector::Adder format adder\endlink to add format detection methods, so that the

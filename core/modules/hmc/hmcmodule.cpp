@@ -28,7 +28,7 @@
 
 using namespace ebmlTypes;
 
-HmcModule::HmcModule(std::string dataDir) : _dataDir(dataDir)
+HmcModule::HmcModule(std::string modelPath) : _modelPath(modelPath)
 {
 }
 
@@ -45,15 +45,14 @@ void HmcModule::requestImportations(std::vector<std::string> &formatRequested)
 
 bool HmcModule::doLoad()
 {
-    std::string path = _dataDir + "hmcmodel.csv";
     
-    if(!fileExists(path))
+    if(!fileExists(_modelPath))
     {
         std::cerr<<"HMC model file not found"<<std::endl;
         return false;
     }
 
-    std::ifstream modelFile(path);
+    std::ifstream modelFile(_modelPath);
     CSVReader modelReader(modelFile);
 
     for(unsigned int i = 0;modelReader.hasNextLine();++i)

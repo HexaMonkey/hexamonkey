@@ -20,6 +20,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
+#include <QFileDialog>
 
 TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     QWidget(parent)
@@ -72,6 +73,8 @@ void TreeWidget::displayMenu(const QPoint &pos)
         if(!currentItem().clipboardValue().isNull())
             copyAction = menu.addAction("Copy Value");
 
+        QAction *dumpToFileAction = menu.addAction("Dump to File");
+
         QAction *closeFileAction = menu.addAction("Close File");
 
         QAction *trigeredAction = menu.exec(view->viewport()->mapToGlobal(pos));
@@ -86,6 +89,10 @@ void TreeWidget::displayMenu(const QPoint &pos)
         else if (trigeredAction == closeFileAction)
         {
             closeFile();
+        }
+        else if (trigeredAction == dumpToFileAction)
+        {
+            dumpToFile();
         }
     }
 }
@@ -150,6 +157,15 @@ void TreeWidget::closeFile()
 
     setCurrentIndex(QModelIndex());
     model->removeItem(file);
+}
+
+void TreeWidget::dumpToFile()
+{
+    QModelIndex current = view->currentIndex();
+    if(!current.isValid())
+        return;
+
+    static_cast<TreeObjectItem&>(model->item(current)).object().dumpToFile(QFileDialog::getSaveFileName(this, "Dump to file").toStdString());
 }
 
 QModelIndex TreeWidget::addFile(const std::string &path, const Module &module)

@@ -47,7 +47,7 @@ public:
     /**
      * @param module used to parse compiled HMScript files
      */
-    ProgramLoader(const HmcModule &module, std::string &dataDir, std::string &userDir);
+    ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs);
 
     /**
      * @brief Load a \link Program program\endlink from a string to be used as a right value.
@@ -80,8 +80,8 @@ private:
     Program fromHM (const std::string& path, int mode) const;
 
     const HmcModule& _module;
-    const std::string _dataDir;
-    const std::string _userDir;
+    const std::string _fileCompiler;
+    const std::string _expCompiler;
     
 };
 

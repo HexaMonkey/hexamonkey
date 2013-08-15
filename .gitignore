@@ -32,11 +32,9 @@
 !core/modules/hmc
 !core/modules/hmc/*.cpp
 !core/modules/hmc/*.h
-!core/modules/hmc/*.csv
 !core/modules/mkv
 !core/modules/mkv/*.cpp
 !core/modules/mkv/*.h
-!core/modules/mkv/*.xml
 !core/modules/standard
 !core/modules/standard/*.cpp
 !core/modules/standard/*.h
@@ -81,6 +79,11 @@
 !gui/tree/*.h
 !gui/mt/*.cpp
 !gui/mt/*.h
+
+#models
+!models
+!models/*.csv
+!models/*.xml
 
 #Windows installer builder
 !*.wxs

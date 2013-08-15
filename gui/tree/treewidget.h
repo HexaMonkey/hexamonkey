@@ -53,6 +53,7 @@ public:
     TreeItem& currentItem() const;
     void copy() const;
     void closeFile();
+    void dumpToFile();
 
 signals:
     void pathChanged(QString);

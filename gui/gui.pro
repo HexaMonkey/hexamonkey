@@ -101,7 +101,8 @@ SOURCES += main.cpp\
     mt/resource.cpp \
     mt/parsingtask.cpp \
     ../core/modules/default/dataparser.cpp \
-    tree/treefileitem.cpp
+    tree/treefileitem.cpp \
+    ../core/util/osutil.cpp
 
 
 		
@@ -190,7 +191,8 @@ HEADERS  += mainwindow.h \
     ../compiler/model.h \
     ../core/modules/default/dataparser.h \
     ../core/util/ptrutil.h \
-    tree/treefileitem.h
+    tree/treefileitem.h \
+    ../core/util/osutil.h
 
 RESOURCES += \
     ressources.qrc
@@ -198,8 +200,8 @@ RESOURCES += \
 RC_FILE = logo.rc
 
 OTHER_FILES += \
-    ../core/modules/mkv/mkvmodel.xml \
-    ../core/modules/hmc/hmcmodel.csv
+    ../models/mkvmodel.xml \
+    ../models/hmcmodel.csv
 
 DEFINES += USE_QT
 

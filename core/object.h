@@ -60,6 +60,9 @@ class Object
         /** @brief Access the file associated. */
         File& file();
 
+        /** @brief Access the file associated. */
+        const File& file() const;
+
         /** @brief Access the begining file position of the object. */
         std::streampos beginningPos() const;
 
@@ -219,6 +222,8 @@ class Object
          * until the type is found or the parsing is done.
          */
         Object* lookForType(const ObjectType& type, bool forceParse = false);
+
+        void dumpToFile(const std::string& path) const;
 
     private:
         friend class Parser;

@@ -25,7 +25,6 @@
 #else
 #include <cstdlib>
 #include <cstdio>
-#include "fileutil.h"
 #endif
 
 #include "defaulttypes.h"
@@ -40,9 +39,18 @@
 #include "objecttypetemplate.h"
 #include "parser.h"
 
+#include "osutil.h"
+#include "fileutil.h"
 
-ProgramLoader::ProgramLoader(const HmcModule &module, std::string &dataDir, std::string &userDir)
-                            : _module(module), _dataDir(dataDir), _userDir(userDir)
+ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs)
+    : _module(module),
+#ifdef PLATFORM_WIN32
+      _fileCompiler(getFile(compilerDirs, "hexacompiler.exe")),
+      _expCompiler (getFile(compilerDirs, "expcompiler.exe"))
+#else
+      _fileCompiler(getFile(compilerDirs, "hexacompiler")),
+      _expCompiler (getFile(compilerDirs, "expcompiler"))
+#endif
                         
 {
     UNUSED(hmcElemNames);
@@ -63,50 +71,33 @@ Program ProgramLoader::fromHM(const std::string &path) const
 
 Program ProgramLoader::fromHM(const std::string &path, int mode) const
 {
-    size_t pos;
-    pos = path.find_last_of('/');
-    if (pos == std::string::npos) {
-        return Program();
-    }
-    const std::string outputName = _userDir + path.substr(pos) + "c";
+    const std::string outputPath = path+"c";
 
-#ifdef USE_QT
-    QProcess process;
-    QString base;
+    std::string compiler;
     if(mode == file)
-         base = "hexacompiler";
+        compiler = _fileCompiler;
     else
-         base = "expcompiler";
+        compiler = _expCompiler;
 
-    #ifdef __MINGW32__
-    QString extension = ".exe";
-    #else
-    QString extension = "";
-    #endif
-    QFileInfo compiler;
-
-
-
-    compiler.setFile(QString((_dataDir + "./%1%2").c_str()).arg(base).arg(extension));
-    if(!compiler.exists())
+    if(!fileExists(path))
     {
         std::cerr<<"Compiler not found"<<std::endl;
         return Program();
     }
 
+    std::cout<<"Program "<<compiler<<std::endl;
+    std::cout<<"Arguments "<<path<<" "<<outputPath<<std::endl;
+
+#ifdef USE_QT
+    QProcess process;
 
     QStringList arguments;
-    QFileInfo inputFile(path.c_str());
-    QString arg1 = inputFile.absoluteFilePath();
-    QString arg2 = QString(outputName.c_str());
-    arguments<<arg1<<arg2;
-    std::cout<<"Program "<<compiler.absoluteFilePath().toStdString()<<std::endl;
-    std::cout<<"Arguments "<<arg1.toStdString()<<" "<<arg2.toStdString()<<std::endl;
-    process.start(compiler.absoluteFilePath(), arguments);
+    arguments<<QString(path.c_str())<<QString(outputPath.c_str());
+
+    process.start(QString(compiler.c_str()), arguments);
     process.waitForFinished();
     std::string output =  QString(process.readAllStandardOutput()).toStdString();
     std::string error  = QString(process.readAllStandardError()).toStdString();
-    std::cout<<QString(process.readAllStandardOutput()).toStdString()<<std::endl;
 
     if(!output.empty())
     {
@@ -119,20 +110,9 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
         return Program();
     }
 #else
-    std::cout<<"don't use qt"<<std::endl;
     std::stringstream commandStream;
-#ifndef linux
-    commandStream<<"..\\compiler\\";
-#else
-    commandStream<<"../compiler/"
-#endif
 
-    if(mode==file)
-        commandStream<<"hexacompiler";
-    else
-        commandStream<<"expcompiler";
-
-    commandStream<<" "<<path<<" "<<outputName;
+    commandStream<<compiler<<" "<<path<<" "<<outputPath;
     const char* command = commandStream.str().c_str();
 
 #ifdef PLATFORM_LINUX
@@ -142,7 +122,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 #endif
 
 #endif
-    return fromHMC(outputName);
+    return fromHMC(outputPath);
 }
 
 Program ProgramLoader::fromHMC(const std::string &path) const
@@ -162,7 +142,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     }
     else
     {
-        std::cout << "failure" << std::endl;
+        std::cout << "Script could not be loaded : "<< path << std::endl;
         return Program();
     }
 }

@@ -33,7 +33,7 @@
 using namespace rapidxml;
 using namespace ebmlTypes;
 
-MkvModule::MkvModule(std::string dataDir) : _dataDir(dataDir)
+MkvModule::MkvModule(std::string modelPath) : _modelPath(modelPath)
 {
 }
 
@@ -50,14 +50,12 @@ void MkvModule::requestImportations(std::vector<std::string> &formatRequested)
 
 bool MkvModule::doLoad()
 {
-    std::string path = _dataDir + "mkvmodel.xml";
-
-    if(!fileExists(path))
+    if(!fileExists(_modelPath))
     {
         std::cerr<<"MKV model file not found"<<std::endl;
         return false;
     }
-    std::ifstream modelFile(path);
+    std::ifstream modelFile(_modelPath);
 
     std::string mkvModelText((std::istreambuf_iterator<char>(modelFile)),
                      std::istreambuf_iterator<char>());

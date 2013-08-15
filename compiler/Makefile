@@ -32,7 +32,7 @@ compilerExp.y: compiler.y
 compilerExp.flex: compiler.flex
 	sed s/compiler.tab.h/compilerExp.tab.h/g compiler.flex > compilerExp.flex
 	
-model.h: model ../core/modules/hmc/hmcmodel.csv ../core/modules/hmc/hmcoperators.csv
+model.h: model ../models/hmcmodel.csv ../models/hmcoperators.csv
 	./model
 	
 model: model.o strutil.o csvreader.o
