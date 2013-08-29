@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     /* XXX: use autotools ? */
 
     std::string installDir = "/usr/local/share/hexamonkey/";
-    std::string userDir = getenv("HOME")+"/.hexamonkey/";
+    std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
     QDir::root().mkdir(QString(userDir.c_str()));
 
     std::vector<std::string> modelsDirs = {installDir, "../models/"};
