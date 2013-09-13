@@ -1,0 +1,38 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 89 50 4e 47 0d 0a 1a 0a
+addExtension png
+
+import bestd
+
+class PngFile as File
+{
+	byte signature[8];
+	while(1) Chunk *;
+}
+
+class Chunk(code)
+{
+	uint(32) length;
+	String(4) type;
+	@size = 8*length + 96;
+	@args.code = type;
+	...
+	@pos = @size - 32;
+	uint(32,16) CRC;
+}
