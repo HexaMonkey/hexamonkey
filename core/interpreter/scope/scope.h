@@ -39,7 +39,7 @@ class Scope
 {
 public:
     typedef OptOwnPtr<Scope> Ptr;
-    Scope();
+
     virtual ~Scope() {}
     /**
      * @brief Get a variable by its key
@@ -86,7 +86,6 @@ protected:
 
 private :
     const Ptr getScope(const VariablePath& path, int max) const;
-    Ptr pthis;
 };
 
 #endif // SCOPE_H

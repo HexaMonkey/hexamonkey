@@ -1,0 +1,206 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber FF D8
+
+import bestd
+
+class JpegFile as File
+{
+	while(1) {
+		MarkerSegment *;
+		if([].Marker == 0xffda) {
+			break;
+		} 
+	}
+	_Stream(@size - @pos - 16) *;
+	MarkerSegment *;
+}
+
+class _Stream(size) extends Data(size);
+
+class Stream as _Stream;
+
+class MarkerSegment(symbol)
+{
+	uint(16,16) Marker;
+
+	if((Marker < 0xffd0 || Marker > 0xffd9) && Marker != 0xff01){
+		uint(16) Length;
+		@size = 8 * Length + 16;
+	}
+	
+	if(Marker == 0xffc4) {
+		@args.symbol = "DHT";
+	} else if(Marker == 0xffc8) {
+		@args.symbol = "JPG";
+	} else if (0xffc0 <= Marker && Marker <= 0xffcf){
+		@args.symbol = "SOF";
+	} else if(Marker == 0xffc4) {
+		@args.symbol = "DHT";
+	} else if(Marker == 0xffcc) {
+		@args.symbol = "DAC";
+	} else if(0xffd0 <= Marker && Marker <= 0xffd7){
+		@args.symbol = "RST";
+	} else if(Marker == 0xffd8) {
+		@args.symbol = "SOI";
+	} else if(Marker == 0xffd9) {
+		@args.symbol = "EOI";
+	} else if(Marker == 0xffda) {
+		@args.symbol = "SOS";
+	} else if(Marker == 0xffdb) {
+		@args.symbol = "DQT";
+	} else if(Marker == 0xffdc) {
+		@args.symbol = "DNL";
+	} else if(Marker == 0xffdd) {
+		@args.symbol = "DRI";
+	} else if(Marker == 0xffde) {
+		@args.symbol = "DHP";
+	} else if(Marker == 0xffdf) {
+		@args.symbol = "EXP";
+	} else if(0xffe0 <= Marker && Marker <= 0xffef){
+		@args.symbol = "APP";
+	} else if(0xfff0 <= Marker && Marker <= 0xfffd){
+		@args.symbol = "JPG";
+	} else if(Marker == 0xfffe) {
+		@args.symbol = "COM";
+	}
+	
+}
+
+class StartOfImage as MarkerSegment("SOI");
+
+class EndOfImage as MarkerSegment("EOI");
+
+class Restart(m) as MarkerSegment("RST")
+{
+	@args.m = Marker - 0xffd0;
+}
+
+class FrameComponent
+{
+	uint(8)  Identifier;
+	uint(4)  HorizontalSamplingFactor;
+	uint(4)  VerticalSamplingFactor;
+	uint(8)  QuantizationTableDestinationSelector;
+}
+
+class StartOfFrame(info) as MarkerSegment("SOF")
+{
+	uint(8)  SamplePrecision;
+	uint(16) NumberOfLines;
+	uint(16) NumberOfSamplesPerLine;
+	uint(8)  NumberOfImageComponentsInFrame;
+	FrameComponent *[NumberOfImageComponentsInFrame];
+
+	if(Marker == 0xffc0) {
+		@args.info = "Baseline DCT";
+	} else if(Marker == 0xffc1 || Marker == 0xffc9) {
+		@args.info = "Extended sequential DCT";
+	} else if(Marker == 0xffc2 || Marker == 0xffca) {
+		@args.info = "Progressive DCT";
+	} else if(Marker == 0xffc3 || Marker == 0xffcb) {
+		@args.info = "Lossless (sequential)";
+	} else if(Marker == 0xffc5 || Marker == 0xffcd) {
+		@args.info = "Differential sequential DCT";
+	} else if(Marker == 0xffc6 || Marker == 0xffce) {
+		@args.info = "Differential progressive DCT";
+	} else if(Marker == 0xffc7 || Marker == 0xffcf) {
+		@args.info = "Differential lossless (sequential)";
+	}
+}
+
+class ScanComponent
+{
+	uint(8) Selector;
+	uint(4) DCEntropyCodingTableDestinationSelector;
+	uint(4) ACEntropyCodingTableDestinationSelector;
+}
+
+class StartOfScan as MarkerSegment("SOS")
+{
+	uint(8) NumberOfImageComponents;
+	ScanComponent * [NumberOfImageComponents];
+	uint(8) StartOfSpectralSelection;
+	uint(8) EndOfSpectralSelection;
+	uint(4) SuccessiveApproximationBitPositionHigh;
+	uint(4) SuccessiveApproximationBitPositionLow;
+}
+
+class QuantizationComponent
+{
+	uint(4) Precision;
+	@size = 520 + 512 * Precision;
+	uint(4) DestinationIdentifier;
+	if(Precision) {
+		uint(16) Elements[64];
+	} else {
+		uint(8) Elements[64];
+	}
+}
+
+class QuantizationTable as MarkerSegment("DQT")
+{
+	QuantizationComponent Table[];
+}
+
+class HuffmanComponent
+{
+	uint(4) TableClass;
+	uint(4) DestinationIdentifier;
+	uint(8) Lengths[16];
+	
+	@size = 136;
+	for(var i = 0; i < 16; ++i) {
+		@size += 8*Lengths[i];
+	}	
+	
+	for(i = 0; i < 16; ++i) {
+		uint(8) Values[Lengths[i]];
+	}
+	
+}
+
+class HuffmanTable as MarkerSegment("DHT")
+{
+	HuffmanComponent Table[];
+}
+
+class JFIFHeader extends MarkerSegment
+{
+  String(5)   Identifier;      /* 06h  "JFIF" (zero terminated) Id String */
+  Version     Version;         /* 07h  JFIF Format Revision      */
+  uint(8)     Units;           /* 09h  Units used for Resolution */
+  uint(16)    Xdensity;        /* 0Ah  Horizontal Resolution     */
+  uint(16)    Ydensity;        /* 0Ch  Vertical Resolution       */
+  uint(8)     XThumbnail;      /* 0Eh  Horizontal Pixel Count    */
+  uint(8)     YThumbnail;      /* 0Fh  Vertical Pixel Count      */
+  RGB         Thumbnail[];
+}
+
+class Version extends Tuple(uint(8), 2)
+{
+	@value = %float([0])+ %float([1])/100;
+}
+
+class RGB
+{
+	byte R;
+	byte G;
+	byte B;
+	@info = "#"+%str(R, 16, 2)+%str(G, 16, 2)+%str(B, 16, 2);
+}

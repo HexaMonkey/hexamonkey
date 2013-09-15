@@ -382,9 +382,11 @@ empty_string_constant:
 
 variable:
     extended_identifier {push_master(VARIABLE, 1);}
+   |'['  ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 1);}
    |'[' right_value ']' {push_master(VARIABLE, 1);}
    |variable '.' extended_identifier {push_master(VARIABLE, 2);}
    |variable '[' right_value ']' {push_master(VARIABLE, 2);}
+   |variable '[' ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 2);}
     
 conditional_statement:
     IF_TOKEN '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,3);}

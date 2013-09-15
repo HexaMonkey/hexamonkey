@@ -25,6 +25,7 @@ namespace standardTypes
 {
     const ObjectTypeTemplate integer("int",{"size", "base"});
     const ObjectTypeTemplate uinteger("uint",{"size", "base"});
+    const ObjectTypeTemplate byte("byte");
 
     const ObjectType int8(integer(8));
     const ObjectType int16(integer(16));

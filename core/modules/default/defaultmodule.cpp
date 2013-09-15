@@ -274,5 +274,35 @@ bool DefaultModule::doLoad()
         return Variable();
     });
 
+    addFunction("log",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        std::cout<<"[LOG]"<<scope.get(0).cvalue();
+        return Variable();
+    });
+
+    addFunction("error",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        std::cout<<"[ERROR]"<<scope.get(0).cvalue();
+        return Variable();
+    });
+
+    addFunction("warning",
+                {"value"},
+                {false},
+                {},
+                []functionLambda
+    {
+        std::cout<<"[WARNING]"<<scope.get(0).cvalue();
+        return Variable();
+    });
+
     return true;
 }

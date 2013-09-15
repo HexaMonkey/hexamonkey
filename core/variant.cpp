@@ -19,6 +19,7 @@
 #include "objecttype.h"
 
 #include <algorithm> //swap
+#include <sstream>
 
 const std::vector<std::string>& typeNames = {"unknown", "integer", "unsigned integer" , "float", "string","object type"};
 
@@ -668,38 +669,47 @@ std::ostream& operator<<(std::ostream& out, const Variant& variant)
 
 Variant &Variant::operator +=(const Variant &other)
 {
-    switch(_type)
+    if(_type == string || other._type == string)
     {
-    case integer:
-        if(other.type() == floating)
+        std::stringstream S;
+        S<<*this<<other;
+        setValue(S.str());
+    }
+    else
+    {
+        switch(_type)
         {
-            convertTo(floating);
+        case integer:
+            if(other.type() == floating)
+            {
+                convertTo(floating);
+                _data.f += other.toDouble();
+                break;
+            }
+            _data.l += other.toInteger();
+            break;
+
+        case unsignedInteger:
+            if(other.type() == floating)
+            {
+                convertTo(floating);
+                _data.f += other.toDouble();
+                break;
+            }
+            _data.ul += other.toInteger();
+            break;
+
+        case floating:
             _data.f += other.toDouble();
             break;
-        }
-        _data.l += other.toInteger();
-        break;
 
-    case unsignedInteger:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
-            _data.f += other.toDouble();
+        case string:
+            *_data.s += other.toString();
             break;
+
+        default:
+            std::cerr<<"Invalid operation : +="<<std::endl;
         }
-        _data.ul += other.toInteger();
-        break;
-
-    case floating:
-        _data.f += other.toDouble();
-        break;
-
-    case string:
-        *_data.s += other.toString();
-        break;
-
-    default:
-        std::cerr<<"Invalid operation : +="<<std::endl;
     }
     return *this;
 }

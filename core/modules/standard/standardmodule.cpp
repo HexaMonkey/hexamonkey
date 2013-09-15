@@ -94,6 +94,14 @@ bool StandardModule::doLoad()
     });
     setFixedSizeFromArg("uint", 0);
 
+    addTemplate(byte);
+    addParser("byte", [this]parserLambda
+    {
+        return new UInt8Parser(object, 16);
+    });
+    setFixedSize("byte", 8);
+
+
     addTemplate(singleFloat);
     addParser("float", [this]parserLambda{return new SingleFloatParser(object, bigEndian);});
     setFixedSize("float", 32);

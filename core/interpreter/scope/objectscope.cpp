@@ -43,7 +43,18 @@ ObjectScope::ObjectScope(Object &object, bool modifiable)
 
 Variable ObjectScope::doGet(const Variant &key) const
 {
-    if(key.canConvertTo(Variant::string))
+    if(key.isNull())
+    {
+        int numberOfChildren = _object.numberOfChildren();
+        if(numberOfChildren > 0) {
+            Object* elem = _object.access(numberOfChildren - 1, true);
+            if(elem != nullptr)
+            {
+                return Variable::ref(elem->value(), _modifiable);
+            }
+        }
+    }
+    else if(key.canConvertTo(Variant::string))
     {
         const std::string& name = key.toString();
         if(!name.empty() && name[0]=='@')
@@ -64,7 +75,7 @@ Variable ObjectScope::doGet(const Variant &key) const
                     return Variable::ref(_object._info, _modifiable);
 
                 case A_POS:
-                    return Variable::copy(_object.pos());
+                    return Variable::ref(_object._pos, _modifiable);
 
                 default:
                     return Variable();
@@ -99,7 +110,18 @@ Variable ObjectScope::doGet(const Variant &key) const
 
 const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
 {
-    if(key.canConvertTo(Variant::string))
+    if(key.isNull())
+    {
+        int numberOfChildren = _object.numberOfChildren();
+        if(numberOfChildren > 0) {
+            Object* elem = _object.access(numberOfChildren - 1, true);
+            if(elem != nullptr)
+            {
+                return Ptr::move(new ObjectScope(*elem, _modifiable));
+            }
+        }
+    }
+    else if(key.canConvertTo(Variant::string))
     {
         const std::string& name = key.toString();
         if(!name.empty() && name[0]=='@')
@@ -127,8 +149,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
             return Ptr::move(new ObjectScope(*elem, _modifiable));
         }
     }
-
-    if(key.canConvertTo(Variant::integer))
+    else if(key.canConvertTo(Variant::integer))
     {
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
@@ -136,8 +157,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
             return Ptr::move(new ObjectScope(*elem, _modifiable));
         }
     }
-
-    if(key.canConvertTo(Variant::objectType))
+    else if(key.canConvertTo(Variant::objectType))
     {
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)

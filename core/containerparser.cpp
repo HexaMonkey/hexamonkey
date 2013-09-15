@@ -68,10 +68,12 @@ void ContainerParser::addChild(Object *child)
         else
         {
             _object.seekEnd();
+
             setParsed();
             std::cerr<<"too big "<<child->type()<<" "<<child->name()<<std::endl;
         }
     }
+    _object._pos.setValue(file().tellg() - _object._beginningPos);
 }
 
 void ContainerParser::addChild(Object *child, const std::string &name)

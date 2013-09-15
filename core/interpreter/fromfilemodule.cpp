@@ -352,9 +352,13 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
 
         case DECLARATION:
             {
+                if(!variableDependencies(line.node(0),false).empty())
+                    return -1;
+
                 ObjectType type = eval.rightValue(line.node(0)).cvalue().toObjectType();
                 if(type.isNull())
                     return -1;
+
                 int64_t elemSize = getFixedSize(type);
                 if(elemSize == -1)
                     return -1;

@@ -251,6 +251,7 @@ class Object
         Variant _name;
         Variant _info;
         Variant _value;
+        Variant _pos;
         Showcase _showcase;
 
         container _children;

@@ -30,6 +30,7 @@ Object::Object(File& file) :
     _parent(nullptr),
     _rank(-1),
     _name("*"),
+    _pos(0),
     _children(0),
     _expandOnAddition(false),
     _parsedCount(0),
@@ -207,18 +208,14 @@ void Object::seekBeginning()
 void Object::seekEnd()
 {
     if(size() != -1)
-        _file.seekg(_beginningPos+size(),std::ios::beg);
+        _file.seekg(_beginningPos+size(), std::ios::beg);
     else
-        _file.seekg(_beginningPos,std::ios::beg);
+        _file.seekg(_beginningPos, std::ios::beg);
 }
 
 void Object::seekObjectEnd()
 {
-    iterator it = last();
-    if(it != end())
-        (*it)->seekEnd();
-    else
-        seekBeginning();
+    _file.seekg(_beginningPos+_pos.toInteger(), std::ios::beg);
 }
 
 std::streamoff Object::pos() const
