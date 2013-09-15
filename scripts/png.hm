@@ -18,7 +18,7 @@
 addMagicNumber 89 50 4e 47 0d 0a 1a 0a
 addExtension png
 
-import bestd
+import bestd rgb
 
 class PngFile as File
 {
@@ -28,11 +28,186 @@ class PngFile as File
 
 class Chunk(code)
 {
-	uint(32) length;
+	uint(32)  length;
 	String(4) type;
 	@size = 8*length + 96;
 	@args.code = type;
 	...
 	@pos = @size - 32;
 	uint(32,16) CRC;
+}
+
+class ImageHeader as Chunk("IHDR")
+{
+	uint(32) width;
+	uint(32) height;
+	uint(8)  bitDepth;
+	uint(8)  colorType;
+	uint(8)  compressionMethod;
+	uint(8)  filterMethod;
+	uint(8)  interlaceMethod;
+}
+
+class ImageData as Chunk("IDAT")
+{
+	Data(8*length) imageData; 
+}
+
+class ImageTrailer as Chunk("IEND")
+{
+}
+
+class Palette as Chunk("PLTE")
+{
+	RGB colors[length/3];
+}
+
+class Transparency as Chunk("tRNS")
+{
+	var colorType = @parent[ImageHeader()].colorType;
+	if(colorType == 3) {
+		uint(8) alphas[length];
+	} else if (colorType == 0){
+		uint(16) gray;
+	} else if (colorType == 2){
+		uint(16) red;
+		uint(16) green;
+		uint(16) blue;
+	} 
+}
+
+class FixedPoint
+{
+	uint(32) data;
+	@value = data / 100000.0;
+}
+
+class Gamma as Chunk("gAMA")
+{
+	FixedPoint gamma;
+}
+
+class PrimaryChromaticities as Chunk("cHRM")
+{
+	FixedPoint whitePointX;
+	FixedPoint whitePointY;
+	FixedPoint RedX;
+	FixedPoint RedY;
+	FixedPoint GreenX;
+	FixedPoint GreenY;
+	FixedPoint BlueX;
+	FixedPoint BlueY;
+}
+
+class RGBColorSpace as Chunk("sRGB")
+{
+	uint(8) renderingIntent;
+}
+
+class EmbeddedICCProfile as Chunk("iCCP")
+{
+	String          profileName;
+	uint(8)         compressionMethod;
+	Data(@rem - 32) compressedProfile;
+}
+
+class CompressedTextualData as Chunk("tEXt")
+{
+	String                keyword;
+	String((@rem - 32)/8) text;
+}
+
+class CompressedTextualData as Chunk("zTXt")
+{
+	String          keyword;
+	uint(8)         compressionMethod;
+	Data(@rem - 32) compressedText;
+}
+
+class InternationalTextualData as Chunk("iTXt")
+{
+	String  keyword;
+	uint(8) compresionFlag;
+	uint(8) compressionMethod;
+	String  languageTag;
+	String  translatedKeyWord;
+	if(compressionFlag) {
+		Data((@rem - 32)/8) text;
+	} else {
+		String((@rem - 32)/8) text;
+	}
+}
+
+class BackgroundColor as Chunk("bKGD")
+{
+	var colorType = @parent[ImageHeader()].colorType;
+	if(colorType == 3) {
+		uint(8) paletteIndex;
+	} else if (colorType == 0 || colorType == 4) {
+		uint(16) gray;
+	} else if (colorType == 2 || colorType == 6) {
+		uint(16) red;
+		uint(16) green;
+		uint(16) blue;
+	} 
+}
+
+class PhysicalPixelDimensions as Chunk("pHYs")
+{
+	uint(32) pixelsPerUnitX;
+	uint(32) pixelsPerUnitY;
+	uint(8)  unitSpecifier;
+}
+
+class SignificatBits as Chunk("sBIT")
+{
+	var colorType = @parent[ImageHeader()].colorType;
+	if(colorType == 0) {
+		uint(8) gray;
+	} else if (colorType == 2 || colorType == 3) {
+		uint(8) red;
+		uint(8) green;
+		uint(8) blue;
+	} else if (colorType == 4) {
+		uint(8) gray;
+		uint(8) alpha;
+	}  else if (colorType == 6) {
+		uint(8) red;
+		uint(8) green;
+		uint(8) blue;
+		uint(8) alpha;
+	}
+}
+
+class PaletteEntry
+{
+	uint(8)            sampleDepth;
+	uint(sampleDepth)  red;
+	uint(sampleDepth)  green;
+	uint(sampleDepth)  blue;
+	uint(16)           frequency;
+}
+
+class SuggestedPalette as Chunk("sPLT")
+{
+	String  paletteName;
+	
+	Array(PaletteEntry, @rem - 32) entries;
+}
+
+class PaletteHistogram as Chunk("hIST")
+{
+	uint(16) frequencies[length/2];
+}
+
+class ImageLastModificationTime as Chunk("tIME")
+{
+	uint(16) year;
+	uint(8)  month;
+	uint(8)  day;
+	uint(8)  hour;
+	uint(8)  minute;
+	uint(8)  second;
+	
+	@info = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
 }

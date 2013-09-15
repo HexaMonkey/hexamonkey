@@ -237,6 +237,7 @@ class Object
         Object(File& file);
 
         void parse();
+        void parseBody();
         bool parseSome(int hint);
         void parseTail();
 

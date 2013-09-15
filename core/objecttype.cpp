@@ -135,26 +135,30 @@ bool operator< (const ObjectType& a, const ObjectType& b)
 std::ostream& ObjectType::display(std::ostream& out) const
 {
     out << typeTemplate().name();
-    const int n = typeTemplate().numberOfParameters();
+    const int n = numberOfDisplayableParamaters();
     if(n>0)
     {
         out<<"(";
         for(int i = 0; i < n; ++i)
         {
-            if(parameterSpecified(i))
-            {
-                out<<parameterValue(i);
-            }
-            else
-            {
-                out<<typeTemplate().parameterName(i);
-            }
+            out<<parameterValue(i);
+
             if(i < n-1)
                 out<<", ";
         }
         out<<")";
     }
     return out;
+}
+
+int ObjectType::numberOfDisplayableParamaters() const
+{
+    int n = typeTemplate().numberOfParameters();
+    while(n >= 1 && (typeTemplate().isParameterPrivate(n-1) || !parameterSpecified(n-1)))
+    {
+        n--;
+    }
+    return n;
 }
 
 std::ostream& operator<<(std::ostream& out, const ObjectType& type)

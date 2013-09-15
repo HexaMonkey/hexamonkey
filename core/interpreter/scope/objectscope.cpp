@@ -30,8 +30,9 @@
 #define A_INFO 4
 #define A_RANK 5
 #define A_POS 6
+#define A_REM 7
 
-const std::map<std::string, int> reserved = {{"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO}, {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK}, {"@pos",A_POS}};
+const std::map<std::string, int> reserved = {{"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO}, {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK}, {"@pos",A_POS}, {"@rem",A_REM}};
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
     : _object(object),
@@ -76,6 +77,9 @@ Variable ObjectScope::doGet(const Variant &key) const
 
                 case A_POS:
                     return Variable::ref(_object._pos, _modifiable);
+
+                case A_REM:
+                    return Variable::copy(_object._size.toInteger() - _object._pos.toInteger());
 
                 default:
                     return Variable();

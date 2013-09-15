@@ -243,8 +243,8 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type)
 
     out << "<span style=\"color:#800080;\">" << templateName << "</span>";
 
-    int n = type.typeTemplate().numberOfParameters();
-    while(n>0 && !type.parameterSpecified(n-1)) --n;
+    int n = type.numberOfDisplayableParamaters();
+
     if(n>0)
     {
         out<<"(";

@@ -235,14 +235,18 @@ const Variant &Object::value() const
 
 void Object::parse()
 {
+    parseBody();
+    parseTail();
+}
+
+void Object::parseBody()
+{
     while(_parsedCount < _parsers.size())
     {
         auto& parser = _parsers[_parsedCount];
         parser->parse();
-        parser.reset();
         ++_parsedCount;
     }
-    parseTail();
 }
 
 bool Object::parseSome(int hint)
@@ -417,7 +421,7 @@ void Object::addParser(Parser *parser)
     {
         if(parser->hasHead())
         {
-            parse();
+            parseBody();
             parser->parseHead();
         }
         _parsers.push_back(std::unique_ptr<Parser>(parser));

@@ -49,6 +49,12 @@ const std::string& ObjectTypeTemplate::parameterName(int index) const
     return _parametersNames.at(index);
 }
 
+bool ObjectTypeTemplate::isParameterPrivate(int index) const
+{
+    const std::string& name = parameterName(index);
+    return !name.empty() && name[0] == '_';
+}
+
 int ObjectTypeTemplate::parameterNumber(const std::string &name) const
 {
     const auto it = _parametersNumbers.find(name);

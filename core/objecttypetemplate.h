@@ -55,6 +55,15 @@ public:
     const std::string& parameterName(int index) const;
 
     /**
+     * @brief Check if the parameter is private
+     *
+     * If a paramater is private it should not be displayed on screen
+     *
+     * Raise an exception if out of bounds
+     */
+    bool isParameterPrivate(int index) const;
+
+    /**
      * @brief Get the index of a parameter given its name
      *
      * Returns -1 if no parameter of this name exists

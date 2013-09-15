@@ -17,7 +17,7 @@
 
 addMagicNumber FF D8
 
-import bestd
+import bestd rgb
 
 class JpegFile as File
 {
@@ -27,13 +27,9 @@ class JpegFile as File
 			break;
 		} 
 	}
-	_Stream(@size - @pos - 16) *;
+	Data(@size - @pos - 16) *;
 	MarkerSegment *;
 }
-
-class _Stream(size) extends Data(size);
-
-class Stream as _Stream;
 
 class MarkerSegment(symbol)
 {
@@ -208,12 +204,4 @@ class JFIFHeader extends MarkerSegment
 class Version extends Tuple(uint(8), 2)
 {
 	@value = %float([0])+ %float([1])/100;
-}
-
-class RGB
-{
-	byte R;
-	byte G;
-	byte B;
-	@info = "#"+%str(R, 16, 2)+%str(G, 16, 2)+%str(B, 16, 2);
 }
