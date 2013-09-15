@@ -88,7 +88,7 @@ Parser *FromFileModule::getParser(const ObjectType &type, Object &object, const 
 
     const Program& definition = it->second;
 
-    if(definition.size() == 0)
+    if(definition.node(0).size() == 0)
         return nullptr;
 
     return new FromFileParser(object, fromModule, definition, headerEnd(name));
@@ -347,6 +347,9 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
     {
         switch(line.tag())
         {
+        case EXECUTION_BLOCK:
+            guessSize(line);
+
         case DECLARATION:
             {
                 ObjectType type = eval.rightValue(line.node(0)).cvalue().toObjectType();
@@ -395,10 +398,10 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     if(alreadyIt != _headerEnd.end())
         return alreadyIt->second;
 
-    Program definition = _definitions.find(name)->second;
-    Program::const_reverse_iterator reverseHeaderEnd = definition.rbegin();
+    Program bodyBlock = _definitions.find(name)->second.node(0);
+    Program::const_reverse_iterator reverseHeaderEnd = bodyBlock.rbegin();
 
-    for(;reverseHeaderEnd != definition.rend(); ++reverseHeaderEnd)
+    for(;reverseHeaderEnd != bodyBlock.rend(); ++reverseHeaderEnd)
     {
         const Program& line = *reverseHeaderEnd;
 
@@ -431,8 +434,8 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
         }
     }
 
-    Program::const_iterator headerEnd = definition.begin();
-    std::advance(headerEnd, std::distance(reverseHeaderEnd, definition.rend()));
+    Program::const_iterator headerEnd = bodyBlock.begin();
+    std::advance(headerEnd, std::distance(reverseHeaderEnd, bodyBlock.rend()));
     _headerEnd[name] = headerEnd;
     return headerEnd;
 }

@@ -7,6 +7,7 @@ nullConstant;integer;0;
 identifier;string;0;
 classDeclaration;master;0;
 classInfo;master;0;
+classDefinition;master;0;
 typeTemplate;master;0;
 type;master;0;
 declaration;master;0;

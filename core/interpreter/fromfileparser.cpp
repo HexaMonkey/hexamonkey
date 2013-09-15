@@ -28,7 +28,7 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
       _headerEnd(headerEnd),
       _objectScope(object, true),
       _evaluator(_scope, module),
-      _blockExecution(classDefinition, _evaluator, _scope, this),
+      _blockExecution(classDefinition.node(0), _evaluator, _scope, this),
       _object(object)
 {
     _scope.addScope(_localScope);

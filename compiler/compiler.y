@@ -113,8 +113,8 @@ magic_number:
 ;
 
 class_declaration:    
-    CLASS_TOKEN class_info optional_execution_block {push_master(CLASS_DECLARATION, 2);}
-   |CLASS_TOKEN class_infos optional_execution_block 
+    CLASS_TOKEN class_info class_definition {push_master(CLASS_DECLARATION, 2);}
+   |CLASS_TOKEN class_infos class_definition 
     {
         stash(1);
         while(infos>0)
@@ -211,9 +211,9 @@ specification:
     /*empty*/ {push_master(SPECIFICATION,0);}
    | AS_TOKEN type {push_master(SPECIFICATION,1);}
 
-optional_execution_block:
-    /*empty*/ {push_master(EXECUTION_BLOCK, 0);}
-   |execution_block
+class_definition:
+    /*empty*/ {push_master(EXECUTION_BLOCK, 0); push_master(CLASS_DEFINITION, 1);}
+   |execution_block {push_master(CLASS_DEFINITION, 1);}
    
 execution_block:
      ';' {push_master(EXECUTION_BLOCK, 0);}
