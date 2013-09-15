@@ -169,10 +169,23 @@ class HuffmanComponent
 		@size += 8*Lengths[i];
 	}	
 	
-	for(i = 0; i < 16; ++i) {
-		uint(8) Values[Lengths[i]];
-	}
-	
+	// TODO: make better with anon classes
+	uint(8) Values0 [Lengths[0x0]];
+	uint(8) Values1 [Lengths[0x1]];
+	uint(8) Values2 [Lengths[0x2]];
+	uint(8) Values3 [Lengths[0x3]];
+	uint(8) Values4 [Lengths[0x4]];
+	uint(8) Values5 [Lengths[0x5]];
+	uint(8) Values6 [Lengths[0x6]];
+	uint(8) Values7 [Lengths[0x7]];
+	uint(8) Values8 [Lengths[0x8]];
+	uint(8) Values9 [Lengths[0x9]];
+	uint(8) ValuesA [Lengths[0xA]];
+	uint(8) ValuesB [Lengths[0xB]];
+	uint(8) ValuesC [Lengths[0xC]];
+	uint(8) ValuesD [Lengths[0xD]];
+	uint(8) ValuesE [Lengths[0xE]];
+	uint(8) ValuesF [Lengths[0xF]];	
 }
 
 class HuffmanTable as MarkerSegment("DHT")

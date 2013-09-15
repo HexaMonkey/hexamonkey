@@ -32,7 +32,7 @@ class Chunk(code)
 	String(4) type;
 	@size = 8*length + 96;
 	@args.code = type;
-	//...
+	...
 	@pos = @size - 32;
 	uint(32,16) CRC;
 }

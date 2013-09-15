@@ -48,7 +48,7 @@ public:
     virtual void parseHead();
 
     /**
-     * @brief Parse everything
+     * @brief Parse everything except the tail
      */
     virtual void parse();
 
@@ -58,9 +58,19 @@ public:
     virtual bool parseSome(int hint);
 
     /**
-     * @brief Check if the parsing is done
+     * @brief parse the tail
+     */
+    virtual void parseTail();
+
+    /**
+     * @brief Check if the parsing is done except the tail
      */
     bool parsed() const;
+
+    /**
+     * @brief Check if the tail has been parsed
+     */
+    bool tailParsed() const;
 
     /**
      * @brief Check if the \link Parser parser\endlink requires anything to be parsed
@@ -141,7 +151,7 @@ protected:
     virtual void doParseHead();
 
     /**
-     * @brief [Virtual] Parse everything remaining, assuming that the head and only the head as been parsed (do nothing by default)
+     * @brief [Virtual] Parse everything remaining except the tail, assuming that the head and only the head as been parsed (do nothing by default)
      */
     virtual void doParse();
 
@@ -153,6 +163,13 @@ protected:
      * @return true if the parsing is done false otherwise
      */
     virtual bool doParseSome(int hint);
+
+    /**
+     * @brief [Virtual] Parse the tail
+     *
+     * The tail will be parsed after every subsequent parsers have been parsed including their tails
+     */
+    virtual void doParseTail();
 
 
 private:
@@ -167,6 +184,7 @@ private:
 
     bool _headParsed;
     bool _parsed;
+    bool _tailParsed;
     bool _hasHead;
 
     class Parsing

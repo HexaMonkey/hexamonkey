@@ -46,6 +46,7 @@ private:
     virtual void doParseHead() final;
     virtual void doParse() final;
     virtual bool doParseSome(int hint) final;
+    virtual void doParseTail() final;
 
     Scope &scope();
     BlockExecution& blockExecution();
@@ -57,7 +58,8 @@ private:
 
     Evaluator _evaluator;
 
-    BlockExecution _blockExecution;
+    BlockExecution _bodyExecution;
+    BlockExecution _tailExecution;
 
     Object& _object;
 

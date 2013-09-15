@@ -242,6 +242,7 @@ void Object::parse()
         parser.reset();
         ++_parsedCount;
     }
+    parseTail();
 }
 
 bool Object::parseSome(int hint)
@@ -260,7 +261,28 @@ bool Object::parseSome(int hint)
             return false;
         }
     }
-    return parsed();
+
+    if(_parsedCount == _parsers.size())
+    {
+        parseTail();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Object::parseTail()
+{
+    for(auto& parser : _parsers)
+    {
+        if(parser)
+        {
+            parser->parseTail();
+            parser.reset();
+        }
+    }
 }
 
 void Object::explore(int depth)
@@ -421,7 +443,15 @@ std::ostream& Object::display(std::ostream& out, std::string prefix) const
 
 bool Object::parsed()
 {
-    return _parsers.empty() || _parsers.back().get() == nullptr || _parsers.back()->parsed();
+    for(int i = _parsers.size() - 1; i >= 0; --i)
+    {
+        auto& parser = _parsers[i];
+        if(parser && !parser->tailParsed())
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 std::ostream& operator <<(std::ostream& out, const Object& object)

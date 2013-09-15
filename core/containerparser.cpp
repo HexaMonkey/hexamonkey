@@ -29,7 +29,7 @@ ContainerParser::ContainerParser(Object &object, const Module &module)
 
 void ContainerParser::addChild(Object *child)
 {
-    if(child != nullptr && child->size() != 0)
+    if(child != nullptr/* && child->size() != 0*/)
     {
         if(child->size() == -1)
         {

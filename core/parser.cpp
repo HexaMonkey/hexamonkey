@@ -23,6 +23,7 @@ Parser::Parser(Object& object)
     : _object(object),
       _headParsed(false),
       _parsed(false),
+      _tailParsed(false),
       _hasHead(true)
 {
 }
@@ -59,9 +60,28 @@ bool Parser::parseSome(int hint)
     return _parsed;
 }
 
+void Parser::parseTail()
+{
+    if(!parsed())
+    {
+        parse();
+    }
+
+    if(!_tailParsed)
+    {
+        doParseTail();
+        _tailParsed = true;
+    }
+}
+
 bool Parser::parsed() const
 {
     return _parsed;
+}
+
+bool Parser::tailParsed() const
+{
+    return _tailParsed;
 }
 
 bool Parser::hasHead() const
@@ -148,6 +168,10 @@ bool Parser::doParseSome(int hint)
     return true;
 }
 
+void Parser::doParseTail()
+{
+}
+
 bool Parser::lockObject()
 {
     if(_object._parsingInProgress == true)
@@ -178,6 +202,7 @@ void SimpleParser::parseHead()
         doParseHead();
         _headParsed = true;
         _parsed = true;
+        _tailParsed = true;
     }
 }
 

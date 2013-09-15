@@ -238,6 +238,7 @@ class Object
 
         void parse();
         bool parseSome(int hint);
+        void parseTail();
 
         File& _file;
         std::streampos _beginningPos;
