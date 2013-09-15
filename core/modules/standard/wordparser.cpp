@@ -42,7 +42,6 @@ void Utf8StringParser::doParseHead()
 {
     std::stringstream S;
     std::streamoff stringLength = 0;
-    S<<"\"";
     while(file().good())
     {
         char ch;
@@ -65,9 +64,7 @@ void Utf8StringParser::doParseHead()
             }
         }
     }
-    S<<"\"";
     setValue(S.str());
-    setInfo(S.str());
     setSize(8*stringLength);
 }
 

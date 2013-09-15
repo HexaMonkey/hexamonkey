@@ -23,7 +23,7 @@ class JpegFile as File
 {
 	while(1) {
 		MarkerSegment *;
-		if([].Marker == 0xffda) {
+		if([].marker == 0xffda) {
 			break;
 		} 
 	}
@@ -33,46 +33,46 @@ class JpegFile as File
 
 class MarkerSegment(symbol)
 {
-	uint(16,16) Marker;
+	uint(16,16) marker;
 
-	if((Marker < 0xffd0 || Marker > 0xffd9) && Marker != 0xff01){
-		uint(16) Length;
-		@size = 8 * Length + 16;
+	if((marker < 0xffd0 || marker > 0xffd9) && marker != 0xff01){
+		uint(16) length;
+		@size = 8 * length + 16;
 	}
 	
-	if(Marker == 0xffc4) {
+	if(marker == 0xffc4) {
 		@args.symbol = "DHT";
-	} else if(Marker == 0xffc8) {
+	} else if(marker == 0xffc8) {
 		@args.symbol = "JPG";
-	} else if (0xffc0 <= Marker && Marker <= 0xffcf){
+	} else if (0xffc0 <= marker && marker <= 0xffcf){
 		@args.symbol = "SOF";
-	} else if(Marker == 0xffc4) {
+	} else if(marker == 0xffc4) {
 		@args.symbol = "DHT";
-	} else if(Marker == 0xffcc) {
+	} else if(marker == 0xffcc) {
 		@args.symbol = "DAC";
-	} else if(0xffd0 <= Marker && Marker <= 0xffd7){
+	} else if(0xffd0 <= marker && marker <= 0xffd7){
 		@args.symbol = "RST";
-	} else if(Marker == 0xffd8) {
+	} else if(marker == 0xffd8) {
 		@args.symbol = "SOI";
-	} else if(Marker == 0xffd9) {
+	} else if(marker == 0xffd9) {
 		@args.symbol = "EOI";
-	} else if(Marker == 0xffda) {
+	} else if(marker == 0xffda) {
 		@args.symbol = "SOS";
-	} else if(Marker == 0xffdb) {
+	} else if(marker == 0xffdb) {
 		@args.symbol = "DQT";
-	} else if(Marker == 0xffdc) {
+	} else if(marker == 0xffdc) {
 		@args.symbol = "DNL";
-	} else if(Marker == 0xffdd) {
+	} else if(marker == 0xffdd) {
 		@args.symbol = "DRI";
-	} else if(Marker == 0xffde) {
+	} else if(marker == 0xffde) {
 		@args.symbol = "DHP";
-	} else if(Marker == 0xffdf) {
+	} else if(marker == 0xffdf) {
 		@args.symbol = "EXP";
-	} else if(0xffe0 <= Marker && Marker <= 0xffef){
+	} else if(0xffe0 <= marker && marker <= 0xffef){
 		@args.symbol = "APP";
-	} else if(0xfff0 <= Marker && Marker <= 0xfffd){
+	} else if(0xfff0 <= marker && marker <= 0xfffd){
 		@args.symbol = "JPG";
-	} else if(Marker == 0xfffe) {
+	} else if(marker == 0xfffe) {
 		@args.symbol = "COM";
 	}
 	
@@ -84,124 +84,205 @@ class EndOfImage as MarkerSegment("EOI");
 
 class Restart(m) as MarkerSegment("RST")
 {
-	@args.m = Marker - 0xffd0;
+	@args.m = marker - 0xffd0;
 }
 
 class FrameComponent
 {
-	uint(8)  Identifier;
-	uint(4)  HorizontalSamplingFactor;
-	uint(4)  VerticalSamplingFactor;
-	uint(8)  QuantizationTableDestinationSelector;
+	uint(8)  identifier;
+	uint(4)  horizontalSamplingFactor;
+	uint(4)  verticalSamplingFactor;
+	uint(8)  quantizationTableDestinationSelector;
 }
 
 class StartOfFrame(info) as MarkerSegment("SOF")
 {
-	uint(8)  SamplePrecision;
-	uint(16) NumberOfLines;
-	uint(16) NumberOfSamplesPerLine;
-	uint(8)  NumberOfImageComponentsInFrame;
-	FrameComponent *[NumberOfImageComponentsInFrame];
+	uint(8)  samplePrecision;
+	uint(16) numberOfLines;
+	uint(16) numberOfSamplesPerLine;
+	uint(8)  numberOfImageComponentsInFrame;
+	FrameComponent *[numberOfImageComponentsInFrame];
 
-	if(Marker == 0xffc0) {
+	if(marker == 0xffc0) {
 		@args.info = "Baseline DCT";
-	} else if(Marker == 0xffc1 || Marker == 0xffc9) {
+	} else if(marker == 0xffc1 || marker == 0xffc9) {
 		@args.info = "Extended sequential DCT";
-	} else if(Marker == 0xffc2 || Marker == 0xffca) {
+	} else if(marker == 0xffc2 || marker == 0xffca) {
 		@args.info = "Progressive DCT";
-	} else if(Marker == 0xffc3 || Marker == 0xffcb) {
+	} else if(marker == 0xffc3 || marker == 0xffcb) {
 		@args.info = "Lossless (sequential)";
-	} else if(Marker == 0xffc5 || Marker == 0xffcd) {
+	} else if(marker == 0xffc5 || marker == 0xffcd) {
 		@args.info = "Differential sequential DCT";
-	} else if(Marker == 0xffc6 || Marker == 0xffce) {
+	} else if(marker == 0xffc6 || marker == 0xffce) {
 		@args.info = "Differential progressive DCT";
-	} else if(Marker == 0xffc7 || Marker == 0xffcf) {
+	} else if(marker == 0xffc7 || marker == 0xffcf) {
 		@args.info = "Differential lossless (sequential)";
 	}
 }
 
 class ScanComponent
 {
-	uint(8) Selector;
+	uint(8) selector;
 	uint(4) DCEntropyCodingTableDestinationSelector;
 	uint(4) ACEntropyCodingTableDestinationSelector;
 }
 
 class StartOfScan as MarkerSegment("SOS")
 {
-	uint(8) NumberOfImageComponents;
-	ScanComponent * [NumberOfImageComponents];
-	uint(8) StartOfSpectralSelection;
-	uint(8) EndOfSpectralSelection;
-	uint(4) SuccessiveApproximationBitPositionHigh;
-	uint(4) SuccessiveApproximationBitPositionLow;
+	uint(8) numberOfImageComponents;
+	ScanComponent * [numberOfImageComponents];
+	uint(8) startOfSpectralSelection;
+	uint(8) endOfSpectralSelection;
+	uint(4) successiveApproximationBitPositionHigh;
+	uint(4) successiveApproximationBitPositionLow;
 }
 
 class QuantizationComponent
 {
-	uint(4) Precision;
-	@size = 520 + 512 * Precision;
-	uint(4) DestinationIdentifier;
-	if(Precision) {
-		uint(16) Elements[64];
+	uint(4) precision;
+	@size = 520 + 512 * precision;
+	uint(4) destinationIdentifier;
+	if(precision) {
+		uint(16) elements[64];
 	} else {
-		uint(8) Elements[64];
+		uint(8)  elements[64];
 	}
 }
 
 class QuantizationTable as MarkerSegment("DQT")
 {
-	QuantizationComponent Table[];
+	QuantizationComponent table[];
+}
+
+// TODO: improve with anon classes
+class HuffmanValues(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, _d, _e, _f)
+{
+	uint(8) # [@args[0x0]];
+	uint(8) # [@args[0x1]];
+	uint(8) # [@args[0x2]];
+	uint(8) # [@args[0x3]];
+	uint(8) # [@args[0x4]];
+	uint(8) # [@args[0x5]];
+	uint(8) # [@args[0x6]];
+	uint(8) # [@args[0x7]];
+	uint(8) # [@args[0x8]];
+	uint(8) # [@args[0x9]];
+	uint(8) # [@args[0xA]];
+	uint(8) # [@args[0xB]];
+	uint(8) # [@args[0xC]];
+	uint(8) # [@args[0xD]];
+	uint(8) # [@args[0xE]];
+	uint(8) # [@args[0xF]];	
 }
 
 class HuffmanComponent
 {
-	uint(4) TableClass;
-	uint(4) DestinationIdentifier;
-	uint(8) Lengths[16];
+	uint(4) tableClass;
+	uint(4) destinationIdentifier;
+	uint(8) lengths[16];
 	
 	@size = 136;
 	for(var i = 0; i < 16; ++i) {
-		@size += 8*Lengths[i];
+		@size += 8*lengths[i];
 	}	
 	
-	// TODO: make better with anon classes
-	uint(8) Values0 [Lengths[0x0]];
-	uint(8) Values1 [Lengths[0x1]];
-	uint(8) Values2 [Lengths[0x2]];
-	uint(8) Values3 [Lengths[0x3]];
-	uint(8) Values4 [Lengths[0x4]];
-	uint(8) Values5 [Lengths[0x5]];
-	uint(8) Values6 [Lengths[0x6]];
-	uint(8) Values7 [Lengths[0x7]];
-	uint(8) Values8 [Lengths[0x8]];
-	uint(8) Values9 [Lengths[0x9]];
-	uint(8) ValuesA [Lengths[0xA]];
-	uint(8) ValuesB [Lengths[0xB]];
-	uint(8) ValuesC [Lengths[0xC]];
-	uint(8) ValuesD [Lengths[0xD]];
-	uint(8) ValuesE [Lengths[0xE]];
-	uint(8) ValuesF [Lengths[0xF]];	
+	HuffmanValues (
+		lengths[0x0],
+		lengths[0x1],
+		lengths[0x2],
+		lengths[0x3],
+		lengths[0x4],
+		lengths[0x5],
+		lengths[0x6],
+		lengths[0x7],
+		lengths[0x8],
+		lengths[0x9],
+		lengths[0xa],
+		lengths[0xb],
+		lengths[0xc],
+		lengths[0xd],
+		lengths[0xe],
+		lengths[0xf]
+	) *;
 }
 
 class HuffmanTable as MarkerSegment("DHT")
 {
-	HuffmanComponent Table[];
+	HuffmanComponent table[];
 }
 
-class JFIFHeader extends MarkerSegment
+class ApplicationSegment(n, identifier) as MarkerSegment("APP")
 {
-  String(5)   Identifier;      /* 06h  "JFIF" (zero terminated) Id String */
-  Version     Version;         /* 07h  JFIF Format Revision      */
-  uint(8)     Units;           /* 09h  Units used for Resolution */
-  uint(16)    Xdensity;        /* 0Ah  Horizontal Resolution     */
-  uint(16)    Ydensity;        /* 0Ch  Vertical Resolution       */
-  uint(8)     XThumbnail;      /* 0Eh  Horizontal Pixel Count    */
-  uint(8)     YThumbnail;      /* 0Fh  Vertical Pixel Count      */
-  RGB         Thumbnail[];
+	var n = @args.n = marker - 0xffe0;
+	String identifier;
+	if(n != 12 || identifier == "Ducky")
+	{
+		@args.identifier = identifier;
+	} else {
+		@args.identifier = "Picture Info";
+	}
 }
 
-class Version extends Tuple(uint(8), 2)
+class JFIFHeader as ApplicationSegment(0, "JFIF")
+{     
+	uint(13,16) version;         
+	uint(8)     units;
+	uint(16)    horizontalDensity;
+	uint(16)    verticalDensity;
+	uint(8)     thumbnailWidth;
+	uint(8)     thumbnailHeight;
+	RGB         thumbnailData[thumbnailWidth][thumbnailHeight];
+}
+
+class JFIFExtension as ApplicationSegment(0, "JFXX")
+{     
+	int(8,16) thumbnailFormat;
+    if(thumbnailFormat == 0x10) {
+		Data thumbnailData;
+	} else if(thumbnailFormat == 0x11) {
+		uint(8) thumbnailWidth;
+		uint(8) thumbnailHeight;
+		RGB     thumbnailPalette[256];
+		uint(8) thumbnailData[thumbnailWidth][thumbnailHeight];
+	} else if(thumbnailFormat == 0x13) {
+		uint(8) thumbnailWidth;
+		uint(8) thumbnailHeight;
+		RGB     thumbnailData[thumbnailWidth][thumbnailHeight];
+	}
+}
+
+
+
+class Exif extends ApplicationSegment
 {
-	@value = %float([0])+ %float([1])/100;
+}
+
+forward ApplicationSegment(1, "Exif") to Exif
+forward ApplicationSegment(1, "EXIF") to Exif
+
+ 
+class XMP as ApplicationSegment(1, "http://ns.adobe.com/xap/1.0/")
+{
+}
+class ICC as ApplicationSegment(2, "ICC_PROFILE")
+{
+}
+
+forward ApplicationSegment(3, "META") to Exif
+forward ApplicationSegment(3, "Meta") to Exif
+
+class PictureInfo as ApplicationSegment(12, "Picture Info")
+{
+}
+
+class Ducky as ApplicationSegment(12, "Ducky")
+{
+}
+
+class PhotoshopIRB as ApplicationSegment(13, "Photoshop 3.0")
+{
+}
+
+class Adobe as ApplicationSegment(14, "Adobe")
+{
 }
