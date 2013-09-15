@@ -60,6 +60,8 @@ extern int line_number;
 ">="			{return(GE_TOKEN);}
 "=="			{return(EQ_TOKEN);}
 "!="			{return(NE_TOKEN);}
+"..."           {return(ELLIPSIS_TOKEN);}
+
 
 [;{}()\[\],&|+/\-*<>=.%#?:] {return *yytext;} 
 
