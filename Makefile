@@ -56,8 +56,8 @@ installer.msi: installer.wixobj\
  gui/release/hexamonkey.exe\
  compiler/hexacompiler.exe\
  compiler/expcompiler.exe\
- core/modules/hmc/hmcmodel.csv\
- core/modules/mkv/mkvmodel.xml\
+ models/hmcmodel.csv\
+ models/mkvmodel.xml\
  scripts/avi.hm\
  scripts/asf.hm\
  scripts/microsoft.hm\

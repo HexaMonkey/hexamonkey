@@ -96,30 +96,45 @@
 					</Component>
 					
 					<Directory Id="ScriptsFolder" Name="scripts">
+						<Component Id='AsfModule' Guid='016FDEEF-6C95-4f54-8D05-86FBF8F50849'>
+							<File Id='AsfModuleHM' Name='asf.hm' DiskId='1' Source='scripts\asf.hm' KeyPath='yes' />
+						</Component>
+						
 						<Component Id='AviModule' Guid='9172EC4D-7497-41dd-8B4D-59822EF3EF6E'>
 							<File Id='AviModuleHM' Name='avi.hm' DiskId='1' Source='scripts\avi.hm' KeyPath='yes' />
 						</Component>
 						
-						<Component Id='AsfModule' Guid='016FDEEF-6C95-4f54-8D05-86FBF8F50849'>
-							<File Id='AsfModuleHM' Name='asf.hm' DiskId='1' Source='scripts\asf.hm' KeyPath='yes' />
+						<Component Id='JpegModule' Guid='C4F27232-1B4D-4720-A217-3A5D8F3401BB'>
+							<File Id='JpegModuleHM' Name='jpeg.hm' DiskId='1' Source='scripts\jpeg.hm' KeyPath='yes' />
 						</Component>
 						
 						<Component Id='MicrosoftModule' Guid='457596CE-E1BB-4149-9E8C-C2C958BBEE3D'>
 							<File Id='MicrosoftModuleHM' Name='microsoft.hm' DiskId='1' Source='scripts\microsoft.hm' KeyPath='yes' />
 						</Component>
-
-						<Component Id='TsModule' Guid='C36661E3-255E-42ab-87DA-081ACFE8A635'>
-							<File Id='TsModuleHM' Name='ts.hm' DiskId='1' Source='scripts\ts.hm' KeyPath='yes' />
-						</Component>
 						
 						<Component Id='Mp4Module' Guid='5FDE29B5-0054-4514-A9F3-42011C41934D'>
 							<File Id='Mp4ModuleHM' Name='mp4.hm' DiskId='1' Source='scripts\mp4.hm' KeyPath='yes' />
+						</Component>
+												
+						<Component Id='PngModule' Guid='F6EE8F34-ECCB-4222-9BC1-6AEFACBC0FD0'>
+							<File Id='PngModuleHM' Name='png.hm' DiskId='1' Source='scripts\png.hm' KeyPath='yes' />
+						</Component>
+												
+						<Component Id='RgbModule' Guid='E0B123F5-0173-47b9-A62D-7924FC1F1D23'>
+							<File Id='RgbModuleHM' Name='rgb.hm' DiskId='1' Source='scripts\rgb.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='TsModule' Guid='C36661E3-255E-42ab-87DA-081ACFE8A635'>
+							<File Id='TsModuleHM' Name='ts.hm' DiskId='1' Source='scripts\ts.hm' KeyPath='yes' />
 						</Component>
 						
 						<Component Id='UuidModule' Guid='3AC410B5-9C71-4fc0-B2F3-E4585D830FD5'>
 							<File Id='UuidModuleHM' Name='uuid.hm' DiskId='1' Source='scripts\uuid.hm' KeyPath='yes' />
 						</Component>
-
+						
+						<Component Id='ZipModule' Guid='1234B093-ABDF-421c-A0D2-AC3745789779'>
+							<File Id='ZipModuleHM' Name='zip.hm' DiskId='1' Source='scripts\zip.hm' KeyPath='yes' />
+						</Component>
 					</Directory>
 			  </Directory>
 		  </Directory>
@@ -156,12 +171,16 @@
 			<ComponentRef Id='ExpCompiler'/>
 			<ComponentRef Id='HmcModel'/>
 			<ComponentRef Id='MkvModel'/>
-			<ComponentRef Id='Mp4Module'/>
-			<ComponentRef Id='AviModule'/>
 			<ComponentRef Id='AsfModule'/>
+			<ComponentRef Id='AviModule'/>
+			<ComponentRef Id='JpegModule'/>
 			<ComponentRef Id='MicrosoftModule'/>
+			<ComponentRef Id='Mp4Module'/>
+			<ComponentRef Id='PngModule'/>
+			<ComponentRef Id='RgbModule'/>
 			<ComponentRef Id='TsModule'/>
 			<ComponentRef Id='UuidModule'/>
+			<ComponentRef Id='ZipModule'/>
 			<ComponentRef Id='ProgramMenuDir' />
 		</Feature>
 		<Icon Id="hexamonkey.ico" SourceFile="gui\logo.ico" />

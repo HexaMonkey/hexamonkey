@@ -13,9 +13,11 @@ The format already supported are :
         matrovska
         avi
         asf/wmw (incomplete)
-    Images :
+    Image :
         png
         jpeg (incomplete)
+	Archive :
+        zip
 
 We strongly encourage you to implement other formats and share them : see the HMScript documentation (http://www.hexamonkey.com/hmdoc.php) for more information.
 
