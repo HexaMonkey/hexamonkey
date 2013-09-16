@@ -5,7 +5,7 @@ HexaMonkey is a freely distributed framework which goal is to provide tools to v
 
 It relies on lazy and asynchronous parsing to offer a pleasant experience to the user. It is highly exentensible thanks to its modular architecture and a powerful scripting langage : HMscript.
 
-The format already supported are :
+The formats already supported are :
 
     Video :
         mpeg4
@@ -16,8 +16,9 @@ The format already supported are :
     Image :
         png
         jpeg (incomplete)
-	Archive :
+    Archive :
         zip
+
 
 We strongly encourage you to implement other formats and share them : see the HMScript documentation (http://www.hexamonkey.com/hmdoc.php) for more information.
 
