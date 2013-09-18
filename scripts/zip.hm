@@ -1,0 +1,145 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 50 4b 03 04
+addExtension zip
+
+import lestd
+
+class ZipFile as File
+{
+	while(1) {
+		Chunk *;
+		var signature = [].signature;
+		if(signature != 0x4034b50
+		&& signature != 0x8064b50
+		&& signature != 0x2014b50
+		&& signature != 0x5054b50
+		&& signature != 0x6064b50
+		&& signature != 0x7064b50
+		&& signature != 0x6054b50) {
+			%error("Unknown signature : 0x"+%str(signature, 16));
+			break;
+		}
+	}
+}
+
+class Chunk(signature)
+{
+	uint(32,16) signature;
+	@args.signature = signature; 
+}
+
+class LocalFile as Chunk(0x4034b50)
+{
+	uint(16)    version;
+	uint(16,16) bitflag;
+	uint(16)    compressionMethod;
+	uint(16)    lastModFileTime;
+	uint(16)    lastModFileDate;
+	uint(32,16) crc32;
+	uint(32)    compressedSize;
+	uint(32)    uncompressedSize;
+	uint(16)    fileNameLength;
+	uint(16)    extraFieldLength;
+
+	String(fileNameLength)   fileName;
+	Data(8*extraFieldLength) extraField;
+	Data(8*compressedSize)   fileData;
+	
+	if(bitflag & 0x8) {
+		uint(32,16) crc32;
+		uint(32)    compressedSize;
+		uint(32)    uncompressedSize;
+	}
+	
+	@value = fileName;
+}
+
+class ArchiveExtraRecord as Chunk(0x8064b50)
+{
+	uint(32)               extraFieldLength;
+	Data(8*compressedSize) extraFieldData;
+}
+
+class CentralDirectoryHeader as Chunk(0x2014b50)
+{
+	uint(16)    versionMadeBy;
+	uint(16)    versionNeededToExtract;
+	uint(16,16) bitflag;
+	uint(16)    compressionMethod;
+	uint(16)    lastModFileTime;
+	uint(16)    lastModFileDate;
+	uint(32,16) crc32;
+	uint(32)    compressedSize;
+	uint(32)    uncompressedSize;
+	uint(16)    fileNameLength;
+	uint(16)    extraFieldLength;
+	uint(16)    fileCommentLength;
+	uint(16)    diskNumberStart;
+	uint(16)    internalFileAttributes;
+	uint(32)    externalFileAttributes;
+	uint(32)    relativeOffsetOfLocalHeader;
+	
+	String(fileNameLength)      fileName;
+	Data  (8*extraFieldLength)  extraField;
+	String(fileCommentLength)   fileComment;
+	
+	@value = fileName;
+}
+
+class DigitalSignature as Chunk(0x5054b50)
+{
+	uint(16)           sizeOfData;
+	Data(8*sizeOfData) signatureData;
+}
+
+class Zip64EndOfCentralDirectoryRecord as Chunk(0x6064b50)
+{
+	uint(64)    size;
+	@size = @pos + 8*size; 
+	
+	uint(16) versionMadeBy;
+	uint(16) versionNeededToExtract;
+	uint(32) numberOfThisDisk;
+	uint(32) numberOfTheDiskWithTheStartOfTheCentralDirectory;
+	uint(64) totalNumberOfEntriesInTheCentralDirectoryOnThisDisk;
+	uint(64) totalNumberOfEntriesInTheCentralDirectory;
+	uint(64) sizeOfTheCentralDirectory;
+	uint(64) offsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber;
+	Data     zip64ExtensibleDataSector;
+}
+
+class Zip64EndOfCentralDirectoryLocator as Chunk(0x7064b50)
+{	
+	uint(32) numberOfTheDiskWithTheStartOfTheZip64EndOfCentralDirectory;
+	uint(64) relativeOffsetOfTheZip64EndOfCentralDirectoryRecord;
+	uint(32) totalNumberOfDisks;
+}
+
+class EndOfCentralDirectoryRecord as Chunk(0x6054b50)
+{
+	uint(16) numberOfThisDisk;
+	uint(16) numberOfTheDiskWithTheStartOfTheCentralDirectory;
+	uint(16) totalNumberOfEntriesInTheCentralDirectoryOnThisDisk;
+	uint(16) totalNumberOfEntriesInTheCentralDirectory;
+	uint(32) sizeOfTheCentralDirectory;
+	uint(32) offsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber;
+	uint(16) ZIPFileCommentLength;
+	
+	String(ZIPFileCommentLength) ZIPFileComment;
+}

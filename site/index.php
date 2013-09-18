@@ -16,10 +16,15 @@
 						<li>asf/wmw (incomplete)</li>
 					</ul>
 				</li>
-				<li>Images :
+				<li>Image :
 					<ul>
 						<li>png</li>
 						<li>jpeg (incomplete)</li>
+					</ul>
+				</li>
+				<li>Archive :
+					<ul>
+						<li>zip</li>
 					</ul>
 				</li>
 			</ul>
