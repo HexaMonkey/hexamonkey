@@ -211,3 +211,10 @@ class ImageLastModificationTime as Chunk("tIME")
 	
 	@info = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
 }
+
+class VirtualPage as Chunk("vpAg")
+{
+	uint(32) width;
+	uint(32) height;
+	uint(8)  unit;
+}
