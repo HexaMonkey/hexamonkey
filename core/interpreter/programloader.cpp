@@ -42,15 +42,16 @@
 #include "osutil.h"
 #include "fileutil.h"
 
-ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs)
+ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir)
     : _module(module),
 #ifdef PLATFORM_WIN32
       _fileCompiler(getFile(compilerDirs, "hexacompiler.exe")),
-      _expCompiler (getFile(compilerDirs, "expcompiler.exe"))
+      _expCompiler (getFile(compilerDirs, "expcompiler.exe")),
 #else
       _fileCompiler(getFile(compilerDirs, "hexacompiler")),
-      _expCompiler (getFile(compilerDirs, "expcompiler"))
+      _expCompiler (getFile(compilerDirs, "expcompiler")),
 #endif
+      _userDir(userDir)
                         
 {
     UNUSED(hmcElemNames);
@@ -71,8 +72,13 @@ Program ProgramLoader::fromHM(const std::string &path) const
 
 Program ProgramLoader::fromHM(const std::string &path, int mode) const
 {
-    const std::string outputPath = path+"c";
-
+    size_t pos;
+    pos = path.find_last_of('/');
+    if (pos == std::string::npos) {
+        pos = 0;
+    }
+    const std::string outputPath = _userDir + path.substr(pos) + "c";
+ 
     std::string compiler;
     if(mode == file)
         compiler = _fileCompiler;
