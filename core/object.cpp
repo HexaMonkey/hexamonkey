@@ -119,7 +119,12 @@ Object *Object::access(int64_t index, bool forceParse)
     if(forceParse && !parsed())
     {
         int64_t pos = file().tellg();
+        size_t n = numberOfChildren();
         exploreSome(128);
+        if(n == numberOfChildren()) {
+            std::cerr<<"Parsing locked"<<std::endl;
+            return nullptr;
+        }
         file().seekg(pos, std::ios_base::beg);
         return access(index, true);
     }

@@ -349,6 +349,7 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
         {
         case EXECUTION_BLOCK:
             guessSize(line);
+            break;
 
         case DECLARATION:
             {
