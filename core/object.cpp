@@ -119,7 +119,13 @@ Object *Object::access(int64_t index, bool forceParse)
     if(forceParse && !parsed())
     {
         int64_t pos = file().tellg();
+        int n = numberOfChildren();
         exploreSome(128);
+        if(n == numberofChildren()) 
+        {
+            std::cerr<<"Parsing locked"<<std::endl;
+            return nullptr;
+        }
         file().seekg(pos, std::ios_base::beg);
         return access(index, true);
     }
@@ -140,7 +146,13 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
     if(forceParse && !parsed())
     {
         int64_t pos = file().tellg();
+        int n = numberOfChildren();
         exploreSome(128);
+        if(n == numberofChildren()) 
+        {
+            std::cerr<<"Parsing locked"<<std::endl;
+            return nullptr;
+        }
         file().seekg(pos, std::ios_base::beg);
         return lookUp(name, true);
     }
