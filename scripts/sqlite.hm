@@ -1,0 +1,181 @@
+// From: https://sqlite.org/fileformat2.html
+
+
+addMagicNumber  53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00
+addExtension sqlite
+
+import bestd
+
+class SQLiteFile as File
+{
+    BTreePage *;
+    var contains_ptrmap = [].db_header.LargestRootBTreePageNumber != 0;
+    var page_size = [].db_header.DatabasePageSize;
+    var j = page_size / 5;
+    var page_count = 2;
+    var next_freelist_trunk_page = [].db_header.FirstFreelistTrunkPageNumber;
+    while(1) {
+        if(contains_ptrmap && page_count % (j+1) == 2 ) {
+            PtrMapPage *;
+        } else if(next_freelist_trunk_page == page_count){
+            FreeListTrunkPage *;
+        } else {
+            BTreePage *;
+        }
+        page_count++;
+    }
+}
+
+
+class DataBaseHeader
+{
+    String(16) HeaderString;
+    uint(16) DatabasePageSize;
+    uint(8) FileFormatWrite;
+    uint(8) FileFormatRead;
+    uint(8) ReservedSpace;
+    uint(8) MaximumEmbeddedPayloadFraction;
+    uint(8) MinimumEmbeddedPayloadFraction;
+    uint(8) LeafPayloadFraction;
+    uint(32) FileChangeCounter;
+    uint(32) DatabaseFileSize;
+    uint(32) FirstFreelistTrunkPageNumber;
+    uint(32) FreelistPagesNumber;
+    uint(32) SchemaCookie;
+    uint(32) SchemaFormatNumber;
+    uint(32) DefaultPageCacheSize;
+    uint(32) LargestRootBTreePageNumber;
+    uint(32) DatabaseTextEncoding;
+    uint(32) UserVersion;
+    uint(32) IsIncrementalVacuumMode;
+    uint(32) ApplicationId;
+    Data(20*8) ReservedForExpansion;
+    uint(32) VersionValidForNumber;
+    uint(32) SQLiteVersionNumber;
+}
+
+class BTreePage
+{
+    if(@rank == 0) {
+        DataBaseHeader db_header;
+    }
+    @size = 8*@parent[0].db_header.DatabasePageSize;
+
+    BTreePageHeader btreePageHeader;
+
+    uint(16) cellPointers[btreePageHeader.CellsNumber];
+    if(btreePageHeader.CellsNumber > 0)
+    {
+        var unalloc_size  = 8 * cellPointers[btreePageHeader.CellsNumber - 1] - @pos;
+    } else {
+        var unalloc_size = 0;
+    }
+
+    Data(unalloc_size) unallocatedSpace;
+
+    if(btreePageHeader.PageType == 2) {
+        IndexInteriorCell cells[btreePageHeader.CellsNumber];
+    } else if(btreePageHeader.PageType == 5) {
+        TableInteriorCell cells[btreePageHeader.CellsNumber];
+    } else if(btreePageHeader.PageType == 10) {
+        IndexLeafCell cells[btreePageHeader.CellsNumber];
+    } else if(btreePageHeader.PageType == 13) {
+        TableLeafCell cells[btreePageHeader.CellsNumber];
+    }
+
+    Data data;
+}
+
+class TableLeafCell(size) {
+    @size = size;
+    Varint payload_size;
+    Varint row_id;
+    Record(payload_size) payload; // todo : take into account overflow
+    if(payload_size > @parent.@size / 8 - 35) {
+        uint(32) overflow_page_number;
+    }
+}
+
+class TableInteriorCell {
+    uint(32) left_child_page_number;
+    Varint   row_id;
+}
+
+class IndexLeafCell {
+    Varint payload_size;
+    Data(8*payload_size) payload;
+    uint(32) page_number;
+}
+
+class IndexInteriorCell {
+    uint(32) left_child_page_number;
+    Varint payload_size;
+    Data(8*payload_size) payload;
+    uint(32) page_number;
+}
+
+class Varint {
+    @size = 64;
+    @value = 0;
+    var i;
+    for(i=1;i<10;i++) {
+        uint(8) *;
+        if(i < 9) {
+            if([] > 127) {
+                @value = (@value << 7) + []-128;
+            } else {
+                @value = (@value << 7) + [];
+                break;
+            }
+        } else { // if it is the 9-th byte
+            @value = (@value << 8) + []; // to verify
+        }
+    }
+    @size = 8*i;
+}
+
+class Record(bytesize) {
+    @size = 8*@args.bytesize;
+    Varint header_size;
+    Data data;
+}
+
+class BTreePageHeader
+{
+    uint(8) PageType;
+    uint(16) FirstFreeBlockOffset;
+    uint(16) CellsNumber;
+    uint(16) FirstContentByteOffset;
+    uint(8) FragFreeBytesNumber;
+    if(PageType == 2 || PageType == 5) {
+        uint(32) RightMostPointer;
+    }
+}
+
+class FreeListTrunkPage {
+    @size = 8*@parent[0].db_header.DatabasePageSize;
+    uint(32) next_freelist_trunk_page;
+    uint(32) leaf_pages_size;
+    for(var i=0;i<leaf_pages_size;i++) {
+        uint(32) freelist_leaf_page;
+    }
+}
+
+class FreeListLeafPage {
+    @size = 8*@parent[0].db_header.DatabasePageSize;
+    Data unused_space;
+}
+
+
+class PtrMapPage {
+    @size = 8*@parent[0].db_header.DatabasePageSize;
+    while(1) {
+        PtrMapEntry *;
+    }
+}
+
+class PtrMapEntry {
+    uint(8) type;
+    uint(32) page_number;
+}
+
