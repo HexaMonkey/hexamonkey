@@ -28,6 +28,7 @@ Object::Object(File& file) :
     _size(-1),
     _contentSize(0),
     _parent(nullptr),
+    _lastChild(nullptr),
     _rank(-1),
     _name("*"),
     _pos(0),
@@ -110,18 +111,17 @@ int Object::numberOfChildren() const
 
 Object *Object::access(int64_t index, bool forceParse)
 {
-    iterator it = begin();
-    std::advance(it, index);
-    if(it != end())
+    if(index < numberOfChildren())
     {
-        return *it;
+        return _children[index];
     }
     if(forceParse && !parsed())
     {
         int64_t pos = file().tellg();
-        size_t n = numberOfChildren();
+        int n = numberOfChildren();
         exploreSome(128);
-        if(n == numberOfChildren()) {
+        if(n == numberOfChildren())
+        {
             std::cerr<<"Parsing locked"<<std::endl;
             return nullptr;
         }
@@ -145,7 +145,13 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
     if(forceParse && !parsed())
     {
         int64_t pos = file().tellg();
+        int n = numberOfChildren();
         exploreSome(128);
+        if(n == numberOfChildren())
+        {
+            std::cerr<<"Parsing locked"<<std::endl;
+            return nullptr;
+        }
         file().seekg(pos, std::ios_base::beg);
         return lookUp(name, true);
     }

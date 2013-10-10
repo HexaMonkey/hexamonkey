@@ -210,8 +210,11 @@ const Module *Module::handler(const ObjectType &type) const
 Object* Module::handle(const ObjectType& type, File& file, Object* parent, const Module& fromModule) const
 {
     Object* object = new Object(file);
-    if(parent != nullptr)
+    if(parent != nullptr) {
         object->_parent = parent;
+        object->_rank = parent->numberOfChildren();
+        parent->_lastChild = object;
+    }
     addParsers(*object, type, fromModule);
     return object;
 }

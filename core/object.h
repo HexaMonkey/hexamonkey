@@ -247,6 +247,7 @@ class Object
         std::streamoff _contentSize;
 
         Object* _parent;
+        Object* _lastChild;
         Variant _rank;
 
         Variant _type;

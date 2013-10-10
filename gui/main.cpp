@@ -92,6 +92,8 @@ int main(int argc, char *argv[])
     std::string::size_type pos = installDir.find_last_of( "\\/" );
     installDir = installDir.substr( 0, pos)+"\\";
 
+    std::string userDir = installDir+"scripts\\";
+    
     std::vector<std::string> modelsDirs = {installDir, "..\\models\\"};
     std::vector<std::string> scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
     std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
@@ -122,7 +124,7 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
     moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
 
-    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs);
+    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
     moduleLoader.addDirectories(scriptsDirs, programLoader);
 

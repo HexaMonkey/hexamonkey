@@ -64,6 +64,7 @@ void ContainerParser::addChild(Object *child)
             _object._children.push_back(child);
             _object._ownedChildren.push_back(std::unique_ptr<Object>(child));
             child->_rank = _object._children.size() - 1;
+            _object._lastChild = nullptr;
         }
         else
         {
@@ -102,8 +103,8 @@ Object *ContainerParser::addVariable(const ObjectType &type)
 
 Object *ContainerParser::addVariable(const ObjectType &type, const std::string &name)
 {
-   // std::cout<<"Add variable"<<std::endl;
     _object.seekObjectEnd();
+
     Object* child = getVariable(type);
     addChild(child, name);
     return child;

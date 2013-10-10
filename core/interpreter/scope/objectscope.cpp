@@ -78,6 +78,9 @@ Variable ObjectScope::doGet(const Variant &key) const
                 case A_POS:
                     return Variable::ref(_object._pos, _modifiable);
 
+                case A_RANK:
+                    return Variable::ref(_object._rank, false);
+
                 case A_REM:
                     return Variable::copy(_object._size.toInteger() - _object._pos.toInteger());
 
@@ -155,7 +158,12 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
     }
     else if(key.canConvertTo(Variant::integer))
     {
-        Object* elem = _object.access(key.toInteger(), true);
+        int index = key.toInteger();
+        if(index == _object.numberOfChildren() && _object._lastChild != nullptr)
+        {
+            return Ptr::move(new ObjectScope(*_object._lastChild, _modifiable));
+        }
+        Object* elem = _object.access(index, true);
         if(elem != nullptr)
         {
             return Ptr::move(new ObjectScope(*elem, _modifiable));

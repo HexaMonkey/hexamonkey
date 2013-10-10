@@ -546,15 +546,15 @@ class TrackFragmentBox as Box("traf")
 class TrackFragmentHeaderBox extends FullBox as Box("tfhd")
 {
 	uint(32) track_ID;
-	if(version & 0x000001)
+	if(flags & 0x000001)
 		uint(64) base_data_offset;
-	if(version & 0x000002)
+	if(flags & 0x000002)
 		uint(32) sample_description_index;
-	if(version & 0x000008)
+	if(flags & 0x000008)
 		duration(32) default_sample_duration;
-	if(version & 0x000010)
+	if(flags & 0x000010)
 		uint(32) default_sample_size;
-	if(version & 0x000020)
+	if(flags & 0x000020)
 		SampleFlags default_sample_flags; 
 }
 
@@ -573,9 +573,9 @@ class TrackRunEntry(flags) extends Data(32*%popCount(flags))
 class TrackRunBox extends FullBox as Box("trun")
 {
 	uint(32) sample_count;
-	if(version & 0x000001)
+	if(flags & 0x000001)
 		int(32) data_offset;
-	if(version & 0x000004)
+	if(flags & 0x000004)
 		SampleFlags first_sample_flags;
 		
 	TrackRunEntry(version & 0x000f00) entries[sample_count];

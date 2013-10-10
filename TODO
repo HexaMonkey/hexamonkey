@@ -1,0 +1,24 @@
+************
+* Formats
+************
+= FAT32/FLV/SQLLITE/GIF
+
+************
+* Short term
+************
+= reload .hm without restarting hexamonkey
+= nicer display for flags
+= CLI mode
+= unit testing
+= allow to mix big-endian and little endian integers in the same file
+
+*************
+* Long Term
+*************
+= handling formats with "offsets" (elf)
+= allow to determine endianess at runtime (elf)
+= wireshark dissectors
+= reconstruction TS
+= error handling
+= editor
+= decompress zip data
