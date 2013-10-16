@@ -31,8 +31,11 @@ $(MAKEFILE): ./gui/gui.pro compiler $(BUILD_DIR_EXISTS)
 # also I have to run it from the $(BUILD_DIR) directory
 	cd $(BUILD_DIR); $(QMAKE) ../gui/gui.pro -o - > Makefile
 
-$(PROGRAM): $(MAKEFILE)
+$(PROGRAM): $(MAKEFILE) logo.svg
 	make -C $(BUILD_DIR) $(JOBS)
+
+logo.svg:
+	cp media/logo.svg $(BUILD_DIR)
 
 compiler:
 	make -C compiler
