@@ -5,7 +5,7 @@ all: hexacompiler expcompiler
 
 hexacompiler: lex.yy.o compiler.tab.o
 	gcc -o hexacompiler $^ $(CFLAGS)
-	
+
 compiler.tab.h: compiler.y ast.h model.h write.h
 	bison -d compiler.y
 
