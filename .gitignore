@@ -11,6 +11,7 @@
 
 #core of the program
 !core
+!core/core.pro
 !core/*.cpp
 !core/*.h
 !core/formatdetector
