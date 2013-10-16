@@ -77,5 +77,6 @@ distclean:
 	rm -rf $(INSTALL_DIR)
 	
 clean:
+	make -C compiler clean
 	rm -rf $(BUILD_DIR)
 	
