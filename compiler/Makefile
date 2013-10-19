@@ -6,10 +6,10 @@ all: hexacompiler expcompiler
 hexacompiler: lex.yy.o compiler.tab.o
 	gcc -o hexacompiler $^ $(CFLAGS)
 	
-compiler.tab.h: compiler.y compiler.h ast.h model.h write.h
+compiler.tab.h: compiler.y ast.h model.h write.h
 	bison -d compiler.y
 
-compiler.tab.c: compiler.y compiler.h ast.h model.h write.h
+compiler.tab.c: compiler.y ast.h model.h write.h
 	bison -d compiler.y
 
 lex.yy.c: compiler.flex compiler.tab.h
@@ -18,9 +18,9 @@ lex.yy.c: compiler.flex compiler.tab.h
 expcompiler: lexExp.yy.o compilerExp.tab.o
 	gcc -o expcompiler $^ $(CFLAGS)
 
-compilerExp.tab.h: compilerExp.y compiler.h ast.h model.h write.h
+compilerExp.tab.h: compilerExp.y ast.h model.h write.h
 	bison --warnings=none --output=compilerExp.tab.c --defines=compilerExp.tab.h compilerExp.y 2>/dev/null
-compilerExp.tab.c: compilerExp.y compiler.h ast.h model.h write.h
+compilerExp.tab.c: compilerExp.y ast.h model.h write.h
 	bison --warnings=none --output=compilerExp.tab.c --defines=compilerExp.tab.h compilerExp.y 2>/dev/null
 
 lexExp.yy.c: compilerExp.flex compilerExp.tab.h
