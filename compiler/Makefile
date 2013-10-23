@@ -1,49 +1,43 @@
-CC=gcc $(CFLAGS)
+
 INCPATH=-I../
 
-.PHONY: all	
+.PHONY: all
 all: hexacompiler expcompiler
 
-hexacompiler: lex.yy.o compiler.tab.o
-	gcc -o hexacompiler $^ $(CFLAGS)
 
-compiler.tab.h: compiler.y ast.h model.h write.h
-	bison -d compiler.y
+hexacompiler: compiler.yy.o compiler.tab.o
+	$(CC) $(CFLAGS) -o $@ $^
 
-compiler.tab.c: compiler.y ast.h model.h write.h
-	bison -d compiler.y
+expcompiler: compilerExp.yy.o compilerExp.tab.o
+	$(CC) $(CFLAGS) -o $@ $^
 
-lex.yy.c: compiler.flex compiler.tab.h
-	flex compiler.flex
-	
-expcompiler: lexExp.yy.o compilerExp.tab.o
-	gcc -o expcompiler $^ $(CFLAGS)
 
-compilerExp.tab.h: compilerExp.y ast.h model.h write.h
-	bison --warnings=none --output=compilerExp.tab.c --defines=compilerExp.tab.h compilerExp.y 2>/dev/null
-compilerExp.tab.c: compilerExp.y ast.h model.h write.h
-	bison --warnings=none --output=compilerExp.tab.c --defines=compilerExp.tab.h compilerExp.y 2>/dev/null
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $^
 
-lexExp.yy.c: compilerExp.flex compilerExp.tab.h
-	flex -o lexExp.yy.c compilerExp.flex
+%.yy.c: %.flex %.tab.h
+	flex -o $@ $<
+
+%.tab.c %.tab.h: %.y model.h
+	bison --warnings=none -d $<
+
 
 compilerExp.y: compiler.y
 	sed s/main:file/main:right_value/g compiler.y > compilerExp.y
-	
+
 compilerExp.flex: compiler.flex
 	sed s/compiler.tab.h/compilerExp.tab.h/g compiler.flex > compilerExp.flex
-	
+
+
 model.h: model ../models/hmcmodel.csv ../models/hmcoperators.csv
 	./model
-	
-model: model.o strutil.o csvreader.o
-	g++ $(INCPATH) -o $@ $^
 
-strutil.o: ../core/util/strutil.cpp ../core/util/strutil.h
-	g++ $(INCPATH) -o $@ -c ../core/util/strutil.cpp
+model: model.o ../core/util/strutil.o ../core/util/csvreader.o
+	$(CXX) $(CXXFLAGS) $(INCPATH) -o $@ $^
 
-csvreader.o : ../core/util/csvreader.cpp ../core/util/csvreader.h
-	g++ $(INCPATH) -o $@ -c ../core/util/csvreader.cpp
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCPATH) -o $@ -c $<
+
 
 .PHONY: clean
 clean:
