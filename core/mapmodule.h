@@ -22,7 +22,7 @@
 #include <string>
 #include <functional>
 
-#include "module.h"
+#include "core/module.h"
 
 #define parserLambda (const ObjectType &type, Object &object, const Module &module) ->Parser*
 #define fixedSizeLambda (const ObjectType &type, const Module &module) ->int64_t

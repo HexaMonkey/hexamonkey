@@ -15,8 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "syncbyteformatdetector.h"
 #include <algorithm>
+
+#include "core/formatdetector/syncbyteformatdetector.h"
 
 SyncbyteFormatDetector::SyncbyteFormatDetector(int numberOfPeriods) : numberOfPeriods(numberOfPeriods)
 {

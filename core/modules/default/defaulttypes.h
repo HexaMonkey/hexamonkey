@@ -18,8 +18,8 @@
 #ifndef DEFAULTTYPES_H
 #define DEFAULTTYPES_H
 
-#include "objecttypetemplate.h"
-#include "objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 namespace defaultTypes
 {

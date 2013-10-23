@@ -18,7 +18,7 @@
 #ifndef TUPLEPARSER_H
 #define TUPLEPARSER_H
 
-#include "containerparser.h"
+#include "core/containerparser.h"
 
 class TupleParser : public ContainerParser
 {

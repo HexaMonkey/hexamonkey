@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "arrayparser.h"
+#include "core/modules/default/arrayparser.h"
 
 ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size)
     :ContainerParser(object, module), elementType(elementType), size(size)

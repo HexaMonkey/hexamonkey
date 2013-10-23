@@ -20,9 +20,9 @@
 
 #include <memory>
 
-#include "mapmodule.h"
-#include "program.h"
-#include "evaluator.h"
+#include "core/mapmodule.h"
+#include "core/interpreter/program.h"
+#include "core/interpreter/evaluator.h"
 
 /**
  * @brief Module implementation created from an HMScript file

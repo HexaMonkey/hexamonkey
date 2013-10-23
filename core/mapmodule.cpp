@@ -15,9 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "mapmodule.h"
-
-#include "objecttypetemplate.h"
+#include "core/mapmodule.h"
+#include "core/objecttypetemplate.h"
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;

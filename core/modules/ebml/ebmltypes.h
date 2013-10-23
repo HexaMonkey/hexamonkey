@@ -18,8 +18,8 @@
 #ifndef EBMLTYPES_H
 #define EBMLTYPES_H
 
-#include "objecttypetemplate.h"
-#include "objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 
 namespace ebmlTypes

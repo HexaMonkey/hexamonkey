@@ -18,7 +18,7 @@
 #ifndef HMCMODULE_H
 #define HMCMODULE_H
 
-#include "mapmodule.h"
+#include "core/mapmodule.h"
 
 /*!
  * @brief The HmcModule class

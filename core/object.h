@@ -24,11 +24,11 @@
 #include <map>
 #include <memory>
 
-#include "file.h"
-#include "strutil.h"
-#include "variant.h"
-#include "objecttype.h"
-#include "showcase.h"
+#include "core/file.h"
+#include "core/objecttype.h"
+#include "core/showcase.h"
+#include "core/variant.h"
+#include "core/util/strutil.h"
 
 class Parser;
 

@@ -18,7 +18,7 @@
 #ifndef ARRAYPARSER_H
 #define ARRAYPARSER_H
 
-#include "containerparser.h"
+#include "core/containerparser.h"
 
 /*!
  * @brief The ArrayParser class

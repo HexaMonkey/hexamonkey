@@ -18,13 +18,12 @@
 #ifndef EBMLOBJECT_H
 #define EBMLOBJECT_H
 
-#include "object.h"
-#include "module.h"
-#include "variablepath.h"
-
-
 #include <memory>
 #include <set>
+
+#include "core/object.h"
+#include "core/module.h"
+#include "core/interpreter/variablepath.h"
 
 /**
  * @brief Node of the abstract syntaxing tree of an HmScript file

@@ -15,9 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "functionscope.h"
-
-#include "variant.h"
+#include "core/variant.h"
+#include "core/interpreter/scope/functionscope.h"
 
 void FunctionScope::addParameter(const std::string &name, Variable variable)
 {

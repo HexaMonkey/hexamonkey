@@ -18,8 +18,8 @@
 #ifndef DATASCOPE_H
 #define DATASCOPE_H
 
-#include "scope.h"
-#include "typescope.h"
+#include "core/interpreter/scope/scope.h"
+#include "core/interpreter/scope/typescope.h"
 
 class Object;
 

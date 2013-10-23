@@ -15,13 +15,13 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "objectscope.h"
 
 #include <map>
 #include <string>
 
-#include "object.h"
-#include "objecttypetemplate.h"
+#include "core/object.h"
+#include "core/objecttypetemplate.h"
+#include "core/interpreter/scope/objectscope.h"
 
 #define A_SIZE 0
 #define A_PARENT 1

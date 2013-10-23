@@ -20,13 +20,12 @@
 
 #include <set>
 #include <memory>
-
 #include <stdint.h>
 
-#include "file.h"
-#include "objecttype.h"
-#include "module.h"
-#include "program.h"
+#include "core/file.h"
+#include "core/objecttype.h"
+#include "core/module.h"
+#include "core/interpreter/program.h"
 
 class HmcModule;
 

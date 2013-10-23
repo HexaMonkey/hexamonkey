@@ -15,9 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "containerparser.h"
-
-#include "module.h"
+#include "core/containerparser.h"
+#include "core/module.h"
 
 ContainerParser::ContainerParser(Object &object, const Module &module)
     : Parser(object),

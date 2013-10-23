@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "intparser.h"
+#include "core/modules/standard/intparser.h"
 
 Int8Parser::Int8Parser(Object &object, int base) : SimpleParser(object), base(base)
 {

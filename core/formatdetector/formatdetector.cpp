@@ -15,13 +15,13 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "formatdetector.h"
-
-#include "strutil.h"
 #include <iterator>
 #include <sstream>
 #include <algorithm>
 #include <utility>
+
+#include "core/formatdetector/formatdetector.h"
+#include "core/util/strutil.h"
 
 std::string FormatDetector::getFormat(File& file) const
 {

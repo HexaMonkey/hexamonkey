@@ -17,8 +17,8 @@
 
 #include <algorithm>
 
-#include "object.h"
-#include "parser.h"
+#include "core/object.h"
+#include "core/parser.h"
 
 #define BUFFER_SIZE 1048576
 

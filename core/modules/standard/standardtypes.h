@@ -18,8 +18,8 @@
 #ifndef STANDARDTYPES_H
 #define STANDARDTYPES_H
 
-#include "objecttypetemplate.h"
-#include "objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 namespace standardTypes
 {

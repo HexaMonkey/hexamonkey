@@ -15,12 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "typescope.h"
-
-
-#include "objecttype.h"
-#include "objecttypetemplate.h"
-
+#include "core/objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/interpreter/scope/typescope.h"
 
 TypeScope::TypeScope(ObjectType &type, bool modifiable)
     : _type(&type),

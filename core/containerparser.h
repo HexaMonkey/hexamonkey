@@ -20,7 +20,7 @@
 
 #include <functional>
 
-#include "parser.h"
+#include "core/parser.h"
 
 class Module;
 

@@ -24,10 +24,10 @@
 #include <algorithm>
 #include <memory>
 
-#include "objecttype.h"
-#include "objecttypetemplate.h"
-#include "standardformatdetector.h"
-#include "variable.h"
+#include "core/objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/formatdetector/standardformatdetector.h"
+#include "core/interpreter/variable.h"
 
 class Object;
 class Parser;

@@ -1,10 +1,10 @@
 #include "evaluator.h"
 
-#include "program.h"
-#include "model.h"
-#include "unused.h"
-#include "functionscope.h"
-#include "evaluator.h"
+#include "compiler/model.h"
+#include "core/interpreter/evaluator.h"
+#include "core/interpreter/program.h"
+#include "core/interpreter/scope/functionscope.h"
+#include "core/util/unused.h"
 
 const Variant emptyString("");
 

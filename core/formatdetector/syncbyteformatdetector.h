@@ -18,7 +18,7 @@
 #ifndef SYNCBYTEFORMATDETECTOR_H
 #define SYNCBYTEFORMATDETECTOR_H
 
-#include "formatdetector.h"
+#include "core/formatdetector/formatdetector.h"
 
 /*!
  * @brief \link FormatDetector Format detection\endlink implementation that

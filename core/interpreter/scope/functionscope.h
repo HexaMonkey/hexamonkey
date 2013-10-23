@@ -18,11 +18,11 @@
 #ifndef FUNCTIONSCOPE_H
 #define FUNCTIONSCOPE_H
 
-#include "scope.h"
-
 #include <string>
 #include <vector>
 #include <unordered_map>
+
+#include "core/interpreter/scope/scope.h"
 
 /**
  * @brief Scope implementation that represents gives access to a

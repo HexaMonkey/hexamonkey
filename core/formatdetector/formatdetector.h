@@ -21,7 +21,8 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "file.h"
+
+#include "core/file.h"
 
 /*!
  * @brief Class used to identify the format of a \link File file\endlink.

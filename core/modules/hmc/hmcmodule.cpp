@@ -15,16 +15,14 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "hmcmodule.h"
-
 #include <fstream>
 
-#include "csvreader.h"
-#include "strutil.h"
-#include "fileutil.h"
-
-#include "objecttypetemplate.h"
-#include "ebmltypes.h"
+#include "core/objecttypetemplate.h"
+#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "core/util/csvreader.h"
+#include "core/util/strutil.h"
+#include "core/util/fileutil.h"
 
 using namespace ebmlTypes;
 

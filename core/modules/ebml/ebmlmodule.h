@@ -18,7 +18,7 @@
 #ifndef EBMLMODULE_H
 #define EBMLMODULE_H
 
-#include "mapmodule.h"
+#include "core/mapmodule.h"
 
 class EbmlModule : public MapModule
 {

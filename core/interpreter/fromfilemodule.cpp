@@ -15,25 +15,17 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "fromfilemodule.h"
-#include "model.h"
-#include "typescope.h"
-#include "localscope.h"
-#include "fromfileparser.h"
-
-#ifdef USE_QT
-    #include <QFileInfo>
-    #include <QDateTime>
-#else
-    #include "fileutil.h"
-#endif
-
-#include "unused.h"
-
-#include "programloader.h"
-#include "variablepath.h"
-#include "variable.h"
-#include "blockexecution.h"
+#include "compiler/model.h"
+#include "core/interpreter/fromfilemodule.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/variablepath.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/fromfileparser.h"
+#include "core/interpreter/blockexecution.h"
+#include "core/interpreter/scope/typescope.h"
+#include "core/interpreter/scope/localscope.h"
+#include "core/util/fileutil.h"
+#include "core/util/unused.h"
 
 const VariablePath sizeDescriptor = {"@size"};
 const std::vector<VariablePath> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};

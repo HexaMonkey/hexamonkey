@@ -20,7 +20,8 @@
 
 #include <vector>
 #include <ostream>
-#include "variant.h"
+
+#include "core/variant.h"
 
 /**
  * @brief Representation for a path giving access to a variable

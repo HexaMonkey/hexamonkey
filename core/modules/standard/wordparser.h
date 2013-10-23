@@ -18,7 +18,7 @@
 #ifndef WORDPARSER_H
 #define WORDPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class WordParser : public SimpleParser
 {

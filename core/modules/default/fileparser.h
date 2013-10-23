@@ -1,7 +1,7 @@
 #ifndef FILEPARSER_H
 #define FILEPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 /*!
  * @brief The FileParser class

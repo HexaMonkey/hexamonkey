@@ -15,18 +15,16 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "moduleloader.h"
-#include "hmcmodule.h"
-#include "fromfilemodule.h"
-#include "defaultmodule.h"
-
-#include "strutil.h"
-#include "fileutil.h"
-
-#include "programloader.h"
-#include "objecttypetemplate.h"
-
 #include <memory>
+
+#include "core/moduleloader.h"
+#include "core/objecttypetemplate.h"
+#include "core/interpreter/fromfilemodule.h"
+#include "core/interpreter/programloader.h"
+#include "core/modules/default/defaultmodule.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "core/util/fileutil.h"
+#include "core/util/strutil.h"
 
 #define loaderLambda () -> Module*
 

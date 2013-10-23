@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "objecttypetemplate.h"
-#include "objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
     :_name(name), _parametersNames(parameterNames)

@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "variant.h"
+#include "core/variant.h"
 
 class ObjectTypeTemplate;
 

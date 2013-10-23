@@ -22,8 +22,8 @@
 #include <vector>
 #include <map>
 
-#include "variant.h"
-#include "objecttype.h"
+#include "core/objecttype.h"
+#include "core/variant.h"
 
 /**
  * @brief Template for a \link ObjectType type\endlink

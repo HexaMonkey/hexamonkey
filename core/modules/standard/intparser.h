@@ -18,7 +18,7 @@
 #ifndef INTPARSER_H
 #define INTPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class Int8Parser : public SimpleParser
 {

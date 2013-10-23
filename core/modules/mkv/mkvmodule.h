@@ -18,7 +18,7 @@
 #ifndef MKVMODULE_H
 #define MKVMODULE_H
 
-#include "mapmodule.h"
+#include "core/mapmodule.h"
 
 /*!
  * @brief The MkvModule class

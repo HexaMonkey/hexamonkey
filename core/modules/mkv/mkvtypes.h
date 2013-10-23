@@ -1,8 +1,8 @@
 #ifndef MKVTYPES_H
 #define MKVTYPES_H
 
-#include "objecttypetemplate.h"
-#include "objecttype.h"
+#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 
 namespace mkvTypes

@@ -20,15 +20,13 @@
 
 #include <memory>
 
-#include "containerparser.h"
-
-#include "program.h"
-
-#include "objectscope.h"
-#include "localscope.h"
-#include "compositescope.h"
-#include "blockexecution.h"
-#include "evaluator.h"
+#include "core/containerparser.h"
+#include "core/interpreter/program.h"
+#include "core/interpreter/evaluator.h"
+#include "core/interpreter/blockexecution.h"
+#include "core/interpreter/scope/objectscope.h"
+#include "core/interpreter/scope/localscope.h"
+#include "core/interpreter/scope/compositescope.h"
 
 /**
  * @brief Parser implementation using an HMScript class definition

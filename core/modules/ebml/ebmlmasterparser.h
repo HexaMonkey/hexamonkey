@@ -18,7 +18,7 @@
 #ifndef EBMLMASTERPARSER_H
 #define EBMLMASTERPARSER_H
 
-#include "containerparser.h"
+#include "core/containerparser.h"
 
 class EbmlMasterParser : public ContainerParser
 {

@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "scope.h"
+#include "core/interpreter/scope/scope.h"
 
 /**
  * @brief Scope implementation that combines other scopes.

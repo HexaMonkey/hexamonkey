@@ -18,7 +18,7 @@
 #ifndef TYPESCOPE_H
 #define TYPESCOPE_H
 
-#include "scope.h"
+#include "core/interpreter/scope/scope.h"
 
 class ObjectType;
 /**

@@ -1,12 +1,13 @@
-#include "blockexecution.h"
-#include "programloader.h"
-#include "model.h"
-#include "scope.h"
-#include "containerparser.h"
-#include "unused.h"
-#include "evaluator.h"
 
 #include <limits>
+
+#include "compiler/model.h"
+#include "core/containerparser.h"
+#include "core/interpreter/blockexecution.h"
+#include "core/interpreter/evaluator.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/scope/scope.h"
+#include "core/util/unused.h"
 
 BlockExecution::BlockExecution(Program block,
                                const Evaluator &evaluator,

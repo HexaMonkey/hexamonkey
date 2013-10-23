@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "ebmlcontainerparser.h"
-#include "ebmltypes.h"
+#include "core/modules/ebml/ebmlcontainerparser.h"
+#include "core/modules/ebml/ebmltypes.h"
 
 EbmlContainerParser::EbmlContainerParser(Object &object, const Module &module)
     : ContainerParser(object, module)

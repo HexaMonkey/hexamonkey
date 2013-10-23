@@ -15,10 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "ebmlmasterparser.h"
-
-#include "module.h"
-#include "objecttypetemplate.h"
+#include "core/module.h"
+#include "core/objecttypetemplate.h"
+#include "core/modules/ebml/ebmlmasterparser.h"
 
 EbmlMasterParser::EbmlMasterParser(Object& object, const Module& module)
     :ContainerParser(object, module)

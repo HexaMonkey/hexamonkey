@@ -15,13 +15,13 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "filter.h"
-#include "object.h"
-#include "objecttypetemplate.h"
-#include "objectscope.h"
-#include "programloader.h"
-#include "variable.h"
-#include "parser.h"
+#include "core/object.h"
+#include "core/parser.h"
+#include "core/objecttypetemplate.h"
+#include "core/interpreter/filter.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/scope/objectscope.h"
 
 Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {

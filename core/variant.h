@@ -18,11 +18,10 @@
 #ifndef VARIANT_H
 #define VARIANT_H
 
-
 #include <exception>
 #include <iostream>
-
 #include <string>
+
 class ObjectType;
 
 /*!

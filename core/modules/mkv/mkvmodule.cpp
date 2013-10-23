@@ -15,20 +15,17 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "mkvmodule.h"
-
 #include <fstream>
 #include <streambuf>
 #include <map>
 
-#include "rapidxml.hpp"
-#include "bitutil.h"
-#include "strutil.h"
-#include "fileutil.h"
-
-#include "standardtypes.h"
-#include "ebmltypes.h"
-
+#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/mkv/mkvmodule.h"
+#include "core/modules/standard/standardtypes.h"
+#include "core/util/rapidxml.hpp"
+#include "core/util/bitutil.h"
+#include "core/util/strutil.h"
+#include "core/util/fileutil.h"
 
 using namespace rapidxml;
 using namespace ebmlTypes;

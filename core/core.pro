@@ -7,18 +7,7 @@ CONFIG -= qt
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
-INCLUDEPATH += \
-  . \
-  modules/default \
-  modules/standard \
-  modules/ebml \
-  modules/mkv \
-  modules/hmc \
-  formatdetector \
-  util \
-  interpreter \
-  interpreter/scope \
-  ../compiler \
+INCLUDEPATH = ..
 
 SOURCES += \
   variant.cpp \

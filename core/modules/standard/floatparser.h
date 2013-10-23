@@ -18,7 +18,7 @@
 #ifndef FLOATPARSER_H
 #define FLOATPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class SingleFloatParser : public SimpleParser
 {

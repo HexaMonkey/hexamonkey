@@ -15,7 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "programloader.h"
 #include <sstream>
 #ifdef USE_QT
 #include <QProcess>
@@ -27,20 +26,19 @@
 #include <cstdio>
 #endif
 
-#include "defaulttypes.h"
-#include "model.h"
-
-#include "unused.h"
-#include "hmcmodule.h"
-#include "variable.h"
-#include "variablepath.h"
-#include "scope.h"
-#include "functionscope.h"
-#include "objecttypetemplate.h"
-#include "parser.h"
-
-#include "osutil.h"
-#include "fileutil.h"
+#include "compiler/model.h"
+#include "core/modules/default/defaulttypes.h"
+#include "core/objecttypetemplate.h"
+#include "core/parser.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/variablepath.h"
+#include "core/interpreter/scope/scope.h"
+#include "core/interpreter/scope/functionscope.h"
+#include "core/util/unused.h"
+#include "core/util/osutil.h"
+#include "core/util/fileutil.h"
 
 ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir)
     : _module(module),

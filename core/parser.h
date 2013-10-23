@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include "object.h"
+#include "core/object.h"
 
 /**
  * @brief Parse a bit of \link File file\endlink into an \link Object object\endlink

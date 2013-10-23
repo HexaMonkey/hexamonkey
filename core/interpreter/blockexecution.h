@@ -6,10 +6,9 @@ class ContainerParser;
 class Scope;
 class Evaluator;
 
-#include "program.h"
-
-
 #include <memory>
+
+#include "core/interpreter/program.h"
 
 /**
  * @brief Controls the execution of a program block

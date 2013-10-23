@@ -18,10 +18,10 @@
 #ifndef STANDARDFORMATDETECTOR_H
 #define STANDARDFORMATDETECTOR_H
 
-#include "compositeformatdetector.h"
-#include "magicformatdetector.h"
-#include "syncbyteformatdetector.h"
-#include "extensionformatdetector.h"
+#include "core/formatdetector/compositeformatdetector.h"
+#include "core/formatdetector/magicformatdetector.h"
+#include "core/formatdetector/syncbyteformatdetector.h"
+#include "core/formatdetector/extensionformatdetector.h"
 
 /*!
  * @brief Practical \link FormatDetector format detection\endlink implementation used by

@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "variable.h"
-#include "variant.h"
+#include "core/variant.h"
+#include "core/interpreter/variable.h"
 
 const Variant undefinedVariant;
 const Variant nullVariant;

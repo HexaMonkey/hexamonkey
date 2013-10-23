@@ -15,9 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "tupleparser.h"
-
-#include "module.h"
+#include "core/module.h"
+#include "core/modules/default/tupleparser.h"
 
 TupleParser::TupleParser(Object &object, const Module &module, const ObjectType &elementType, int64_t count)
     :  ContainerParser(object, module), elementType(elementType), count(count)

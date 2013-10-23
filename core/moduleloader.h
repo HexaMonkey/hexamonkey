@@ -23,9 +23,8 @@
 #include <functional>
 #include <memory>
 
-#include "standardformatdetector.h"
-
-#include "formatdetector.h"
+#include "core/formatdetector/standardformatdetector.h"
+#include "core/formatdetector/formatdetector.h"
 
 class Module;
 class ProgramLoader;

@@ -18,7 +18,7 @@
 #ifndef STANDARDMODULE_H
 #define STANDARDMODULE_H
 
-#include "mapmodule.h"
+#include "core/mapmodule.h"
 
 class StandardModule : public MapModule
 {

@@ -21,7 +21,7 @@
 #include <map>
 #include <string>
 
-#include "scope.h"
+#include "core/interpreter/scope/scope.h"
 
 class Variable;
 

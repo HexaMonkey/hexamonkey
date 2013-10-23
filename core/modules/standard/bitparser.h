@@ -18,7 +18,7 @@
 #ifndef BITPARSER_H
 #define BITPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 /*!
  * @brief The BitParser class

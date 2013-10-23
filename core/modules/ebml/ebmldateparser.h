@@ -18,7 +18,7 @@
 #ifndef EBMLDATEPARSER_H
 #define EBMLDATEPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class EbmlDateParser : public SimpleParser
 {

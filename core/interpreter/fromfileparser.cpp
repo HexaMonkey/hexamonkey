@@ -15,13 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "fromfileparser.h"
-
-#include "model.h"
-#include "programloader.h"
-#include "variable.h"
-#include "objecttypetemplate.h"
-#include "unused.h"
+#include "compiler/model.h"
+#include "core/objecttypetemplate.h"
+#include "core/interpreter/fromfileparser.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/variable.h"
+#include "core/util/unused.h"
 
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd)
     : ContainerParser(object, module),

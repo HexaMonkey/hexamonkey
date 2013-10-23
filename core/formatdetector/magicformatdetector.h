@@ -18,7 +18,7 @@
 #ifndef MAGICFORMATDETECTOR_H
 #define MAGICFORMATDETECTOR_H
 
-#include "formatdetector.h"
+#include "core/formatdetector/formatdetector.h"
 
 /*!
  * @brief \link FormatDetector Format detection\endlink implementation that

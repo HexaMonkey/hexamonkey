@@ -15,13 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "magicformatdetector.h"
 #include <sstream>
 #include <algorithm>
 #include <iterator>
 
-#include "strutil.h"
-
+#include "core/formatdetector/magicformatdetector.h"
+#include "core/util/strutil.h"
 
 void MagicFormatDetector::addMagicNumber(const std::string& format, const std::string &magicNumber)
 {

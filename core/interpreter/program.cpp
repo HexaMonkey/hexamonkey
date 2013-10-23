@@ -15,14 +15,14 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "program.h"
-#include "model.h"
-#include "variable.h"
-#include "variant.h"
-#include "scope.h"
-#include "functionscope.h"
-#include "parser.h"
-#include "unused.h"
+#include "compiler/model.h"
+#include "core/variant.h"
+#include "core/parser.h"
+#include "core/interpreter/program.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/scope/scope.h"
+#include "core/interpreter/scope/functionscope.h"
+#include "core/util/unused.h"
 
 Program::Program()
     : _object(nullptr)

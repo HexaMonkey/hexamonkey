@@ -1,7 +1,7 @@
 #ifndef DATAPARSER_H
 #define DATAPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class DataParser : public SimpleParser
 {

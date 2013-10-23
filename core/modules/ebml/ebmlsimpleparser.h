@@ -18,7 +18,7 @@
 #ifndef EBMLSIMPLEPARSER_H
 #define EBMLSIMPLEPARSER_H
 
-#include "containerparser.h"
+#include "core/containerparser.h"
 
 class EbmlIntegerParser : public ContainerParser
 {

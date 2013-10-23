@@ -15,20 +15,16 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "defaultmodule.h"
-
-#include "defaulttypes.h"
-
-#include "fileparser.h"
-#include "arrayparser.h"
-#include "tupleparser.h"
-#include "dataparser.h"
-
-#include "variable.h"
-#include "scope.h"
-
-#include "strutil.h"
-#include "bitutil.h"
+#include "core/modules/default/defaultmodule.h"
+#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/fileparser.h"
+#include "core/modules/default/arrayparser.h"
+#include "core/modules/default/tupleparser.h"
+#include "core/modules/default/dataparser.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/scope/scope.h"
+#include "core/util/strutil.h"
+#include "core/util/bitutil.h"
 
 using namespace defaultTypes;
 

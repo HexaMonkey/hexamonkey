@@ -20,10 +20,11 @@
 
 #include <memory>
 #include <string>
-#include "programloader.h"
-#include "variable.h"
-#include "parser.h"
-#include "evaluator.h"
+
+#include "core/parser.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/evaluator.h"
 
 class Object;
 

@@ -15,11 +15,10 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "ebmlsimpleparser.h"
-
-#include "standardtypes.h"
-#include "defaulttypes.h"
-#include "ebmltypes.h"
+#include "core/modules/default/defaulttypes.h"
+#include "core/modules/ebml/ebmlsimpleparser.h"
+#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/standard/standardtypes.h"
 
 EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
     : ContainerParser(object, module)

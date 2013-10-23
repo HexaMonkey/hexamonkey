@@ -18,9 +18,9 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-#include "ptrutil.h"
-#include "variable.h"
-#include "variablepath.h"
+#include "core/interpreter/variable.h"
+#include "core/interpreter/variablepath.h"
+#include "core/util/ptrutil.h"
 
 class Variant;
 

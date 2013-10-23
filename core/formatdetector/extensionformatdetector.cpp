@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "extensionformatdetector.h"
-#include "strutil.h"
+#include "core/formatdetector/extensionformatdetector.h"
+#include "core/util/strutil.h"
 
 void ExtensionFormatDetector::addExtension(const std::string& format, const std::string &extension)
 {

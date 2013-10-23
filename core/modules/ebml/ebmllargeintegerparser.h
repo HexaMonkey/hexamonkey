@@ -18,7 +18,7 @@
 #ifndef EBMLLARGEINTEGERPARSER_H
 #define EBMLLARGEINTEGERPARSER_H
 
-#include "parser.h"
+#include "core/parser.h"
 
 class EbmlLargeIntegerParser : public SimpleParser
 {

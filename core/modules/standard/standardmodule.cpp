@@ -15,14 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "standardmodule.h"
-
-#include "standardtypes.h"
-
-#include "intparser.h"
-#include "bitparser.h"
-#include "wordparser.h"
-#include "floatparser.h"
+#include "core/modules/standard/standardmodule.h"
+#include "core/modules/standard/standardtypes.h"
+#include "core/modules/standard/intparser.h"
+#include "core/modules/standard/bitparser.h"
+#include "core/modules/standard/wordparser.h"
+#include "core/modules/standard/floatparser.h"
 
 using namespace standardTypes;
 

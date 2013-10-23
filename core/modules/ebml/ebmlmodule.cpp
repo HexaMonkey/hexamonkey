@@ -15,23 +15,20 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "ebmlmodule.h"
-
 #include <fstream>
 #include <streambuf>
 
-#include "bitutil.h"
-#include "strutil.h"
-
-#include "defaulttypes.h"
-#include "standardtypes.h"
-#include "ebmltypes.h"
-
-#include "ebmlmasterparser.h"
-#include "ebmlcontainerparser.h"
-#include "ebmllargeintegerparser.h"
-#include "ebmlsimpleparser.h"
-#include "ebmldateparser.h"
+#include "core/modules/default/defaulttypes.h"
+#include "core/modules/ebml/ebmlmodule.h"
+#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/ebml/ebmlmasterparser.h"
+#include "core/modules/ebml/ebmlcontainerparser.h"
+#include "core/modules/ebml/ebmllargeintegerparser.h"
+#include "core/modules/ebml/ebmlsimpleparser.h"
+#include "core/modules/ebml/ebmldateparser.h"
+#include "core/modules/standard/standardtypes.h"
+#include "core/util/bitutil.h"
+#include "core/util/strutil.h"
 
 using namespace ebmlTypes;
 

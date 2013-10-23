@@ -15,11 +15,11 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "variant.h"
-#include "objecttype.h"
-
 #include <algorithm> //swap
 #include <sstream>
+
+#include "core/variant.h"
+#include "core/objecttype.h"
 
 const std::vector<std::string>& typeNames = {"unknown", "integer", "unsigned integer" , "float", "string","object type"};
 
