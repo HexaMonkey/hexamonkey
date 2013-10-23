@@ -25,7 +25,7 @@ all: $(PROGRAM)
 %/$(EXISTS_FILE):
 	mkdir -p $*
 
-$(MAKEFILE): ./gui/gui.pro compiler $(BUILD_DIR_EXISTS)
+$(MAKEFILE): ./gui/gui.pro compiler core $(BUILD_DIR_EXISTS)
 # stupid qmake-qt5 puts the Makefile in gui/release/gui/release/Makefile so I use redirects instead
 # $(QMAKE) $< -o $@
 # also I have to run it from the $(BUILD_DIR) directory
@@ -39,6 +39,9 @@ logo.svg:
 
 compiler:
 	make -C compiler
+
+core:
+	cd core; qmake && make
 
 uninstall:
 	rm -rf $(INSTALL_DATADIR)
@@ -70,8 +73,8 @@ installer.msi: installer.wixobj\
 	
 installer.wixobj: installer.wxs
 	candle installer.wxs
-	
-.PHONY: clean compiler all
+
+.PHONY: clean compiler core all
 
 distclean:
 	rm -rf $(INSTALL_DIR)
