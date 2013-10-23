@@ -15,60 +15,6 @@ INCLUDEPATH = ..
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    ../core/variant.cpp \
-    ../core/showcase.cpp \
-    ../core/parser.cpp \
-    ../core/objecttypetemplate.cpp \
-    ../core/objecttype.cpp \
-    ../core/object.cpp \
-    ../core/moduleloader.cpp \
-    ../core/module.cpp \
-    ../core/mapmodule.cpp \
-    ../core/file.cpp \
-    ../core/containerparser.cpp \
-    ../core/formatdetector/syncbyteformatdetector.cpp \
-    ../core/formatdetector/standardformatdetector.cpp \
-    ../core/formatdetector/magicformatdetector.cpp \
-    ../core/formatdetector/formatdetector.cpp \
-    ../core/formatdetector/extensionformatdetector.cpp \
-    ../core/formatdetector/compositeformatdetector.cpp \
-    ../core/interpreter/variablepath.cpp \
-    ../core/interpreter/variable.cpp \
-    ../core/interpreter/program.cpp \
-    ../core/interpreter/programloader.cpp \
-    ../core/interpreter/fromfileparser.cpp \
-    ../core/interpreter/fromfilemodule.cpp \
-    ../core/interpreter/filter.cpp \
-    ../core/interpreter/evaluator.cpp \
-    ../core/interpreter/blockexecution.cpp \
-    ../core/interpreter/scope/typescope.cpp \
-    ../core/interpreter/scope/scope.cpp \
-    ../core/interpreter/scope/objectscope.cpp \
-    ../core/interpreter/scope/localscope.cpp \
-    ../core/interpreter/scope/functionscope.cpp \
-    ../core/interpreter/scope/compositescope.cpp \
-    ../core/modules/default/tupleparser.cpp \
-    ../core/modules/default/fileparser.cpp \
-    ../core/modules/default/defaultmodule.cpp \
-    ../core/modules/default/arrayparser.cpp \
-    ../core/modules/standard/wordparser.cpp \
-    ../core/modules/standard/standardmodule.cpp \
-    ../core/modules/standard/intparser.cpp \
-    ../core/modules/standard/floatparser.cpp \
-    ../core/modules/standard/bitparser.cpp \
-    ../core/modules/ebml/ebmlsimpleparser.cpp \
-    ../core/modules/ebml/ebmlmodule.cpp \
-    ../core/modules/ebml/ebmlmasterparser.cpp \
-    ../core/modules/ebml/ebmllargeintegerparser.cpp \
-    ../core/modules/ebml/ebmldateparser.cpp \
-    ../core/modules/ebml/ebmlcontainerparser.cpp \
-    ../core/modules/hmc/hmcmodule.cpp \
-    ../core/modules/mkv/mkvmodule.cpp \
-    ../core/util/strutil.cpp \
-    ../core/util/iterutil.cpp \
-    ../core/util/fileutil.cpp \
-    ../core/util/csvreader.cpp \
-    ../core/util/bitutil.cpp \
     tree/treewidget.cpp \
     tree/treeview.cpp \
     tree/treeobjectitem.cpp \
@@ -87,9 +33,7 @@ SOURCES += main.cpp\
     mt/resourcemanager.cpp \
     mt/resource.cpp \
     mt/parsingtask.cpp \
-    ../core/modules/default/dataparser.cpp \
     tree/treefileitem.cpp \
-    ../core/util/osutil.cpp
 
 
 		
@@ -193,3 +137,5 @@ OTHER_FILES += \
 DEFINES += USE_QT
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
+
+LIBS += -L../core -lhexamonkey
