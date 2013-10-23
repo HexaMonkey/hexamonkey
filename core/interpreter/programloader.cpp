@@ -102,8 +102,8 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
         return Program();
     }
 
-    std::cout<<"Program "<<compiler<<std::endl;
-    std::cout<<"Arguments "<<path<<" "<<outputPath<<std::endl;
+    std::cerr<<"Program "<<compiler<<std::endl;
+    std::cerr<<"Arguments "<<path<<" "<<outputPath<<std::endl;
 
 #ifdef USE_QT
     QProcess process;
@@ -118,7 +118,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
     if(!output.empty())
     {
-        std::cout<<"Compiler output : "<<output<<std::endl;
+        std::cerr<<"Compiler output : "<<output<<std::endl;
     }
 
     if(!error.empty())
@@ -159,7 +159,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     }
     else
     {
-        std::cout << "Script could not be loaded : "<< path << std::endl;
+        std::cerr << "Script could not be loaded : "<< path << std::endl;
         return Program();
     }
 }
@@ -180,17 +180,17 @@ Program ProgramLoader::fromFile(const std::string &path) const
             std::cerr<<"Description file not found: "<<hmPath<<std::endl;
             return Program();
         }
-        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
+        std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
         return fromHMC(hmcPath);
     }
     else
     {
         if(!hmcInfo.exists() || hmcInfo.lastModified() < hmInfo.lastModified())
         {
-            std::cout<<"Compile description file : "<<hmPath<<std::endl;
+            std::cerr<<"Compile description file : "<<hmPath<<std::endl;
             return fromHM(hmPath, ProgramLoader::file);
         }
-        std::cout<<"Load existing description file : "<<hmcPath<<std::endl;
+        std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
         return fromHMC(hmcPath);
     }
 #else

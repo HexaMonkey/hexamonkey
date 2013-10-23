@@ -113,7 +113,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     if(sizeDependency(name))
     {
-        std::cout<<type.typeTemplate().name()<<" unknown size"<<std::endl;
+        std::cerr<<type.typeTemplate().name()<<" unknown size"<<std::endl;
         _fixedSizes[type.typeTemplate().name()] = -1;
         return -1;
     }
@@ -123,13 +123,13 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
         int64_t size = guessSize(definition);
         if(size>0)
         {
-            std::cout<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
+            std::cerr<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
             _fixedSizes[type.typeTemplate().name()] = size;
             return size;
         }
     }
 
-    std::cout<<type.typeTemplate().name()<<" father's size"<<std::endl;
+    std::cerr<<type.typeTemplate().name()<<" father's size"<<std::endl;
     _fixedSizes[type.typeTemplate().name()] = 0;
     return 0;
 }
@@ -225,7 +225,7 @@ void FromFileModule::loadImports(Program &imports, std::vector<std::string> &for
 
 void FromFileModule::nameScan(Program& declarations)
 {
-    std::cout<<"Load templates :"<<std::endl;
+    std::cerr<<"Load templates :"<<std::endl;
 
 
     for(Program declaration : declarations)
@@ -240,7 +240,7 @@ void FromFileModule::nameScan(Program& declarations)
                 parameters.push_back(arg.payload().toString());
             }
             const ObjectTypeTemplate& temp = newTemplate(name, parameters);
-            std::cout<<"    "<<temp<<std::endl;
+            std::cerr<<"    "<<temp<<std::endl;
 
             Program classDefinition = declaration.node(1);
             _definitions[name] = classDefinition;
@@ -252,12 +252,12 @@ void FromFileModule::nameScan(Program& declarations)
         }
     }
 
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 }
 
 void FromFileModule::loadExtensions(Program &classDeclarations)
 {
-    std::cout<<"Load extensions :"<<std::endl;
+    std::cerr<<"Load extensions :"<<std::endl;
 
     for(Program classDeclaration : classDeclarations)
     {
@@ -284,16 +284,16 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
                return Evaluator(TypeScope(type), *this).type(program);
            });
 
-           std::cout<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;
+           std::cerr<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;
         }
     }
 
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 }
 
 void FromFileModule::loadSpecifications(Program &classDeclarations)
 {
-    std::cout<<"Load specifications :"<<std::endl;
+    std::cerr<<"Load specifications :"<<std::endl;
 
     for(Program classDeclaration : classDeclarations)
     {
@@ -304,7 +304,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             {
                 ObjectType parent(eval.type(type));
                 setSpecification(parent, child);
-                std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
+                std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
             }
         }
         else if(classDeclaration.tag() == FORWARD)
@@ -312,11 +312,11 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             ObjectType parent(eval.type(classDeclaration.node(0)));
             ObjectType child(eval.type(classDeclaration.node(1)));
             setSpecification(parent, child);
-            std::cout<<"    "<<child<<" specifies "<<parent<<std::endl;
+            std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
         }
     }
 
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 }
 
 bool FromFileModule::sizeDependency(const std::string &name) const

@@ -280,7 +280,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::cout<<"[LOG]"<<scope.get(0).cvalue()<<std::endl;
+        std::cerr<<"[LOG]"<<scope.get(0).cvalue()<<std::endl;
         return Variable();
     });
 
@@ -290,7 +290,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::cout<<"[ERROR]"<<scope.get(0).cvalue()<<std::endl;
+        std::cerr<<"[ERROR]"<<scope.get(0).cvalue()<<std::endl;
         return Variable();
     });
 
@@ -300,7 +300,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::cout<<"[WARNING]"<<scope.get(0).cvalue()<<std::endl;
+        std::cerr<<"[WARNING]"<<scope.get(0).cvalue()<<std::endl;
         return Variable();
     });
 

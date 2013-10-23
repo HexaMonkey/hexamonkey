@@ -197,7 +197,7 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
         std::string name = declaration.node(1).payload().toString();
         bool showcased = declaration.node(2).payload().toInteger();
 #ifdef EXECUTION_TRACE
-        std::cout<<"Declaration "<<type<<" "<<name<<std::endl;
+        std::cerr<<"Declaration "<<type<<" "<<name<<std::endl;
 #endif
         if(parser().addVariable(type, name) != nullptr){
             --parseQuota;
@@ -212,18 +212,18 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
 {
     Variable variable = scope.declare(declaration.node(0).payload());
 #ifdef EXECUTION_TRACE
-    std::cout<<"Local declaration "<<declaration.elem(0).payload();
+    std::cerr<<"Local declaration "<<declaration.elem(0).payload();
 #endif
 
     if(declaration.size() >= 2 && variable.isDefined())
     {
         variable.value() = eval.rightValue(declaration.node(1)).cvalue();
 #ifdef EXECUTION_TRACE
-        std::cout<<" = "<<variable.cvalue();
+        std::cerr<<" = "<<variable.cvalue();
 #endif
     }
 #ifdef EXECUTION_TRACE
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 #endif
 
     ++current;
@@ -236,7 +236,7 @@ void BlockExecution::handleRightValue(const Program &rightValue)
 #endif
     eval.rightValue(rightValue);
 #ifdef EXECUTION_TRACE
-    std::cout<<"Right value "<<value<<std::endl;
+    std::cerr<<"Right value "<<value<<std::endl;
 #endif
     ++current;
 }
@@ -244,48 +244,48 @@ void BlockExecution::handleRightValue(const Program &rightValue)
 void BlockExecution::handleCondition(const Program &condition)
 {
 #ifdef EXECUTION_TRACE
-    std::cout<<"Condition"<<std::endl;
+    std::cerr<<"Condition"<<std::endl;
 #endif
     if(eval.rightValue(condition.node(0)).cvalue().toBool())
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" then";
+        std::cerr<<" then";
 #endif
         setSubBlock(condition.node(1), false);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" else";
+        std::cerr<<" else";
 #endif
         setSubBlock(condition.node(2), false);
     }
 #ifdef EXECUTION_TRACE
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 #endif
 }
 
 void BlockExecution::handleLoop(const Program &loop)
 {
 #ifdef EXECUTION_TRACE
-    std::cout<<"Loop"<<std::endl;
+    std::cerr<<"Loop"<<std::endl;
 #endif
     if(loopCondition(loop))
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" continue";
+        std::cerr<<" continue";
 #endif
         setSubBlock(loop.node(1), true);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" done";
+        std::cerr<<" done";
 #endif
         ++current;
     }
 #ifdef EXECUTION_TRACE
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 #endif
 
 }
@@ -293,24 +293,24 @@ void BlockExecution::handleLoop(const Program &loop)
 void BlockExecution::handleDoLoop(const Program &loop)
 {
 #ifdef EXECUTION_TRACE
-    std::cout<<"Do Loop";
+    std::cerr<<"Do Loop";
 #endif
     if(lineRepeatCount <= 1 || loopCondition(loop))
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" continue";
+        std::cerr<<" continue";
 #endif
         setSubBlock(loop.node(1), true);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<" done";
+        std::cerr<<" done";
 #endif
         ++current;
     }
 #ifdef EXECUTION_TRACE
-    std::cout<<std::endl;
+    std::cerr<<std::endl;
 #endif
 }
 
@@ -319,7 +319,7 @@ bool BlockExecution::handleBreak()
     if(_inLoop)
     {
 #ifdef EXECUTION_TRACE
-        std::cout<<"Break"<<std::endl;
+        std::cerr<<"Break"<<std::endl;
 #endif
         current = end;
         return true;
@@ -332,7 +332,7 @@ bool BlockExecution::handleContinue()
 {
     if(_inLoop)
     {
-        std::cout<<"Continue"<<std::endl;
+        std::cerr<<"Continue"<<std::endl;
         current = end;
         return true;
     }
@@ -345,7 +345,7 @@ void BlockExecution::handleReturn(const Program &line)
     const Program& rightValue = line.node(0);
     _returnValue = eval.rightValue(rightValue);
 #ifdef EXECUTION_TRACE
-    std::cout<<"Return "<<_returnValue.cvalue()<<std::endl;
+    std::cerr<<"Return "<<_returnValue.cvalue()<<std::endl;
 #endif
     current = end;
 }
