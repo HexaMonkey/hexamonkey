@@ -2,11 +2,12 @@
 *
 
 #Comment if you want to use your own git ignore locally
+
+*.o
 !.gitignore
 
 !LICENSE.txt
 !README.md
-!./Makefile
 !TODO
 
 #core of the program
@@ -57,6 +58,7 @@
 #Scripts for analyse
 !scripts
 !scripts/*.hm
+scripts/*.hmc
 
 #Compiler part of the program
 !compiler

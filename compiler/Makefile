@@ -1,4 +1,5 @@
 CC=gcc $(CFLAGS)
+INCPATH=-I../
 
 .PHONY: all	
 all: hexacompiler expcompiler
@@ -36,17 +37,16 @@ model.h: model ../models/hmcmodel.csv ../models/hmcoperators.csv
 	./model
 	
 model: model.o strutil.o csvreader.o
-	g++ -B ../core/util/ -o $@ $^
-	
-strutil.o : ../core/util/strutil.cpp ../core/util/strutil.h
-	g++ -o $@ -c ../core/util/strutil.cpp
+	g++ $(INCPATH) -o $@ $^
+
+strutil.o: ../core/util/strutil.cpp ../core/util/strutil.h
+	g++ $(INCPATH) -o $@ -c ../core/util/strutil.cpp
 
 csvreader.o : ../core/util/csvreader.cpp ../core/util/csvreader.h
-	g++ -o $@ -c ../core/util/csvreader.cpp
-	
-.PHONY: clean	
+	g++ $(INCPATH) -o $@ -c ../core/util/csvreader.cpp
+
+.PHONY: clean
 clean:
 	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler
 
-
-	
+distclean: clean
