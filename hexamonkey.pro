@@ -6,6 +6,7 @@ CONFIG += ordered
 
 SUBDIRS = compiler \
           core \
+          cli \
           gui
 
 compiler.commands = make -C compiler
