@@ -11,20 +11,7 @@ CONFIG   += c++11
 TARGET = hexamonkey
 TEMPLATE = app
 
-INCLUDEPATH += ../core \
-               ../core/modules/default \
-               ../core/modules/standard \
-               ../core/modules/ebml \
-               ../core/modules/mkv \
-               ../core/modules/hmc \
-               ../core/formatdetector \
-               ../core/util \
-               ../core/interpreter \
-               ../core/interpreter/scope \
-               ../compiler \
-               tree \
-               hex \
-               mt
+INCLUDEPATH = ..
 
 SOURCES += main.cpp\
         mainwindow.cpp \

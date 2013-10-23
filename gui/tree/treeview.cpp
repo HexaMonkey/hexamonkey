@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "treeview.h"
-#include "treewidget.h"
+#include "gui/tree/treeview.h"
+#include "gui/tree/treewidget.h"
 
 TreeView::TreeView(TreeWidget &parent) :
     QTreeView(&parent),

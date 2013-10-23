@@ -15,8 +15,10 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "filterwidget.h"
 #include <iostream>
+
+#include "gui/tree/filterwidget.h"
+
 FilterWidget::FilterWidget(QWidget *parent) :
     QWidget(parent), lineEdit(new QLineEdit(this))
 {

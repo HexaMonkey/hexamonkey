@@ -27,9 +27,9 @@
 #include <cmath>
 #include <set>
 
-#include "object.h"
-#include "treeitem.h"
-#include "filter.h"
+#include "core/object.h"
+#include "core/interpreter/filter.h"
+#include "gui/tree/treeitem.h"
 
 /**
  * @brief \link TreeItem Tree item\endlink linked with an \link Object object\endlink

@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "tasklist.h"
+#include "gui/mt/tasklist.h"
 
 TaskList::TaskList() : _task(QStack<ParsingTask*>()), _priorityTask(QQueue<ParsingTask*>())
 {

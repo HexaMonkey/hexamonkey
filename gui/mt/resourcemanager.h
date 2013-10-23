@@ -21,7 +21,8 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
-#include "object.h"
+
+#include "core/object.h"
 
 class Resource;
 class TreeModel;

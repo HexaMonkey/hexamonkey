@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "parsingtask.h"
+#include "gui/mt/parsingtask.h"
 
 ParsingTask::ParsingTask(Object &object, QModelIndex index, int hint) : _object(object), _index(index), _hint(hint)
 {

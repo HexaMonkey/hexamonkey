@@ -18,9 +18,9 @@
 #include <QtGlobal>
 #include <QTime>
 
-#include "worker.h"
-#include "resource.h"
-#include "tasklist.h"
+#include "gui/mt/worker.h"
+#include "gui/mt/resource.h"
+#include "gui/mt/tasklist.h"
 
 Worker::Worker(Resource &resource) : _resource(resource) {
     QTime time = QTime::currentTime();

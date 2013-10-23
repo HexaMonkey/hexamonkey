@@ -19,7 +19,8 @@
 #define HEXFILEVIEW_H
 
 #include <QTableView>
-#include "hexfiledelegate.h"
+
+#include "gui/hex/hexfiledelegate.h"
 
 /**
  * @brief Widget managing the display of the table in the \link HexFileWidget hex widget\endlink

@@ -1,5 +1,7 @@
+
 #include <QApplication>
-#include "hexfilewidget.h"
+
+#include "gui/hex/hexfilewidget.h"
 
 int main(int argc, char *argv[])
 {

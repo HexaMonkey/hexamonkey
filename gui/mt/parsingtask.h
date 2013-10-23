@@ -21,8 +21,7 @@
 #include <QModelIndex>
 #include <QObject>
 
-#include "object.h"
-
+#include "core/object.h"
 
 class ParsingTask
 {

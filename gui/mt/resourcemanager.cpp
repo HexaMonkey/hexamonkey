@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "resourcemanager.h"
-#include "resource.h"
+#include "gui/mt/resourcemanager.h"
+#include "gui/mt/resource.h"
 
 ResourceManager::ResourceManager(TreeModel &model) : _model(model)
 {

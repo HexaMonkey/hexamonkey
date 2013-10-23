@@ -15,11 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "hexfileview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QScrollBar>
 #include <iostream>
+
+#include "gui/hex/hexfileview.h"
 
 HexFileView::HexFileView(QWidget *parent) :
     QTableView(parent),

@@ -1,9 +1,9 @@
 #ifndef TREEFILEITEM_H
 #define TREEFILEITEM_H
 
-#include "treeobjectitem.h"
-
 #include <memory>
+
+#include "gui/tree/treeobjectitem.h"
 
 /**
  * @brief Tree Item that represent the root of a file

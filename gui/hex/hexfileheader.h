@@ -18,7 +18,7 @@
 #ifndef HEXFILEHEADER_H
 #define HEXFILEHEADER_H
 
-#include "hexfileview.h"
+#include "gui/hex/hexfileview.h"
 
 /**
  * @brief Header for the \link HexFileWidget hex widget\endlink

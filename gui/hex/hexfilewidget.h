@@ -20,11 +20,12 @@
 
 #include <QtGui>
 #include <QWidget>
-#include "hexfilemodel.h"
-#include "hexfileview.h"
-#include "hexfiledelegate.h"
-#include "hexfileheader.h"
-#include "hexfilesearchwidget.h"
+
+#include "gui/hex/hexfilemodel.h"
+#include "gui/hex/hexfileview.h"
+#include "gui/hex/hexfiledelegate.h"
+#include "gui/hex/hexfileheader.h"
+#include "gui/hex/hexfilesearchwidget.h"
 
 /**
  * @brief Widget responsible for displaying the content of the file

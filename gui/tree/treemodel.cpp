@@ -15,12 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "treemodel.h"
-#include "treeitem.h"
-#include "treeobjectitem.h"
-#include "resourcemanager.h"
-#include "resource.h"
-#include "defaulttypes.h"
+#include "core/modules/default/defaulttypes.h"
+#include "gui/mt/resource.h"
+#include "gui/mt/resourcemanager.h"
+#include "gui/tree/treemodel.h"
+#include "gui/tree/treeitem.h"
+#include "gui/tree/treeobjectitem.h"
 
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, QObject *parent) :
     QAbstractItemModel(parent),

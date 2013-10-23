@@ -22,8 +22,7 @@
 #include <QQueue>
 #include <QMutex>
 
-
-#include "parsingtask.h"
+#include "gui/mt/parsingtask.h"
 
 class TaskList
 {

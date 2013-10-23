@@ -18,9 +18,9 @@
 #include <QtGui>
 #include <QGridLayout>
 
-#include "hexfilemodel.h"
-#include "hexfilewidget.h"
-#include "strutil.h"
+#include "core/util/strutil.h"
+#include "gui/hex/hexfilemodel.h"
+#include "gui/hex/hexfilewidget.h"
 
 
 HexFileWidget::HexFileWidget(QWidget *parent)

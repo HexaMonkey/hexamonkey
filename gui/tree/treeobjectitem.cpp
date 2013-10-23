@@ -16,8 +16,9 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <cctype>
-#include "treeobjectitem.h"
-#include "objecttypetemplate.h"
+
+#include "core/objecttypetemplate.h"
+#include "gui/tree/treeobjectitem.h"
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type);
 std::ostream& displayName(std::ostream& out, const std::string& name);

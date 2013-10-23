@@ -1,4 +1,4 @@
-#include "treefileitem.h"
+#include "gui/tree/treefileitem.h"
 
 TreeFileItem::TreeFileItem(const ProgramLoader &programLoader, TreeItem *parent)
     : TreeObjectItem(programLoader, parent)

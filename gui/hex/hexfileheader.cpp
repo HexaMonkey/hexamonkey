@@ -15,14 +15,14 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "hexfileheader.h"
-#include "strutil.h"
 #include <QPainter>
 #include <QApplication>
 #include <QLayout>
-
-
 #include <iostream>
+
+#include "core/util/strutil.h"
+#include "gui/hex/hexfileheader.h"
+
 HexFileHeader::HexFileHeader(HexFileView* _view, QWidget *parent) :
     QWidget(parent),
     _view(_view),

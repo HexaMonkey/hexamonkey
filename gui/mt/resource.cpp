@@ -17,10 +17,9 @@
 
 #include <QModelIndex>
 
-#include "resource.h"
-#include "resourcemanager.h"
-#include "treemodel.h"
-
+#include "gui/mt/resource.h"
+#include "gui/mt/resourcemanager.h"
+#include "gui/tree/treemodel.h"
 
 Resource::Resource(TreeModel &model) : _worker(*this)
 {

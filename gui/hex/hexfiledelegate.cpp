@@ -15,10 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "hexfiledelegate.h"
 #include <QBrush>
 #include <QPainterPath>
 #include <iostream>
+
+#include "gui/hex/hexfiledelegate.h"
+
 HexFileDelegate::HexFileDelegate(unsigned int hexWidth, unsigned int charWidth)
     : headerWidth(0),
       hexWidth(hexWidth),

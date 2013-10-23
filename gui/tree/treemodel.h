@@ -23,11 +23,10 @@
 #include <QVariant>
 #include <QMap>
 
-#include "hmcmodule.h"
-#include "object.h"
-#include "resourcemanager.h"
-#include "treefileitem.h"
-
+#include "core/object.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "gui/mt/resourcemanager.h"
+#include "gui/tree/treefileitem.h"
 
 class TreeItem;
 class ProgramLoader;

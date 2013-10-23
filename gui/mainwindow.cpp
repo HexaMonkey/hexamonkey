@@ -15,14 +15,12 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "mainwindow.h"
-
-#include "defaulttypes.h"
-
 #include <QMessageBox>
 #include <QHBoxLayout>
 
-#include "moduleloader.h"
+#include "core/moduleloader.h"
+#include "core/modules/default/defaulttypes.h"
+#include "gui/mainwindow.h"
 
 const int MainWindow::maxRecentFiles;
 

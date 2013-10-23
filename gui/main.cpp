@@ -61,20 +61,17 @@
 #include <QApplication>
 #include <QIcon>
 
-#include "moduleloader.h"
-#include "programloader.h"
-#include "mainwindow.h"
+#include "core/moduleloader.h"
+#include "core/interpreter/programloader.h"
+#include "core/interpreter/fromfilemodule.h"
+#include "core/modules/standard/standardmodule.h"
+#include "core/modules/ebml/ebmlmodule.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "core/modules/mkv/mkvmodule.h"
+#include "core/util/fileutil.h"
+#include "core/util/osutil.h"
 
-#include "standardmodule.h"
-#include "ebmlmodule.h"
-#include "hmcmodule.h"
-#include "mkvmodule.h"
-#include "fromfilemodule.h"
-
-#include "fileutil.h"
-#include "osutil.h"
-
-
+#include "gui/mainwindow.h"
 
 int main(int argc, char *argv[])
 {

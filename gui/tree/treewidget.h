@@ -22,11 +22,11 @@
 #include <QGridLayout>
 #include <QString>
 
-#include "treemodel.h"
-#include "treeview.h"
-#include "htmldelegate.h"
-#include "filterwidget.h"
-#include "resourcemanager.h"
+#include "gui/mt/resourcemanager.h"
+#include "gui/tree/treemodel.h"
+#include "gui/tree/treeview.h"
+#include "gui/tree/htmldelegate.h"
+#include "gui/tree/filterwidget.h"
 
 class ProgramLoader;
 class TreeItem;

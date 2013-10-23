@@ -23,13 +23,11 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QAction>
-#include "treewidget.h"
-#include "htmldelegate.h"
-#include "hexfilewidget.h"
+#include "core/formatdetector/formatdetector.h"
 
-#include "formatdetector.h"
-
-
+#include "gui/tree/treewidget.h"
+#include "gui/tree/htmldelegate.h"
+#include "gui/hex/hexfilewidget.h"
 
 class ModuleLoader;
 class ProgramLoader;

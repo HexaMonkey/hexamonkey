@@ -21,8 +21,8 @@
 #include <QObject>
 #include <QThread>
 
-#include "worker.h"
-#include "tasklist.h"
+#include "gui/mt/worker.h"
+#include "gui/mt/tasklist.h"
 
 class ResourceManager;
 class TreeModel;
