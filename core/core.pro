@@ -5,6 +5,8 @@ TEMPLATE = lib
 CONFIG += c++11
 CONFIG -= qt
 
+QMAKE_CXXFLAGS += -Wno-unused-parameter
+
 INCLUDEPATH += \
   . \
   modules/default \
