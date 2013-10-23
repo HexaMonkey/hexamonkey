@@ -46,6 +46,7 @@ csvreader.o : ../core/util/csvreader.cpp ../core/util/csvreader.h
 	
 .PHONY: clean	
 clean:
-	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.*
+	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler
+
 
 	
