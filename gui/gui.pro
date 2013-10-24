@@ -139,3 +139,6 @@ DEFINES += USE_QT
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 LIBS += -L../core -lhexamonkey
+
+unix: target.path = /usr/bin
+INSTALLS += target

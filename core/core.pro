@@ -66,3 +66,6 @@ SOURCES += \
   util/bitutil.cpp \
   modules/default/dataparser.cpp \
   util/osutil.cpp
+
+unix:target.path = /usr/lib
+INSTALLS += target
