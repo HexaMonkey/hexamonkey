@@ -1,5 +1,5 @@
 
-CONFIG += c++11
+CONFIG += c++11 no_include_pwd
 CONFIG -= qt
 
 TARGET = hexamonkey-cli

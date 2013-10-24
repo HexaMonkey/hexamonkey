@@ -2,7 +2,7 @@
 TARGET = hexamonkey
 TEMPLATE = lib
 
-CONFIG += c++11
+CONFIG += c++11 no_include_pwd
 CONFIG -= qt
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter

@@ -6,7 +6,7 @@
 
 QT       += core gui widgets
 
-CONFIG   += c++11
+CONFIG   += c++11 no_include_pwd
 
 TARGET = hexamonkey
 TEMPLATE = app
