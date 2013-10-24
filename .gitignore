@@ -62,6 +62,7 @@ scripts/*.hmc
 
 #Compiler part of the program
 !compiler
+!compiler/compiler.pro
 
 #GUI in qt 
 !gui
