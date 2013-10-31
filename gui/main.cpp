@@ -99,13 +99,13 @@ int main(int argc, char *argv[])
 #elif defined(PLATFORM_LINUX)
     /* XXX: use autotools ? */
 
-    std::string installDir = "/usr/local/share/hexamonkey/";
+    std::string installDir = "/usr/share/hexamonkey/";
     std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
     QDir::root().mkdir(QString(userDir.c_str()));
 
     std::vector<std::string> modelsDirs = {installDir, "../models/"};
     std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
-    std::vector<std::string> compilerDirs = {installDir, "../compiler/"};
+    std::vector<std::string> compilerDirs = {"/usr/bin/", "../compiler/"};
     std::vector<std::string> logoDirs = {installDir, "../logo/"};
 
 #else

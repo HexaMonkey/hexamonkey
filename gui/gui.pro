@@ -140,5 +140,5 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 LIBS += -L../core -lhexamonkey
 
-unix: target.path = /usr/bin
+unix: target.path = $$prefix.path/usr/bin
 INSTALLS += target

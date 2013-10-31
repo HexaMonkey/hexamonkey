@@ -1,4 +1,7 @@
 
+INSTALL_DIR=$(INSTALL_ROOT)/usr/bin
+COPY=cp -f
+MKDIR=mkdir -p
 INCPATH=-I../
 
 .PHONY: all
@@ -44,5 +47,11 @@ clean:
 	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler ../core/util/strutil.o ../core/util/csvreader.o
 distclean: clean
 
-install: #fixme
-uninstall: #fixme
+install:
+	$(MKDIR) $(INSTALL_DIR)
+	$(COPY) expcompiler $(INSTALL_DIR)
+	$(COPY) hexacompiler $(INSTALL_DIR)
+
+uninstall:
+	$(RM) $(INSTALL_DIR)/expcompiler
+	$(RM) $(INSTALL_DIR)/hexacompiler
