@@ -41,6 +41,8 @@ model: model.o ../core/util/strutil.o ../core/util/csvreader.o
 
 .PHONY: clean
 clean:
-	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler
-
+	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler ../core/util/strutil.o ../core/util/csvreader.o
 distclean: clean
+
+install: #fixme
+uninstall: #fixme
