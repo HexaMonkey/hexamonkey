@@ -94,7 +94,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
     else
         compiler = _expCompiler;
 
-    if(!fileExists(path))
+    if(!fileExists(path) || compiler.compare("") == 0)
     {
         std::cerr<<"Compiler not found"<<std::endl;
         return Program();
