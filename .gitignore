@@ -47,6 +47,9 @@
 !core/util/*.cpp
 !core/util/*.h
 !core/util/*.hpp
+!core/util/rapidxml
+!core/util/rapidxml/*.hpp
+!core/util/rapidxml/license.txt
 
 #Documentation generation (file for doxygen)
 !doc

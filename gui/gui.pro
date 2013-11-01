@@ -97,10 +97,10 @@ HEADERS  += mainwindow.h \
     ../core/util/fileutil.h \
     ../core/util/csvreader.h \
     ../core/util/bitutil.h \
-    ../core/util/rapidxml_utils.hpp \
-    ../core/util/rapidxml_print.hpp \
-    ../core/util/rapidxml_iterators.hpp \
-    ../core/util/rapidxml.hpp \
+    ../core/util/rapidxml/rapidxml_utils.hpp \
+    ../core/util/rapidxml/rapidxml_print.hpp \
+    ../core/util/rapidxml/rapidxml_iterators.hpp \
+    ../core/util/rapidxml/rapidxml.hpp \
     tree/treewidget.h \
     tree/treeview.h \
     tree/treeobjectitem.h \
