@@ -16,8 +16,6 @@ INSTALLS += scripts
 resources.files = \
   models/hmcmodel.csv \
   models/mkvmodel.xml \
-  compiler/hexacompiler \
-  compiler/expcompiler \
   gui/logo.svg
 unix: resources.path = $$prefix.path/usr/share/hexamonkey
 INSTALLS += resources
