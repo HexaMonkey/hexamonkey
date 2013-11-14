@@ -48,6 +48,18 @@ class Box(boxtype, extended_type)
 	}
 }
 
+class NextFragPtsBox as Box("uuid", "D4807EF2-CA39-4695-8E5426CB9E46A79F")
+{
+    uint(8) data[5];
+    int(64) next_frag_pts;
+}
+
+class FragDurationBox as Box("uuid", "6D1D9B05-42D5-44E6-80E2141DAFF757B2")
+{
+    uint(8) data[12];
+    int(64) frag_duration;
+}
+
 class FullBox(boxtype, v, f) extends Box(boxtype)
 {
 	uint(8) version;

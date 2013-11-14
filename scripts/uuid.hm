@@ -23,9 +23,9 @@ class uuid
 	uint(32, 16) *;
 	uint(16, 16) *;
 	uint(16, 16) *;
-	uint(32, 16) *;
+	uint(64, 16) *;
 	@value = %uppercase(%str([0], 16, 8)) + "-"
 	       + %uppercase(%str([1], 16, 4)) + "-"
 		   + %uppercase(%str([2], 16, 4)) + "-"
-		   + %uppercase(%str([2], 16, 16));
+		   + %uppercase(%str([3], 16, 16));
 }
