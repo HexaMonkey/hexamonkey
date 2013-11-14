@@ -105,7 +105,6 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
 #ifdef USE_QT
     QProcess process;
-
     QStringList arguments;
     arguments<<QString(path.c_str())<<QString(outputPath.c_str());
 
@@ -128,12 +127,20 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
     std::stringstream commandStream;
 
     commandStream<<compiler<<" "<<path<<" "<<outputPath;
-    const char* command = commandStream.str().c_str();
-
+    std::string s = commandStream.str();
+    
 #ifdef PLATFORM_LINUX
-    pclose(popen(command, "r"));
+    FILE *f = popen(s.c_str(), "r");
+    while (!feof(f)) {
+        char buf[512];
+        int r = fread(buf, 1, 512, f);
+        std::cerr.write(buf, r);
+    }
+    
+    int err = pclose(f);
+    std::cerr<<"Compiler status: "<<err<<std::endl;
 #else
-    _pclose(_popen(command, "r"));
+    _pclose(_popen(s.c_str(), "r"));
 #endif
 
 #endif
