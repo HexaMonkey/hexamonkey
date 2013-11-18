@@ -7,7 +7,8 @@ CONFIG += ordered
 SUBDIRS = compiler \
           core \
           cli \
-          gui
+          gui \
+          test
 
 scripts.files = scripts/*.hm
 unix: scripts.path = $$prefix.path/usr/share/hexamonkey/scripts
