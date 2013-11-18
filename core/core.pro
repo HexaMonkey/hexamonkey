@@ -67,5 +67,11 @@ SOURCES += \
   modules/default/dataparser.cpp \
   util/osutil.cpp
 
-unix:target.path = $$prefix.path/usr/lib
+unix {
+    defined(LIBDIR, var) {
+        target.path = $$prefix.path/$$LIBDIR
+    } else {
+        target.path = $$prefix.path/usr/lib
+    }
+}
 INSTALLS += target

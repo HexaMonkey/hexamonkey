@@ -33,9 +33,17 @@ Under Linux
 
 You need qt5, gcc>=4.7, bison and flex on your computer, make sure qmake is available in your PATH. At the root of the project, type:
 
-`qmake && make`
+`qmake -r`
 
-to build hexamonkey, and
+to prepare the build. You may specify your lib and bin directory (default /usr/lib and /usr/bin) by typing :
+
+`qmake -r LIBDIR=/my/own/lib BINDIR=/my/own/bin`
+
+then type
+
+`make`
+
+to build hexamonkey. and
 
 `sudo make install`
 

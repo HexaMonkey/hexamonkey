@@ -140,5 +140,11 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 LIBS += -L../core -lhexamonkey
 
-unix: target.path = $$prefix.path/usr/bin
+unix {
+    defined(BINDIR, var) {
+        target.path = $$prefix.path/$$BINDIR
+    } else {
+        target.path = $$prefix.path/usr/bin
+    }
+}
 INSTALLS += target
