@@ -117,3 +117,22 @@ scripts/*.hmc
 !site
 !site/*.php
 !site/*.css
+
+#Test files
+!test
+!test/test.pro
+!test/core
+!test/core/core.pro
+!test/core/formatdetector/formatdetector.pro
+!test/core/formatdetector/*.cpp
+!test/core/formatdetector/*.h
+test/core/formatdetector/moc_*.cpp
+!test/core/util
+!test/core/util/util.pro
+!test/core/util/*.cpp
+!test/core/util/*.h
+test/core/util/moc_*cpp
+!test/ressources/*.avi
+!test/ressources/*.zip
+!test/ressources/*.mov
+!test/ressources/*.ts
