@@ -26,7 +26,8 @@
 int msb(uint8_t byte);
 
 /*!
- * @brief Get a bit mask with the n least siginifigant bits set
+ * @brief Get a bit mask with the n least siginifigant bits set. Behaviour for
+ * i > 8 or i < 0 is unspecified.
  */
 uint8_t lsbMask(int n);
 
