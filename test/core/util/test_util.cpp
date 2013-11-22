@@ -4,6 +4,7 @@
 #include "test_util.h"
 #include "core/util/bitutil.h"
 #include "core/util/csvreader.h"
+#include "core/util/fileutil.h"
 
 void TestUtil::testCSVReader()
 {
@@ -75,6 +76,39 @@ void TestUtil::testBitUtil_popCount()
     QCOMPARE(popCount(9012384), uint8_t(7));
     QCOMPARE(popCount(68719476736), uint8_t(1)); // 2^36
     QCOMPARE(popCount(68719476735), uint8_t(36)); // 2^36-1
+}
+
+
+void TestUtil::testFileUtil_fileExists()
+{
+    QCOMPARE(fileExists("../../ressources/fake_zip.zip"), true);
+    QCOMPARE(fileExists("../../ressources/some_imaginary_file"), false);
+}
+
+void TestUtil::testFileUtil_getFile()
+{
+    QCOMPARE(getFile({"../../ressources/"}, "fake_zip.zip"),
+                                std::string("../../ressources/fake_zip.zip"));
+}
+
+void TestUtil::testFileUtil_getDirContent()
+{
+    std::vector<std::string> content;
+    getDirContent("some/imaginary/dir", content);
+    QCOMPARE(content.size(), std::vector<std::string>::size_type(0));
+    content.clear();
+    getDirContent("../../../models/", content);
+
+    // Keep this list up to date.
+    QCOMPARE(find(content.begin(), content.end(), "hmcmodel.csv")
+                                                     != content.end(),
+             true);
+    QCOMPARE(find(content.begin(), content.end(), "hmcoperators.csv")
+                                                     != content.end(),
+             true);
+    QCOMPARE(find(content.begin(), content.end(), "mkvmodel.xml")
+                                                     != content.end(),
+             true);
 }
 
 QTEST_APPLESS_MAIN(TestUtil)

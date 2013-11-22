@@ -11,6 +11,9 @@ private slots:
     void testBitUtil_msb();
     void testBitUtil_lsbMask();
     void testBitUtil_popCount();
+    void testFileUtil_fileExists();
+    void testFileUtil_getFile();
+    void testFileUtil_getDirContent();
 };
 
 #endif // TEST_UTIL
