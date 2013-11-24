@@ -134,6 +134,11 @@ test/core/formatdetector/moc_*.cpp
 !test/core/util/*.cpp
 !test/core/util/*.h
 test/core/util/moc_*cpp
+!test/core/main
+!test/core/main/main.pro
+!test/core/main/*.cpp
+!test/core/main/*.h
+test/core/main/moc_*cpp
 !test/ressources/*.avi
 !test/ressources/*.zip
 !test/ressources/*.mov
