@@ -117,3 +117,4 @@ void TestFormatDetector::testStandardFormatDetector()
     QCOMPARE(detector.getFormat(fake_zip_file), zip_str);
 }
 
+QTEST_APPLESS_MAIN(TestFormatDetector)

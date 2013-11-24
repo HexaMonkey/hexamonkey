@@ -7,8 +7,6 @@ INCLUDEPATH += ../../../
 
 HEADERS += test_formatdetector.h
 
-SOURCES += \
-    test_formatdetector.cpp \
-    main.cpp
+SOURCES += test_formatdetector.cpp
 
 LIBS += -L../../../core -lhexamonkey
