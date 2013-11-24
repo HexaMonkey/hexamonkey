@@ -5,6 +5,9 @@
 #include "core/util/bitutil.h"
 #include "core/util/csvreader.h"
 #include "core/util/fileutil.h"
+#include "core/util/iterutil.h"
+#include "core/util/ptrutil.h"
+#include "core/util/strutil.h"
 
 void TestUtil::testCSVReader()
 {
@@ -109,6 +112,115 @@ void TestUtil::testFileUtil_getDirContent()
     QCOMPARE(find(content.begin(), content.end(), "mkvmodel.xml")
                                                      != content.end(),
              true);
+}
+
+void TestUtil::testStrUtil_strTo()
+{
+    QCOMPARE(strTo<int>(std::string("10.0")), int(10));
+    QCOMPARE(strTo<int>(std::string("-23.1")), int(-23));
+    QCOMPARE(strTo<char>(std::string("c")), char('c'));
+}
+
+void TestUtil::testStrUtil_toStr()
+{
+    QCOMPARE(toStr<int>(125), std::string("125"));
+    QCOMPARE(toStr<char>('b'), std::string("b"));
+    QCOMPARE(toStr<int>(-23), std::string("-23"));
+}
+
+void TestUtil::testStrUtil_toHex()
+{
+    // maybe unwanted behaviour for char ?
+    QCOMPARE(toHex<char>('c'), std::string("c"));
+
+    QCOMPARE(toHex<int>(20), std::string("14"));
+}
+
+void TestUtil::testStrUtil_intDisplay()
+{
+    QCOMPARE(intDisplay<int>(12345, 10), std::string("12345"));
+    QCOMPARE(intDisplay<int>(12345, 8), std::string("030071"));
+}
+
+void TestUtil::testStrUtil_fromHex()
+{
+    QCOMPARE(fromHex('3'), int(3));
+    QCOMPARE(fromHex('c'), int(12));
+    QCOMPARE(fromHex(std::string("10")), uint64_t(16));
+    QCOMPARE(fromHex(std::string("12345")), uint64_t(74565));
+}
+
+void TestUtil::testStrUtil_formatDate()
+{
+    QCOMPARE(formatDate(0), std::string("31-12-1969 00:00:00 GMT"));
+    QCOMPARE(formatDate(1385306654), std::string("23-11-2013 15:24:14 GMT"));
+}
+
+void TestUtil::testStrUtil_formatDuration()
+{
+    QCOMPARE(formatDuration(2), std::string("2s"));
+    QCOMPARE(formatDuration(10000), std::string("2h46m40s"));
+}
+
+void TestUtil::testStrUtil_langageRepresentation()
+{
+    QFAIL("How does it work?");
+    // std::cout << langageRepresentation(250) << std::endl;
+}
+
+void TestUtil::testStrUtil_extension()
+{
+    QCOMPARE(extension("example.avi"), std::string("avi"));
+    QCOMPARE(extension("example2.test.avi"), std::string("avi"));
+}
+
+void TestUtil::testStrUtil_sizeDisplay()
+{
+    QCOMPARE(sizeDisplay(0), std::string("0 byte"));
+    QCOMPARE(sizeDisplay(8), std::string("1 byte"));
+    QCOMPARE(sizeDisplay(10), std::string("10 bits"));
+    QCOMPARE(sizeDisplay(2048*8), std::string("2 kB"));
+    QCOMPARE(sizeDisplay(1234567890), std::string("147.2 MB"));
+    QCOMPARE(sizeDisplay(1234567890000), std::string("143.7 GB"));
+}
+
+void TestUtil::testStrUtil_defineStyle()
+{
+    QCOMPARE(defineStyle("thisShouldWorkJustFine"),
+             std::string("THIS_SHOULD_WORK_JUST_FINE"));
+}
+
+void TestUtil::testOptOwnPtr()
+{
+    // since no operation is done on T, using an int
+    OptOwnPtr<int> ptr;
+    QCOMPARE(ptr.get() == nullptr, true);
+    QCOMPARE(ptr == false, true); // bool() operator
+
+    OptOwnPtr<int> ptr2(OptOwnPtr<int>::move(new int(3)));
+    QCOMPARE(ptr2 == true, true);
+    QCOMPARE(*ptr2, 3);
+    *ptr2 += 2;
+    QCOMPARE(*ptr2, 5);
+
+    int val3 = 12;
+    OptOwnPtr<int> ptr3(OptOwnPtr<int>::ref(val3));
+    QCOMPARE(ptr3 == true, true);
+    QCOMPARE(ptr3.get(), &val3);
+    QCOMPARE(*ptr3, val3);
+    ++val3;
+    QCOMPARE(*ptr3, val3);
+}
+
+void TestUtil::testIterationWrapper()
+{
+    std::vector<std::string> strings({"a", "b", "c", "d"});
+    auto str_it = reverse(strings).begin();
+    QCOMPARE(*str_it, std::string("d"));
+    QCOMPARE(*(++str_it), std::string("c"));
+    QCOMPARE(*(++str_it), std::string("b"));
+    QCOMPARE(*(++str_it), std::string("a"));
+    QCOMPARE(++str_it, reverse(strings).end());
 }
 
 QTEST_APPLESS_MAIN(TestUtil)

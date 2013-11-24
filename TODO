@@ -10,6 +10,7 @@
 = nicer display for flags
 = CLI mode
 = unit testing
+
 = allow to mix big-endian and little endian integers in the same file
 
 *************
