@@ -568,7 +568,20 @@ bool operator==(const Variant& a, const Variant& b)
 
     if(a._type != b._type)
     {
-        if(b.canConvertTo(a.type()))
+        if(b._type == Variant::Type::floating)
+        {
+            if(a.canConvertTo(b._type))
+            {
+                Variant converted = a;
+                converted.convertTo(b._type);
+                return b == converted;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if(b.canConvertTo(a.type()))
         {
             Variant converted = b;
             converted.convertTo(a._type);
