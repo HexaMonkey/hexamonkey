@@ -1,10 +1,9 @@
 
-QT += testlib widgets
-TARGET = test_formatdetector
-CONFIG += testcase c++11
-TEMPLATE = app
-INCLUDEPATH += . \
-    ../../../
+! include( ../../test_common.pri ) {
+    error( Could not find the test_common.pri file! )
+}
+
+INCLUDEPATH += ../../../
 
 HEADERS += test_formatdetector.h
 

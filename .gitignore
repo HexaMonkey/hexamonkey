@@ -121,6 +121,7 @@ scripts/*.hmc
 #Test files
 !test
 !test/test.pro
+!test/test_common.pri
 !test/core
 !test/core/core.pro
 !test/core/formatdetector/formatdetector.pro
