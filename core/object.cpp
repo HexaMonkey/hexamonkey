@@ -111,7 +111,7 @@ int Object::numberOfChildren() const
 
 Object *Object::access(int64_t index, bool forceParse)
 {
-    if(index < numberOfChildren())
+    if(index >=0 && index < numberOfChildren())
     {
         return _children[index];
     }
