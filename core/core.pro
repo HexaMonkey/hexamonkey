@@ -4,6 +4,7 @@ TEMPLATE = lib
 
 CONFIG += c++11 no_include_pwd
 CONFIG -= qt
+win32: CONFIG += static
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
