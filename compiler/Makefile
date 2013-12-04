@@ -7,6 +7,7 @@ INCPATH=-I../
 .PHONY: all
 all: hexacompiler expcompiler
 
+check:
 
 hexacompiler: compiler.yy.o compiler.tab.o
 	$(CC) $(CFLAGS) -o $@ $^
