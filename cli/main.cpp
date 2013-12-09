@@ -26,6 +26,11 @@
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
 
+#if defined(PLATFORM_WIN32)
+    #include <windef.h>
+    #include <winbase.h>
+#endif
+
 int main(int argc, char *argv[])
 {
 

@@ -4,8 +4,8 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS = compiler \
-          core \
+unix: SUBDIRS += compiler
+SUBDIRS += core \
           cli \
           gui \
           test
