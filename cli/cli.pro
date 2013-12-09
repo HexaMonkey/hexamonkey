@@ -1,4 +1,8 @@
 
+! include( ../common_link.pri ) {
+error( "Could not find the common_link.pri file!" )
+}
+
 CONFIG += c++11 no_include_pwd
 CONFIG -= qt
 
@@ -83,8 +87,6 @@ OTHER_FILES += \
     ../models/hmcmodel.csv
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
-
-LIBS += -L../core -lhexamonkey
 
 unix {
     defined(BINDIR, var) {

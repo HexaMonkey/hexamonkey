@@ -10,6 +10,8 @@
 !README.md
 !TODO
 
+!common_link.pri
+
 #core of the program
 !core
 !core/core.pro
