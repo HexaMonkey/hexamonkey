@@ -62,7 +62,7 @@
 #include <QIcon>
 
 #include "core/moduleloader.h"
-#include "core/interpreter/programloader.h"
+#include "qtprogramloader.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/modules/standard/standardmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
@@ -121,11 +121,11 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
     moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
 
-    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
+    QtProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
-    moduleLoader.addDirectories(scriptsDirs, programLoader);
+    moduleLoader.addDirectories(scriptsDirs, static_cast<const ProgramLoader&>(programLoader));
 
-    MainWindow window(moduleLoader, programLoader);
+    MainWindow window(moduleLoader, static_cast<const ProgramLoader&>(programLoader));
 
     window.setWindowTitle("HexaMonkey");
     QIcon icon(getFile(logoDirs, "logo.svg").c_str());

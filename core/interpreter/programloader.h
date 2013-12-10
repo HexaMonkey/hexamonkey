@@ -74,6 +74,10 @@ public:
      */
     Program fromFile(const std::string& basePath) const;
 
+protected:
+    virtual bool executeCommand(const std::string& program, const std::vector<std::string>& arguments) const;
+    virtual long long lastModified(const std::string& file) const;
+
 private:
     enum Mode {file, expression};
     Program fromHM (const std::string& path, int mode) const;

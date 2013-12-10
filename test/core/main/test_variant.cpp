@@ -50,7 +50,7 @@ void TestVariant::integer()
     QCOMPARE(var.type(), Variant::Type::integer);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124));
-    QCOMPARE(var.toInteger(), int(123));
+    QCOMPARE(var.toInteger(), 123LL);
     QCOMPARE(var.toDouble(), double(123.0));
 
     QCOMPARE(var++, Variant(123));
@@ -113,7 +113,7 @@ void TestVariant::unsignedInteger()
     QCOMPARE(var.type(), Variant::Type::unsignedInteger);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124));
-    QCOMPARE(var.toInteger(), int(123));
+    QCOMPARE(var.toInteger(), 123LL);
     QCOMPARE(var.toDouble(), double(123.0));
 
     QCOMPARE(var++, Variant(123));
@@ -176,7 +176,7 @@ void TestVariant::floating()
     QCOMPARE(var.type(), Variant::Type::floating);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124.4));
-    QCOMPARE(var.toInteger(), int(123));
+    QCOMPARE(var.toInteger(), 123LL);
 
     QCOMPARE(var++, Variant(123.4));
     QCOMPARE(var, Variant(124.4));

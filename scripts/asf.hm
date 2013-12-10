@@ -165,7 +165,7 @@ class CodecEntry
 	WORD CodecDescriptionLength;
 	WString(CodecDescriptionLength) CodecDescription;
 	WORD CodecInformationLength;
-	Data(8*CodecInformationLength) CodecInformation;
+	Data(CodecInformationLength<<3) CodecInformation;
 }
 
 class CodecListObject as OBJECT("86D15240-311D-11D0-A3A4-00A0C90348F6")
@@ -484,7 +484,7 @@ class EncryptedObjectRecord
 {
 	WORD EncryptedObjectIDType;
 	WORD EncryptedObjectIDLength;
-	Data(8*EncryptedObjectIDLength) EncryptedObjectID;
+	Data(EncryptedObjectIDLength<<3) EncryptedObjectID;
 }
 
 class ContentEncryptionRecord
@@ -494,7 +494,7 @@ class ContentEncryptionRecord
 	WORD  EncryptedObjectRecordCount;
 	EncryptedObjectRecord EncryptedObjectRecords[EncryptedObjectRecordCount];
 	DWORD DataSize;
-	Data(8*DataSize) Data;
+	Data(DataSize<<3) Data;
 }
 
 class AdvancedContentEncryptionObject as OBJECT("43058533-6981-49E6-9B74-AD12CB86D58C")
@@ -517,7 +517,7 @@ class AudioMedia as Media("F8699E40-5B4D-11CF-A8FD-00805F5C442B")
 	WORD  BlockAlignment;
 	WORD  BitsPerSample;
 	WORD  CodecSpecificDataSize;
-	Data(8*CodecSpecificDataSize) CodecSpecificData;
+	Data(CodecSpecificDataSize<<3) CodecSpecificData;
 }
 
 class VideoFormatData
@@ -563,7 +563,7 @@ class DegradableJPEGMedia as Media("35907DE0-E415-11CF-A917-00805F5C442B")
 	WORD Reserved;
 	WORD Reserved;
 	WORD InterchangeDataLength;
-	Data(8*InterchangeDataLength) InterchangeData;
+	Data(InterchangeDataLength<<3) InterchangeData;
 }
 
 class FileTransferMedia as Media("91BD222C-F21C-497A-8B6D-5AA86BFC0185"),
@@ -576,7 +576,7 @@ class FileTransferMedia as Media("91BD222C-F21C-497A-8B6D-5AA86BFC0185"),
 	DWORD SampleSize;
 	GUID  FormatType;
 	DWORD FormatDataSize;
-	Data(8*FormatDataSize) FormatData; 
+	Data(FormatDataSize<<3) FormatData; 
 }
 
 class ErrorCorrection(Id, size)
@@ -592,7 +592,7 @@ class AudioSpread as ErrorCorrection("BFC3CD50-618F-11CF-8BB2-00AA00B4E220")
 	WORD VirtualPacketLength;
 	WORD VirtualChunkLength;
 	WORD SilenceDataLength;
-	Data(8*SilenceDataLength) SilenceData;
+	Data(SilenceDataLength<<3) SilenceData;
 }
 
 function WORDTYPE(const flags)
@@ -652,8 +652,8 @@ class DataPacket(size) extends Data(size)
 		(%WORDTYPE(MediaObjectNumberType))           MediaObjectNumber;
 		(%WORDTYPE(OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
 		(%WORDTYPE(ReplicatedDataLengthType))        ReplicatedDataLength;
-		Data(8*ReplicatedDataLength) ReplicatedDataLength;
-		Payload(@size-@pos-8*PaddingLength) Payload;
+		Data(ReplicatedDataLength<<3) ReplicatedDataLength;
+		Payload(@size-@pos-(PaddingLength<<3)) Payload;
 		Data Padding;
 	}
 }
@@ -664,7 +664,7 @@ class MPayload
 	(%WORDTYPE(@parent.@parent.MediaObjectNumberType))           MediaObjectNumber;
 	(%WORDTYPE(@parent.@parent.OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
 	(%WORDTYPE(@parent.@parent.ReplicatedDataLengthType))        ReplicatedDataLength;
-	Data(8*ReplicatedDataLength) ReplicatedData;
+	Data(ReplicatedDataLength<<3) ReplicatedData;
 	(%WORDTYPE(@parent.@parent.PayloadLengthType)) PayloadLength;
 	//@size = 8*PayloadLength;
 	//Data PayloadData;

@@ -16,15 +16,8 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <sstream>
-#ifdef USE_QT
-#include <QProcess>
-#include <QDir>
-#include <QFileInfo>
-#include <QDateTime>
-#else
 #include <cstdlib>
 #include <cstdio>
-#endif
 
 #include "compiler/model.h"
 #include "core/modules/default/defaulttypes.h"
@@ -83,7 +76,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
 #else
     std::cerr<<"Error: unsuported operating system"<<std::endl;
-    return 0;
+    return Program();
 #endif
 
 
@@ -100,51 +93,21 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
         return Program();
     }
 
+    const std::vector<std::string> arguments = {path, outputPath};
+
     std::cerr<<"Program "<<compiler<<std::endl;
     std::cerr<<"Arguments "<<path<<" "<<outputPath<<std::endl;
 
-#ifdef USE_QT
-    QProcess process;
-    QStringList arguments;
-    arguments<<QString(path.c_str())<<QString(outputPath.c_str());
+    bool success = executeCommand(compiler, arguments);
 
-    process.start(QString(compiler.c_str()), arguments);
-    process.waitForFinished();
-    std::string output =  QString(process.readAllStandardOutput()).toStdString();
-    std::string error  = QString(process.readAllStandardError()).toStdString();
-
-    if(!output.empty())
+    if(success)
     {
-        std::cerr<<"Compiler output : "<<output<<std::endl;
+        return fromHMC(outputPath);
     }
-
-    if(!error.empty())
+    else
     {
-        std::cerr<<"Compiler error : "<<error<<std::endl;
         return Program();
     }
-#else
-    std::stringstream commandStream;
-
-    commandStream<<compiler<<" "<<path<<" "<<outputPath;
-    std::string s = commandStream.str();
-    
-#ifdef PLATFORM_LINUX
-    FILE *f = popen(s.c_str(), "r");
-    while (!feof(f)) {
-        char buf[512];
-        int r = fread(buf, 1, 512, f);
-        std::cerr.write(buf, r);
-    }
-    
-    int err = pclose(f);
-    std::cerr<<"Compiler status: "<<err<<std::endl;
-#else
-    _pclose(_popen(s.c_str(), "r"));
-#endif
-
-#endif
-    return fromHMC(outputPath);
 }
 
 Program ProgramLoader::fromHMC(const std::string &path) const
@@ -174,36 +137,74 @@ Program ProgramLoader::fromFile(const std::string &path) const
     std::string hmPath  = path+".hm";
     std::string hmcPath = path+".hmc";
 
-#ifdef USE_QT
-
-    QFileInfo hmInfo(hmPath.c_str());
-    QFileInfo hmcInfo(hmcPath.c_str());
-    if(!hmInfo.exists())
+    if(fileExists(hmPath))
     {
-        if(!hmcInfo.exists())
-        {
-            std::cerr<<"Description file not found: "<<hmPath<<std::endl;
-            return Program();
+        if(fileExists(hmcPath)) {
+            long long hmcLastModified = lastModified(hmcPath);
+            long long hmLastModified  = lastModified(hmPath);
+            if(hmLastModified != -1 && hmLastModified != -1 && hmLastModified < hmcLastModified)
+            {
+                std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
+                return fromHMC(hmcPath);
+            }
         }
+        std::cerr<<"Compile description file : "<<hmPath<<std::endl;
+        return fromHM(hmPath, ProgramLoader::file);
+    }
+    else if(fileExists(hmcPath))
+    {
         std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
         return fromHMC(hmcPath);
     }
     else
     {
-        if(!hmcInfo.exists() || hmcInfo.lastModified() < hmInfo.lastModified())
-        {
-            std::cerr<<"Compile description file : "<<hmPath<<std::endl;
-            return fromHM(hmPath, ProgramLoader::file);
-        }
-        std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
-        return fromHMC(hmcPath);
+        std::cerr<<"Description file not found: "<<hmPath<<std::endl;
     }
-#else
-    if(fileExists(hmPath))
-        return fromHM(hmPath, ProgramLoader::file);
-    else if(fileExists(hmcPath))
-        return fromHMC(hmcPath);
 
     return Program();
+}
+
+#ifdef PLATFORM_LINUX
+#define __POPEN popen
+#define __PCLOSE pclose
+#else
+#define __POPEN _popen
+#define __PCLOSE _pclose
 #endif
+
+bool ProgramLoader::executeCommand(const std::string &program, const std::vector<std::string> &arguments) const
+{
+    std::stringstream commandStream;
+
+    commandStream<<program;
+    for(const std::string& argument : arguments)
+    {
+        commandStream<<" "<<argument;
+    }
+
+    std::string s = commandStream.str();
+
+
+    FILE *f = __POPEN(s.c_str(), "r");
+    if(f == nullptr)
+    {
+        return false;
+    }
+
+    while (!feof(f)) {
+        char buf[512];
+        int r = fread(buf, 1, 512, f);
+        std::cerr.write(buf, r);
+    }
+
+    int status = __PCLOSE(f);
+    std::cerr<<"Compiler status: "<<status<<std::endl;
+
+    return (status == EXIT_SUCCESS);
+}
+
+// TODO
+long long ProgramLoader::lastModified(const std::string &/*file*/) const
+{
+    return -1LL;
 }

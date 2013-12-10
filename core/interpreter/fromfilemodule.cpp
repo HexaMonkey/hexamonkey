@@ -255,16 +255,17 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
     {
         if(classDeclaration.tag() == CLASS_DECLARATION)
         {
-            const std::string& name = classDeclaration.node(0).node(0).node(0).payload().toString();
+            Program classInfo = classDeclaration.node(0);
+            const std::string& name = classInfo.node(0).node(0).payload().toString();
             const ObjectTypeTemplate& childTemplate = getTemplate(name);
 
             //Choose extension program
             //By defaut "extension"
-            Program extension = classDeclaration.node(0).node(1);
+            Program extension = classInfo.node(1);
             //If there is no "extension" then "specification" is taken
             if(extension.size() == 0)
             {
-                extension = classDeclaration.node(0).node(2);
+                extension = classInfo.node(2);
                 if(extension.size() == 0)
                     continue;
             }
