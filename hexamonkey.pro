@@ -6,8 +6,8 @@ CONFIG += ordered
 
 unix: SUBDIRS += compiler
 SUBDIRS += core \
-          cli \
           gui \
+          cli \
           test
 
 scripts.files = scripts/*.hm

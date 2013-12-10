@@ -68,6 +68,74 @@ SOURCES += \
   modules/default/dataparser.cpp \
   util/osutil.cpp
 
+HEADERS  += variant.h \
+    showcase.h \
+    parser.h \
+    objecttypetemplate.h \
+    objecttype.h \
+    object.h \
+    moduleloader.h \
+    module.h \
+    mapmodule.h \
+    file.h \
+    containerparser.h \
+    formatdetector/syncbyteformatdetector.h \
+    formatdetector/standardformatdetector.h \
+    formatdetector/magicformatdetector.h \
+    formatdetector/formatdetector.h \
+    formatdetector/extensionformatdetector.h \
+    formatdetector/compositeformatdetector.h \
+    interpreter/variablepath.h \
+    interpreter/variable.h \
+    interpreter/program.h \
+    interpreter/programloader.h \
+    interpreter/fromfileparser.h \
+    interpreter/fromfilemodule.h \
+    interpreter/filter.h \
+    interpreter/evaluator.h \
+    interpreter/blockexecution.h \
+    interpreter/scope/typescope.h \
+    interpreter/scope/scope.h \
+    interpreter/scope/objectscope.h \
+    interpreter/scope/localscope.h \
+    interpreter/scope/functionscope.h \
+    interpreter/scope/compositescope.h \
+    modules/default/tupleparser.h \
+    modules/default/fileparser.h \
+    modules/default/defaulttypes.h \
+    modules/default/defaultmodule.h \
+    modules/default/arrayparser.h \
+    modules/standard/wordparser.h \
+    modules/standard/standardtypes.h \
+    modules/standard/standardmodule.h \
+    modules/standard/intparser.h \
+    modules/standard/floatparser.h \
+    modules/standard/bitparser.h \
+    modules/ebml/ebmltypes.h \
+    modules/ebml/ebmlsimpleparser.h \
+    modules/ebml/ebmlmodule.h \
+    modules/ebml/ebmlmasterparser.h \
+    modules/ebml/ebmllargeintegerparser.h \
+    modules/ebml/ebmldateparser.h \
+    modules/ebml/ebmlcontainerparser.h \
+    modules/hmc/hmcmodule.h \
+    modules/mkv/mkvtypes.h \
+    modules/mkv/mkvmodule.h \
+    util/unused.h \
+    util/strutil.h \
+    util/iterutil.h \
+    util/fileutil.h \
+    util/csvreader.h \
+    util/bitutil.h \
+    util/rapidxml/rapidxml_utils.hpp \
+    util/rapidxml/rapidxml_print.hpp \
+    util/rapidxml/rapidxml_iterators.hpp \
+    util/rapidxml/rapidxml.hpp \
+    ../compiler/model.h \
+    modules/default/dataparser.h \
+    util/ptrutil.h \
+    util/osutil.h
+
 unix {
     defined(LIBDIR, var) {
         target.path = $$prefix.path/$$LIBDIR
