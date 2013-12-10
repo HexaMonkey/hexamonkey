@@ -18,11 +18,6 @@
 %error-verbose
 
 %{ 
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdarg.h> 
-    #include <stdint.h> 
     #include "ast.h"  
     #include "header.h"
     extern FILE *yyin;   
@@ -36,7 +31,7 @@
     long long          i;
     unsigned long long u;
     char              *s;
-    double               f;
+    double             f;
 }
 
 %token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN
@@ -88,8 +83,11 @@ format_detection_additions:
 
 imports:
     /*empty*/ {push_master(IMPORTS,0);}
-    |imports IMPORT_TOKEN import_list {push_master(IMPORTS,2);}
+    |imports import_token import_list {push_master(IMPORTS, 3);}
 ;
+
+import_token:
+	IMPORT_TOKEN {push_line();}
 
 import_list:
     identifier {push_master(IMPORTS,1);}
@@ -113,10 +111,16 @@ magic_number:
 ;
 
 class_declaration:    
-    CLASS_TOKEN class_info class_definition {push_master(CLASS_DECLARATION, 2);}
-   |CLASS_TOKEN class_infos class_definition 
+    class_token class_info class_definition {push_master(CLASS_DECLARATION, 3);}
+   |class_token class_infos class_definition 
     {
         stash(1);
+		
+	    copy_stashed(1);
+		push_master(CLASS_DECLARATION, 3);
+		push_master(CLASS_DECLARATIONS, 2);
+		unstash(0);
+		--infos;
         while(infos>0)
         {
             copy_stashed(1);
@@ -130,6 +134,9 @@ class_declaration:
     }
 ;
 
+class_token:
+	CLASS_TOKEN {push_line();}
+
 class_info:
     type_template extension specification {push_master(CLASS_INFO, 3);}
 
@@ -138,8 +145,14 @@ class_infos:
    |class_infos ',' class_info {stash(0);++infos;}
  
 forward:
-    FORWARD_TOKEN type TO_TOKEN type {push_master(FORWARD, 2);}
-    
+    forward_token type to_token type {push_master(FORWARD, 4);}
+
+forward_token:
+	FORWARD_TOKEN {push_line();}
+
+to_token:
+	TO_TOKEN {push_line();}
+	
 type_template:
      identifier type_template_argument_list {push_master(TYPE_TEMPLATE, 2);}
 ;
@@ -147,7 +160,7 @@ type_template:
 type_template_argument_list:
     /*empty*/ {push_master(ARGUMENT_DECLARATIONS, 0);}
     |'(' ')' {push_master(ARGUMENT_DECLARATIONS, 0);}
-    |'(' type_template_arguments ')'    
+    |'(' type_template_arguments ')'
 ;
 
 type_template_arguments:
@@ -156,8 +169,11 @@ type_template_arguments:
 ;
 
 function_declaration:
-    FUNCTION_TOKEN identifier function_arguments execution_block {push_master(FUNCTION_DECLARATION, 3);}
+    function_token identifier function_arguments execution_block {push_master(FUNCTION_DECLARATION, 4);}
 ;
+
+function_token:
+	FUNCTION_TOKEN {push_line();}
 
 function_arguments:
     '(' function_argument_list ')'
@@ -205,12 +221,18 @@ right_value_argument_list:
 
 extension:
     /*empty*/ {push_master(EXTENSION,0);}
-   | EXTENDS_TOKEN type {push_master(EXTENSION,1);}
+   | extends_token type {push_master(EXTENSION,2);}
+
+extends_token:
+	EXTENDS_TOKEN {push_line();}
    
 specification:
     /*empty*/ {push_master(SPECIFICATION,0);}
-   | AS_TOKEN type {push_master(SPECIFICATION,1);}
+   | as_token type {push_master(SPECIFICATION,2);}
 
+as_token:
+	AS_TOKEN {push_line();}
+   
 class_definition:
     /*empty*/ {push_master(EXECUTION_BLOCK, 0);push_master(EXECUTION_BLOCK, 0); push_master(CLASS_DEFINITION, 2);}
    |execution_block {push_master(EXECUTION_BLOCK, 0); push_master(CLASS_DEFINITION, 2);}
@@ -219,7 +241,7 @@ class_definition:
 execution_block:
      ';' {push_master(EXECUTION_BLOCK, 0);}
     | statement {push_master(EXECUTION_BLOCK, 1);}
-    |'{' statements '}'
+    |'{' statements '}' {push_master(EXECUTION_BLOCK, 1);}
 ;
         
 statements:
@@ -227,7 +249,7 @@ statements:
   | statements statement  {push_master(EXECUTION_BLOCK, 2);}
   
 statement:
-    simple_statement';'
+    simple_statement ';'
    |conditional_statement
    |loop
    |for_loop
@@ -244,20 +266,23 @@ simple_statement:
 ;   
 
 break:
-    BREAK_TOKEN {push_master(BREAK, 0);}
+    BREAK_TOKEN {push_line(); push_master(BREAK, 1);}
     
 continue:
-    CONTINUE_TOKEN {push_master(CONTINUE, 0);}
+    CONTINUE_TOKEN {push_line(); push_master(CONTINUE, 1);}
     
 return:
-    RETURN_TOKEN {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(RETURN, 1);}
-   |RETURN_TOKEN right_value {push_master(RETURN, 1);}
+    return_token {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(RETURN, 2);}
+   |return_token right_value {push_master(RETURN, 2);}
 
+return_token:
+	RETURN_TOKEN {push_line();}
 
 declaration:
     _declaration {push_integer(SHOWCASED, 0); push_master(DECLARATION, 3);}
    |_declaration SHOWCASED_TOKEN {push_integer(SHOWCASED, 1); push_master(DECLARATION, 3);}
     
+
 _declaration:   
     type_access name_identifier 
    |_declaration '['']' {
@@ -287,9 +312,12 @@ _declaration:
 
                                         
 local_declaration:   
-    VAR_TOKEN identifier {push_master(LOCAL_DECLARATION, 1);}  
-   |VAR_TOKEN identifier '=' right_value{push_master(LOCAL_DECLARATION, 2);}  
+    var_token identifier {push_master(LOCAL_DECLARATION, 2);}  
+   |var_token identifier '=' right_value{push_master(LOCAL_DECLARATION, 3);}  
 ;
+
+var_token:
+	VAR_TOKEN {push_line();}
 
 identifier:
     IDENT {push_string(IDENTIFIER, $1);}
@@ -309,48 +337,48 @@ name_identifier:
    |'#'   {push_string(IDENTIFIER, "#");}
     
 right_value:
-     right_value '=' right_value {handle_binary_op(ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value RIGHT_ASSIGN_TOKEN right_value {handle_binary_op(RIGHT_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value LEFT_ASSIGN_TOKEN right_value {handle_binary_op(LEFT_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value ADD_ASSIGN_TOKEN right_value {handle_binary_op(ADD_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value SUB_ASSIGN_TOKEN right_value {handle_binary_op(SUB_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value MUL_ASSIGN_TOKEN right_value {handle_binary_op(MUL_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value DIV_ASSIGN_TOKEN right_value {handle_binary_op(DIV_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value MOD_ASSIGN_TOKEN right_value {handle_binary_op(MOD_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value AND_ASSIGN_TOKEN right_value {handle_binary_op(AND_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value XOR_ASSIGN_TOKEN right_value {handle_binary_op(XOR_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value OR_ASSIGN_TOKEN right_value {handle_binary_op(OR_ASSIGN_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '?' right_value ':' right_value {handle_ternary_op(TERNARY_OP);push_master(RIGHT_VALUE,4);}
-    |right_value OR_TOKEN right_value {handle_binary_op(OR_OP);push_master(RIGHT_VALUE,3);}
-    |right_value AND_TOKEN right_value {handle_binary_op(AND_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '|' right_value {handle_binary_op(BITWISE_OR_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '^' right_value {handle_binary_op(BITWISE_XOR_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '&' right_value {handle_binary_op(BITWISE_AND_OP);push_master(RIGHT_VALUE,3);}
-    |right_value EQ_TOKEN right_value {handle_binary_op(EQ_OP);push_master(RIGHT_VALUE,3);}
-    |right_value NE_TOKEN right_value {handle_binary_op(NE_OP);push_master(RIGHT_VALUE,3);}
-    |right_value GE_TOKEN right_value {handle_binary_op(GE_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '>' right_value {handle_binary_op(GT_OP);push_master(RIGHT_VALUE,3);}
-    |right_value LE_TOKEN right_value {handle_binary_op(LE_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '<' right_value {handle_binary_op(LT_OP);push_master(RIGHT_VALUE,3);}
-    |right_value RIGHT_TOKEN right_value {handle_binary_op(RIGHT_OP);push_master(RIGHT_VALUE,3);}
-    |right_value LEFT_TOKEN right_value {handle_binary_op(LEFT_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '+' right_value {handle_binary_op(ADD_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '-' right_value {handle_binary_op(SUB_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '*' right_value {handle_binary_op(MUL_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '/' right_value {handle_binary_op(DIV_OP);push_master(RIGHT_VALUE,3);}
-    |right_value '%' right_value {handle_binary_op(MOD_OP);push_master(RIGHT_VALUE,3);}  
-    |'!' right_value {handle_unary_op(NOT_OP);push_master(RIGHT_VALUE, 2);}
-    |'~' right_value {handle_unary_op(BITWISE_NOT_OP);push_master(RIGHT_VALUE, 2);}
-    |'-' %prec OPP right_value {handle_unary_op(OPP_OP);push_master(RIGHT_VALUE, 2);}
-    |INC_TOKEN right_value {handle_unary_op(PRE_INC_OP);push_master(RIGHT_VALUE, 2);}
-    |DEC_TOKEN right_value {handle_unary_op(PRE_DEC_OP);push_master(RIGHT_VALUE, 2);}
-    |right_value INC_TOKEN %prec SUF_INC {handle_unary_op(SUF_INC_OP);push_master(RIGHT_VALUE, 2);}
-    |right_value DEC_TOKEN %prec SUF_DEC {handle_unary_op(SUF_DEC_OP);push_master(RIGHT_VALUE, 2);}
-    |constant_value {push_master(RIGHT_VALUE, 1);}
-    |variable {push_master(RIGHT_VALUE, 1);}
-    |explicit_type {push_master(RIGHT_VALUE, 1);}
-    |function_identifier right_value_arguments {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
-    |'('right_value')'
+     right_value '=' right_value                 {handle_op(ASSIGN_OP);}
+    |right_value RIGHT_ASSIGN_TOKEN right_value  {handle_op(RIGHT_ASSIGN_OP);}
+    |right_value LEFT_ASSIGN_TOKEN right_value   {handle_op(LEFT_ASSIGN_OP);}
+    |right_value ADD_ASSIGN_TOKEN right_value    {handle_op(ADD_ASSIGN_OP);}
+    |right_value SUB_ASSIGN_TOKEN right_value    {handle_op(SUB_ASSIGN_OP);}
+    |right_value MUL_ASSIGN_TOKEN right_value    {handle_op(MUL_ASSIGN_OP);}
+    |right_value DIV_ASSIGN_TOKEN right_value    {handle_op(DIV_ASSIGN_OP);}
+    |right_value MOD_ASSIGN_TOKEN right_value    {handle_op(MOD_ASSIGN_OP);}
+    |right_value AND_ASSIGN_TOKEN right_value    {handle_op(AND_ASSIGN_OP);}
+    |right_value XOR_ASSIGN_TOKEN right_value    {handle_op(XOR_ASSIGN_OP);}
+    |right_value OR_ASSIGN_TOKEN right_value     {handle_op(OR_ASSIGN_OP);}
+    |right_value '?' right_value ':' right_value {handle_op(TERNARY_OP);}
+    |right_value OR_TOKEN right_value            {handle_op(OR_OP);}
+    |right_value AND_TOKEN right_value           {handle_op(AND_OP);}
+    |right_value '|' right_value                 {handle_op(BITWISE_OR_OP);}
+    |right_value '^' right_value                 {handle_op(BITWISE_XOR_OP);}
+    |right_value '&' right_value                 {handle_op(BITWISE_AND_OP);}
+    |right_value EQ_TOKEN right_value            {handle_op(EQ_OP);}
+    |right_value NE_TOKEN right_value            {handle_op(NE_OP);}
+    |right_value GE_TOKEN right_value            {handle_op(GE_OP);}
+    |right_value '>' right_value                 {handle_op(GT_OP);}
+    |right_value LE_TOKEN right_value            {handle_op(LE_OP);}
+    |right_value '<' right_value                 {handle_op(LT_OP);}
+    |right_value RIGHT_TOKEN right_value         {handle_op(RIGHT_OP);}
+    |right_value LEFT_TOKEN right_value          {handle_op(LEFT_OP);}
+    |right_value '+' right_value                 {handle_op(ADD_OP);}
+    |right_value '-' right_value                 {handle_op(SUB_OP);}
+    |right_value '*' right_value                 {handle_op(MUL_OP);}
+    |right_value '/' right_value                 {handle_op(DIV_OP);}
+    |right_value '%' right_value                 {handle_op(MOD_OP);}  
+    |'!' right_value                             {handle_op(NOT_OP);}
+    |'~' right_value                             {handle_op(BITWISE_NOT_OP);}
+    |'-' %prec OPP right_value                   {handle_op(OPP_OP);}
+    |INC_TOKEN right_value                       {handle_op(PRE_INC_OP);}
+    |DEC_TOKEN right_value                       {handle_op(PRE_DEC_OP);}
+    |right_value INC_TOKEN %prec SUF_INC         {handle_op(SUF_INC_OP);}
+    |right_value DEC_TOKEN %prec SUF_DEC         {handle_op(SUF_DEC_OP);}
+    |constant_value                              {push_master(RIGHT_VALUE, 1);}
+    |variable                                    {push_master(RIGHT_VALUE, 1);}
+    |explicit_type                               {push_master(RIGHT_VALUE, 1);}
+    |function_identifier right_value_arguments   {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
+    |'('right_value')'                          
 ;
 
 constant_value:
@@ -389,17 +417,29 @@ variable:
    |variable '[' ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 2);}
     
 conditional_statement:
-    IF_TOKEN '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,3);}
-   |IF_TOKEN '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(CONDITIONAL_STATEMENT,3);}
+    if_token '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,4);}
+   |if_token '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(CONDITIONAL_STATEMENT,4);}
+
+if_token:
+	IF_TOKEN {push_line();}
    
 loop:
-    WHILE_TOKEN '(' right_value ')' execution_block {push_master(LOOP,2);}
-    
+    while_token '(' right_value ')' execution_block {push_master(LOOP,3);}
+
+while_token:
+	WHILE_TOKEN {push_line();}
+	
 for_loop:
-    FOR_TOKEN '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
-    
+    for_token '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,3);}
+
+for_token:
+	FOR_TOKEN {push_line();}
+	
 do_loop:
-    DO_TOKEN execution_block {stash(0);} WHILE_TOKEN '(' right_value ')' {unstash(0); push_master(DO_LOOP,2);}
+    do_token execution_block {stash(0);} WHILE_TOKEN '(' right_value ')' {unstash(0); push_master(DO_LOOP, 3);}
+	
+do_token:
+	DO_TOKEN {push_line();}
 %%
 
 void yyerror(char const *s)
@@ -448,6 +488,10 @@ int main(int argc, char *argv[])
         for(i = 0; i < headerSize; ++i)
             fputc(header[i], output);
         
+#ifdef STACK_DEBUG
+		dump_stack();
+#endif
+		
         while(!empty()) 
             pop();
         

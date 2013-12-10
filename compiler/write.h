@@ -15,7 +15,14 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#ifndef WRITE_H
+#define WRITE_H
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h> 
+#include <stdint.h> 
 
 int ebml_int_size(uint64_t value)
 {
@@ -106,3 +113,4 @@ write_float(FILE* file, double f)
 	}
 }
 
+#endif

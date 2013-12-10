@@ -24,8 +24,9 @@ WS          [ \t\r]
 
 %{                                                                                          
 #include "compiler.tab.h"
-#include <string.h>                                                                     
-extern int line_number;                                                                     
+#include <string.h>      
+#include "struct.h"                                                               
+extern int line_number;                                                              
 %}                                                                                          
 %option noyywrap                                                                            
  
