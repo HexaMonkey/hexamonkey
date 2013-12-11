@@ -111,6 +111,7 @@ gui/qrc_*.cpp
 !compiler/model.cpp
 !compiler/compiler.flex
 !compiler/compiler.y
+!compiler/struct.h
 
 #Pictures
 !media
