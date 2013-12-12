@@ -183,10 +183,9 @@ Object* Object::lookForType(const ObjectType &targetType, bool forceParse)
     }
 }
 
-void Object::dumpToFile(const std::string &path) const
+void Object::dump(std::ostream &out) const
 {
     std::ifstream in  (file().path(), std::ios::in | std::ios::binary);
-    std::ofstream out (path, std::ios::out | std::ios::binary);
 
     if(size() == -1)
     {
@@ -209,6 +208,12 @@ void Object::dumpToFile(const std::string &path) const
         out.write(buffer, chunkSize);
         done += chunkSize;
     }
+}
+
+void Object::dumpToFile(const std::string &path) const
+{
+    std::ofstream out (path, std::ios::out | std::ios::binary);
+    dump(out);
 }
 
 void Object::seekBeginning()

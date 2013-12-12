@@ -223,7 +223,10 @@ class Object
          */
         Object* lookForType(const ObjectType& type, bool forceParse = false);
 
+        void dump(std::ostream &outStream) const;
+
         void dumpToFile(const std::string& path) const;
+
 
     private:
         friend class Parser;
