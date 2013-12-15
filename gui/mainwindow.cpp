@@ -17,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QHBoxLayout>
+#include <QApplication>
 
 #include "core/moduleloader.h"
 #include "core/interpreter/programloader.h"
@@ -25,10 +26,11 @@
 
 const int MainWindow::maxRecentFiles;
 
-MainWindow::MainWindow(const ModuleLoader &moduleLoader, const ProgramLoader &programLoader, QWidget *parent)
+MainWindow::MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programLoader, std::vector<std::string> scriptsDirs, QWidget *parent)
     : QMainWindow(parent),
       moduleLoader(moduleLoader),
-      programLoader(programLoader)
+      programLoader(programLoader),
+      scriptsDirs(scriptsDirs)
 {
     createActions();
     createMenus();
@@ -100,7 +102,7 @@ void MainWindow::openFile(const std::string& path)
         updateRecentFileActions();
 
         //Create new tree node
-        const Module& module = moduleLoader.getModule(file);
+        const Module& module = moduleLoader->getModule(file);
         treeWidget->setCurrentIndex(treeWidget->addFile(path, module));
     }
 }
@@ -116,17 +118,34 @@ void MainWindow::createActions()
     {
         recentFileActs[i] = new QAction(this);
         recentFileActs[i]->setVisible(false);
-        connect(recentFileActs[i], SIGNAL(triggered()),
-                this, SLOT(openRecentFile()));
+        connect(recentFileActs[i], SIGNAL(triggered()),this, SLOT(openRecentFile()));
     }
+    refreshAct = new QAction("recompile scripts", this);
+    refreshAct->setShortcuts(QKeySequence::Refresh);
+    connect(refreshAct, SIGNAL(triggered()), this, SLOT(refreshment()));
 }
 
+void MainWindow::refreshment()
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QStringList filesOpened;
+    int nbFilesOpened = treeWidget->getModel()->rowCount();
+    for(int i=0;i<nbFilesOpened;++i){
+        QModelIndex index = treeWidget->getModel()->index(0,0,QModelIndex());
+        filesOpened << treeWidget->getModel()->path(index);
+        treeWidget->getModel()->removeItem(index);
+    }
+    moduleLoader->addDirectories(scriptsDirs, programLoader);
+    openFiles(filesOpened);
+    QApplication::restoreOverrideCursor();
+}
 
 
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
+    fileMenu->addAction(refreshAct);
     separatorAct = fileMenu->addSeparator();
     for (int i = 0; i < maxRecentFiles; ++i)
         fileMenu->addAction(recentFileActs[i]);
@@ -190,6 +209,10 @@ void MainWindow::updateRecentFileActions()
         recentFileActs[j]->setVisible(false);
 
     separatorAct->setVisible(numRecentFiles > 0);
+}
+
+TreeWidget* MainWindow::getTreeWidget(){
+    return treeWidget;
 }
 
 #if 0

@@ -29,6 +29,20 @@
 #include "gui/tree/htmldelegate.h"
 #include "gui/hex/hexfilewidget.h"
 
+#include <QAction>
+
+
+#include "qtprogramloader.h"
+#include "core/interpreter/fromfilemodule.h"
+#include "core/modules/standard/standardmodule.h"
+#include "core/modules/ebml/ebmlmodule.h"
+#include "core/modules/hmc/hmcmodule.h"
+#include "core/modules/mkv/mkvmodule.h"
+#include "core/moduleloader.h"
+#include "core/util/fileutil.h"
+#include "core/util/osutil.h"
+
+
 class ModuleLoader;
 class ProgramLoader;
 
@@ -45,13 +59,14 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    MainWindow(const ModuleLoader& moduleLoader, const ProgramLoader& programLoader, QWidget *parent = 0);
+    MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programLoader, std::vector<std::string> scriptsDirs, QWidget *parent = 0);
 
     /**
      * @brief Open a file and set it as the current file in
      * the tree and hex widgets.
      */
     void openFile(const std::string& path);
+    TreeWidget* getTreeWidget();
 
 private slots:
     virtual void dropEvent(QDropEvent *event) final;
@@ -62,26 +77,29 @@ private slots:
     void open();
     void openRecentFile();
     void updateRecentFileActions();
+    void refreshment();
 
 private:
     void openFiles(QStringList paths);
     void createActions();
     void createMenus();
 
-
     TreeWidget* treeWidget;
     HexFileWidget* hexFileWidget;
 
+    std::vector<std::string> scriptsDirs;
     QMenu *fileMenu;
     QAction *openAct;
+    QAction *refreshAct;
     QMenu *recentFilesMenu;
     QAction *separatorAct;
 
-    const ModuleLoader& moduleLoader;
+    ModuleLoader* moduleLoader;
     const ProgramLoader& programLoader;
 
     static const int maxRecentFiles = 5;
     QAction *recentFileActs[maxRecentFiles];
+
 };
 
 #endif // MAINWINDOW_H
