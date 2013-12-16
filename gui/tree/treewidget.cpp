@@ -168,6 +168,11 @@ void TreeWidget::dumpToFile()
     static_cast<TreeObjectItem&>(model->item(current)).object().dumpToFile(QFileDialog::getSaveFileName(this, "Dump to file").toStdString());
 }
 
+TreeModel* TreeWidget::getModel()
+{
+    return model;
+}
+
 QModelIndex TreeWidget::addFile(const std::string &path, const Module &module)
 {
     return model->addFile(path, module);

@@ -54,6 +54,7 @@ public:
     void copy() const;
     void closeFile();
     void dumpToFile();
+    TreeModel* getModel();
 
 signals:
     void pathChanged(QString);
