@@ -40,6 +40,10 @@ TreeItem &TreeModel::item(const QModelIndex &index) const
         return *rootItem;
 }
 
+TreeItem* TreeModel::currentTreeFileItem(){
+    return rootItem;
+}
+
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
     return item(parent).columnCount();

@@ -50,6 +50,7 @@ public:
     TreeModel(const QString &data, const ProgramLoader& programLoader, QObject *parent = 0);
 
     TreeItem& item(const QModelIndex &index) const;
+    TreeItem* currentTreeFileItem();
 
     virtual QVariant data(const QModelIndex &index, int role) const final;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const final;
