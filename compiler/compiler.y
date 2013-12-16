@@ -96,7 +96,7 @@ import_list:
 class_declarations:
     /*empty*/ {push_master(CLASS_DECLARATIONS,0);}
    |class_declarations class_declaration {push_master(CLASS_DECLARATIONS,2);}
-   |class_declarations forward {push_master(CLASS_DECLARATIONS, 2)}
+   |class_declarations forward {push_master(CLASS_DECLARATIONS,2);}
    |class_declarations function_declaration {push_master(CLASS_DECLARATIONS,2);}
 ;
    
