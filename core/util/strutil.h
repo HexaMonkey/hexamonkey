@@ -97,11 +97,6 @@ std::string formatDate(unsigned long secsFrom1970);
 std::string formatDuration(unsigned long duration);
 
 /**
- * @brief Unpack a 3-letter language code from a 16 bits representation
- */
-std::string langageRepresentation(uint16_t isoCode);
-
-/**
  * @brief Get the extension of a file name
  */
 std::string extension(const std::string& path);

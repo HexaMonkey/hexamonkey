@@ -21,7 +21,6 @@ private slots:
     void testStrUtil_fromHex();
     void testStrUtil_formatDate();
     void testStrUtil_formatDuration();
-    void testStrUtil_langageRepresentation();
     void testStrUtil_extension();
     void testStrUtil_sizeDisplay();
     void testStrUtil_defineStyle();

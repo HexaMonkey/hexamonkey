@@ -162,12 +162,6 @@ void TestUtil::testStrUtil_formatDuration()
     QCOMPARE(formatDuration(10000), std::string("2h46m40s"));
 }
 
-void TestUtil::testStrUtil_langageRepresentation()
-{
-    QFAIL("How does it work?");
-    // std::cout << langageRepresentation(250) << std::endl;
-}
-
 void TestUtil::testStrUtil_extension()
 {
     QCOMPARE(extension("example.avi"), std::string("avi"));
