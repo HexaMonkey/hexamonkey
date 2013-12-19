@@ -1,0 +1,107 @@
+addMagicNumber 47 49 46 38 xx 61
+addExtension gif
+
+import lestd
+
+class GifFile as File{
+	while(1) DataStream *;
+}
+
+class DataStream{
+	Header *;
+	LogicalScreenDescription *;
+	Block block;
+	// problem 1 is here with this while loop
+	while(block.Descriptor != 0x3b){
+		Block block;
+	}
+}
+
+class Header{
+	String(3) signature;
+	String(3) version;
+}
+
+class LogicalScreenDescription{
+	uint(16) LogicalScreenWidth;
+	uint(16) LogicalScreenHeight;
+	uint(1) GlobalColorTableFlag;
+	uint(3) ColorResolution;
+	uint(1) SortFlag;
+	uint(3) SizeOfGlobalColorTable;
+	uint(8) BackgroundColorIndex;
+	uint(8) PixelAspectRatio;
+	if (GlobalColorTableFlag != 0){
+		ColorTable(SizeOfGlobalColorTable) *;
+	}
+}
+
+class ColorTable (SizeOfGlobalColorTable){
+	@size = 8*3*(1<<(@args.SizeOfGlobalColorTable + 1));
+	Data(@size) Data;
+}
+
+class Block(ID){
+	uint(8,16) Descriptor;
+	@args.ID = Descriptor;
+}
+
+class ImageDescriptor as Block(0x2c){
+	uint(16) ImageLeftPosition;
+	uint(16) ImageTopPosition;
+	uint(16) ImageWidth;
+	uint(16) ImageHeight;
+	uint(1) LocalColorTableFlag;
+	uint(1) InterlaceFlage;
+	uint(1) SortFlag;
+	uint(2) Reserved;
+	uint(3) SizeOfLocalColorTable;
+	if (LocalColorTableFlag != 0)
+	{
+		ColorTable(SizeOfLocalColorTable);
+	}
+	TableBasedImageData *;
+}
+
+class TableBasedImageData
+{
+	uint(8) LZWMinimumCodeSize;
+	DataSubSequence *;
+}
+
+class DataSubSequence
+{
+	DataSubBlock dataSubBlock;
+	//Exact same problem as above
+	while(dataSubBlock.length != 0){
+		DataSubBlock dataSubBlock;
+	}
+}
+
+class DataSubBlock
+{
+	uint(8) length;
+	Data(8*length) Data;
+}
+
+class Extension(ID) as Block(0x21){
+	uint(8,16) Label;
+	@args.ID = Label;
+}
+
+class GraphicControlExtension as Extension(0xf9){
+	uint(8) BlockSize;
+	uint(3) Reserved;
+	uint(3) DisposalMethod;
+	uint(1) UserInputFlag;
+	uint(1) TransparentColorFlag;
+	uint(16) DelayTime;
+	uint(8) TransparentColorIndex;
+	uint(8) BlockTerminator;
+}
+
+class Trailer as Block(0x3b)
+{
+	//empty on purpose
+}
+	
