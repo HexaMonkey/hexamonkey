@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 
     ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
-    moduleLoader.addDirectories(scriptsDirs, programLoader);
+    moduleLoader.setDirectories(scriptsDirs, programLoader);
 
 
     File file;

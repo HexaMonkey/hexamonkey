@@ -10,11 +10,10 @@ class GifFile as File{
 class DataStream{
 	Header *;
 	LogicalScreenDescription *;
-	Block block;
-	// problem 1 is here with this while loop
-	while(block.Descriptor != 0x3b){
+	
+	do {
 		Block block;
-	}
+	} while(block.Descriptor != 0x3b)
 }
 
 class Header{
@@ -71,11 +70,9 @@ class TableBasedImageData
 
 class DataSubSequence
 {
-	DataSubBlock dataSubBlock;
-	//Exact same problem as above
-	while(dataSubBlock.length != 0){
+	do {
 		DataSubBlock dataSubBlock;
-	}
+	} while(dataSubBlock.length != 0)
 }
 
 class DataSubBlock

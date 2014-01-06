@@ -122,7 +122,7 @@ Object *Object::access(int64_t index, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked"<<std::endl;
+            std::cerr<<"Parsing locked for index "<<index<<std::endl;
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);
@@ -149,7 +149,7 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked"<<std::endl;
+            std::cerr<<"Parsing locked for look up "<<name<<std::endl;
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);

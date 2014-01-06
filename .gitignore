@@ -69,6 +69,11 @@ scripts/*.hmc
 !compiler
 !compiler/compiler.pro
 
+#CLI
+!cli
+!cli/*.cpp
+!cli/*.h
+
 #GUI in qt 
 !gui
 !gui/hex
