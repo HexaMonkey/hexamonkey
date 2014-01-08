@@ -57,7 +57,7 @@ class ProgramLoader;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     MainWindow(ModuleLoader& moduleLoader, const ProgramLoader &programLoader, QWidget *parent = 0);
 
@@ -87,7 +87,6 @@ private:
     TreeWidget* treeWidget;
     HexFileWidget* hexFileWidget;
 
-    std::vector<std::string> scriptsDirs;
     QMenu *fileMenu;
     QAction *openAct;
     QAction *refreshAct;

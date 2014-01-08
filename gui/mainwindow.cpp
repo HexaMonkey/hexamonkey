@@ -29,8 +29,7 @@ const int MainWindow::maxRecentFiles;
 MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programLoader, QWidget *parent)
     : QMainWindow(parent),
       moduleLoader(moduleLoader),
-      programLoader(programLoader),
-      scriptsDirs(scriptsDirs)
+      programLoader(programLoader)
 {
     createActions();
     createMenus();
