@@ -94,7 +94,8 @@ void Int64Parser::doParseHead()
 IntXParser::IntXParser(Object &object, uint8_t size, bool bigEndian, int base)
     : SimpleParser(object),
       size(size),
-      bigEndian(bigEndian)
+      bigEndian(bigEndian),
+      base(base)
 {
 }
 
@@ -198,7 +199,8 @@ void UInt64Parser::doParseHead()
 UIntXParser::UIntXParser(Object &object, uint8_t size, bool bigEndian, int base)
     : SimpleParser(object),
       size(size),
-      bigEndian(bigEndian)
+      bigEndian(bigEndian),
+      base(base)
 {
 }
 
