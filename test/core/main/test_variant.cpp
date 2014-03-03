@@ -1,6 +1,8 @@
 
 #include "test_variant.h"
 
+#include <unordered_map>
+
 #include "core/variant.h"
 #include "core/objecttype.h"
 
@@ -286,4 +288,37 @@ void TestVariant::conversion()
     Variant doubleVar(1.3), integerVar(1);
     QCOMPARE(integerVar == doubleVar, false);
     QCOMPARE(doubleVar == integerVar, false);
+}
+
+void TestVariant::unordered_map()
+{
+    std::unordered_map<Variant, Variant> hash_var;
+
+    Variant key1("a key"), key2("another key"), val1(0), val2(0.3f);
+    hash_var[key1] = val1;
+    hash_var[key2] = val2;
+
+    QCOMPARE(hash_var[key1], val1);
+    QCOMPARE(hash_var[key2], val2);
+
+    // test that the key is defined by the content of a variant, not the object itself
+    Variant key1_bis("a key");
+    QCOMPARE(hash_var[key1_bis], hash_var[key1]);
+
+    key1_bis = key2;
+    // hash_var[key1_bis] should now key2 value
+    QCOMPARE(hash_var[key1_bis], hash_var[key2]);
+
+    // test change of a value of the map
+    hash_var[key1] = "new value";
+    QCOMPARE(hash_var[key1], Variant("new value"));
+
+    // test difference between keys "1" and 1
+    Variant key_str("1"), key_int(1);
+    hash_var[key_str] = "1 string";
+    hash_var[key_int] = "1 int";
+    QCOMPARE(hash_var[key_str] != hash_var[key_int], true);
+
+    std::unordered_map<Variant,Variant>::size_type hash_size(4);
+    QCOMPARE(hash_var.size(), hash_size);
 }

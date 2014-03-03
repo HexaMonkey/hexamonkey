@@ -31,8 +31,12 @@
 #define A_RANK 5
 #define A_POS 6
 #define A_REM 7
+#define A_NUMBER_OF_CHILDREN 8
 
-const std::map<std::string, int> reserved = {{"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO}, {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK}, {"@pos",A_POS}, {"@rem",A_REM}};
+const std::map<std::string, int> reserved = {
+    {"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO},
+    {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK},
+    {"@pos",A_POS}, {"@rem",A_REM}, {"@numberOfChildren", A_NUMBER_OF_CHILDREN}};
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
     : _object(object),
@@ -81,12 +85,18 @@ Variable ObjectScope::doGet(const Variant &key) const
                 case A_RANK:
                     return Variable::ref(_object._rank, false);
 
+                case A_NUMBER_OF_CHILDREN:
+                    _object.explore(1);
+                    return Variable::copy(_object.numberOfChildren());
+
                 case A_REM:
                     return Variable::copy(_object._size.toInteger() - _object._pos.toInteger());
 
                 default:
                     return Variable();
             }
+        } else if(!name.empty() && name[0]=='_') {
+            return Variable::ref(_object._stateMap[key], _modifiable);
         }
 
         Object* elem = _object.lookUp(name, true);

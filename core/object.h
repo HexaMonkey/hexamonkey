@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <unordered_map>
 
 #include "core/file.h"
 #include "core/objecttype.h"
@@ -264,6 +265,7 @@ class Object
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::map<std::string, Object*> _lookUpTable;
 
+        std::unordered_map<Variant, Variant> _stateMap;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;
