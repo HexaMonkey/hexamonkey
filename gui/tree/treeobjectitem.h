@@ -55,6 +55,7 @@ public:
     bool filterObject(Object &object);
     bool updateFilter(const std::string& expression);
     const std::string& filterExpression();
+    virtual bool hasStream() const override;
     virtual QVariant clipboardValue() const override;
 
 protected:

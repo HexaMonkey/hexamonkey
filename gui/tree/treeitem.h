@@ -47,6 +47,7 @@ public:
     int columnCount() const;
     QVariant data(int column) const;
     virtual QVariant clipboardValue() const;
+    virtual bool hasStream() const;
     int row() const;
     TreeItem *parent();
 

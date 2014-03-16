@@ -225,7 +225,7 @@ class PSI_table(size, pid) {
 				Data unused;
 			} else {
 				Data psi_begin;
-				//Data(32+8*(pointer_field)) psi_begin;
+				["_stream"] = 1;
 			}
 		} else {
 			PSI_table_data(8*section_length, @args.pid) psi_table_data;

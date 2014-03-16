@@ -229,6 +229,11 @@ class Object
 
         void dumpToFile(const std::string& path) const;
 
+        bool hasStream() const;
+
+        void dumpStream(std::ostream &outStream);
+
+        void dumpStreamToFile(const std::string& path);
 
     private:
         friend class Parser;

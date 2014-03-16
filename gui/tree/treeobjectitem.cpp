@@ -102,6 +102,11 @@ const std::string &TreeObjectItem::filterExpression()
     return filter.expression();
 }
 
+bool TreeObjectItem::hasStream() const
+{
+    return object().hasStream();
+}
+
 QVariant TreeObjectItem::clipboardValue() const
 {
     const Variant& info = object().info();

@@ -72,6 +72,11 @@ QVariant TreeItem::data(int column) const
     return _itemData.value(column);
 }
 
+bool TreeItem::hasStream() const
+{
+    return false;
+}
+
 QVariant TreeItem::clipboardValue() const
 {
     return QVariant();

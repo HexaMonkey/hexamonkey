@@ -52,6 +52,7 @@ public:
     void setColumnsWidths();
     TreeItem& currentItem() const;
     void copy() const;
+    void openStream();
     void closeFile();
     void dumpToFile();
     TreeModel* getModel();

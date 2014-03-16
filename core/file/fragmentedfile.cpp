@@ -40,3 +40,9 @@ int64_t FragmentedFile::size() {
 bool FragmentedFile::good() {
     throw "fixme";
 }
+
+void FragmentedFile::dump(std::ostream &out) {
+    for(auto &p : _fragments) {
+        p->dump(out);
+    }
+}

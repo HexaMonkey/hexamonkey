@@ -217,6 +217,31 @@ void Object::dumpToFile(const std::string &path) const
     dump(out);
 }
 
+bool Object::hasStream() const
+{
+    try {
+        return !_stateMap.at("_stream").isNull();
+    } catch(std::out_of_range) {
+        return false;
+    }
+}
+
+void Object::dumpStream(std::ostream &out)
+{
+    FragmentedFile file(this, nullptr);
+    file.dump(out);
+    // ModuleLoader moduleLoader;
+    // moduleLoader.addModule("ts", new StreamModule());
+    // StreamFile file(this);
+
+}
+
+void Object::dumpStreamToFile(const std::string &path)
+{
+    std::ofstream out (path, std::ios::out | std::ios::binary);
+    dumpStream(out);
+}
+
 void Object::seekBeginning()
 {
     _file.seekg(_beginningPos,std::ios::beg);

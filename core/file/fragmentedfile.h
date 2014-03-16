@@ -3,6 +3,8 @@
 #ifndef FRAGMENTED_FILE_H
 #define FRAGMENTED_FILE_H
 
+#include <vector>
+
 #include "core/file/file.h"
 
 class Object;
@@ -43,12 +45,13 @@ public:
     // FIXME
     virtual bool good() override;
 
+    void dump(std::ostream &out);
 
 private:
     Object const* _parent;
     Module const* _module;
     std::string   _path;
-    std::pair<Object*, int64_t> _fragments;
+    std::vector<Object*> _fragments;
     FragmentedFile& operator=(const FragmentedFile&) = delete;
     FragmentedFile(const FragmentedFile&) = delete;
 };
