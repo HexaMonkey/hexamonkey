@@ -15,44 +15,44 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/file.h"
+#include "core/file/realfile.h"
 #include "core/formatdetector/formatdetector.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
-File::File() : _bitPosition(0)
+RealFile::RealFile() : File()
 {
 }
 
-void File::setPath(const std::string& path)
+void RealFile::setPath(const std::string& path)
 {
     _path = path;
     open();
 }
 
-const std::string& File::path() const
+const std::string& RealFile::path() const
 {
     return _path;
 }
 
-void File::open()
+void RealFile::open()
 {
     _file.open(_path.c_str(), std::ios::in|std::ios::binary);
     if(!good())
         std::cerr<<"error : unable to open file :"<<_path<<std::endl;
 }
 
-void File::close()
+void RealFile::close()
 {
     _file.close();
 }
 
-void File::clear()
+void RealFile::clear()
 {
     _file.clear();
 }
 
-void File::read(char* s, int64_t count )
+void RealFile::read(char* s, int64_t count )
 {
     if(count == 0)
         return;
@@ -95,7 +95,7 @@ void File::read(char* s, int64_t count )
 }
 
 
-void File::seekg(int64_t off, std::ios_base::seekdir dir) {
+void RealFile::seekg(int64_t off, std::ios_base::seekdir dir) {
     switch (dir)
     {
         case std::ios_base::beg :
@@ -113,36 +113,17 @@ void File::seekg(int64_t off, std::ios_base::seekdir dir) {
 }
 
 
-int64_t File::tellg() {return _file.tellg() * 8 + _bitPosition;}
+int64_t RealFile::tellg() {return _file.tellg() * 8 + _bitPosition;}
 
 
-int64_t File::size()
+int64_t RealFile::size()
 {
     FileAnchor fileAnchor(*this);
     _file.seekg(0, std::ios::end);
     return tellg();
 }
 
-bool File::good()
+bool RealFile::good()
 {
     return _file.is_open()&&!_file.fail()&&!_file.bad()&&!_file.eof();
-}
-
-
-FileAnchor::FileAnchor(File &file)
-    :file(file),
-     position(file.tellg())
-{
-
-}
-
-FileAnchor::~FileAnchor()
-{
-    if(!file.good())
-    {
-        file.clear();
-        file.close();
-        file.open();
-    }
-    file.seekg(position, std::ios_base::beg);
 }

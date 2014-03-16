@@ -25,7 +25,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include "core/file.h"
+#include "core/file/fragmentedfile.h"
+#include "core/file/realfile.h"
 #include "core/objecttype.h"
 #include "core/showcase.h"
 #include "core/variant.h"

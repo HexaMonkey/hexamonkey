@@ -185,6 +185,7 @@ Object* Object::lookForType(const ObjectType &targetType, bool forceParse)
 
 void Object::dump(std::ostream &out) const
 {
+    // make sure it is not packetised ?
     std::ifstream in  (file().path(), std::ios::in | std::ios::binary);
 
     if(size() == -1)

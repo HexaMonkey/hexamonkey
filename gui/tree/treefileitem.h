@@ -21,7 +21,7 @@ public:
 
 private:
     std::unique_ptr<Object> _objectMemory;
-    File _file;
+    RealFile _file;
 };
 
 #endif // TREEFILEITEM_H

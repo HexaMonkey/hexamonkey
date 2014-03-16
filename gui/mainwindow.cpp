@@ -81,7 +81,7 @@ void MainWindow::openFiles(QStringList paths)
 
 void MainWindow::openFile(const std::string& path)
 {
-    File file;
+    RealFile file;
     file.setPath(path);
     if (!file.good())
     {

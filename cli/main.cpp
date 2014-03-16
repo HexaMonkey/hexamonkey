@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
     moduleLoader.setDirectories(scriptsDirs, programLoader);
 
 
-    File file;
+    RealFile file;
     file.setPath(argv[1]);
     if (!file.good())
     {

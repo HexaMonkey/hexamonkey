@@ -17,6 +17,9 @@
 !core/core.pro
 !core/*.cpp
 !core/*.h
+!core/file
+!core/file/*.cpp
+!core/file/*.h
 !core/formatdetector
 !core/formatdetector/*.cpp
 !core/formatdetector/*.h
