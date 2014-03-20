@@ -17,14 +17,14 @@
 
 #include <QtGui>
 #include <QGridLayout>
-
 #include "core/util/strutil.h"
 #include "gui/hex/hexfilemodel.h"
 #include "gui/hex/hexfilewidget.h"
+#include "../mainwindow.h"
 
 
-HexFileWidget::HexFileWidget(QWidget *parent)
-    : QWidget(parent)
+HexFileWidget::HexFileWidget(MainWindow *parent)
+    : parent(parent)
 {
     //Data model
     model = new HexFileModel(this);
@@ -57,8 +57,6 @@ HexFileWidget::HexFileWidget(QWidget *parent)
     setContentsMargins(0,0,0,0);
 
     setLayout(layout);
-
-
 
 }
 
@@ -108,6 +106,7 @@ void HexFileWidget::highlight(qint64 position, qint64 size)
 void HexFileWidget::focus(const QModelIndex& index)
 {
     focus(model->position(index));
+    parent->treeWidget->getModel()->hexSearch(model->position(index));
 }
 
 void HexFileWidget::focus(qint64 position)

@@ -22,9 +22,10 @@
 #include "gui/tree/treeitem.h"
 #include "gui/tree/treeobjectitem.h"
 
-TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, QObject *parent) :
+TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, TreeView* view, QObject *parent) :
     QAbstractItemModel(parent),
     programLoader(programLoader),
+    view(view),
     _resourceManager(*this)
 {
     QList<QVariant> rootData;
@@ -318,4 +319,35 @@ quint64 TreeModel::size(QModelIndex index) const
 void TreeModel::addResource(Object &object)
 {
     _resourceManager.insert(object.file());
+}
+
+// this function develops the tree for a given position in the file.
+void TreeModel::hexSearch(quint64 pos)
+{
+    QModelIndex rootIndex = current;
+    while(rootIndex.parent().column() != -1)
+    {
+        rootIndex = rootIndex.parent();
+    }
+    pos = 8*pos;
+    QModelIndex temporaryMiningIndex = index(rootIndex.row(),0);
+    TreeItem* temporaryItem = &item(temporaryMiningIndex);
+    requestExpansion(temporaryMiningIndex);
+    view->setExpanded(temporaryMiningIndex,true);
+    while (temporaryItem->hasChildren())
+    {
+        for (int i = 0; i < temporaryItem->childCount(); i++)
+        {
+            QModelIndex child = temporaryMiningIndex.child(i,0);
+            if ((position(child) <= pos) && (pos < position(child)+size(child)))
+            {
+                temporaryMiningIndex = child;
+                break;
+            }
+        }
+        requestExpansion(temporaryMiningIndex);
+        view->setExpanded(temporaryMiningIndex,true);
+        temporaryItem = &item(temporaryMiningIndex);
+    }
+    view->setCurrentIndex(temporaryMiningIndex);
 }

@@ -49,6 +49,7 @@ public:
     virtual QVariant clipboardValue() const;
     int row() const;
     TreeItem *parent();
+    bool hasChildren();
 
     void load() const;
     virtual bool synchronised();

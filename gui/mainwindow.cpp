@@ -24,6 +24,7 @@
 #include "core/modules/default/defaulttypes.h"
 #include "gui/mainwindow.h"
 
+
 const int MainWindow::maxRecentFiles;
 
 MainWindow::MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programLoader, std::vector<std::string> scriptsDirs, QWidget *parent)
@@ -50,6 +51,10 @@ MainWindow::MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programL
     QAction* search = new QAction(this);
     search->setShortcut(QKeySequence::Find);
     addAction(search);
+
+    errorManager = ErrorManager::getInstance();
+    errorWindow = new ErrorWindow();
+    errorManager->attach(errorWindow);
 
     connect(treeWidget,SIGNAL(pathChanged(QString)), hexFileWidget, SLOT(setFile(QString)));
     connect(treeWidget,SIGNAL(positionChanged(qint64, qint64)), hexFileWidget, SLOT(gotoPosition(qint64)));
@@ -86,7 +91,8 @@ void MainWindow::openFile(const std::string& path)
     file.setPath(path);
     if (!file.good())
     {
-        std::cerr << "File not found" <<std::endl;
+       errorManager->errorMessage << "File not found";
+       errorManager->notify();
     }
     else
     {
@@ -209,10 +215,6 @@ void MainWindow::updateRecentFileActions()
         recentFileActs[j]->setVisible(false);
 
     separatorAct->setVisible(numRecentFiles > 0);
-}
-
-TreeWidget* MainWindow::getTreeWidget(){
-    return treeWidget;
 }
 
 #if 0

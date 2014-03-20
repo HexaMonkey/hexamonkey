@@ -31,7 +31,6 @@
 
 #include <QAction>
 
-
 #include "qtprogramloader.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/modules/standard/standardmodule.h"
@@ -41,6 +40,9 @@
 #include "core/moduleloader.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
+
+#include "error/errormanager.h"
+#include "error/errorwindow.h"
 
 
 class ModuleLoader;
@@ -66,7 +68,10 @@ public:
      * the tree and hex widgets.
      */
     void openFile(const std::string& path);
-    TreeWidget* getTreeWidget();
+    std::vector<std::string> scriptsDirs;
+
+    TreeWidget* treeWidget;
+    HexFileWidget* hexFileWidget;
 
 private slots:
     virtual void dropEvent(QDropEvent *event) final;
@@ -84,10 +89,7 @@ private:
     void createActions();
     void createMenus();
 
-    TreeWidget* treeWidget;
-    HexFileWidget* hexFileWidget;
 
-    std::vector<std::string> scriptsDirs;
     QMenu *fileMenu;
     QAction *openAct;
     QAction *refreshAct;
@@ -100,6 +102,8 @@ private:
     static const int maxRecentFiles = 5;
     QAction *recentFileActs[maxRecentFiles];
 
+    ErrorWindow* errorWindow;
+    ErrorManager* errorManager;
 };
 
 #endif // MAINWINDOW_H
