@@ -197,9 +197,37 @@ int main(int argc, char *argv[])
     else
     {
         const Module& module = moduleLoader.getModule(file);
+
+        Object* root = module.handle(defaultTypes::file, file);
+        root->explore(1);
+        int noc = root->numberOfChildren();
+        for(int i=0;i<noc;i++) {
+            Object* pkt = root->access(i, true);
+            if(!pkt) {
+                std::cout << "prout prout: " << i << std::endl;
+                return 1;
+            }
+            // std::cout << pkt->lookUp("PID", true)->value() << std::endl;
+            if(pkt->lookUp("PID", true)->value().toInteger() == 1) {
+                pkt->lookUp("psi_table", true)->lookUp("psi_table_data", true)->lookUp("cat", true)->dump(std::cout);
+                if(pkt->lookUp("psi_table", true)->lookUp("psi_table_data", true)->lookUp("cat", true)->size() > 0) {
+                    std::cerr << ">0 i:" << i << std::endl;
+                };
+                // std::cout << "==================" << std::endl;
+            }
+            // std::cout << i << ": " << *();
+        }
+        return 0;
+
+
+
+
+
         std::vector<std::string> prout = module.getFunctionParameterNames("prout");
         std::vector<Object*> objs;
         objs.push_back(module.handle(defaultTypes::file, file));
+
+
         Object*child = nullptr;
         for (auto& leaf : options.leafs)
         {

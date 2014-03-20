@@ -249,8 +249,8 @@ class PSI_table_data(size, pid) extends Data(size)
 {
 	if(@args.pid == 0x00) {
 		PAT pat;
-//	} else if(@args.pid == 0x01) {
-//		CAT cat;
+	} else if(@args.pid == 0x01) {
+		CAT cat;
 	} else if (@args.pid == 0x11) {
 		SDT sdt;
 	} else if (@args.pid == 0x12) {
