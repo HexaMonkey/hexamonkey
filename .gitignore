@@ -88,6 +88,9 @@ scripts/*.hmc
 !gui/tree/*.h
 !gui/mt/*.cpp
 !gui/mt/*.h
+!gui/error
+!gui/error/*.h
+!gui/error/*.cpp
 gui/qrc_*.cpp
 
 #models
