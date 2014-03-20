@@ -122,7 +122,7 @@ Object *Object::access(int64_t index, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked"<<std::endl;
+            std::cerr<<"Parsing locked for index "<<index<<std::endl;
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);
@@ -149,7 +149,7 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked"<<std::endl;
+            std::cerr<<"Parsing locked for look up "<<name<<std::endl;
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);
@@ -185,6 +185,7 @@ Object* Object::lookForType(const ObjectType &targetType, bool forceParse)
 
 void Object::dump(std::ostream &out) const
 {
+    // make sure it is not packetised ?
     std::ifstream in  (file().path(), std::ios::in | std::ios::binary);
 
     if(size() == -1)
@@ -214,6 +215,31 @@ void Object::dumpToFile(const std::string &path) const
 {
     std::ofstream out (path, std::ios::out | std::ios::binary);
     dump(out);
+}
+
+bool Object::hasStream() const
+{
+    try {
+        return !_stateMap.at("_stream").isNull();
+    } catch(std::out_of_range) {
+        return false;
+    }
+}
+
+void Object::dumpStream(std::ostream &out)
+{
+    FragmentedFile file(this, nullptr);
+    file.dump(out);
+    // ModuleLoader moduleLoader;
+    // moduleLoader.addModule("ts", new StreamModule());
+    // StreamFile file(this);
+
+}
+
+void Object::dumpStreamToFile(const std::string &path)
+{
+    std::ofstream out (path, std::ios::out | std::ios::binary);
+    dumpStream(out);
 }
 
 void Object::seekBeginning()

@@ -22,7 +22,7 @@
 #include <vector>
 #include <map>
 
-#include "core/file.h"
+#include "core/file/file.h"
 
 /*!
  * @brief Class used to identify the format of a \link File file\endlink.

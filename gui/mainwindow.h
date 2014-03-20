@@ -59,9 +59,9 @@ class ProgramLoader;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
-    MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programLoader, std::vector<std::string> scriptsDirs, QWidget *parent = 0);
+    MainWindow(ModuleLoader& moduleLoader, const ProgramLoader &programLoader, QWidget *parent = 0);
 
     /**
      * @brief Open a file and set it as the current file in
@@ -82,7 +82,7 @@ private slots:
     void open();
     void openRecentFile();
     void updateRecentFileActions();
-    void refreshment();
+    void refreshScripts();
 
 private:
     void openFiles(QStringList paths);
@@ -96,7 +96,7 @@ private:
     QMenu *recentFilesMenu;
     QAction *separatorAct;
 
-    ModuleLoader* moduleLoader;
+    ModuleLoader& moduleLoader;
     const ProgramLoader& programLoader;
 
     static const int maxRecentFiles = 5;

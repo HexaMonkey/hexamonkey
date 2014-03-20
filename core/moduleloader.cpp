@@ -81,7 +81,13 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
     }
 }
 
-void ModuleLoader::addDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader)
+void ModuleLoader::setDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader)
+{
+    this->directories = directories;
+    refreshDirectories(programLoader);
+}
+
+void ModuleLoader::refreshDirectories(const ProgramLoader &programLoader)
 {
     std::map<std::string, std::string> selected;
 

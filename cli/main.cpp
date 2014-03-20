@@ -58,7 +58,8 @@ Usage: hexamonkey-cli FILE [OPTIONS] [[LEAF] ...]\n\
        hexamonkey-cli [--help]\n\
 The hexamonkey CLI analyses a binary file and extracts information from it. \
 It will go down in the file given a list of leafs (which can either be a field\
- name or an index).\n\
+ name or an index). Add '+' at the beginning of a leaf name to force it as an\
+index.\n\
 \n\
 Example: hexamonkey-cli test.mp4 1 type\n\
 This will look for a field named 'type' in the second item of the mp4 file.\n\
@@ -184,10 +185,10 @@ int main(int argc, char *argv[])
 
     ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
-    moduleLoader.addDirectories(scriptsDirs, programLoader);
+    moduleLoader.setDirectories(scriptsDirs, programLoader);
 
 
-    File file;
+    RealFile file;
     file.setPath(argv[1]);
     if (!file.good())
     {
@@ -202,11 +203,15 @@ int main(int argc, char *argv[])
         Object*child = nullptr;
         for (auto& leaf : options.leafs)
         {
-            objs[0]->explore(1);
             const char* child_id = leaf.c_str();
-            child = objs[0]->lookUp(child_id);
-            if (child == nullptr) {
-                child = objs[0]->access(std::stoi(child_id));
+            if(child_id[0] == '+')
+            {
+                child = objs[0]->access(std::stoi(child_id+1), true);
+            } else {
+                child = objs[0]->lookUp(child_id, true);
+                if (child == nullptr) {
+                    child = objs[0]->access(std::stoi(child_id), true);
+                }
             }
             if(child) {
                 objs.insert(objs.begin(), child);

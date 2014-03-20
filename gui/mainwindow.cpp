@@ -27,11 +27,10 @@
 
 const int MainWindow::maxRecentFiles;
 
-MainWindow::MainWindow(ModuleLoader *moduleLoader, const ProgramLoader &programLoader, std::vector<std::string> scriptsDirs, QWidget *parent)
+MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programLoader, QWidget *parent)
     : QMainWindow(parent),
       moduleLoader(moduleLoader),
-      programLoader(programLoader),
-      scriptsDirs(scriptsDirs)
+      programLoader(programLoader)
 {
     createActions();
     createMenus();
@@ -87,7 +86,7 @@ void MainWindow::openFiles(QStringList paths)
 
 void MainWindow::openFile(const std::string& path)
 {
-    File file;
+    RealFile file;
     file.setPath(path);
     if (!file.good())
     {
@@ -108,7 +107,7 @@ void MainWindow::openFile(const std::string& path)
         updateRecentFileActions();
 
         //Create new tree node
-        const Module& module = moduleLoader->getModule(file);
+        const Module& module = moduleLoader.getModule(file);
         treeWidget->setCurrentIndex(treeWidget->addFile(path, module));
     }
 }
@@ -126,22 +125,22 @@ void MainWindow::createActions()
         recentFileActs[i]->setVisible(false);
         connect(recentFileActs[i], SIGNAL(triggered()),this, SLOT(openRecentFile()));
     }
-    refreshAct = new QAction("recompile scripts", this);
+    refreshAct = new QAction(tr("Recompile scripts"), this);
     refreshAct->setShortcuts(QKeySequence::Refresh);
-    connect(refreshAct, SIGNAL(triggered()), this, SLOT(refreshment()));
+    connect(refreshAct, SIGNAL(triggered()), this, SLOT(refreshScripts()));
 }
 
-void MainWindow::refreshment()
+void MainWindow::refreshScripts()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     QStringList filesOpened;
     int nbFilesOpened = treeWidget->getModel()->rowCount();
-    for(int i=0;i<nbFilesOpened;++i){
-        QModelIndex index = treeWidget->getModel()->index(0,0,QModelIndex());
+    for (int i = 0; i < nbFilesOpened; ++i){
+        QModelIndex index = treeWidget->getModel()->index(0, 0, QModelIndex());
         filesOpened << treeWidget->getModel()->path(index);
         treeWidget->getModel()->removeItem(index);
     }
-    moduleLoader->addDirectories(scriptsDirs, programLoader);
+    moduleLoader.refreshDirectories(programLoader);
     openFiles(filesOpened);
     QApplication::restoreOverrideCursor();
 }

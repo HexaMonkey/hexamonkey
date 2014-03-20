@@ -56,13 +56,18 @@ public:
     void addModule(const std::string& key, Module* module);
 
     /**
-     * @brief Generate and add \link FromFileModule HMScript modules\endlink from a directories
+     * @brief Generate and add \link FromFileModule HMScript modules\endlink from directories
      *
      * The key for the module are the name of the files (extension excluded)
      *
      * The files are compiled again only if the compiled file is less recent than the original file
      */
-    void addDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader);
+    void setDirectories(const std::vector<std::string> &directories, const ProgramLoader &programLoader);
+
+    /**
+     * @brief Refresh
+     */
+    void refreshDirectories(const ProgramLoader &programLoader);
 
     /**
      * @brief Give constant access to a module and loads it has not yet been loaded
@@ -81,6 +86,9 @@ private:
     std::map<std::string, std::shared_ptr<Module> > modules;
 
     StandardFormatDetector formatDetector;
+
+    ProgramLoader* programLoader;
+    std::vector<std::string> directories;
 
     //Non-copyable
     ModuleLoader(const ModuleLoader&) = delete;

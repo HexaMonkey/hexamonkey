@@ -22,7 +22,7 @@
 #include <memory>
 #include <stdint.h>
 
-#include "core/file.h"
+#include "core/file/file.h"
 #include "core/objecttype.h"
 #include "core/module.h"
 #include "core/interpreter/program.h"
@@ -86,7 +86,7 @@ private:
     const std::string _fileCompiler;
     const std::string _expCompiler;
     const std::string _userDir;
-    
+
 };
 
 #endif // PROGRAM_LOADER_H

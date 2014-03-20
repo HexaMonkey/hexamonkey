@@ -19,8 +19,10 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFileDialog>
+#include <iostream>
 
 #include "gui/tree/treewidget.h"
+#include "gui/mainwindow.h"
 
 TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     QWidget(parent)
@@ -73,6 +75,10 @@ void TreeWidget::displayMenu(const QPoint &pos)
         if(!currentItem().clipboardValue().isNull())
             copyAction = menu.addAction("Copy Value");
 
+        QAction *openStreamAction = nullptr;
+        if(currentItem().hasStream())
+            openStreamAction = menu.addAction("Open Stream");
+
         QAction *dumpToFileAction = menu.addAction("Dump to File");
 
         QAction *closeFileAction = menu.addAction("Close File");
@@ -85,6 +91,11 @@ void TreeWidget::displayMenu(const QPoint &pos)
         if(trigeredAction == copyAction)
         {
             copy();
+        }
+        else if (trigeredAction == openStreamAction)
+        {
+            std::cout << "path" << path.toStdString() << std::endl;
+            openStream();
         }
         else if (trigeredAction == closeFileAction)
         {
@@ -147,6 +158,15 @@ void TreeWidget::copy() const
     {
         QApplication::clipboard()->setText(value.toString());
     }
+}
+
+void TreeWidget::openStream()
+{
+    QModelIndex current = view->currentIndex();
+    if(!current.isValid())
+        return;
+
+    static_cast<TreeObjectItem&>(model->item(current)).object().dumpStreamToFile("/tmp/test");
 }
 
 void TreeWidget::closeFile()

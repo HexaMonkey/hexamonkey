@@ -214,4 +214,19 @@ bool operator||(const Variant& a, const Variant& b);
 std::ostream& operator<<(std::ostream& out, const Variant& variant);
 
 
+namespace std
+{
+    template<>
+    struct hash<Variant>
+    {
+        std::size_t operator()(Variant const& var) const
+        {
+            std::size_t const h1 ( std::hash<int>()(var.type()) );
+            std::size_t const h2 ( std::hash<std::string>()(var.toString()) );
+            return h1 ^ (h2 << 3);
+        }
+    };
+}
+
+
 #endif // VARIANT_H

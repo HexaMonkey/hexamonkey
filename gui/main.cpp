@@ -103,19 +103,19 @@ int main(int argc, char *argv[])
     return 0;
 #endif
 
-    ModuleLoader* moduleLoader = new ModuleLoader();
+    ModuleLoader moduleLoader;
 
-    moduleLoader->addModule("bestd", new StandardModule(true));
-    moduleLoader->addModule("lestd", new StandardModule(false));
-    moduleLoader->addModule("ebml",  new EbmlModule);
-    moduleLoader->addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
-    moduleLoader->addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
+    moduleLoader.addModule("bestd", new StandardModule(true));
+    moduleLoader.addModule("lestd", new StandardModule(false));
+    moduleLoader.addModule("ebml",  new EbmlModule);
+    moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
+    moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
 
-    QtProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader->getModule("hmc")), compilerDirs, userDir);
+    QtProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
-    moduleLoader->addDirectories(scriptsDirs, static_cast<const ProgramLoader&>(programLoader));
+    moduleLoader.setDirectories(scriptsDirs, static_cast<const ProgramLoader&>(programLoader));
 
-    MainWindow window(moduleLoader, static_cast<const ProgramLoader&>(programLoader),scriptsDirs);
+    MainWindow window(moduleLoader, static_cast<const ProgramLoader&>(programLoader));
 
     window.setWindowTitle("HexaMonkey");
     QIcon icon(getFile(logoDirs, "logo.svg").c_str());

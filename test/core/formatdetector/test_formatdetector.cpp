@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "test_formatdetector.h"
+#include "core/file/realfile.h"
 #include "core/formatdetector/extensionformatdetector.h"
 #include "core/formatdetector/compositeformatdetector.h"
 #include "core/formatdetector/magicformatdetector.h"
@@ -13,7 +14,7 @@ void TestFormatDetector::testExtensionFormatDetector()
     std::string zip_str("zip");
     std::string empty_str("");
 
-    File fake_zip_file, fake_avi_file;
+    RealFile fake_zip_file, fake_avi_file;
     fake_zip_file.setPath("../../ressources/fake_zip.zip");
     fake_avi_file.setPath("../../ressources/fake_avi.avi");
 
@@ -31,7 +32,7 @@ void TestFormatDetector::testMagicFormatDetector()
 {
     std::string zip_str("zip"), empty_str(""), mov_str("mov");
 
-    File fake_avi_file, true_zip_file, mov_file;
+    RealFile fake_avi_file, true_zip_file, mov_file;
     fake_avi_file.setPath("../../ressources/fake_avi.avi");
     true_zip_file.setPath("../../ressources/true_zip.zip");
     mov_file.setPath("../../ressources/magic_mov.mov");
@@ -52,7 +53,7 @@ void TestFormatDetector::testSyncbyteFormatDetector()
     std::string ts_str("ts");
     std::string empty_str("");
 
-    File ts_file;
+    RealFile ts_file;
     ts_file.setPath("../../ressources/magic_ts.ts");
 
     SyncbyteFormatDetector fDetector(3);
@@ -74,7 +75,7 @@ void TestFormatDetector::testCompositeFormatDetector()
     std::string mov_str("mov");
 
     // fake_zip.zip contains a truncated mov file.
-    File fake_zip_file;
+    RealFile fake_zip_file;
     fake_zip_file.setPath("../../ressources/fake_zip.zip");
 
     ExtensionFormatDetector extensionDetector;
@@ -102,7 +103,7 @@ void TestFormatDetector::testStandardFormatDetector()
 {
     std::string zip_str("zip");
 
-    File fake_zip_file, true_zip_file;
+    RealFile fake_zip_file, true_zip_file;
     fake_zip_file.setPath("../../ressources/fake_zip.zip");
     true_zip_file.setPath("../../ressources/true_zip.zip");
 

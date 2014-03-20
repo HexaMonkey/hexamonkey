@@ -71,19 +71,6 @@ std::string formatDuration(unsigned long duration)
     return S.str();
 }
 
-std::string langageRepresentation(uint16_t isoCode)
-{
-    std::stringstream S;
-    for(unsigned int i = 0; i < 3; ++i)
-    {
-        uint16_t letter = isoCode;
-        letter<<=1+i*5;
-        letter>>=11;
-        S<<(char) (letter+0x60);
-    }
-    return S.str();
-}
-
 std::string extension(const std::string& path)
 {
     size_t n = path.rfind('.');

@@ -20,8 +20,10 @@ SOURCES += \
   moduleloader.cpp \
   module.cpp \
   mapmodule.cpp \
-  file.cpp \
   containerparser.cpp \
+  file/file.cpp \
+  file/fragmentedfile.cpp \
+  file/realfile.cpp \
   formatdetector/syncbyteformatdetector.cpp \
   formatdetector/standardformatdetector.cpp \
   formatdetector/magicformatdetector.cpp \
@@ -77,8 +79,10 @@ HEADERS  += variant.h \
     moduleloader.h \
     module.h \
     mapmodule.h \
-    file.h \
     containerparser.h \
+    file/file.h \
+    file/fragmentedfile.h \
+    file/realfile.h \
     formatdetector/syncbyteformatdetector.h \
     formatdetector/standardformatdetector.h \
     formatdetector/magicformatdetector.h \

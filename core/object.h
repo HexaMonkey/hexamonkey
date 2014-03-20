@@ -23,8 +23,10 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <unordered_map>
 
-#include "core/file.h"
+#include "core/file/fragmentedfile.h"
+#include "core/file/realfile.h"
 #include "core/objecttype.h"
 #include "core/showcase.h"
 #include "core/variant.h"
@@ -227,6 +229,11 @@ class Object
 
         void dumpToFile(const std::string& path) const;
 
+        bool hasStream() const;
+
+        void dumpStream(std::ostream &outStream);
+
+        void dumpStreamToFile(const std::string& path);
 
     private:
         friend class Parser;
@@ -264,6 +271,7 @@ class Object
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::map<std::string, Object*> _lookUpTable;
 
+        std::unordered_map<Variant, Variant> _stateMap;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;

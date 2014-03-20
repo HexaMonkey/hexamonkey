@@ -50,8 +50,10 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
 
     while(current != end && current != breakpoint && parseQuota > 0)
     {
-        if(current!=last)
+        if(current!=last) {
             lineRepeatCount = 0;
+        }
+        last = current;
 
         const Program& line = *current;
         if(subBlock)
@@ -145,7 +147,6 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                     break;
             }
         }
-        last = current;
     }
     if(current == end)
         return ExitCode::EndReached;
@@ -213,7 +214,7 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
 {
     Variable variable = scope.declare(declaration.node(0).payload());
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Local declaration "<<declaration.elem(0).payload();
+    std::cerr<<"Local declaration "<<declaration.node(0).payload();
 #endif
 
     if(declaration.size() >= 2 && variable.isDefined())
@@ -233,9 +234,10 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
 void BlockExecution::handleRightValue(const Program &rightValue)
 {
 #ifdef EXECUTION_TRACE
-    Variant value =
-#endif
+    Variant value = eval.rightValue(rightValue).value();
+#else
     eval.rightValue(rightValue);
+#endif
 #ifdef EXECUTION_TRACE
     std::cerr<<"Right value "<<value<<std::endl;
 #endif
@@ -294,7 +296,7 @@ void BlockExecution::handleLoop(const Program &loop)
 void BlockExecution::handleDoLoop(const Program &loop)
 {
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Do Loop";
+    std::cerr<<"Do Loop : repeat count "<<lineRepeatCount;
 #endif
     if(lineRepeatCount <= 1 || loopCondition(loop))
     {
@@ -354,7 +356,7 @@ void BlockExecution::handleReturn(const Program &line)
 bool BlockExecution::loopCondition(const Program &loop)
 {
     return eval.rightValue(loop.node(0)).cvalue().toBool()
-            && ((!hasDeclaration(loop.node(1)) || (hasParser() && parser().availableSize()> 0)));
+            && ((!hasDeclaration(loop.node(1)) || (hasParser() && parser().availableSize()!= 0)));
 }
 
 bool BlockExecution::hasDeclaration(const Program &instructions)

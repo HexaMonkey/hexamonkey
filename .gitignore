@@ -17,6 +17,9 @@
 !core/core.pro
 !core/*.cpp
 !core/*.h
+!core/file
+!core/file/*.cpp
+!core/file/*.h
 !core/formatdetector
 !core/formatdetector/*.cpp
 !core/formatdetector/*.h
@@ -68,6 +71,11 @@ scripts/*.hmc
 #Compiler part of the program
 !compiler
 !compiler/compiler.pro
+
+#CLI
+!cli
+!cli/*.cpp
+!cli/*.h
 
 #GUI in qt 
 !gui

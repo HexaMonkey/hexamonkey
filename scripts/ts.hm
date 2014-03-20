@@ -26,6 +26,7 @@ class tcimsbf(size) extends int(size)
 
 class TsFile as File
 {
+	_pmt_pids_size = 0;
 	while(1) transport_packet #;
 }
 
@@ -33,22 +34,88 @@ class transport_packet
 {
 	sync_byte *;
 	@size = [sync_byte()].@size+8*187;
-	
-    bslbf(1) transport_error_indicator;   
-    bslbf(1) payload_unit_start_indicator;   
-    bslbf(1) transport_priority; 
-	uimsbf(13) PID showcased;
-	bslbf(2) transport_scrambling_control; 
+
+    bslbf(1) transport_error_indicator;
+    bslbf(1) payload_unit_start_indicator;
+    bslbf(1) transport_priority;
+	uint(13, 16) PID showcased;
+	bslbf(2) transport_scrambling_control;
 	bslbf(2) adaptation_field_control;
 	uimsbf(4) continuity_counter showcased;
+	var size_left = 1472; // 8*187-24
     if(adaptation_field_control & 0b10)
-	{     
-		adaptation_field *;  
-	}     
-	if(adaptation_field_control & 0b01) 
 	{
-		Data payload;
-    }    
+		adaptation_field *;
+		size_left -= [adaptation_field()].@size;
+	}
+	if(adaptation_field_control & 0b01)
+	{
+		if(PID == 0x00 || PID == 0x01 || PID == 0x11 || PID == 0x12)
+		{
+			if(payload_unit_start_indicator == 0) {
+				Data(size_left) psi_fragment;
+			} else {
+				PSI_table(size_left, PID) psi_table;
+			}
+		} else {
+			if(@parent["_pmt_pids_size"]==0) {
+				var index = @rank;
+				while(index>0) {
+					index--;
+					if(@parent[index].PID == 0x00) {
+						// forces hexamonkey to parse the previous PAT table
+						var pmt_num = @parent[index].psi_table.psi_table_data.pat.@size / 32;
+						for(var i=0;i<pmt_num;i++) {
+							@parent[index].psi_table.psi_table_data.pat[i];
+						}
+						break;
+					}
+				}
+			}
+			var isPMT = 0;
+			for(var i=0;i<@parent["_pmt_pids_size"];i++) {
+				if(PID == @parent["_pmt_pid_"+i]) {
+					isPMT = 1;
+				}
+			}
+			if(isPMT) {
+				if(payload_unit_start_indicator == 0) {
+					Data(size_left) psi_fragment;
+				} else {
+					PSI_table(size_left, PID) psi_table;
+				}
+			} else {
+				var isES = 0;
+				for(var i=0;(i<@parent["_pmt_pids_size"]&&isES==0);i++) {
+					var pmt_pid = @parent["_pmt_pid_"+i];
+					var index2 = @rank;
+					while(index2>0) {
+						index2--;
+						if(@parent[index2].PID == pmt_pid) {
+							// force all PMT table parsing
+							@parent[index2].psi_table.psi_table_data.pmt.es_data_table.@numberOfChildren;
+							break;
+						}
+					}
+					for(var j=0;j<@parent["_es_"+pmt_pid+"_size"];j++) {
+						if(@parent["_es_pid_"+pmt_pid+"_"+j] == PID) {
+							isES = 1;
+						}
+					}
+				}
+				if(isES)
+				{
+					%log(PID+" is an PES fragment");
+					Data(size_left) payload;
+				}
+				else
+				{
+
+					Data(size_left) payload;
+				}
+			}
+		}
+    }
 }
 
 class sync_byte
@@ -60,48 +127,48 @@ class sync_byte
 	while(byte != 0x47)
 }
 
-class adaptation_field 
-{     
-    uimsbf(8) adaptation_field_length;   
+class adaptation_field
+{
+    uimsbf(8) adaptation_field_length;
 	@size = 8*(adaptation_field_length+1);
-	if (adaptation_field_length > 0) 
-	{     
-		bslbf(1) discontinuity_indicator; 
-		bslbf(1) random_access_indicator; 
-		bslbf(1) elementary_stream_priority_indicator; 
-		bslbf(1) PCR_flag; 
-		bslbf(1) OPCR_flag; 
-		bslbf(1) splicing_point_flag; 
-		bslbf(1) transport_private_data_flag; 
-		bslbf(1) adaptation_field_extension_flag; 
-		if (PCR_flag == 0b1) 
-		{     
-			uimsbf(33) program_clock_reference_base; 
-			bslbf(6) reserved; 
-			uimsbf(9) program_clock_reference_extension; 
-		}     
-		if (OPCR_flag == 0b1) 
-		{     
-			uimsbf(33) original_program_clock_reference_base; 
-			bslbf(6) reserved; 
-			uimsbf(9) original_program_clock_reference_extension; 
-		}     
-		if (splicing_point_flag == 0b1) 
-		{     
-			tcimsbf(8) splice_countdown; 
-		}     
-		if (transport_private_data_flag == 0b1) 
-		{     
+	if (adaptation_field_length > 0)
+	{
+		bslbf(1) discontinuity_indicator;
+		bslbf(1) random_access_indicator;
+		bslbf(1) elementary_stream_priority_indicator;
+		bslbf(1) PCR_flag;
+		bslbf(1) OPCR_flag;
+		bslbf(1) splicing_point_flag;
+		bslbf(1) transport_private_data_flag;
+		bslbf(1) adaptation_field_extension_flag;
+		if (PCR_flag == 0b1)
+		{
+			uimsbf(33) program_clock_reference_base;
+			bslbf(6) reserved;
+			uimsbf(9) program_clock_reference_extension;
+		}
+		if (OPCR_flag == 0b1)
+		{
+			uimsbf(33) original_program_clock_reference_base;
+			bslbf(6) reserved;
+			uimsbf(9) original_program_clock_reference_extension;
+		}
+		if (splicing_point_flag == 0b1)
+		{
+			tcimsbf(8) splice_countdown;
+		}
+		if (transport_private_data_flag == 0b1)
+		{
 			uimsbf(8) transport_private_data_length;
-			Data(8*transport_private_data_length) private_data;  
-		}     
-		if (adaptation_field_extension_flag == 0b1) 
-		{     
+			Data(8*transport_private_data_length) private_data;
+		}
+		if (adaptation_field_extension_flag == 0b1)
+		{
 			adaptation_field_extension *;
-		}     
-		Data stuffing;     
-	}     
-} 
+		}
+		Data stuffing;
+	}
+}
 
 class adaptation_field_extension
 {
@@ -109,27 +176,225 @@ class adaptation_field_extension
 	@size = 8*adaptation_field_extension_length;
 	bslbf(1) ltw_flag;
 	bslbf(1) piecewise_rate_flag;
-	bslbf(1) seamless_splice_flag; 
-	bslbf(5) reserved;   
-	if (ltw_flag == 0b1) 
-	{     
-		bslbf(1) ltw_valid_flag; 
-		uimsbf(15) ltw_offset; 
-	}     
-	if (piecewise_rate_flag == 0b1) 
-	{     
-		bslbf(2) reserved; 
-		uimsbf(22) piecewise_rate; 
-	}     
-	if (seamless_splice_flag == 0b1) 
-	{     
-		bslbf(4)  splice_type; 
-		bslbf(3)  DTS_next_AU_32_30; 
-		bslbf(1)  marker_bit; 
-		bslbf(15) DTS_next_AU_29_15; 
-		bslbf(1)  marker_bit; 
-		bslbf(15) DTS_next_AU_14_0; 
-		bslbf(1)  marker_bit; 
+	bslbf(1) seamless_splice_flag;
+	bslbf(5) reserved;
+	if (ltw_flag == 0b1)
+	{
+		bslbf(1) ltw_valid_flag;
+		uimsbf(15) ltw_offset;
+	}
+	if (piecewise_rate_flag == 0b1)
+	{
+		bslbf(2) reserved;
+		uimsbf(22) piecewise_rate;
+	}
+	if (seamless_splice_flag == 0b1)
+	{
+		bslbf(4)  splice_type;
+		bslbf(3)  DTS_next_AU_32_30;
+		bslbf(1)  marker_bit;
+		bslbf(15) DTS_next_AU_29_15;
+		bslbf(1)  marker_bit;
+		bslbf(15) DTS_next_AU_14_0;
+		bslbf(1)  marker_bit;
 	}
 	Data reserved;
+}
+
+class PSI_table(size, pid) {
+	@size = @args.size;
+	uint(8)  pointer_field;
+	if(pointer_field != 0)
+	{
+		Data(8*pointer_field) pointer_filler_bytes;
+	}
+	uint(8, 16)  table_id;
+	Bitset(1) section_syntax_indicator;
+	bslbf(1) private_bit;
+	bslbf(2) reserved_bits;
+	bslbf(2) section_length_unused_bits;
+	uint(10) section_length;
+	if(section_length != 0)
+	{
+		if(section_syntax_indicator)
+		{
+			PSI_syntax_section psi_syntax_section;
+			if(psi_syntax_section.section_number == psi_syntax_section.last_section_number) {
+				PSI_table_data(8*section_length-72, @args.pid) psi_table_data;
+				uint(32,16) CRC;
+				Data unused;
+			} else {
+				Data psi_begin;
+				["_stream"] = 1;
+			}
+		} else {
+			PSI_table_data(8*section_length, @args.pid) psi_table_data;
+			Data unused;
+		}
+	}
+}
+
+class PSI_syntax_section
+{
+	@size = 40;
+	uint(16)       table_id_extension;
+	bslbf(2)       reserved_bits;
+	uint(5)        version_number;
+	bslbf(1)       current_next_indicator;
+	uint(8)        section_number;
+	uint(8)        last_section_number;
+}
+
+class PSI_table_data(size, pid) extends Data(size)
+{
+	if(@args.pid == 0x00) {
+		PAT pat;
+//	} else if(@args.pid == 0x01) {
+//		CAT cat;
+	} else if (@args.pid == 0x11) {
+		SDT sdt;
+	} else if (@args.pid == 0x12) {
+		EIT eit;
+	} else {
+		var isPMT = 0;
+		for(var i=0;i<@parent.@parent.@parent["_pmt_pids_size"];i++) {
+			if(@args.pid == @parent.@parent.@parent["_pmt_pid_"+i]) {
+				isPMT = 1;
+			}
+		}
+		if (isPMT) {
+			PMT pmt;
+		} else {
+			Data *;
+		}
+	}
+}
+
+class PAT extends Data
+{
+	while(1) PAT_item #;
+}
+
+class PAT_item
+{
+	uimsbf(16) program_num;
+	Data(3)   reserved_bits;
+	uint(13, 16) program_pid;
+	// todo check no existence
+	var pmt_pids_size = @parent.@parent.@parent.@parent.@parent["_pmt_pids_size"];
+	@parent.@parent.@parent.@parent.@parent["_pmt_pid_"+pmt_pids_size] = program_pid;
+	@parent.@parent.@parent.@parent.@parent["_es_"+program_pid+"_size"] = 0;
+	@parent.@parent.@parent.@parent.@parent["_pmt_pids_size"] = pmt_pids_size+1;
+}
+
+class CAT
+{
+	// fixme
+	Data test;
+}
+
+class SDT extends Data
+{
+	uimsbf(16) original_network_id;
+	bslbf(8) reserved_future_use;
+	while(1) SDT_item #;
+}
+
+class SDT_item
+{
+	uimsbf(16) service_id;
+	bslbf(6) reserved_futur_use;
+	bslbf(1) EIT_scheduled_flag;
+	bslbf(1) EIT_present_following_flag;
+	uimsbf(3) running_status;
+	bslbf(1) free_CA_mode;
+	uimsbf(12) descriptors_loop_length;
+	DescriptorList(8*descriptors_loop_length) descriptors;
+}
+
+class DescriptorList(size) extends Data(size) {
+	while(1) Descriptor #;
+}
+
+class Descriptor {
+	uint(8, 16) descriptor_tag;
+	uimsbf(8) descriptor_length;
+	@size = 8*descriptor_length+16;
+	if(descriptor_tag == 0x48) {
+		@info = "service descriptor";
+		uimsbf(8) service_type;
+		uimsbf(8) service_provider_name_length;
+		String(service_provider_name_length) service_provider_name;
+		uimsbf(8) service_name_length;
+		String(service_name_length) service_name;
+	} else if(descriptor_tag == 0x5D) {
+		@info = "multilingual_service_name_descriptor";
+		while(1) MultilingualServiceNameDescriptor_item #;
+	} else if(descriptor_tag == 0x5F) {
+		@info = "private_data_specifier_descriptor";
+		uint(32, 16) private_data_specifier;
+	} else {
+		Data(8*descriptor_length) descriptor_data;
+	}
+}
+
+class EIT {
+	uimsbf(16) transport_stream_id;
+	uimsbf(16) original_network_id;
+	uimsbf(8)  segment_last_sector_number;
+	uimsbf(8)  last_table_id;
+	while(1) Event #;
+}
+
+class Event {
+	uimsbf(16) event_id;
+	bslbf(40) start_time;
+	uimsbf(24) duration;
+	uimsbf(3) running_status;
+	bslbf(1) free_CA_mode;
+	uimsbf(12) descriptors_loop_length;
+	DescriptorList(8*descriptors_loop_length) descriptors;
+}
+
+class MultilingualServiceNameDescriptor_item {
+	bslbf(24) ISO_639_language_code;
+	uimsbf(8) service_provider_name_length;
+	String(service_provider_name_length) service_provider_name;
+	uimsbf(8) service_name_length;
+	String(service_name_length) service_name;
+}
+
+class PMT extends Data
+{
+	Data(3) reserved_bits;
+	uint(13, 16) PCR_PID;
+	Data(4) reserved_bits2;
+	Data(2) program_info_length_unused;
+	uint(10) program_info_length;
+	if(program_info_length > 0) {
+		Data(8*program_info_length) program_descriptor;
+	}
+	ES_data_table es_data_table;
+}
+
+class ES_data_table extends Data
+{
+	while(1) ES_data #; }
+
+class ES_data {
+	uint(8) stream_type;
+	if(stream_type == 0x02) {
+		stream_type.@info = "H.262/13818-2 video (MPEG-2) or 11172-2 constrained video";
+	} // add more common es infos here
+	Data(3) reserved_bits;
+	uint(13, 16) es_pid;
+	var pmt_pid = @parent.@parent.@parent.@args.pid;
+	var es_pids_size = @parent.@parent.@parent.@parent.@parent.@parent["_es_"+pmt_pid+"_size"];
+	@parent.@parent.@parent.@parent.@parent.@parent["_es_stream_type_"+pmt_pid+"_"+es_pids_size] = stream_type;
+	@parent.@parent.@parent.@parent.@parent.@parent["_es_pid_"+pmt_pid+"_"+es_pids_size] = es_pid;
+	@parent.@parent.@parent.@parent.@parent.@parent["_es_"+pmt_pid+"_size"] = es_pids_size+1;
+	Data(4) reserved_bits2;
+	Data(2) es_info_length_unused;
+	uint(10) es_info_length;
+	Data(8*es_info_length) es_info;
 }

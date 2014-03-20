@@ -78,6 +78,8 @@ DEFINES += USE_QT
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
+win32: PRE_TARGETDEPS += ../core
+
 unix {
     defined(BINDIR, var) {
         target.path = $$prefix.path/$$BINDIR

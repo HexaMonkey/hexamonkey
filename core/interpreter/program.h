@@ -43,7 +43,7 @@ class Program
         File& file();
         Object& setFileObject(Object* fileObject);
 
-        File _file;
+        RealFile _file;
         std::unique_ptr<Object> _fileObject;
     };
 

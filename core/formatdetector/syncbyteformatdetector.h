@@ -18,7 +18,7 @@
 #ifndef SYNCBYTEFORMATDETECTOR_H
 #define SYNCBYTEFORMATDETECTOR_H
 
-#include "core/file.h"
+#include "core/file/file.h"
 #include "core/formatdetector/formatdetector.h"
 
 /*!

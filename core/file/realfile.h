@@ -15,22 +15,19 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef REALFILE_H
+#define REALFILE_H
 
-#include <iostream>
-#include <fstream>
-#include <stdint.h>
-
+#include "core/file/file.h"
 
 /** @brief High-level input stream operations on files with bit precision
 
 The class is implemented as an adaptor for a std::ifstream instance that
 reimplements common operation with bit precision instead of byte precision*/
-class File
+class RealFile : public File
 {
 public:
-    File();
+    RealFile();
 
     /** @brief Sets the path to the file*/
     void setPath(const std::string& path);
@@ -39,20 +36,20 @@ public:
     const std::string& path() const;
 
     /** @brief Opens stream with the given path*/
-    void open();
+    virtual void open() override;
 
     /** @brief Closes stream*/
-    void close();
+    virtual void close() override;
 
     /** @brief Clears the file error flags*/
-    void clear();
+    virtual void clear() override;
 
 
     /** @brief Extracts bits from stream
 
     Puts the result in a byte array already allocated
     the result is right aligned and zero padded*/
-    void read(char* s, int64_t size);
+    virtual void read(char* s, int64_t size) override;
 
     /** @brief Offsets the position
 
@@ -61,40 +58,24 @@ public:
      * begin (std::ios_base::beg), current (std::ios_base::cur) or
      * end (std::ios_base::end).
      */
-    void seekg(int64_t off, std::ios_base::seekdir dir);
+    virtual void seekg(int64_t off, std::ios_base::seekdir dir) override;
 
     /** @brief Returns the current stream position */
-    int64_t tellg();
+    virtual int64_t tellg() override;
 
     /** @brief Returns the size of the file*/
-    int64_t size();
+    virtual int64_t size() override;
 
     /** @brief Checks if data can be recovered from the stream*/
-    bool good();
+    virtual bool good() override;
 
 
 private:
-    File& operator=(const File&) = delete;
-    File(const File&) = delete;
+    RealFile& operator=(const RealFile&) = delete;
+    RealFile(const RealFile&) = delete;
 
     std::string _path;
     std::ifstream _file;
-
-    char _bitPosition;
 };
 
-/**
- * @brief RAII object that insure that the \link File file\endlink returns to its
- * original position when the ressource is liberated
- */
-class FileAnchor
-{
-public:
-    FileAnchor(File& file);
-    ~FileAnchor();
-private:
-    File& file;
-    int64_t position;
-};
-
-#endif // FILE_H
+#endif // REALFILE_H
