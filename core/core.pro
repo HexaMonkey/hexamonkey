@@ -21,6 +21,7 @@ SOURCES += \
   module.cpp \
   mapmodule.cpp \
   containerparser.cpp \
+  error/errormanager.cpp\
   file/file.cpp \
   file/fragmentedfile.cpp \
   file/realfile.cpp \
@@ -80,6 +81,8 @@ HEADERS  += variant.h \
     module.h \
     mapmodule.h \
     containerparser.h \
+    error/errormanager.h \
+    error/errorobserver.h \
     file/file.h \
     file/fragmentedfile.h \
     file/realfile.h \

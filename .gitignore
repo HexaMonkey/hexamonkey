@@ -17,6 +17,9 @@
 !core/core.pro
 !core/*.cpp
 !core/*.h
+!core/error
+!core/error/*.cpp
+!core/error/*.h
 !core/file
 !core/file/*.cpp
 !core/file/*.h

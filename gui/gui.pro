@@ -39,11 +39,9 @@ SOURCES += main.cpp\
     mt/parsingtask.cpp \
     tree/treefileitem.cpp \
     qtprogramloader.cpp \
-    error/errorwindow.cpp \
-    error/errormanager.cpp
+    error/errorwindow.cpp
 
 
-		
 HEADERS  += mainwindow.h \
     tree/treewidget.h \
     tree/treeview.h \
@@ -65,9 +63,7 @@ HEADERS  += mainwindow.h \
     mt/parsingtask.h \
     tree/treefileitem.h \
     qtprogramloader.h \
-    error/errorwindow.h \
-    error/errorobserver.h \
-    error/errormanager.h
+    error/errorwindow.h
 
 RESOURCES += \
     ressources.qrc

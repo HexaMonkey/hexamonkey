@@ -25,6 +25,7 @@
 #include <QAction>
 #include "core/formatdetector/formatdetector.h"
 
+#include "gui/error/errorwindow.h"
 #include "gui/tree/treewidget.h"
 #include "gui/tree/htmldelegate.h"
 #include "gui/hex/hexfilewidget.h"
@@ -32,6 +33,7 @@
 #include <QAction>
 
 #include "qtprogramloader.h"
+#include "core/error/errormanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/modules/standard/standardmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
@@ -41,8 +43,6 @@
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
 
-#include "error/errormanager.h"
-#include "error/errorwindow.h"
 
 
 class ModuleLoader;
