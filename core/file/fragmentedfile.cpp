@@ -4,7 +4,7 @@
 #include "core/module.h"
 
 FragmentedFile::FragmentedFile(Object *object, Module *module) : File(), _parent(object), _module(module) {
-    _module.handle(object)
+    _module->handle(object)
 }
 
 
