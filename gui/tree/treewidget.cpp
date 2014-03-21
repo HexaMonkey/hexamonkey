@@ -30,7 +30,7 @@ TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     setAcceptDrops(true);
 
     view =  new TreeView(*this);
-    model = new TreeModel("Tree", programLoader, this);
+    model = new TreeModel("Tree", programLoader, view, this);
 
     view->setModel(model);
 
@@ -192,6 +192,7 @@ TreeModel* TreeWidget::getModel()
 {
     return model;
 }
+
 
 QModelIndex TreeWidget::addFile(const std::string &path, const Module &module)
 {

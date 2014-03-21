@@ -19,6 +19,7 @@
 #include "core/formatdetector/formatdetector.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
+#include "core/error/errormanager.h"
 
 RealFile::RealFile() : File()
 {
@@ -39,7 +40,11 @@ void RealFile::open()
 {
     _file.open(_path.c_str(), std::ios::in|std::ios::binary);
     if(!good())
-        std::cerr<<"error : unable to open file :"<<_path<<std::endl;
+    {
+        ErrorManager *errorManager = ErrorManager::getInstance();
+        errorManager->errorMessage << "unable to open file :"<<_path;
+        errorManager->notify();
+     }
 }
 
 void RealFile::close()

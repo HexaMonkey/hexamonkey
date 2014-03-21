@@ -21,11 +21,14 @@
 #include <QtGui>
 #include <QWidget>
 
+
 #include "gui/hex/hexfilemodel.h"
 #include "gui/hex/hexfileview.h"
 #include "gui/hex/hexfiledelegate.h"
 #include "gui/hex/hexfileheader.h"
 #include "gui/hex/hexfilesearchwidget.h"
+#include "gui/tree/treewidget.h"
+#include "gui/tree/treeobjectitem.h"
 
 /**
  * @brief Widget responsible for displaying the content of the file
@@ -45,16 +48,21 @@
  * The hex widget also contains a \link HexFileSearchWidget search widget\endlink that
  * allows the search for strings.
  */
+class MainWindow;
+
 class HexFileWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    HexFileWidget(QWidget *parent = 0);
+    HexFileWidget(MainWindow *parent=0);
 
+    TreeWidget *treeW;
     HexFileView *view;
     HexFileHeader *header;
+    HexFileModel *model;
     HexFileSearchWidget *searchWidget;
+    MainWindow *parent;
 
     unsigned int hexWidth() const;
     unsigned int charWidth() const;
@@ -84,7 +92,6 @@ protected:
     void windowActivationChange(bool oldActive);
 
 private:
-    HexFileModel* model;
     QScrollBar*   scrollBar;
 
     unsigned int _hexWidth;

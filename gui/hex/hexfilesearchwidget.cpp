@@ -19,10 +19,9 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QRadioButton>
-
 #include "gui/hex/hexfilesearchwidget.h"
 
-HexFileSearchWidget::HexFileSearchWidget(QWidget *parent) :
+HexFileSearchWidget::HexFileSearchWidget(QWidget *parent)  :
     QWidget(parent),
     lineEdit(new QLineEdit(this)),
     hexButton(new QRadioButton("hex", this)),
@@ -54,7 +53,6 @@ HexFileSearchWidget::HexFileSearchWidget(QWidget *parent) :
     connect(hexButton, SIGNAL(toggled(bool)), this, SLOT(reset()));
     connect(asciiButton, SIGNAL(toggled(bool)), this, SLOT(reset()));
 }
-
 
 void HexFileSearchWidget::reset()
 {

@@ -29,6 +29,7 @@
  *
  * The string can either be entered as ASCII or hexadecimal.
  */
+
 class HexFileSearchWidget : public QWidget
 {
     Q_OBJECT

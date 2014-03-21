@@ -152,12 +152,10 @@ QVariant HexFileModel::data(const QModelIndex &index, int role) const
             else
                 return qApp->palette().alternateBase();
         }
-
         if (role == Qt::UserRole)
         {
             return false;
         }
-
         return QVariant();
     }
 

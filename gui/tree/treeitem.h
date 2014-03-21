@@ -50,6 +50,7 @@ public:
     virtual bool hasStream() const;
     int row() const;
     TreeItem *parent();
+    bool hasChildren();
 
     void load() const;
     virtual bool synchronised();

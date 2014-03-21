@@ -27,6 +27,7 @@
 #include "core/modules/hmc/hmcmodule.h"
 #include "gui/mt/resourcemanager.h"
 #include "gui/tree/treefileitem.h"
+#include "gui/tree/treeview.h"
 
 class TreeItem;
 class ProgramLoader;
@@ -43,14 +44,16 @@ class ProgramLoader;
  * means that when there is a large number of children only a limited
  * number are added, and the rest is then added progressively.
  */
+
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    TreeModel(const QString &data, const ProgramLoader& programLoader, QObject *parent = 0);
+    TreeModel(const QString &data, const ProgramLoader& programLoader, TreeView* view, QObject *parent = 0);
 
     TreeItem& item(const QModelIndex &index) const;
     TreeItem* currentTreeFileItem();
+    TreeView* view;
 
     virtual QVariant data(const QModelIndex &index, int role) const final;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const final;
@@ -76,12 +79,14 @@ public:
 
     void addResource(Object& object);
 
+    void hexSearch(quint64 pos);
+
 public slots:
     void requestExpansion(const QModelIndex &index);
     void updateCurrent(const QModelIndex &index);
     void deleteChildren(const QModelIndex &index);
     void updateFilter(QString expression);
-    int updateChildren(const QModelIndex& index);
+    int updateChildren(const QModelIndex &index);
 
 signals:
     void filterChanged(QString);
