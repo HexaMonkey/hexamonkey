@@ -14,14 +14,14 @@
 class TreeFileItem : public TreeObjectItem
 {
 public:
-    TreeFileItem(const ProgramLoader& programLoader, TreeItem *parent);
+    TreeFileItem(const ProgramLoader& programLoader, TreeItem *parent, File *file);
 
     void setObjectMemory(Object *object);
     File& file();
 
 private:
     std::unique_ptr<Object> _objectMemory;
-    RealFile _file;
+    std::unique_ptr<File>   _file;
 };
 
 #endif // TREEFILEITEM_H

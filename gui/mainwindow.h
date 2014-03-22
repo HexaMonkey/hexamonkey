@@ -79,6 +79,7 @@ private slots:
     virtual void dragMoveEvent(QDragMoveEvent* event) final;
     virtual void dragLeaveEvent(QDragLeaveEvent* event) final;
 
+    void openFragmentedFile(Object& object);
     void open();
     void openRecentFile();
     void updateRecentFileActions();

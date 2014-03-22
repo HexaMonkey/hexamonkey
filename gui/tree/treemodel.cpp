@@ -50,12 +50,11 @@ int TreeModel::columnCount(const QModelIndex &parent) const
     return item(parent).columnCount();
 }
 
-QModelIndex TreeModel::addFile(const std::string &path, const Module& module)
+QModelIndex TreeModel::addFile(File* file, const Module& module)
 {
     beginInsertRows(QModelIndex(),0,0);
 
-    TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem));
-    item.file().setPath(path);
+    TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem, file));
     item.setObjectMemory(module.handle(defaultTypes::file, item.file()));
 
     QModelIndex itemIndex = index(realRowCount(QModelIndex())-1, 0, QModelIndex());

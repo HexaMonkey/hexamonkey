@@ -53,6 +53,7 @@ public:
     TreeItem& currentItem() const;
     void copy() const;
     void openStream();
+    void dumpStreamToFile();
     void closeFile();
     void dumpToFile();
     TreeModel* getModel();
@@ -61,9 +62,10 @@ signals:
     void pathChanged(QString);
     void positionChanged(qint64, qint64);
     void eventDropped(QDropEvent*);
+    void openFragmentedFile(Object&);
 
 public slots:
-    QModelIndex addFile(const std::string& path, const Module &module);
+    QModelIndex addFile(File* file, const Module &module);
     void updatePath(QModelIndex currentIndex);
     void updatePosition(QModelIndex currentIndex);
     void setCurrentIndex(QModelIndex index);

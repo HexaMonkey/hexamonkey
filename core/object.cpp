@@ -228,12 +228,8 @@ bool Object::hasStream() const
 
 void Object::dumpStream(std::ostream &out)
 {
-    FragmentedFile file(this, nullptr);
+    FragmentedFile file(this);
     file.dump(out);
-    // ModuleLoader moduleLoader;
-    // moduleLoader.addModule("ts", new StreamModule());
-    // StreamFile file(this);
-
 }
 
 void Object::dumpStreamToFile(const std::string &path)

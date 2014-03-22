@@ -61,6 +61,7 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
     connect(treeWidget,SIGNAL(positionChanged(qint64, qint64)), hexFileWidget, SLOT(highlight(qint64,qint64)));
     connect(treeWidget,SIGNAL(eventDropped(QDropEvent*)),this, SLOT(dropEvent(QDropEvent*)));
     connect(search, SIGNAL(triggered()), hexFileWidget, SLOT(focusSearch()));
+    connect(treeWidget,SIGNAL(openFragmentedFile(Object&)), this, SLOT(openFragmentedFile(Object&)));
 }
 
 
@@ -87,9 +88,9 @@ void MainWindow::openFiles(QStringList paths)
 
 void MainWindow::openFile(const std::string& path)
 {
-    RealFile file;
-    file.setPath(path);
-    if (!file.good())
+    RealFile* file = new RealFile();
+    file->setPath(path);
+    if (!file->good())
     {
        errorManager->errorMessage << "File not found";
        errorManager->notify();
@@ -108,9 +109,16 @@ void MainWindow::openFile(const std::string& path)
         updateRecentFileActions();
 
         //Create new tree node
-        const Module& module = moduleLoader.getModule(file);
-        treeWidget->setCurrentIndex(treeWidget->addFile(path, module));
+        const Module& module = moduleLoader.getModule(*file);
+        treeWidget->setCurrentIndex(treeWidget->addFile(file, module));
     }
+}
+
+void MainWindow::openFragmentedFile(Object& object) {
+    FragmentedFile* fragFile = new FragmentedFile(&object);
+    // FIXME : not hard coded psi_table
+    const Module& module = moduleLoader.getModule("psi_table");
+    treeWidget->setCurrentIndex(treeWidget->addFile(fragFile, module));
 }
 
 void MainWindow::createActions()

@@ -66,7 +66,7 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const final;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const final;
 
-    QModelIndex addFile(const std::string &path, const Module &module);
+    QModelIndex addFile(File* file, const Module &module);
     virtual bool removeRows(int position, int rows, const QModelIndex &parent) override;
 
     void removeItem(QModelIndex index);

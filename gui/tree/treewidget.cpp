@@ -75,9 +75,11 @@ void TreeWidget::displayMenu(const QPoint &pos)
         if(!currentItem().clipboardValue().isNull())
             copyAction = menu.addAction("Copy Value");
 
-        QAction *openStreamAction = nullptr;
-        if(currentItem().hasStream())
+        QAction *openStreamAction = nullptr, *dumpStreamAction = nullptr;
+        if(currentItem().hasStream()) {
             openStreamAction = menu.addAction("Open Stream");
+            dumpStreamAction = menu.addAction("Dump Stream");
+        }
 
         QAction *dumpToFileAction = menu.addAction("Dump to File");
 
@@ -94,8 +96,11 @@ void TreeWidget::displayMenu(const QPoint &pos)
         }
         else if (trigeredAction == openStreamAction)
         {
-            std::cout << "path" << path.toStdString() << std::endl;
             openStream();
+        }
+        else if (trigeredAction == dumpStreamAction)
+        {
+            dumpStreamToFile();
         }
         else if (trigeredAction == closeFileAction)
         {
@@ -165,8 +170,17 @@ void TreeWidget::openStream()
     QModelIndex current = view->currentIndex();
     if(!current.isValid())
         return;
+    emit openFragmentedFile(static_cast<TreeObjectItem&>(model->item(current)).object());
+}
 
-    static_cast<TreeObjectItem&>(model->item(current)).object().dumpStreamToFile("/tmp/test");
+void TreeWidget::dumpStreamToFile()
+{
+    QModelIndex current = view->currentIndex();
+    if(!current.isValid())
+        return;
+
+    std::string path(QFileDialog::getSaveFileName(this, "Dump Stream to file").toStdString());
+    static_cast<TreeObjectItem&>(model->item(current)).object().dumpStreamToFile(path);
 }
 
 void TreeWidget::closeFile()
@@ -194,9 +208,9 @@ TreeModel* TreeWidget::getModel()
 }
 
 
-QModelIndex TreeWidget::addFile(const std::string &path, const Module &module)
+QModelIndex TreeWidget::addFile(File *file, const Module &module)
 {
-    return model->addFile(path, module);
+    return model->addFile(file, module);
 }
 
 void TreeWidget::updatePath(QModelIndex currentIndex)

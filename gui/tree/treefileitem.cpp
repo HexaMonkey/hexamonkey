@@ -1,7 +1,7 @@
 #include "gui/tree/treefileitem.h"
 
-TreeFileItem::TreeFileItem(const ProgramLoader &programLoader, TreeItem *parent)
-    : TreeObjectItem(programLoader, parent)
+TreeFileItem::TreeFileItem(const ProgramLoader &programLoader, TreeItem *parent, File *file)
+    : TreeObjectItem(programLoader, parent), _file(file)
 {
 }
 
@@ -13,5 +13,5 @@ void TreeFileItem::setObjectMemory(Object *object)
 
 File &TreeFileItem::file()
 {
-    return _file;
+    return *_file;
 }
