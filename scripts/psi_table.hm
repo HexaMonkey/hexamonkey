@@ -1,0 +1,6 @@
+import ts
+
+class CompletePSITable as File
+{
+    PSI_table(@size, 0x12, 1) *;
+}

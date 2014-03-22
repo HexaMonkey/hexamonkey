@@ -55,7 +55,7 @@ class transport_packet
 			if(payload_unit_start_indicator == 0) {
 				Data(size_left) psi_fragment;
 			} else {
-				PSI_table(size_left, PID) psi_table;
+				PSI_table(size_left, PID, 0) psi_table;
 			}
 		} else {
 			if(@parent["_pmt_pids_size"]==0) {
@@ -82,7 +82,7 @@ class transport_packet
 				if(payload_unit_start_indicator == 0) {
 					Data(size_left) psi_fragment;
 				} else {
-					PSI_table(size_left, PID) psi_table;
+					PSI_table(size_left, PID, 0) psi_table;
 				}
 			} else {
 				var isES = 0;
@@ -201,7 +201,7 @@ class adaptation_field_extension
 	Data reserved;
 }
 
-class PSI_table(size, pid) {
+class PSI_table(size, pid, assembled) {
 	@size = @args.size;
 	uint(8)  pointer_field;
 	if(pointer_field != 0)
@@ -219,7 +219,7 @@ class PSI_table(size, pid) {
 		if(section_syntax_indicator)
 		{
 			PSI_syntax_section psi_syntax_section;
-			if(psi_syntax_section.section_number == psi_syntax_section.last_section_number) {
+			if(psi_syntax_section.section_number == psi_syntax_section.last_section_number || @args.assembled == 1) {
 				PSI_table_data(8*section_length-72, @args.pid) psi_table_data;
 				uint(32,16) CRC;
 				Data unused;
@@ -254,8 +254,8 @@ class PSI_table_data(size, pid) extends Data(size)
 	} else if (@args.pid == 0x11) {
 		SDT sdt;
 	} else if (@args.pid == 0x12) {
-		EIT eit;
-	} else {
+		EIT(@args.size) eit;
+	} else if (@parent.@args.assembled == 0) {
 		var isPMT = 0;
 		for(var i=0;i<@parent.@parent.@parent["_pmt_pids_size"];i++) {
 			if(@args.pid == @parent.@parent.@parent["_pmt_pid_"+i]) {
@@ -267,6 +267,8 @@ class PSI_table_data(size, pid) extends Data(size)
 		} else {
 			Data *;
 		}
+	} else {
+		Data *;
 	}
 }
 
@@ -338,7 +340,8 @@ class Descriptor {
 	}
 }
 
-class EIT {
+class EIT(size) {
+	@size=@args.size;
 	uimsbf(16) transport_stream_id;
 	uimsbf(16) original_network_id;
 	uimsbf(8)  segment_last_sector_number;
