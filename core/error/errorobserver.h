@@ -1,6 +1,8 @@
 #ifndef ERROROBSERVER_H
 #define ERROROBSERVER_H
 
+#include <string>
+
 class ErrorObserver
 {
 public:

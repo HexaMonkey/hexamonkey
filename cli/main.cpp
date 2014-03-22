@@ -15,6 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#include "core/error/errorobserver.h"
+#include "core/error/errormanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/moduleloader.h"
 #include "core/interpreter/programloader.h"
@@ -50,6 +52,16 @@ struct CLIOptions {
                    maxDepth(-1) {};
 };
 typedef struct CLIOptions CLIOptions;
+
+class ErrorCLIObserver : public ErrorObserver {
+public:
+    virtual void update(std::string errorRaised) override;
+};
+
+void ErrorCLIObserver::update(std::string errorRaised) {
+    std::cerr << "[ERROR]" << errorRaised << std::endl;
+    exit(1);
+}
 
 void print_help()
 {
@@ -142,6 +154,9 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
 
 int main(int argc, char *argv[])
 {
+    ErrorCLIObserver errorCliOsberver;
+    ErrorManager::getInstance()->attach(&errorCliOsberver);
+
     CLIOptions options;
     if(!parseArgs(argc, argv, options))
     {
@@ -198,32 +213,6 @@ int main(int argc, char *argv[])
     {
         const Module& module = moduleLoader.getModule(file);
 
-        Object* root = module.handle(defaultTypes::file, file);
-        root->explore(1);
-        int noc = root->numberOfChildren();
-        for(int i=0;i<noc;i++) {
-            Object* pkt = root->access(i, true);
-            if(!pkt) {
-                std::cout << "prout prout: " << i << std::endl;
-                return 1;
-            }
-            // std::cout << pkt->lookUp("PID", true)->value() << std::endl;
-            if(pkt->lookUp("PID", true)->value().toInteger() == 1) {
-                pkt->lookUp("psi_table", true)->lookUp("psi_table_data", true)->lookUp("cat", true)->dump(std::cout);
-                if(pkt->lookUp("psi_table", true)->lookUp("psi_table_data", true)->lookUp("cat", true)->size() > 0) {
-                    std::cerr << ">0 i:" << i << std::endl;
-                };
-                // std::cout << "==================" << std::endl;
-            }
-            // std::cout << i << ": " << *();
-        }
-        return 0;
-
-
-
-
-
-        std::vector<std::string> prout = module.getFunctionParameterNames("prout");
         std::vector<Object*> objs;
         objs.push_back(module.handle(defaultTypes::file, file));
 

@@ -52,7 +52,8 @@ void ErrorManager::notify()
     {
         errorObserverList[i]->update(errorMessage.str());
     }
-    errorMessage.flush();
+    errorMessage.str(std::string());
+    errorMessage.clear();
 }
 
 /*void operator<<(ErrorManager * errorManager, std::ostringstream stream)

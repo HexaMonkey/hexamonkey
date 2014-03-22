@@ -286,6 +286,9 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
+        ErrorManager *errorManager = ErrorManager::getInstance();
+        errorManager->errorMessage << scope.get(0).cvalue().toString();
+        errorManager->notify();
         std::cerr<<"[ERROR]"<<scope.get(0).cvalue()<<std::endl;
         return Variable();
     });
