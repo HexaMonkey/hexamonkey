@@ -13,7 +13,9 @@ class Module;
 class FragmentedFile : public File
 {
 public:
-    FragmentedFile(Object *object, Module *module);
+    FragmentedFile(Object *object);
+
+    bool importNextFragment();
 
     // do nothing
     virtual void setPath(const std::string& path) override;
@@ -30,27 +32,31 @@ public:
     // do nothing
     virtual void clear() override;
 
-    // FIXME
-    virtual void read(char* s, int64_t size) override;
+    // Read count bits from the fragments, beginning at the position of _tellg
+    virtual void read(char* s, int64_t count) override;
 
-    // FIXME
+    // Move the _tellg position item in the fragmented file, like in a regular
+    // one
     virtual void seekg(int64_t off, std::ios_base::seekdir dir) override;
 
-    // FIXME
+    // Returns the current stream position
     virtual int64_t tellg() override;
 
-    // FIXME
+    // Returns the sum of the fragments size
     virtual int64_t size() override;
 
-    // FIXME
+    // Always returns true...
     virtual bool good() override;
 
     void dump(std::ostream &out);
 
 private:
-    Object const* _parent;
-    Module const* _module;
+    Object*       _parent;
+    File&         _parentFile;
     std::string   _path;
+    int64_t       _tellg;
+    int           _pid;
+    int           _n;
     std::vector<Object*> _fragments;
     FragmentedFile& operator=(const FragmentedFile&) = delete;
     FragmentedFile(const FragmentedFile&) = delete;

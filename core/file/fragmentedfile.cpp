@@ -1,45 +1,26 @@
 
+#include <stdexcept>
+
 #include "core/file/fragmentedfile.h"
 #include "core/object.h"
 #include "core/module.h"
 
-FragmentedFile::FragmentedFile(Object *object, Module *module) : File(), _parent(object), _module(module) {
-    // should use the module, somehow
+FragmentedFile::FragmentedFile(Object *object) :
+    File(), _parent(object), _parentFile(object->file()), _tellg(0)
+{
     // test with psi fragments
 
-    auto pid = object->parent()->lookUp("PID", true)->value().toInteger();
-    int n = object->lookUp("psi_syntax_section", true)
+    _pid = object->parent()->lookUp("PID", true)->value().toInteger();
+    _n = object->lookUp("psi_syntax_section", true)
                   ->lookUp("last_section_number", true)
                   ->value().toInteger();
-    std::cout << "last_section_number: " << n << ", pid: " << pid  << std::endl;
 
     if(!object->lookUp("psi_begin", true))
     {
         std::cout << "psi_begin null!" << std::endl;
     }
-    _fragments.push_back(object->lookUp("psi_begin", true));
-
-    auto main_obj = object->parent()->parent();
-    auto it = main_obj->begin()+object->parent()->rank()+1;
-    while(n>0) {
-        for(;it!=main_obj->end();it++) {
-
-            if((*it)->lookUp("PID", true)->value().toInteger() == pid) {
-                if(!(*it)->lookUp("psi_fragment", true)) {
-                    std::cout << "rank: " << (*it)->rank() << std::endl;
-                    std::cout << "whowhowho!" << std::endl;
-                }
-                _fragments.push_back((*it)->lookUp("psi_fragment", true));
-                n--;
-                continue;
-            }
-        }
-        if(it == main_obj->end()) {
-            main_obj->exploreSome(128);
-            if(it == main_obj->end())
-                break;
-        }
-    }
+    object->explore(-1);
+    _fragments.push_back(object);
 }
 
 
@@ -55,29 +36,110 @@ void FragmentedFile::close() {}
 
 void FragmentedFile::clear() {}
 
-void FragmentedFile::read(char* s, int64_t size) {
-    throw "fixme";
+void FragmentedFile::read(char* s, int64_t count) {
+    if(count == 0)
+        return;
+
+    int64_t beginFrag = 0;
+    auto it = _fragments.begin();
+    while(beginFrag+(*it)->size()<_tellg) {
+        if(it==_fragments.end()) {
+            if(!importNextFragment()) {
+                // requesting out of range fragment
+                return;
+            }
+        }
+        beginFrag += (*it)->size();
+        it++;
+    }
+
+    while(count > 0) {
+        if(it==_fragments.end()) {
+            if(!importNextFragment()) {
+                // requesting out of range fragment
+                return;
+            }
+        }
+        int64_t fragmentCount = std::min(count, beginFrag+(*it)->size()-_tellg);
+        _parentFile.seekg( (*it)->beginningPos()+_tellg-beginFrag,
+                           std::ios_base::beg);
+
+        // TODO : accept also %8=0 fragments sizes
+
+        _parentFile.read(s, fragmentCount);
+        s += fragmentCount/8;
+        _tellg += fragmentCount;
+        count -= fragmentCount;
+
+        beginFrag += (*it)->size();
+        it++;
+    }
 }
 
 void FragmentedFile::seekg(int64_t off, std::ios_base::seekdir dir) {
-    throw "fixme";
+    switch (dir)
+    {
+        case std::ios_base::beg :
+            _tellg = off;
+        break;
+        case std::ios_base::end :
+            _tellg = size()-1;
+        break;
+        default:
+            _tellg += off;
+        break;
+    }
 }
 
 int64_t FragmentedFile::tellg() {
-    throw "fixme";
-    return 0;
+    return _tellg;
 }
 
 int64_t FragmentedFile::size() {
-    throw "fixme";
+    while(importNextFragment());
+    int64_t size = 0;
+    for(auto &p : _fragments) {
+        size += p->size();
+    }
+    return size;
 }
 
 bool FragmentedFile::good() {
-    throw "fixme";
+    return true;
 }
 
 void FragmentedFile::dump(std::ostream &out) {
+    while(importNextFragment());
     for(auto &p : _fragments) {
         p->dump(out);
     }
+}
+
+bool FragmentedFile::importNextFragment() {
+    if(_n<=0)
+        return false;
+
+    auto main_obj = _parent->parent()->parent();
+    int previousRank = 0;
+    if(_fragments.size()==1) {
+        previousRank = _fragments.back()->parent()->rank();
+    } else {
+        previousRank = _fragments.back()->parent()->parent()->rank();
+    }
+    auto it = main_obj->begin()+previousRank+1;
+    while(true) {
+        for(;it!=main_obj->end();it++) {
+            if((*it)->lookUp("PID", true)->value().toInteger() == _pid) {
+                _fragments.push_back((*it)->lookUp("psi_fragment", true));
+                _n--;
+                return true;
+            }
+        }
+        if(it == main_obj->end()) {
+            main_obj->exploreSome(128);
+            if(it == main_obj->end())
+                return false;
+        }
+    }
+    return false;
 }
