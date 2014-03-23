@@ -48,6 +48,8 @@ public:
 
     void dump(std::ostream &out);
 
+    Object& parent();
+
 protected:
     virtual bool importNextFragment() = 0;
 

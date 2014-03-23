@@ -23,8 +23,6 @@
 #include "core/interpreter/programloader.h"
 #include "core/modules/default/defaulttypes.h"
 
-#include "core/modules/stream/streammodule.h"
-
 #include "mainwindow.h"
 
 

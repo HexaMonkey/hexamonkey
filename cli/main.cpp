@@ -25,6 +25,7 @@
 #include "core/modules/hmc/hmcmodule.h"
 #include "core/modules/mkv/mkvmodule.h"
 #include "core/modules/standard/standardmodule.h"
+#include "core/modules/stream/streammodule.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
 
@@ -197,6 +198,7 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("ebml",  new EbmlModule);
     moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
     moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
+    moduleLoader.addModule("stream",new StreamModule());
 
     ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 

@@ -1,6 +1,8 @@
 import ts
+import stream
 
 class CompletePSITable as File
 {
-    PSI_table(@size, 0x12, 1) *;
+    ParentPID pid;
+    PSI_table(@size, pid, 1) *;
 }

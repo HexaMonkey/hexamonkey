@@ -39,6 +39,7 @@
 #include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/hmc/hmcmodule.h"
 #include "core/modules/mkv/mkvmodule.h"
+#include "core/modules/stream/streammodule.h"
 #include "core/moduleloader.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"

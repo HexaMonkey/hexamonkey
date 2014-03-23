@@ -99,3 +99,7 @@ void FragmentedFile::dump(std::ostream &out) {
         p->dump(out);
     }
 }
+
+Object& FragmentedFile::parent() {
+    return *_parent;
+}

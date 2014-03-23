@@ -66,6 +66,7 @@ SOURCES += \
   modules/hmc/hmcmodule.cpp \
   modules/mkv/mkvmodule.cpp \
   modules/stream/streammodule.cpp \
+  modules/stream/parentpidparser.cpp \
   util/strutil.cpp \
   util/iterutil.cpp \
   util/fileutil.cpp \
@@ -134,6 +135,7 @@ HEADERS  += variant.h \
     modules/mkv/mkvtypes.h \
     modules/mkv/mkvmodule.h \
     modules/stream/streammodule.h \
+    modules/stream/parentpidparser.h \
     util/unused.h \
     util/strutil.h \
     util/iterutil.h \

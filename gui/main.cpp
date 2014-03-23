@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
     moduleLoader.addModule("ebml",  new EbmlModule);
     moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
     moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
+    moduleLoader.addModule("stream",new StreamModule());
 
     QtProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
 
