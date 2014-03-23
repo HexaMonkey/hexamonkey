@@ -38,6 +38,7 @@ enum DisplayType {
     fileType,
     subtree,
     info,
+    value,
     numberOfChildren,
     size,
     binary
@@ -126,6 +127,8 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
                 options.displayType = DisplayType::subtree;
             else if(typeStr == "info")
                 options.displayType = DisplayType::info;
+            else if(typeStr == "value")
+                options.displayType = DisplayType::value;
             else if(typeStr == "numberOfChildren")
                 options.displayType = DisplayType::numberOfChildren;
             else if(typeStr == "size")
@@ -248,6 +251,10 @@ int main(int argc, char *argv[])
 
             case info:
                 std::cout << objs[0]->info() << std::endl;
+                break;
+
+            case value:
+                std::cout << objs[0]->value() << std::endl;
                 break;
 
             case subtree:
