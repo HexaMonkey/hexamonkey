@@ -26,7 +26,7 @@ class PES as File
 }
 
 function hasPESOptionHeader(stream_id) {
-    if( stream_id != Ob10111100 // program_stream_map
+    if( stream_id != 0b10111100 // program_stream_map
      && stream_id != 0b10111110 // padding_stream
      && stream_id != 0b10111111 // private_stream_2
      && stream_id != 0b11110000 // ECM
