@@ -48,6 +48,9 @@
 !core/modules/standard
 !core/modules/standard/*.cpp
 !core/modules/standard/*.h
+!core/modules/stream
+!core/modules/stream/*.cpp
+!core/modules/stream/*.h
 !core/modules/ts
 !core/modules/ts/*.cpp
 !core/modules/ts/*.h
