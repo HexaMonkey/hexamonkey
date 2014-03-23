@@ -17,6 +17,7 @@
 
 #include "core/containerparser.h"
 #include "core/module.h"
+#include "core/error/errormanager.h"
 
 ContainerParser::ContainerParser(Object &object, const Module &module)
     : Parser(object),
@@ -70,7 +71,9 @@ void ContainerParser::addChild(Object *child)
             _object.seekEnd();
 
             setParsed();
-            std::cerr<<"too big "<<child->type()<<" "<<child->name()<<std::endl;
+            auto em = ErrorManager::getInstance();
+            em->errorMessage << "too big "<<child->type()<<" "<<child->name();
+            em->notify();
         }
     }
     _object._pos.setValue(file().tellg() - _object._beginningPos);
@@ -84,7 +87,9 @@ void ContainerParser::addChild(Object *child, const std::string &name)
         addChild(child);
     }
     else
-        std::cerr<<"child is NULL"<<std::endl;
+    {
+        ErrorManager::getInstance()->notify("child is NULL");
+    }
 }
 
 Object *ContainerParser::getVariable(const ObjectType &type)

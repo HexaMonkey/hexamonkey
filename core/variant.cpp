@@ -20,6 +20,7 @@
 
 #include "core/variant.h"
 #include "core/objecttype.h"
+#include "core/error/errormanager.h"
 
 const std::vector<std::string>& typeNames = {"unknown", "integer", "unsigned integer" , "float", "string","object type"};
 
@@ -334,6 +335,7 @@ bool Variant::canConvertTo(Variant::Type otherType) const
 
 Variant& Variant::convertTo(Variant::Type newType)
 {
+    ErrorManager* em = ErrorManager::getInstance();
     if(_type == newType)
         return *this;
 
@@ -351,7 +353,8 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    std::cerr<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType];
+                    em->notify();
                     clear();
             }
             break;
@@ -368,7 +371,8 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    std::cerr<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+                    em->notify();
                     clear();
             }
             break;
@@ -385,13 +389,15 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    std::cerr<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+                    em->notify();
                     clear();
             }
             break;
 
         default:
-            std::cerr<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+            em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
+            em->notify();
             clear();
     }
     _type = newType;
@@ -721,7 +727,7 @@ Variant &Variant::operator +=(const Variant &other)
             break;
 
         default:
-            std::cerr<<"Invalid operation : +="<<std::endl;
+            ErrorManager::getInstance()->notify("Invalid operation : +=");
         }
     }
     return *this;
@@ -756,7 +762,7 @@ Variant &Variant::operator -=(const Variant &other)
         break;
 
     default:
-        std::cerr<<"Invalid operation : -="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : -=");
     }
     return *this;
 }
@@ -790,7 +796,7 @@ Variant &Variant::operator *=(const Variant &other)
         break;
 
     default:
-        std::cerr<<"Invalid operation : *="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : *=");
     }
     return *this;
 }
@@ -824,7 +830,7 @@ Variant &Variant::operator /=(const Variant &other)
         break;
 
     default:
-        std::cerr<<"Invalid operation : /="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : /=");
     }
     return *this;
 }
@@ -842,7 +848,7 @@ Variant &Variant::operator %=(const Variant &other)
         break;
 
     default:
-        std::cerr<<"Invalid operation : %="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : %=");
     }
     return *this;
 }
@@ -864,7 +870,7 @@ Variant &Variant::operator ++()
         break;
 
     default:
-        std::cerr<<"Invalid operation : *="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : *=");
     }
     return *this;
 }
@@ -896,7 +902,7 @@ Variant &Variant::operator --()
         break;
 
     default:
-        std::cerr<<"Invalid operation : --"<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : --");
     }
     return *this;
 }
@@ -924,7 +930,7 @@ Variant Variant::operator -() const
             break;
 
         default:
-            std::cerr<<"Invalid operation : -"<<std::endl;
+            ErrorManager::getInstance()->notify("Invalid operation : -");
 
     }
     return result;
@@ -938,7 +944,7 @@ Variant &Variant::operator |=(const Variant &other)
     }
     else
     {
-        std::cerr<<"Invalid operation : |="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : |=");
     }
     return *this;
 }
@@ -951,7 +957,7 @@ Variant &Variant::operator ^=(const Variant &other)
     }
     else
     {
-        std::cerr<<"Invalid operation : ^="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : ^=");
     }
     return *this;
 }
@@ -964,7 +970,7 @@ Variant &Variant::operator &=(const Variant &other)
     }
     else
     {
-        std::cerr<<"Invalid operation : &="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : &=");
     }
     return *this;
 }
@@ -978,7 +984,7 @@ Variant &Variant::operator <<=(const Variant &other)
     }
     else
     {
-        std::cerr<<"Invalid operation : <<="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : <<=");
     }
     return *this;
 }
@@ -992,7 +998,7 @@ Variant &Variant::operator >>=(const Variant &other)
     }
     else
     {
-        std::cerr<<"Invalid operation : >>="<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : >>=");
     }
     return *this;
 }
@@ -1001,7 +1007,7 @@ Variant Variant::operator ~() const
 {
     if(!hasNumericalType())
     {
-        std::cerr<<"Invalid operation : ~"<<std::endl;
+        ErrorManager::getInstance()->notify("Invalid operation : ~");
         return *this;
     }
 

@@ -1,6 +1,7 @@
 #include "evaluator.h"
 
 #include "compiler/model.h"
+#include "core/error/errormanager.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/program.h"
 #include "core/interpreter/scope/functionscope.h"
@@ -91,12 +92,14 @@ VariablePath Evaluator::variablePath(const Program &program) const
 
 ObjectType Evaluator::type(const Program &program) const
 {
+    ErrorManager* em = ErrorManager::getInstance();
     const std::string& name = program.node(0).payload().toString();
     const ObjectTypeTemplate& parentTemplate = module.getTemplate(name);
     ObjectType type(parentTemplate);
     if(type.isNull())
     {
-        std::cerr<<"Type not found : "<<name<<std::endl;
+        em->errorMessage<<"Type not found : "<<name;
+        em->notify();
         return type;
     }
 
@@ -105,7 +108,8 @@ ObjectType Evaluator::type(const Program &program) const
     {
         if(i >= type.typeTemplate().numberOfParameters())
         {
-            std::cerr<<"For type "<<name<<" too many parameters given";
+            em->errorMessage<<"For type "<<name<<" too many parameters given";
+            em->notify();
         }
         if(arguments.node(i).tag() == RIGHT_VALUE)
         {

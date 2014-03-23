@@ -56,6 +56,12 @@ void ErrorManager::notify()
     errorMessage.clear();
 }
 
+void ErrorManager::notify(std::string errorStr)
+{
+    errorMessage << errorStr;
+    notify();
+}
+
 /*void operator<<(ErrorManager * errorManager, std::ostringstream stream)
 {
     errorManager->notify(stream.str());

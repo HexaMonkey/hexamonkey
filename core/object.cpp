@@ -19,7 +19,7 @@
 
 #include "core/object.h"
 #include "core/parser.h"
-
+#include "core/error/errormanager.h"
 #include "core/modules/stream/streammodule.h"
 
 #define BUFFER_SIZE 1048576
@@ -113,6 +113,7 @@ int Object::numberOfChildren() const
 
 Object *Object::access(int64_t index, bool forceParse)
 {
+    ErrorManager* em = ErrorManager::getInstance();
     if(index >=0 && index < numberOfChildren())
     {
         return _children[index];
@@ -124,7 +125,8 @@ Object *Object::access(int64_t index, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked for index "<<index<<std::endl;
+            em->errorMessage <<"Parsing locked for index "<<index;
+            em->notify();
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);
@@ -132,7 +134,7 @@ Object *Object::access(int64_t index, bool forceParse)
     }
     else
     {
-        std::cerr<<"Requested variable not in range"<<std::endl;
+        em->notify("Requested variable not in range");
         return nullptr;
     }
 }
@@ -151,7 +153,9 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
         exploreSome(128);
         if(n == numberOfChildren())
         {
-            std::cerr<<"Parsing locked for look up "<<name<<std::endl;
+            ErrorManager* em = ErrorManager::getInstance();
+            em->errorMessage << "Parsing locked for look up " << name;
+            em->notify();
             return nullptr;
         }
         file().seekg(pos, std::ios_base::beg);

@@ -23,6 +23,7 @@
 #include "core/util/csvreader.h"
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
+#include "core/error/errormanager.h"
 
 using namespace ebmlTypes;
 
@@ -43,10 +44,10 @@ void HmcModule::requestImportations(std::vector<std::string> &formatRequested)
 
 bool HmcModule::doLoad()
 {
-    
+
     if(!fileExists(_modelPath))
     {
-        std::cerr<<"HMC model file not found"<<std::endl;
+        ErrorManager::getInstance()->notify("HMC model file not found");
         return false;
     }
 

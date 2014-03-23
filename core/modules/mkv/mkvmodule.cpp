@@ -26,6 +26,7 @@
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
+#include "core/error/errormanager.h"
 
 using namespace rapidxml;
 using namespace ebmlTypes;
@@ -49,7 +50,7 @@ bool MkvModule::doLoad()
 {
     if(!fileExists(_modelPath))
     {
-        std::cerr<<"MKV model file not found"<<std::endl;
+        ErrorManager::getInstance()->notify("MKV model file not found");
         return false;
     }
     std::ifstream modelFile(_modelPath);

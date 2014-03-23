@@ -19,6 +19,7 @@ public:
     void attach(ErrorObserver* errorObserver);
     void detach(ErrorObserver* errorObserver);
     void notify();
+    void notify(std::string errorString);
     std::ostringstream errorMessage;
 };
 

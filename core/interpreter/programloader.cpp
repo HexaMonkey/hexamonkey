@@ -32,6 +32,7 @@
 #include "core/util/unused.h"
 #include "core/util/osutil.h"
 #include "core/util/fileutil.h"
+#include "core/error/errormanager.h"
 
 ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir)
     : _module(module),
@@ -43,7 +44,7 @@ ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::str
       _expCompiler (getFile(compilerDirs, "expcompiler")),
 #endif
       _userDir(userDir)
-                        
+
 {
     UNUSED(hmcElemNames);
 }
@@ -75,12 +76,12 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
     const std::string outputPath = _userDir + path.substr(pos) + "c";
 
 #else
-    std::cerr<<"Error: unsuported operating system"<<std::endl;
+    ErrorManager::getInstance()->notify("Error: unsuported operating system");
     return Program();
 #endif
 
 
- 
+
     std::string compiler;
     if(mode == file)
         compiler = _fileCompiler;
@@ -89,7 +90,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
     if(!fileExists(path) || compiler.compare("") == 0)
     {
-        std::cerr<<"Compiler not found"<<std::endl;
+        ErrorManager::getInstance()->notify("Compiler not found");
         return Program();
     }
 
@@ -127,7 +128,9 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     }
     else
     {
-        std::cerr << "Script could not be loaded : "<< path << std::endl;
+        ErrorManager* em = ErrorManager::getInstance();
+        em->errorMessage << "Script could not be loaded : "<< path << std::endl;
+        em->notify();
         return Program();
     }
 }
@@ -158,7 +161,9 @@ Program ProgramLoader::fromFile(const std::string &path) const
     }
     else
     {
-        std::cerr<<"Description file not found: "<<hmPath<<std::endl;
+        ErrorManager* em = ErrorManager::getInstance();
+        em->errorMessage <<"Description file not found: "<<hmPath;
+        em->notify();
     }
 
     return Program();
