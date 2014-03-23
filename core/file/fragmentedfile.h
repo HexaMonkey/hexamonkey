@@ -15,8 +15,6 @@ class FragmentedFile : public File
 public:
     FragmentedFile(Object *object);
 
-    bool importNextFragment();
-
     // do nothing
     virtual void setPath(const std::string& path) override;
 
@@ -50,13 +48,13 @@ public:
 
     void dump(std::ostream &out);
 
-private:
+protected:
+    virtual bool importNextFragment() = 0;
+
     Object*       _parent;
     File&         _parentFile;
     std::string   _path;
     int64_t       _tellg;
-    int           _pid;
-    int           _n;
     std::vector<Object*> _fragments;
     FragmentedFile& operator=(const FragmentedFile&) = delete;
     FragmentedFile(const FragmentedFile&) = delete;

@@ -6,22 +6,7 @@
 #include "core/module.h"
 
 FragmentedFile::FragmentedFile(Object *object) :
-    File(), _parent(object), _parentFile(object->file()), _tellg(0)
-{
-    // test with psi fragments
-
-    _pid = object->parent()->lookUp("PID", true)->value().toInteger();
-    _n = object->lookUp("psi_syntax_section", true)
-                  ->lookUp("last_section_number", true)
-                  ->value().toInteger();
-
-    if(!object->lookUp("psi_begin", true))
-    {
-        std::cout << "psi_begin null!" << std::endl;
-    }
-    object->explore(-1);
-    _fragments.push_back(object);
-}
+    File(), _parent(object), _parentFile(object->file()), _tellg(0) {}
 
 
 void FragmentedFile::setPath(const std::string& path) {}
@@ -113,33 +98,4 @@ void FragmentedFile::dump(std::ostream &out) {
     for(auto &p : _fragments) {
         p->dump(out);
     }
-}
-
-bool FragmentedFile::importNextFragment() {
-    if(_n<=0)
-        return false;
-
-    auto main_obj = _parent->parent()->parent();
-    int previousRank = 0;
-    if(_fragments.size()==1) {
-        previousRank = _fragments.back()->parent()->rank();
-    } else {
-        previousRank = _fragments.back()->parent()->parent()->rank();
-    }
-    auto it = main_obj->begin()+previousRank+1;
-    while(true) {
-        for(;it!=main_obj->end();it++) {
-            if((*it)->lookUp("PID", true)->value().toInteger() == _pid) {
-                _fragments.push_back((*it)->lookUp("psi_fragment", true));
-                _n--;
-                return true;
-            }
-        }
-        if(it == main_obj->end()) {
-            main_obj->exploreSome(128);
-            if(it == main_obj->end())
-                return false;
-        }
-    }
-    return false;
 }

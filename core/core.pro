@@ -22,8 +22,10 @@ SOURCES += \
   mapmodule.cpp \
   containerparser.cpp \
   error/errormanager.cpp\
+  file/esfragmentedfile.cpp \
   file/file.cpp \
   file/fragmentedfile.cpp \
+  file/psifragmentedfile.cpp \
   file/realfile.cpp \
   formatdetector/syncbyteformatdetector.cpp \
   formatdetector/standardformatdetector.cpp \
@@ -63,6 +65,7 @@ SOURCES += \
   modules/ebml/ebmlcontainerparser.cpp \
   modules/hmc/hmcmodule.cpp \
   modules/mkv/mkvmodule.cpp \
+  modules/stream/streammodule.cpp \
   util/strutil.cpp \
   util/iterutil.cpp \
   util/fileutil.cpp \
@@ -83,8 +86,10 @@ HEADERS  += variant.h \
     containerparser.h \
     error/errormanager.h \
     error/errorobserver.h \
+    file/esfragmentedfile.h \
     file/file.h \
     file/fragmentedfile.h \
+    file/psifragmentedfile.h \
     file/realfile.h \
     formatdetector/syncbyteformatdetector.h \
     formatdetector/standardformatdetector.h \
@@ -128,6 +133,7 @@ HEADERS  += variant.h \
     modules/hmc/hmcmodule.h \
     modules/mkv/mkvtypes.h \
     modules/mkv/mkvmodule.h \
+    modules/stream/streammodule.h \
     util/unused.h \
     util/strutil.h \
     util/iterutil.h \

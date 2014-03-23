@@ -20,6 +20,8 @@
 #include "core/object.h"
 #include "core/parser.h"
 
+#include "core/modules/stream/streammodule.h"
+
 #define BUFFER_SIZE 1048576
 
 Object::Object(File& file) :
@@ -228,8 +230,9 @@ bool Object::hasStream() const
 
 void Object::dumpStream(std::ostream &out)
 {
-    FragmentedFile file(this);
-    file.dump(out);
+    FragmentedFile* file = StreamModule::getFragmentedFile(this);
+    if(file)
+        file->dump(out);
 }
 
 void Object::dumpStreamToFile(const std::string &path)
@@ -237,6 +240,18 @@ void Object::dumpStreamToFile(const std::string &path)
     std::ofstream out (path, std::ios::out | std::ios::binary);
     dumpStream(out);
 }
+
+Variant Object::getState(Variant const& key) const {
+    try
+    {
+        return _stateMap.at(key);
+    }
+    catch(std::out_of_range)
+    {
+        return Variant();
+    }
+}
+
 
 void Object::seekBeginning()
 {

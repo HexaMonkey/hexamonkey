@@ -23,6 +23,8 @@
 #include "core/interpreter/programloader.h"
 #include "core/modules/default/defaulttypes.h"
 
+#include "core/modules/stream/streammodule.h"
+
 #include "mainwindow.h"
 
 
@@ -115,9 +117,9 @@ void MainWindow::openFile(const std::string& path)
 }
 
 void MainWindow::openFragmentedFile(Object& object) {
-    FragmentedFile* fragFile = new FragmentedFile(&object);
-    // FIXME : not hard coded psi_table
-    const Module& module = moduleLoader.getModule("psi_table");
+    FragmentedFile* fragFile = StreamModule::getFragmentedFile(&object);
+    std::string moduleName = StreamModule::getFragmentedModule(&object);
+    const Module& module = moduleLoader.getModule(moduleName);
     treeWidget->setCurrentIndex(treeWidget->addFile(fragFile, module));
 }
 

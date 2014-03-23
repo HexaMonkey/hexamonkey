@@ -25,7 +25,6 @@
 #include <memory>
 #include <unordered_map>
 
-#include "core/file/fragmentedfile.h"
 #include "core/file/realfile.h"
 #include "core/objecttype.h"
 #include "core/showcase.h"
@@ -234,6 +233,8 @@ class Object
         void dumpStream(std::ostream &outStream);
 
         void dumpStreamToFile(const std::string& path);
+
+        Variant getState(Variant const& key) const;
 
     private:
         friend class Parser;

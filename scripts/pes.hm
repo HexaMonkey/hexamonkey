@@ -1,0 +1,6 @@
+import ts
+
+class PES as File
+{
+    Data all;
+}
