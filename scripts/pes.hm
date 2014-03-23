@@ -2,5 +2,41 @@ import ts
 
 class PES as File
 {
-    Data all;
+    bslbf(24)  packet_start_code_prefix;
+    uimsbf(8)  stream_id;
+    uimsbf(16) PES_packet_length;
+    if(%hasPESOptionHeader(stream_id)) {
+        bslbf(2) unused;
+        bslbf(2) PES_scrambling_control;
+        bslbf(1) PES_priority;
+        bslbf(1) data_alignment_indicator;
+        bslbf(1) copyright;
+        bslbf(1) original_or_copy;
+        bslbf(2) PTS_DTS_flags;
+        bslbf(1) ESCR_flag;
+        bslbf(1) ES_rate_flag;
+        bslbf(1) DSM_trick_mode_flag;
+        bslbf(1) additional_copy_info_flag;
+        bslbf(1) PES_CRC_flag;
+        bslbf(1) PES_extension_flag;
+        uimsbf(8) PES_header_data_length;
+        Data(8*PES_header_data_length) PES_header_data;
+    }
+    Data PES_Packet_data_byte;
+}
+
+function hasPESOptionHeader(stream_id) {
+    if( stream_id != Ob10111100 // program_stream_map
+     && stream_id != 0b10111110 // padding_stream
+     && stream_id != 0b10111111 // private_stream_2
+     && stream_id != 0b11110000 // ECM
+     && stream_id != 0b11110001 // EMM
+     && stream_id != 0b11111111 // program_stream_directory
+     && stream_id != 0b11110010 // DSMCC_stream
+     && stream_id != 0b11111000) // ITU-T Rec. H.222.1 type E stream
+    {
+        return 1;
+    } else {
+        return 0;
+    }
 }
