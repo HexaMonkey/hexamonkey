@@ -9,13 +9,14 @@
 					<li><a href="contribute.php">Contribute</a></li>
 				</ul>
 				<h1>Download</h1>
-				<ul>					
+				<ul>
 					<li><a href="download.php">HexaMonkey</a></li>
 				</ul>
 				<h1>Documentation</h1>
 				<ul>
 					<li><a href="hmdoc.php">HMscript</a></li>
 					<li><a href="doc/">Developer</a></li>
+					<li><a href="archdoc.php">Architecture</a></li>
 				</ul>
 			</div>
 		</div>

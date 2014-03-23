@@ -138,6 +138,7 @@ gui/qrc_*.cpp
 !site
 !site/*.php
 !site/*.css
+!site/HexamonkeyGlobal.png
 
 #Test files
 !test
