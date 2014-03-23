@@ -24,8 +24,8 @@
 
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, TreeView* view, QObject *parent) :
     QAbstractItemModel(parent),
-    programLoader(programLoader),
     view(view),
+    programLoader(programLoader),
     _resourceManager(*this)
 {
     QList<QVariant> rootData;

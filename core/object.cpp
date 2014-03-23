@@ -268,7 +268,7 @@ void Object::seekEnd()
 
 void Object::seekObjectEnd()
 {
-    _file.seekg(_beginningPos+_pos.toInteger(), std::ios::beg);
+    _file.seekg(_beginningPos+static_cast<std::streamoff>(_pos.toUnsignedInteger()), std::ios::beg);
 }
 
 std::streamoff Object::pos() const

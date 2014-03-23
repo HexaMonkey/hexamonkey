@@ -165,3 +165,8 @@ std::ostream& operator<<(std::ostream& out, const ObjectType& type)
 {
     return type.display(out);
 }
+
+
+void ObjectType::_setParameters(int first)
+{
+}

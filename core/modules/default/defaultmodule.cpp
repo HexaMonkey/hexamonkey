@@ -241,21 +241,21 @@ bool DefaultModule::doLoad()
     {
 
         if(   scope.get(0).cvalue().canConvertTo(Variant::string)
-           && scope.get(1).cvalue().canConvertTo(Variant::integer))
+           && scope.get(1).cvalue().canConvertTo(Variant::unsignedInteger))
         {
             const std::string& str    = scope.get(0).cvalue().toString();
 
-            int64_t start;
-            int64_t size;
-            if(scope.get(2).cvalue().canConvertTo(Variant::integer))
+            uint64_t start;
+            uint64_t size;
+            if(scope.get(2).cvalue().canConvertTo(Variant::unsignedInteger))
             {
-                start = scope.get(1).cvalue().toInteger();
-                size = scope.get(2).cvalue().toInteger();
+                start = scope.get(1).cvalue().toUnsignedInteger();
+                size = scope.get(2).cvalue().toUnsignedInteger();
             }
             else
             {
                 start = 0;
-                size = scope.get(1).cvalue().toInteger();
+                size = scope.get(1).cvalue().toUnsignedInteger();
             }
 
             if(start < str.size())

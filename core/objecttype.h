@@ -123,9 +123,7 @@ private:
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
 
-    void _setParameters(int first)
-    {
-    }
+    void _setParameters(int first);
 
     template<typename... Args>
     void _setParameters(int first, const Variant& v, Args... args)
