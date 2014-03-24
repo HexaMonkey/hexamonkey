@@ -8,7 +8,6 @@
 FragmentedFile::FragmentedFile(Object *object) :
     File(), _parent(object), _parentFile(object->file()), _tellg(0) {}
 
-
 void FragmentedFile::setPath(const std::string& path) {
     _path = path;
 }

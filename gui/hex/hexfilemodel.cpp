@@ -162,7 +162,6 @@ QVariant HexFileModel::data(const QModelIndex &index, int role) const
 
     //Compute position
     qint64 pos = position(index);
-
     //Nothing to display if position not in file
     if (pos >= fileSize)
         return QVariant("");
@@ -175,6 +174,9 @@ QVariant HexFileModel::data(const QModelIndex &index, int role) const
         {
             file.seek(pos);
             QByteArray byte = file.read(1);
+            /*if (dataEdited.count(pos) > 0){
+                std::cout << *dataEdited.find(pos)->second.data() << std::endl;
+                return *dataEdited.find(pos)->second.data();}*/
             return QVariant(byte.toHex());
         }
         //As char
@@ -291,7 +293,7 @@ void HexFileModel::setFile(const QString &path)
         beginRemoveRows(QModelIndex(),0,rowCount(QModelIndex()));
         endRemoveRows();
         file.setFileName(path);
-        file.open(QIODevice::ReadOnly);
+        file.open(QIODevice::ReadWrite);
         fileSize = file.size();
 #if 1
         if (file.size() > 1000000000)

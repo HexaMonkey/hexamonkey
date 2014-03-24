@@ -24,8 +24,8 @@ SOURCES += \
   error/errormanager.cpp\
   file/esfragmentedfile.cpp \
   file/file.cpp \
-  file/fragmentedfile.cpp \
   file/psifragmentedfile.cpp \
+  file/fragmentedfile.cpp \
   file/realfile.cpp \
   formatdetector/syncbyteformatdetector.cpp \
   formatdetector/standardformatdetector.cpp \

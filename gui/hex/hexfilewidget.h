@@ -20,6 +20,8 @@
 
 #include <QtGui>
 #include <QWidget>
+#include <QLineEdit>
+#include <QMenu>
 
 
 #include "gui/hex/hexfilemodel.h"
@@ -86,6 +88,10 @@ public slots:
     void search(QByteArray pattern, bool next);
     void focusSearch();
 
+    void displayMenu(const QPoint &pos);
+
+    void editFinished();
+
 protected:
     void focusInEvent (QFocusEvent *event);
     void focusOutEvent(QFocusEvent *event);
@@ -93,6 +99,7 @@ protected:
 
 private:
     QScrollBar*   scrollBar;
+    QLineEdit* editionBox;
 
     unsigned int _hexWidth;
     unsigned int _charWidth;
