@@ -198,7 +198,7 @@ void FromFileModule::loadFormatDetections(Program &formatDetections, StandardFor
                 break;
 
             case ADD_SYNCBYTE_OP:
-                formatAdder.addSyncbyte(formatDetection.node(0).payload().toInteger(), formatDetection.node(1).payload().toInteger());
+                formatAdder.addSyncbyte(formatDetection.node(1).payload().toInteger(), formatDetection.node(2).payload().toInteger());
                 break;
 
             default:
