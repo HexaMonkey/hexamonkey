@@ -50,7 +50,7 @@ class transport_packet
 	}
 	if(adaptation_field_control & 0b01)
 	{
-		if(PID == 0x00 || PID == 0x01 || PID == 0x11 || PID == 0x12)
+		if(PID == 0x00 || PID == 0x01)
 		{
 			if(payload_unit_start_indicator == 0) {
 				Data(size_left) psi_fragment;
@@ -111,9 +111,16 @@ class transport_packet
 					//%log(PID+" is an PES fragment");
 					Data(size_left) payload;
 				}
+				else if(PID == 0x11 || PID == 0x12)
+				{
+					if(payload_unit_start_indicator == 0) {
+						Data(size_left) psi_fragment;
+					} else {
+						PSI_table(size_left, PID, 0) psi_table;
+					}
+				}
 				else
 				{
-
 					Data(size_left) payload;
 				}
 			}
