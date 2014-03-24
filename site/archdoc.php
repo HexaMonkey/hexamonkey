@@ -190,4 +190,57 @@ try to find a variable or object called bitsize in its scope. It will then apply
 the multiplication, find the variable bytesize in the scope and assign the
 result to it.</p>
 
+<h3>The GUI</h3>
+
+<p>The purpose of this part is to print the information to the user in an
+interface. The main parts are :</p>
+
+<h4>1. The main window</h4>
+
+<p>The MainWindow is created in the main.cpp. It inherits from QMainWindow. Its
+goal is to print the whole interface and the menu bar at the top of the window.
+Therefore, it controls whatever action is done by the user in the top task bar
+such as opening files, recompiling HMScripts ... It also creates and holds the
+two main widgets of the GUI : the tree widget and the hexadecimal widget.</p>
+
+<h4>2. The tree directory</h4>
+
+<p>It corresponds to the left part of the interface which prints the internal
+architecture of the file (parsed or not). The tree widget is common to all the
+opened files and holds the treeModel instances which are specific to each opened
+file.</p>
+
+<p>The treeModel inherits from QAbstractItemModel: it is a specific way to
+manage the data. The fundamental concept is inclusion. Every field of the tree
+is a QModelIndex. A QModelIndex can have children and therefore a parent. The
+treeModel is like a huge array with every row representing a specific file by a
+root QModelIndex, which has children contained into itself, which themselves
+contain children and so on. To sum up, the table is a table of tables of
+tables... To navigate through it to a tree object item, you may use the user
+interaction or go from root QModelIndex down to the item QModelIndex.</p>
+
+<p>The tree Object item is the only part of the tree widget directly related to
+the core. Each item contains a core's object. It inherits from the tree item
+which manages the attributes of the item useful for its representation in the
+tree.</p>
+
+<p>Finally, the treeView which inherits from QTreeView, displays the items and
+manages the interaction with the user through the selected signal.</p>
+
+<h4>3. The hexadecimal directory</h4>
+
+<p>It is pretty similar to the treeWidget: the hexFileWidget is shred with all
+the files but each of them has a specific hexFileModel where are the functions
+to read data from the file. Be careful, the data does not come from the core's
+file object, but from a QFile only related to the core's file object by the fact
+they share the same path. Therefore, there are two representations of the file
+in the whole project: one used by the core and one used by the hexadecimal
+widget which is independent from the core (but not the tree widget,
+remember tree object item contains Objects).</p>
+
+<p>The two widgets may interact: when the user clicks on some data, the
+corresponding data is underlined in the other widget. There are different
+actions available depending on the widget such as closing the file in the tree
+widget or editing the file in the hexadecimal widget.</p>
+
 <?php require_once("footer.php"); ?>
