@@ -46,9 +46,12 @@ bool EsFragmentedFile::importNextFragment() {
         }
         auto it = main_obj->begin()+currentRank;
         if((*it)->lookUp("PID", true)->value().toInteger() == _pid) {
-            _fragments.push_back((*it)->lookUp("payload", true));
-            _n++;
-            return true;
+            Object* payload = (*it)->lookUp("payload", true);
+            if(payload) {
+                _fragments.push_back(payload);
+                _n++;
+                return true;
+            }
         }
         currentRank++;
     }
