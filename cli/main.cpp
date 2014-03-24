@@ -84,6 +84,7 @@ Options:\n\
 are ignored),\n\
      * subtree : tree describing the last leaf reached,\n\
      * info : info on the last leaf reached,\n\
+     * value : value of the last leaf reached, \n\
      * numberOfChildren : number of children of the last leaf reached,\n\
      * size : size of the last leaf reached (in bits) \n\
      * binary : raw data of the last leaf reached (use with caution) \n\
