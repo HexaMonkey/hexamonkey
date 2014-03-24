@@ -397,9 +397,7 @@ class ES_data_table extends Data
 
 class ES_data {
 	uint(8) stream_type;
-	if(stream_type == 0x02) {
-		stream_type.@info = "H.262/13818-2 video (MPEG-2) or 11172-2 constrained video";
-	} // add more common es infos here
+	stream_type.@info = %stream_type_string(stream_type);
 	Data(3) reserved_bits;
 	uint(13, 16) es_pid;
 	var pmt_pid = @parent.@parent.@parent.@args.pid;
@@ -411,4 +409,25 @@ class ES_data {
 	Data(2) es_info_length_unused;
 	uint(10) es_info_length;
 	Data(8*es_info_length) es_info;
+}
+
+
+
+function stream_type_string(stream_type) {
+	if(stream_type == 0x02) {
+		return "H.262/13818-2 video (MPEG-2) or 11172-2 constrained video";
+	}
+	if(stream_type == 0x03) {
+		return "ISO/IEC 11172 Audio";
+	}
+	if(stream_type == 0x06) {
+		return "ITU-T Rec. H.222.0 | ISO/IEC 13818-1 private PES";
+	}
+	if(stream_type == 0x0f) {
+		return "ISO/IEC 13818-7 Audio with ADTS transport syntax";
+	}
+	if(stream_type >= 0x15 && stream_type <= 0x7f) {
+		return "ITU-T Rec. H.222.0 | ISO/IEC 13818-1 Reserved";
+	}
+	return ""+stream_type;
 }
