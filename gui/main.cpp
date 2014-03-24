@@ -61,7 +61,7 @@
 #include <QApplication>
 #include <QIcon>
 
-#include "gui/mainwindow.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -126,6 +126,6 @@ int main(int argc, char *argv[])
     {
         window.openFile(argv[i]);
     }
-    
+
     return a.exec();
 }

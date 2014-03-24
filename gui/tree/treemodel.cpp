@@ -351,3 +351,12 @@ void TreeModel::hexSearch(quint64 pos)
     }
     view->setCurrentIndex(temporaryMiningIndex);
 }
+
+QString TreeModel::rootPath(){
+    QModelIndex rootIndex = current;
+    while(rootIndex.parent().column() != -1)
+    {
+        rootIndex = rootIndex.parent();
+    }
+    return path(index(rootIndex.row(),0));
+}

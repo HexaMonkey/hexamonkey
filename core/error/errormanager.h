@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include "ErrorObserver.h"
+#include "core/error/errorobserver.h"
 
 class ErrorManager
 {

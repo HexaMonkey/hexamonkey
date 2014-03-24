@@ -22,7 +22,8 @@
 #include "core/moduleloader.h"
 #include "core/interpreter/programloader.h"
 #include "core/modules/default/defaulttypes.h"
-#include "gui/mainwindow.h"
+
+#include "mainwindow.h"
 
 
 const int MainWindow::maxRecentFiles;

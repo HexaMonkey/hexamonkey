@@ -3,7 +3,7 @@
 
 #include <string>
 #include <QMessageBox>
-#include "errorobserver.h"
+#include "core/error/errorobserver.h"
 
 
 

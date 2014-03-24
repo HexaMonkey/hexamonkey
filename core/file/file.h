@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdint.h>
-
+#include <map>
 
 /** @brief High-level input stream operations on files with bit precision
 

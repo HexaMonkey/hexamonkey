@@ -19,7 +19,7 @@
 #include "core/formatdetector/formatdetector.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
-#include "gui/error/errormanager.h"
+#include "core/error/errormanager.h"
 
 RealFile::RealFile() : File()
 {

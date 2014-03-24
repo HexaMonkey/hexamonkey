@@ -21,7 +21,7 @@ SOURCES += \
   module.cpp \
   mapmodule.cpp \
   containerparser.cpp \
-  file/file.cpp \
+  error/errormanager.cpp\
   file/fragmentedfile.cpp \
   file/realfile.cpp \
   formatdetector/syncbyteformatdetector.cpp \
@@ -68,7 +68,8 @@ SOURCES += \
   util/csvreader.cpp \
   util/bitutil.cpp \
   modules/default/dataparser.cpp \
-  util/osutil.cpp
+  util/osutil.cpp \
+    file/file.cpp
 
 HEADERS  += variant.h \
     showcase.h \
@@ -80,6 +81,8 @@ HEADERS  += variant.h \
     module.h \
     mapmodule.h \
     containerparser.h \
+    error/errormanager.h \
+    error/errorobserver.h \
     file/file.h \
     file/fragmentedfile.h \
     file/realfile.h \
