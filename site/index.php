@@ -2,11 +2,11 @@
 <?php require_once("navigation.php"); ?>
 <?php require_once("header.php"); ?>
 			<h2>About</h2>
-			
+
 			<p>HexaMonkey is a freely distributed framework which goal is to provide tools to view the internal structure of any binary file and navigate through it seamlessly. It can be used to facilitate the development and debugging of encoding and decoding software.</p>
 			<p>It relies on lazy and asynchronous parsing to offer a pleasant experience to the user. It is highly exentensible thanks to its modular architecture and a powerful scripting langage : HMscript.<p>
 			<p>The formats already supported are :
-			<ul> 
+			<ul>
 				<li>Video :
 					<ul>
 						<li>mpeg4</li>
@@ -20,11 +20,17 @@
 					<ul>
 						<li>png</li>
 						<li>jpeg (incomplete)</li>
+						<li>gif</li>
 					</ul>
 				</li>
 				<li>Archive :
 					<ul>
 						<li>zip</li>
+					</ul>
+				</li>
+				<li>Database files :
+					<ul>
+						<li>sqlite</li>
 					</ul>
 				</li>
 			</ul>
