@@ -16,8 +16,11 @@ The formats already supported are :
     Image :
         png
         jpeg (incomplete)
+        gif
     Archive :
         zip
+    Database :
+        sqlite
 
 
 We strongly encourage you to implement other formats and share them : see the HMScript documentation (http://www.hexamonkey.com/hmdoc.php) for more information.
