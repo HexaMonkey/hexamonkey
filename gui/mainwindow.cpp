@@ -17,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QHBoxLayout>
+#include <QTableWidget>
 #include <QApplication>
 
 #include "core/moduleloader.h"
@@ -38,23 +39,26 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
     setAcceptDrops(true);
 
     treeWidget = new TreeWidget(programLoader, this);
-    hexFileWidget = new HexFileWidget(this);
+    hexFileWidget = new HexFileWidget();
+    errorWidget = new ErrorWindow();
+    ErrorManager::getInstance()->attach(errorWidget);
+
 
     setCentralWidget(new QWidget(this));
     QHBoxLayout* layout = new QHBoxLayout(centralWidget());
 
+    QTabWidget* tab = new QTabWidget(centralWidget());
+    tab->addTab(hexFileWidget, "hex");
+    tab->addTab(errorWidget, "log");
+
     layout->addWidget(treeWidget, 1);
-    layout->addWidget(hexFileWidget);
+    layout->addWidget(tab);
     layout->setContentsMargins(0,0,0,0);
     centralWidget()->setLayout(layout);
 
     QAction* search = new QAction(this);
     search->setShortcut(QKeySequence::Find);
     addAction(search);
-
-    errorManager = ErrorManager::getInstance();
-    errorWindow = new ErrorWindow();
-    errorManager->attach(errorWindow);
 
     connect(treeWidget,SIGNAL(pathChanged(QString)), hexFileWidget, SLOT(setFile(QString)));
     connect(treeWidget,SIGNAL(positionChanged(qint64, qint64)), hexFileWidget, SLOT(gotoPosition(qint64)));
@@ -92,8 +96,7 @@ void MainWindow::openFile(const std::string& path)
     file->setPath(path);
     if (!file->good())
     {
-       errorManager->errorMessage << "File not found";
-       errorManager->notify();
+       ErrorManager::getInstance()->notify("File not found");
     }
     else
     {

@@ -276,7 +276,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::cerr<<"[LOG]"<<scope.get(0).cvalue()<<std::endl;
+        ErrorManager::getInstance()->notify("[LOG]"+scope.get(0).cvalue().toString());
         return Variable();
     });
 
@@ -286,9 +286,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        ErrorManager *errorManager = ErrorManager::getInstance();
-        errorManager->errorMessage << scope.get(0).cvalue().toString();
-        errorManager->notify();
+        ErrorManager::getInstance()->notify("[ERROR]"+scope.get(0).cvalue().toString());
         return Variable();
     });
 
@@ -298,7 +296,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::cerr<<"[WARNING]"<<scope.get(0).cvalue()<<std::endl;
+        ErrorManager::getInstance()->notify("[WARNING]"+scope.get(0).cvalue().toString());
         return Variable();
     });
 

@@ -1,13 +1,17 @@
 #include "errorwindow.h"
 
-ErrorWindow::ErrorWindow(QWidget* parent): QMessageBox(parent)
+#include <QScrollBar>
+#include <iostream>
+
+ErrorWindow::ErrorWindow(QWidget* parent): QPlainTextEdit(parent)
 {
-    setWindowTitle("Error");
+    setWindowTitle("Log");
 }
 
 void ErrorWindow::update(std::string errorRaised)
 {
-    setText(QString::fromStdString(errorRaised));
-    setVisible(true);
+    std::cout<<"toto : "<<errorRaised<<std::endl;
+    this->appendPlainText(QString::fromStdString(errorRaised+"\n")); // Adds the message to the widget
+    this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum()); // Scrolls to the bottom
 }
 

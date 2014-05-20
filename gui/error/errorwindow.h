@@ -2,12 +2,12 @@
 #define ERRORWINDOW_H
 
 #include <string>
-#include <QMessageBox>
+#include <QPlainTextEdit>
 #include "core/error/errorobserver.h"
 
 
 
-class ErrorWindow : public QMessageBox, public ErrorObserver
+class ErrorWindow : public QPlainTextEdit, public ErrorObserver
 {
     Q_OBJECT
 public:

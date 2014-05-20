@@ -73,6 +73,7 @@ public:
 
     TreeWidget* treeWidget;
     HexFileWidget* hexFileWidget;
+    ErrorWindow* errorWidget;
 
 private slots:
     virtual void dropEvent(QDropEvent *event) final;
@@ -103,9 +104,6 @@ private:
 
     static const int maxRecentFiles = 5;
     QAction *recentFileActs[maxRecentFiles];
-
-    ErrorWindow* errorWindow;
-    ErrorManager* errorManager;
 };
 
 #endif // MAINWINDOW_H
