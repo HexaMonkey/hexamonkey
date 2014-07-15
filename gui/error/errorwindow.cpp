@@ -10,7 +10,7 @@ ErrorWindow::ErrorWindow(QWidget* parent): QPlainTextEdit(parent)
 
 void ErrorWindow::update(std::string errorRaised)
 {
-    std::cout<<"toto : "<<errorRaised<<std::endl;
+    std::cout<<"error : "<<errorRaised<<std::endl;
     this->appendPlainText(QString::fromStdString(errorRaised+"\n")); // Adds the message to the widget
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum()); // Scrolls to the bottom
 }
