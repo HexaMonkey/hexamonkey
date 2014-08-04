@@ -10,7 +10,7 @@ The formats already supported are :
     Video :
         mpeg4
         mpeg2-ts
-        matrovska
+        matroska
         avi
         asf/wmw (incomplete)
     Image :
