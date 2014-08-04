@@ -67,7 +67,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 #if defined(PLATFORM_WIN32)
     const std::string outputPath = path+"c";
 
-#elif defined(PLATFORM_LINUX)
+#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
     size_t pos;
     pos = path.find_last_of('/');
     if (pos == std::string::npos) {

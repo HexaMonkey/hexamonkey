@@ -6,6 +6,9 @@
 
 #elif defined(linux) || defined(__linux)
 #define PLATFORM_LINUX
+
+#elif defined(__APPLE__)
+#define PLATFORM_APPLE
 #endif
 
 #endif

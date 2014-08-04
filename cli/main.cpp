@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
     std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
     std::vector<std::string> logoDirs = {installDir, "..\\logo\\"};
 
-#elif defined(PLATFORM_LINUX)
+#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
     std::string installDir = "/usr/local/share/hexamonkey/";
     std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
     std::vector<std::string> modelsDirs = {installDir, "../models/"};

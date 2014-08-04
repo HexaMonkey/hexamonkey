@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
     std::vector<std::string> logoDirs = {installDir, "..\\logo\\"};
 
-#elif defined(PLATFORM_LINUX)
+#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
     /* XXX: use autotools ? */
 
     std::string installDir = "/usr/share/hexamonkey/";
