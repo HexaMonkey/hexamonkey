@@ -169,12 +169,12 @@ Program ProgramLoader::fromFile(const std::string &path) const
     return Program();
 }
 
-#ifdef PLATFORM_LINUX
-#define __POPEN popen
-#define __PCLOSE pclose
-#else
+#ifdef PLATFORM_WIN32
 #define __POPEN _popen
 #define __PCLOSE _pclose
+#else
+#define __POPEN popen
+#define __PCLOSE pclose
 #endif
 
 bool ProgramLoader::executeCommand(const std::string &program, const std::vector<std::string> &arguments) const
