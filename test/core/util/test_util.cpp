@@ -84,14 +84,14 @@ void TestUtil::testBitUtil_popCount()
 
 void TestUtil::testFileUtil_fileExists()
 {
-    QCOMPARE(fileExists("../../ressources/fake_zip.zip"), true);
-    QCOMPARE(fileExists("../../ressources/some_imaginary_file"), false);
+    QCOMPARE(fileExists("../../resources/fake_zip.zip"), true);
+    QCOMPARE(fileExists("../../resources/some_imaginary_file"), false);
 }
 
 void TestUtil::testFileUtil_getFile()
 {
-    QCOMPARE(getFile({"../../ressources/"}, "fake_zip.zip"),
-                                std::string("../../ressources/fake_zip.zip"));
+    QCOMPARE(getFile({"../../resources/"}, "fake_zip.zip"),
+                                std::string("../../resources/fake_zip.zip"));
 }
 
 void TestUtil::testFileUtil_getDirContent()
