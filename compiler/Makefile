@@ -23,7 +23,7 @@ expcompiler: compilerExp.yy.o compilerExp.tab.o
 	flex -o $@ $<
 
 %.tab.c %.tab.h: %.y model.h
-	bison --warnings=none -d $<
+	bison -d $<
 
 
 compilerExp.y: compiler.y
