@@ -15,8 +15,8 @@ void TestFormatDetector::testExtensionFormatDetector()
     std::string empty_str("");
 
     RealFile fake_zip_file, fake_avi_file;
-    fake_zip_file.setPath("../../ressources/fake_zip.zip");
-    fake_avi_file.setPath("../../ressources/fake_avi.avi");
+    fake_zip_file.setPath("../../resources/fake_zip.zip");
+    fake_avi_file.setPath("../../resources/fake_avi.avi");
 
     ExtensionFormatDetector fDetector;
     fDetector.addExtension("mp4", "mp4");
@@ -33,9 +33,9 @@ void TestFormatDetector::testMagicFormatDetector()
     std::string zip_str("zip"), empty_str(""), mov_str("mov");
 
     RealFile fake_avi_file, true_zip_file, mov_file;
-    fake_avi_file.setPath("../../ressources/fake_avi.avi");
-    true_zip_file.setPath("../../ressources/true_zip.zip");
-    mov_file.setPath("../../ressources/magic_mov.mov");
+    fake_avi_file.setPath("../../resources/fake_avi.avi");
+    true_zip_file.setPath("../../resources/true_zip.zip");
+    mov_file.setPath("../../resources/magic_mov.mov");
 
     MagicFormatDetector fDetector;
     fDetector.addMagicNumber("zip", "50 4b 03 04");
@@ -54,7 +54,7 @@ void TestFormatDetector::testSyncbyteFormatDetector()
     std::string empty_str("");
 
     RealFile ts_file;
-    ts_file.setPath("../../ressources/magic_ts.ts");
+    ts_file.setPath("../../resources/magic_ts.ts");
 
     SyncbyteFormatDetector fDetector(3);
     fDetector.addSyncbyte("ts", 0x47, 188);
@@ -76,7 +76,7 @@ void TestFormatDetector::testCompositeFormatDetector()
 
     // fake_zip.zip contains a truncated mov file.
     RealFile fake_zip_file;
-    fake_zip_file.setPath("../../ressources/fake_zip.zip");
+    fake_zip_file.setPath("../../resources/fake_zip.zip");
 
     ExtensionFormatDetector extensionDetector;
     extensionDetector.addExtension("zip", "zip");
@@ -104,8 +104,8 @@ void TestFormatDetector::testStandardFormatDetector()
     std::string zip_str("zip");
 
     RealFile fake_zip_file, true_zip_file;
-    fake_zip_file.setPath("../../ressources/fake_zip.zip");
-    true_zip_file.setPath("../../ressources/true_zip.zip");
+    fake_zip_file.setPath("../../resources/fake_zip.zip");
+    true_zip_file.setPath("../../resources/true_zip.zip");
 
     StandardFormatDetector detector;
     std::unique_ptr<StandardFormatDetector::Adder> adder(detector.newAdder(zip_str));
