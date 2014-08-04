@@ -9,6 +9,10 @@ CONFIG -= qt
 TARGET = hexamonkey-cli
 TEMPLATE = app
 
+macx {
+  CONFIG -= app_bundle
+}
+
 INCLUDEPATH = ..
 
 SOURCES += main.cpp
