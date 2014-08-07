@@ -913,7 +913,7 @@ class AVCConfigurationBox as Box("avcC")
 	bit(3)  reserved;
 	uint(5) numOfSequenceParameterSets;
 	AVCSequence sequences[numOfSequenceParameterSets];
-	uint(5) numOfPictureParameterSets;
+	uint(8) numOfPictureParameterSets;
 	AVCPicture pictures[numOfPictureParameterSets];
 }
 
