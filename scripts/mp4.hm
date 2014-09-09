@@ -604,7 +604,8 @@ extends Data(2*size + traf_size + trun_size + sample_size)
 	uint(@args.size)      time;
 	uint(@args.size)      moof_offset;
 	uint(@args.traf_size) traf_number;
-	uint(@args.trun_size) sample_number;
+	uint(@args.trun_size) trun_number;
+	uint(@args.sample_size) sample_number;
 }
 
 class TrackFragmentRandomAccessBox extends FullBox as Box("tfra")
