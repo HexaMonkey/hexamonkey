@@ -94,7 +94,7 @@ class ProgressiveDownloadInfoEntry
 	uint(32) initial_delay;
 }
 
-class ProgressiveDownloadInfoBox extends Fullbox as Box("pdin")
+class ProgressiveDownloadInfoBox extends FullBox as Box("pdin")
 {
 	ProgressiveDownloadInfoEntry entries[];
 }
@@ -621,7 +621,7 @@ class TrackFragmentRandomAccessBox extends FullBox as Box("tfra")
 								   (length_size_of_sample_num+1) * 8) entries[number_of_entry];
 }
 
-class MovieFragmentRandomAccessOffsetBox extends Fullbox as Box("mfro")
+class MovieFragmentRandomAccessOffsetBox extends FullBox as Box("mfro")
 {
 	uint(32) size;
 }
