@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-addMagicNumber 00 00 00 xx 66 74 79 70
+addMagicNumber 00 00 00 xx xx 74 79 70
 addExtension mp4
 addExtension mov
 addExtension m4a
@@ -959,6 +959,38 @@ class ItunesDataBox(tag) as Box("data")
     {
         Data payload;
     }
+}
+
+class SegmentTypeBox extends FileTypeBox as Box("styp")
+{
+}
+
+class SegmentReferenceEntry
+{
+    bit(1)   reference_type;
+    uint(31) referenced_size;
+    uint(32) subsegment_duration;
+    bit(1)   starts_with_SAP;
+    uint(3)  SAP_type;
+    uint(28) SAP_delta_time;
+}
+
+class SegmentIndexBox extends FullBox as Box("sidx")
+{
+    var size = version ? 64 : 32;
+    uint(32)   reference_ID;
+    uint(32)   timescale;
+    uint(size) earliest_presentation_time;
+    uint(size) first_offset;
+    uint(16)   reserved;
+    uint(16)   reference_count;
+    SegmentReferenceEntry references[reference_count];
+}
+
+class TrackFragmentBaseMediaDecodeTimeBox extends FullBox as Box("tfdt")
+{
+    var size = version ? 64 : 32;
+    uint(size) baseMediaDecodeTime;
 }
 
 class bit(size) extends Bitset(size)
