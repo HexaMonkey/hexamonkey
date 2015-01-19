@@ -95,7 +95,12 @@ void HexFileView::setColumnWidths()
 
 void HexFileView::keyPressEvent ( QKeyEvent * event )
 {
-    if (
+    int key = event->key();
+    if (key == Qt::Key_Return || key == Qt::Key_Enter)
+    {
+        emit selected(currentIndex());
+    }
+    else if (
         ( event->matches(QKeySequence::SelectNextWord) ||
           event->matches(QKeySequence::SelectNextChar)  ||
           event->matches(QKeySequence::Forward)  ||
@@ -142,7 +147,7 @@ QSize HexFileView::sizeHint () const
 void HexFileView::currentChanged(const QModelIndex &current, const QModelIndex & previous)
 {
     QTableView::currentChanged(current, previous);
-    emit selected(current);
+    emit highlighted(current);
 }
 
 void HexFileView::focusInEvent (QFocusEvent *event)

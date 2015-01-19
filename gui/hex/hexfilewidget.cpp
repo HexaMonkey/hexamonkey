@@ -37,7 +37,6 @@ HexFileWidget::HexFileWidget(MainWindow *parent)
 
     header = new HexFileHeader(view, this);
     searchWidget = new HexFileSearchWidget(this);
-    editionBox = new QLineEdit(this);
     
     //Layout
     QGridLayout *layout = new QGridLayout;
@@ -45,10 +44,11 @@ HexFileWidget::HexFileWidget(MainWindow *parent)
     layout->addWidget(header, 0, 0, 1, 1);
     layout->addWidget(view, 1, 0, 1, 1);
     layout->addWidget(searchWidget, 2, 0, 1, 1);
-    layout->addWidget(editionBox);
     view->setContentsMargins(0,0,0,0);
 
-    connect(view,SIGNAL(selected(QModelIndex)), this, SLOT(focus(QModelIndex)));
+    connect(view,SIGNAL(highlighted(QModelIndex)), this, SLOT(focus(QModelIndex)));
+    connect(view,SIGNAL(selected(QModelIndex)), this, SLOT(select(QModelIndex)));
+    connect(view,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(select(QModelIndex)));
     connect(view,SIGNAL(focusedIn()) , this, SLOT(focusIn()));
     connect(view,SIGNAL(focusedOut()), this, SLOT(focusOut()));
     connect(this,SIGNAL(focusedIn()) , this, SLOT(focusIn()));
@@ -57,7 +57,6 @@ HexFileWidget::HexFileWidget(MainWindow *parent)
 
     view->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(displayMenu(QPoint)));
-    connect(editionBox, SIGNAL(returnPressed()) , this, SLOT(editFinished()));
 
     setContentsMargins(0,0,0,0);
 
@@ -111,7 +110,6 @@ void HexFileWidget::highlight(qint64 position, qint64 size)
 void HexFileWidget::focus(const QModelIndex& index)
 {
     focus(model->position(index));
-    parent->treeWidget->getModel()->hexSearch(model->position(index));
 }
 
 void HexFileWidget::focus(qint64 position)
@@ -121,6 +119,16 @@ void HexFileWidget::focus(qint64 position)
     model->changeData(oldPosition);
     model->changeData(position);
     header->setHighlight(position%16);
+}
+
+void HexFileWidget::select(const QModelIndex &index)
+{
+    select(model->position(index));
+}
+
+void HexFileWidget::select(qint64 position)
+{
+    emit selected(position);
 }
 
 void HexFileWidget::focusInEvent (QFocusEvent *event)
@@ -178,38 +186,15 @@ void HexFileWidget::displayMenu(const QPoint &pos)
 {
     QMenu menu(this);
 
-    QAction *edit = menu.addAction("Edit");
+    QAction *selectAction = menu.addAction("Select");
 
     QAction *triggeredAction = menu.exec(view->viewport()->mapToGlobal(pos));
 
     if(!triggeredAction)
         return;
 
-    if(triggeredAction == edit)
+    if(triggeredAction == selectAction)
     {
-        editionBox->move(pos);
-        editionBox->resize(40,20);
-        editionBox->setInputMask("HH");
-        editionBox->show();
+        select(view->currentIndex());
     }
-}
-
-void HexFileWidget::editFinished()
-{
-    QFile file(parent->treeWidget->getModel()->rootPath());
-    file.open(QIODevice::ReadOnly);
-    QByteArray tcou = file.readAll();
-    file.close();
-    QString hexstr = tcou.toHex();
-    hexstr.replace(model->focusPosition*2,2,editionBox->text());
-    QString newFileName = file.fileName();
-    QFile copy(newFileName);
-    QByteArray shadowFile = QByteArray(hexstr.toStdString().c_str());
-    copy.open(QIODevice::WriteOnly);
-    copy.write(QByteArray::fromHex(shadowFile));
-    copy.close();
-    /*if (model->dataEdited.count(model->focusPosition) > 0)
-        (model->dataEdited).erase((model->dataEdited).find(model->focusPosition));
-    model->dataEdited.insert(model->dataEdited.begin(),std::pair<int,QByteArray>(model->focusPosition,QByteArray(editionBox->text().toStdString().c_str())));*/
-    editionBox->hide();
 }

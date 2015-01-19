@@ -34,7 +34,7 @@ public:
     void setModel(QAbstractItemModel *model);
     void setHeaderCharCount(int value);
     void setColumnWidths();
-
+    void  doubleClicked ( const QModelIndex & index );
 
     unsigned int headerWidth();
     unsigned int hexWidth();
@@ -43,6 +43,7 @@ public:
     virtual QSize sizeHint () const;
     
 signals:
+    void highlighted(QModelIndex);
     void selected(QModelIndex);
     void focusedIn();
     void focusedOut();

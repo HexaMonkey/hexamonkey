@@ -70,6 +70,7 @@ public slots:
     void updatePosition(QModelIndex currentIndex);
     void setCurrentIndex(QModelIndex index);
     void displayMenu(const QPoint &pos);
+    void updateByFilePosition(qint64 position);
 
 private:
     virtual void dropEvent(QDropEvent *event) final;

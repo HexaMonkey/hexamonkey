@@ -59,7 +59,6 @@ class HexFileWidget : public QWidget
 public:
     HexFileWidget(MainWindow *parent=0);
 
-    TreeWidget *treeW;
     HexFileView *view;
     HexFileHeader *header;
     HexFileModel *model;
@@ -70,6 +69,7 @@ public:
     unsigned int charWidth() const;
 
 signals:
+    void selected(qint64);
     void focusedIn();
     void focusedOut();
 
@@ -82,6 +82,9 @@ public slots:
     void focus(const QModelIndex& index);
     void focus(qint64 position);
 
+    void select(const QModelIndex& index);
+    void select(qint64 position);
+
     void focusIn();
     void focusOut();
 
@@ -90,8 +93,6 @@ public slots:
 
     void displayMenu(const QPoint &pos);
 
-    void editFinished();
-
 protected:
     void focusInEvent (QFocusEvent *event);
     void focusOutEvent(QFocusEvent *event);
@@ -99,7 +100,6 @@ protected:
 
 private:
     QScrollBar*   scrollBar;
-    QLineEdit* editionBox;
 
     unsigned int _hexWidth;
     unsigned int _charWidth;

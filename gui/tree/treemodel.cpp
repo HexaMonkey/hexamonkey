@@ -15,6 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#include <QMessageBox>
+
 #include "core/modules/default/defaulttypes.h"
 #include "gui/mt/resource.h"
 #include "gui/mt/resourcemanager.h"
@@ -321,7 +323,7 @@ void TreeModel::addResource(Object &object)
 }
 
 // this function develops the tree for a given position in the file.
-void TreeModel::hexSearch(quint64 pos)
+void TreeModel::updateByFilePosition(quint64 pos)
 {
     QModelIndex rootIndex = current;
     while(rootIndex.parent().column() != -1)
@@ -335,11 +337,14 @@ void TreeModel::hexSearch(quint64 pos)
     view->setExpanded(temporaryMiningIndex,true);
     while (temporaryItem->hasChildren())
     {
-        for (int i = 0; i < temporaryItem->childCount(); i++)
+        bool found = false;
+        int childCount = temporaryItem->childCount();
+        for (int i = 0; i < childCount; i++)
         {
             QModelIndex child = temporaryMiningIndex.child(i,0);
-            if ((position(child) <= pos) && (pos < position(child)+size(child)))
+            if (pos < position(child)+size(child))
             {
+                found = true;
                 temporaryMiningIndex = child;
                 break;
             }
@@ -347,6 +352,15 @@ void TreeModel::hexSearch(quint64 pos)
         requestExpansion(temporaryMiningIndex);
         view->setExpanded(temporaryMiningIndex,true);
         temporaryItem = &item(temporaryMiningIndex);
+
+        if (!found && !temporaryItem->synchronised()) {
+            const int response = QMessageBox::question(nullptr,
+                                                       "Not enough items parsed",
+                                                       QString("Not enough items have been parsed (currently %1) to reach position.\n Do you want to parse more?").arg(childCount));
+            if (response != QMessageBox::Yes) {
+                return;
+            }
+        }
     }
     view->setCurrentIndex(temporaryMiningIndex);
 }

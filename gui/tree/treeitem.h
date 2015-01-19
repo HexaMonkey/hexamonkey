@@ -20,6 +20,7 @@
 
 #include <QList>
 #include <QVariant>
+#include <QModelIndex>
 
 /**
  * @brief Model data for a node in the \link TreeModel tree model\endlink
@@ -50,7 +51,7 @@ public:
     virtual bool hasStream() const;
     int row() const;
     TreeItem *parent();
-    bool hasChildren();
+    bool hasChildren() const;
 
     void load() const;
     virtual bool synchronised();

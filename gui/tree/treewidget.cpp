@@ -113,6 +113,11 @@ void TreeWidget::displayMenu(const QPoint &pos)
     }
 }
 
+void TreeWidget::updateByFilePosition(qint64 position)
+{
+    model->updateByFilePosition(position);
+}
+
 void TreeWidget::dragEnterEvent(QDragEnterEvent* event)
 {
     // if some actions should not be usable, like move, this code must be adopted

@@ -39,7 +39,7 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
     setAcceptDrops(true);
 
     treeWidget = new TreeWidget(programLoader, this);
-    hexFileWidget = new HexFileWidget();
+    hexFileWidget = new HexFileWidget(this);
     errorWidget = new ErrorWindow();
     ErrorManager::getInstance()->attach(errorWidget);
 
@@ -66,6 +66,7 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
     connect(treeWidget,SIGNAL(eventDropped(QDropEvent*)),this, SLOT(dropEvent(QDropEvent*)));
     connect(search, SIGNAL(triggered()), hexFileWidget, SLOT(focusSearch()));
     connect(treeWidget,SIGNAL(openFragmentedFile(Object&)), this, SLOT(openFragmentedFile(Object&)));
+    connect(hexFileWidget, SIGNAL(selected(qint64)), treeWidget, SLOT(updateByFilePosition(qint64)));
 }
 
 

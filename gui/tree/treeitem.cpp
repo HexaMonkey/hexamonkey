@@ -61,7 +61,7 @@ int TreeItem::childCount() const
     return _childItems.count();
 }
 
-bool TreeItem::hasChildren()
+bool TreeItem::hasChildren() const
 {
     return !_childItems.isEmpty();
 }

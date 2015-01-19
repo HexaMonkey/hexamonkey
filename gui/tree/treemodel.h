@@ -80,7 +80,7 @@ public:
 
     void addResource(Object& object);
 
-    void hexSearch(quint64 pos);
+    void updateByFilePosition(quint64 pos);
 
 public slots:
     void requestExpansion(const QModelIndex &index);
@@ -96,6 +96,8 @@ signals:
 
 
 private:
+    QModelIndex findItemChildByFilePosition(const TreeItem& treeItem, qint64 position);
+
     static const int defaultPopulation   = 128;
     static const int minPopulationRatio  = 2;
     static const int populationTries     = 32;

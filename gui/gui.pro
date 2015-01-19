@@ -84,3 +84,4 @@ unix {
     }
 }
 INSTALLS += target
+
