@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-addMagicNumber 00 00 00 xx 66 74 79 70
+addMagicNumber 00 00 00 xx xx 74 79 70
 addExtension mp4
 addExtension mov
 addExtension m4a
@@ -48,16 +48,26 @@ class Box(boxtype, extended_type)
 	}
 }
 
-class NextFragPtsBox as Box("uuid", "D4807EF2-CA39-4695-8E5426CB9E46A79F")
+class NextFragInfo(size)
 {
-    uint(8) data[5];
-    int(64) next_frag_pts;
+    int(@args.size) frag_start;
+    int(@args.size) frag_duration;
 }
 
-class FragDurationBox as Box("uuid", "6D1D9B05-42D5-44E6-80E2141DAFF757B2")
+class NextFragTimeDurationBox extends FullBox as Box("uuid", "D4807EF2-CA39-4695-8E5426CB9E46A79F")
 {
-    uint(8) data[12];
-    int(64) frag_duration;
+    // TfrfBox in [MS-SSTR]
+    var size = version ? 64 : 32;
+    uint(8) number_of_entry;
+    NextFragInfo(size) next_frags[number_of_entry];
+}
+
+class FragTimeDurationBox extends FullBox as Box("uuid", "6D1D9B05-42D5-44E6-80E2141DAFF757B2")
+{
+    // TfxdBox in [MS-SSTR]
+    var size = version ? 64 : 32;
+    int(size) frag_start;
+    int(size) frag_duration;
 }
 
 class FullBox(boxtype, v, f) extends Box(boxtype)
@@ -94,7 +104,7 @@ class ProgressiveDownloadInfoEntry
 	uint(32) initial_delay;
 }
 
-class ProgressiveDownloadInfoBox extends Fullbox as Box("pdin")
+class ProgressiveDownloadInfoBox extends FullBox as Box("pdin")
 {
 	ProgressiveDownloadInfoEntry entries[];
 }
@@ -604,7 +614,8 @@ extends Data(2*size + traf_size + trun_size + sample_size)
 	uint(@args.size)      time;
 	uint(@args.size)      moof_offset;
 	uint(@args.traf_size) traf_number;
-	uint(@args.trun_size) sample_number;
+	uint(@args.trun_size) trun_number;
+	uint(@args.sample_size) sample_number;
 }
 
 class TrackFragmentRandomAccessBox extends FullBox as Box("tfra")
@@ -621,7 +632,7 @@ class TrackFragmentRandomAccessBox extends FullBox as Box("tfra")
 								   (length_size_of_sample_num+1) * 8) entries[number_of_entry];
 }
 
-class MovieFragmentRandomAccessOffsetBox extends Fullbox as Box("mfro")
+class MovieFragmentRandomAccessOffsetBox extends FullBox as Box("mfro")
 {
 	uint(32) size;
 }
@@ -913,7 +924,7 @@ class AVCConfigurationBox as Box("avcC")
 	bit(3)  reserved;
 	uint(5) numOfSequenceParameterSets;
 	AVCSequence sequences[numOfSequenceParameterSets];
-	uint(5) numOfPictureParameterSets;
+	uint(8) numOfPictureParameterSets;
 	AVCPicture pictures[numOfPictureParameterSets];
 }
 
@@ -948,6 +959,38 @@ class ItunesDataBox(tag) as Box("data")
     {
         Data payload;
     }
+}
+
+class SegmentTypeBox extends FileTypeBox as Box("styp")
+{
+}
+
+class SegmentReferenceEntry
+{
+    bit(1)   reference_type;
+    uint(31) referenced_size;
+    uint(32) subsegment_duration;
+    bit(1)   starts_with_SAP;
+    uint(3)  SAP_type;
+    uint(28) SAP_delta_time;
+}
+
+class SegmentIndexBox extends FullBox as Box("sidx")
+{
+    var size = version ? 64 : 32;
+    uint(32)   reference_ID;
+    uint(32)   timescale;
+    uint(size) earliest_presentation_time;
+    uint(size) first_offset;
+    uint(16)   reserved;
+    uint(16)   reference_count;
+    SegmentReferenceEntry references[reference_count];
+}
+
+class TrackFragmentBaseMediaDecodeTimeBox extends FullBox as Box("tfdt")
+{
+    var size = version ? 64 : 32;
+    uint(size) baseMediaDecodeTime;
 }
 
 class bit(size) extends Bitset(size)

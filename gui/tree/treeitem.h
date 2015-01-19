@@ -20,7 +20,6 @@
 
 #include <QList>
 #include <QVariant>
-#include <QModelIndex>
 
 /**
  * @brief Model data for a node in the \link TreeModel tree model\endlink

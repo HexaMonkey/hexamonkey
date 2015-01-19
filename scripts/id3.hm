@@ -15,21 +15,21 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef DEFAULTTYPES_H
-#define DEFAULTTYPES_H
+addMagicNumber 49 44 33
 
-#include "core/objecttypetemplate.h"
-#include "core/objecttype.h"
+import bestd
 
-namespace defaultTypes
+class ID3File as File
 {
-    const ObjectTypeTemplate file("File");
-
-    const ObjectTypeTemplate array("Array",{"elementType", "size"});
-
-    const ObjectTypeTemplate tuple("Tuple",{"elementType", "count"});
-
-    const ObjectTypeTemplate data("Data", {"_size"});
+	String(3) magic;
+	uint(8) major;
+	uint(8) minor;
+	uint(8) flags;
+	SynchSafeInteger size;
 }
 
-#endif // DEFAULTTYPES_H
+class SynchSafeInteger
+{
+	String(4) data;
+	@info = %str(data[0] << 21 | data[1] << 14 | data[2] << 7 |  data[3]);
+}
