@@ -276,7 +276,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        ErrorManager::getInstance()->notify("[LOG]"+scope.get(0).cvalue().toString());
+        Log::info(scope.get(0).cvalue().toString());
         return Variable();
     });
 
@@ -286,7 +286,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        ErrorManager::getInstance()->notify("[ERROR]"+scope.get(0).cvalue().toString());
+        Log::error(scope.get(0).cvalue().toString());
         return Variable();
     });
 
@@ -296,7 +296,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        ErrorManager::getInstance()->notify("[WARNING]"+scope.get(0).cvalue().toString());
+        Log::warning(scope.get(0).cvalue().toString());
         return Variable();
     });
 

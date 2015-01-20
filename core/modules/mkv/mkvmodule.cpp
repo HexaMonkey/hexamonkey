@@ -50,7 +50,7 @@ bool MkvModule::doLoad()
 {
     if(!fileExists(_modelPath))
     {
-        ErrorManager::getInstance()->notify("MKV model file not found");
+        Log::error("MKV model file not found");
         return false;
     }
     std::ifstream modelFile(_modelPath);

@@ -335,7 +335,6 @@ bool Variant::canConvertTo(Variant::Type otherType) const
 
 Variant& Variant::convertTo(Variant::Type newType)
 {
-    ErrorManager* em = ErrorManager::getInstance();
     if(_type == newType)
         return *this;
 
@@ -353,8 +352,7 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType];
-                    em->notify();
+                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
                     clear();
             }
             break;
@@ -371,8 +369,7 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
-                    em->notify();
+                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
                     clear();
             }
             break;
@@ -389,15 +386,13 @@ Variant& Variant::convertTo(Variant::Type newType)
                     break;
 
                 default:
-                    em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
-                    em->notify();
+                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
                     clear();
             }
             break;
 
         default:
-            em->errorMessage<<"Error: Invalid type conversion : "<<typeNames[_type]<<" to "<<typeNames[newType]<<std::endl;
-            em->notify();
+            Log::error("Invalid type conversion : ", typeNames[_type], " to ",typeNames[newType]);
             clear();
     }
     _type = newType;
@@ -727,7 +722,7 @@ Variant &Variant::operator +=(const Variant &other)
             break;
 
         default:
-            ErrorManager::getInstance()->notify("Invalid operation : +=");
+            Log::error("Invalid operation : +=");
         }
     }
     return *this;
@@ -762,7 +757,7 @@ Variant &Variant::operator -=(const Variant &other)
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : -=");
+        Log::error("Invalid operation : -=");
     }
     return *this;
 }
@@ -796,7 +791,7 @@ Variant &Variant::operator *=(const Variant &other)
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : *=");
+        Log::error("Invalid operation : *=");
     }
     return *this;
 }
@@ -830,7 +825,7 @@ Variant &Variant::operator /=(const Variant &other)
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : /=");
+        Log::error("Invalid operation : /=");
     }
     return *this;
 }
@@ -848,7 +843,7 @@ Variant &Variant::operator %=(const Variant &other)
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : %=");
+        Log::error("Invalid operation : %=");
     }
     return *this;
 }
@@ -870,7 +865,7 @@ Variant &Variant::operator ++()
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : *=");
+        Log::error("Invalid operation : *=");
     }
     return *this;
 }
@@ -902,7 +897,7 @@ Variant &Variant::operator --()
         break;
 
     default:
-        ErrorManager::getInstance()->notify("Invalid operation : --");
+        Log::error("Invalid operation : --");
     }
     return *this;
 }
@@ -930,7 +925,7 @@ Variant Variant::operator -() const
             break;
 
         default:
-            ErrorManager::getInstance()->notify("Invalid operation : -");
+            Log::error("Invalid operation : -");
 
     }
     return result;
@@ -944,7 +939,7 @@ Variant &Variant::operator |=(const Variant &other)
     }
     else
     {
-        ErrorManager::getInstance()->notify("Invalid operation : |=");
+        Log::error("Invalid operation : |=");
     }
     return *this;
 }
@@ -957,7 +952,7 @@ Variant &Variant::operator ^=(const Variant &other)
     }
     else
     {
-        ErrorManager::getInstance()->notify("Invalid operation : ^=");
+        Log::error("Invalid operation : ^=");
     }
     return *this;
 }
@@ -970,7 +965,7 @@ Variant &Variant::operator &=(const Variant &other)
     }
     else
     {
-        ErrorManager::getInstance()->notify("Invalid operation : &=");
+        Log::error("Invalid operation : &=");
     }
     return *this;
 }
@@ -984,7 +979,7 @@ Variant &Variant::operator <<=(const Variant &other)
     }
     else
     {
-        ErrorManager::getInstance()->notify("Invalid operation : <<=");
+        Log::error("Invalid operation : <<=");
     }
     return *this;
 }
@@ -998,7 +993,7 @@ Variant &Variant::operator >>=(const Variant &other)
     }
     else
     {
-        ErrorManager::getInstance()->notify("Invalid operation : >>=");
+        Log::error("Invalid operation : >>=");
     }
     return *this;
 }
@@ -1007,7 +1002,7 @@ Variant Variant::operator ~() const
 {
     if(!hasNumericalType())
     {
-        ErrorManager::getInstance()->notify("Invalid operation : ~");
+        Log::error("Invalid operation : ~");
         return *this;
     }
 

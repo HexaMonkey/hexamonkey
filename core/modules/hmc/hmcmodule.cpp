@@ -47,7 +47,7 @@ bool HmcModule::doLoad()
 
     if(!fileExists(_modelPath))
     {
-        ErrorManager::getInstance()->notify("HMC model file not found");
+        Log::error("HMC model file not found");
         return false;
     }
 

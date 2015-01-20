@@ -71,9 +71,7 @@ void ContainerParser::addChild(Object *child)
             _object.seekEnd();
 
             setParsed();
-            auto em = ErrorManager::getInstance();
-            em->errorMessage << "too big "<<child->type()<<" "<<child->name();
-            em->notify();
+            Log::error("Too big", child->type(), " ", child->name());
         }
     }
     _object._pos.setValue(file().tellg() - _object._beginningPos);

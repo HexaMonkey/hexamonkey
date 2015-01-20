@@ -90,7 +90,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
     if(!fileExists(path) || compiler.compare("") == 0)
     {
-        ErrorManager::getInstance()->notify("Compiler not found");
+        Log::error("Compiler not found");
         return Program();
     }
 
@@ -128,9 +128,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     }
     else
     {
-        ErrorManager* em = ErrorManager::getInstance();
-        em->errorMessage << "Script could not be loaded : "<< path << std::endl;
-        em->notify();
+        Log::error("Script could not be loaded : ", path);
         return Program();
     }
 }
@@ -161,9 +159,7 @@ Program ProgramLoader::fromFile(const std::string &path) const
     }
     else
     {
-        ErrorManager* em = ErrorManager::getInstance();
-        em->errorMessage <<"Description file not found: "<<hmPath;
-        em->notify();
+        Log::error("Description file not found: ", hmPath);
     }
 
     return Program();

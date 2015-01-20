@@ -50,7 +50,7 @@ void ErrorManager::notify()
 {
     for(unsigned int i=0; i < errorObserverList.size();i++)
     {
-        errorObserverList[i]->update(errorMessage.str());
+        errorObserverList[i]->update(errorMessage.str(), LogLevel::Error);
     }
     errorMessage.str(std::string());
     errorMessage.clear();
@@ -60,6 +60,14 @@ void ErrorManager::notify(std::string errorStr)
 {
     errorMessage << errorStr;
     notify();
+}
+
+void ErrorManager::log(const std::string &message, LogLevel level)
+{
+    for(unsigned int i=0; i < errorObserverList.size();i++)
+    {
+        errorObserverList[i]->update(message, level);
+    }
 }
 
 /*void operator<<(ErrorManager * errorManager, std::ostringstream stream)

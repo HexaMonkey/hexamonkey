@@ -41,9 +41,7 @@ void RealFile::open()
     _file.open(_path.c_str(), std::ios::in|std::ios::binary);
     if(!good())
     {
-        ErrorManager *errorManager = ErrorManager::getInstance();
-        errorManager->errorMessage << "unable to open file :"<<_path;
-        errorManager->notify();
+        Log::error("Unable to open file", _path);
      }
 }
 

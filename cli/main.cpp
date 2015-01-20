@@ -57,12 +57,11 @@ typedef struct CLIOptions CLIOptions;
 
 class ErrorCLIObserver : public ErrorObserver {
 public:
-    virtual void update(std::string errorRaised) override;
+    virtual void update(std::string errorRaised, LogLevel level) override;
 };
 
-void ErrorCLIObserver::update(std::string errorRaised) {
+void ErrorCLIObserver::update(std::string errorRaised, LogLevel /*level*/) {
     std::cerr << "[ERROR]" << errorRaised << std::endl;
-    exit(1);
 }
 
 void print_help()

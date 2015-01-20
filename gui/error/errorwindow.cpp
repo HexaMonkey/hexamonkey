@@ -8,7 +8,7 @@ ErrorWindow::ErrorWindow(QWidget* parent): QPlainTextEdit(parent)
     setWindowTitle("Log");
 }
 
-void ErrorWindow::update(std::string errorRaised)
+void ErrorWindow::update(std::string errorRaised, LogLevel /*level*/)
 {
     std::cout<<"error : "<<errorRaised<<std::endl;
     this->appendPlainText(QString::fromStdString(errorRaised+"\n")); // Adds the message to the widget
