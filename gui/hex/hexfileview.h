@@ -43,6 +43,7 @@ public:
     virtual QSize sizeHint () const;
     
 signals:
+    void highlighted(QModelIndex);
     void selected(QModelIndex);
     void focusedIn();
     void focusedOut();
