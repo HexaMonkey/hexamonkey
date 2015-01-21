@@ -41,8 +41,6 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
     treeWidget = new TreeWidget(programLoader, this);
     hexFileWidget = new HexFileWidget(this);
     errorWidget = new ErrorWindow();
-    ErrorManager::getInstance()->attach(errorWidget);
-
 
     setCentralWidget(new QWidget(this));
     QHBoxLayout* layout = new QHBoxLayout(centralWidget());

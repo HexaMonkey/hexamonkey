@@ -74,7 +74,8 @@ SOURCES += \
   util/csvreader.cpp \
   util/bitutil.cpp \
   modules/default/dataparser.cpp \
-  util/osutil.cpp
+  util/osutil.cpp \
+    error/errorobserver.cpp
 
 HEADERS  += variant.h \
     showcase.h \

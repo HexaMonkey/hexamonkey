@@ -8,6 +8,8 @@ enum class LogLevel {Info = 2, Warning = 1, Error = 0};
 class ErrorObserver
 {
 public:
+    ErrorObserver();
+    ~ErrorObserver();
     virtual void update(std::string errorRaised, LogLevel level) = 0;
 };
 

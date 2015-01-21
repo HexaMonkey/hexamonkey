@@ -159,7 +159,6 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
 int main(int argc, char *argv[])
 {
     ErrorCLIObserver errorCliOsberver;
-    ErrorManager::getInstance()->attach(&errorCliOsberver);
 
     CLIOptions options;
     if(!parseArgs(argc, argv, options))
