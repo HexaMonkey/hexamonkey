@@ -95,7 +95,7 @@ void MainWindow::openFile(const std::string& path)
     file->setPath(path);
     if (!file->good())
     {
-       ErrorManager::getInstance()->notify("File not found");
+        Log::error("File not found");
     }
     else
     {
@@ -123,7 +123,7 @@ void MainWindow::openFragmentedFile(Object& object) {
         const Module& module = moduleLoader.getModule(moduleName);
         treeWidget->setCurrentIndex(treeWidget->addFile(fragFile, module));
     } else {
-        ErrorManager::getInstance()->notify("FragmentedFile not found");
+        Log::error("FragmentedFile not found");
     }
 }
 

@@ -86,7 +86,7 @@ void ContainerParser::addChild(Object *child, const std::string &name)
     }
     else
     {
-        ErrorManager::getInstance()->notify("child is NULL");
+        Log::error("Child is null");
     }
 }
 

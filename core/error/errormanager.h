@@ -19,9 +19,6 @@ public:
     ~ErrorManager();
     void attach(ErrorObserver* errorObserver);
     void detach(ErrorObserver* errorObserver);
-    void notify();
-    void notify(std::string errorString);
-    std::ostringstream errorMessage;
 
     void log(const std::string& message, LogLevel level);
 };
@@ -45,7 +42,5 @@ namespace Log {
         ErrorManager::getInstance()->log(concat(t, p...), LogLevel::Error);
     }
 }
-
-void operator<<(ErrorManager * errorManager, std::ostringstream stream);
 
 #endif // ERRORMANAGER_H
