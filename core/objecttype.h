@@ -113,6 +113,8 @@ public:
      */
     std::ostream& display(std::ostream& out) const;
 
+    int numberOfParameters() const;
+
     int numberOfDisplayableParamaters() const;
 
     friend void swap(ObjectType& a, ObjectType& b);

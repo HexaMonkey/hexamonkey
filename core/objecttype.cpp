@@ -18,6 +18,8 @@
 #include "core/objecttype.h"
 #include "core/objecttypetemplate.h"
 
+Variant nullVariant;
+
 ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
 {
 }
@@ -33,16 +35,24 @@ const ObjectTypeTemplate& ObjectType::typeTemplate() const
 
 const Variant& ObjectType::parameterValue(size_t index) const
 {
-    return _parametersValue.at(index);
+    if (index < _parametersValue.size()) {
+        return _parametersValue[index];
+    } else {
+        return nullVariant;
+    }
 }
 
 bool ObjectType::parameterSpecified(size_t index) const
 {
-    return (_parametersValue.at(index).type() != Variant::unknown);
+    return (index < _parametersValue.size()) && (_parametersValue[index].type() != Variant::unknown);
 }
 
 void ObjectType::setParameter(size_t index, const Variant &value)
 {
+    while(index >= _parametersValue.size()) {
+        _parametersValue.push_back(nullVariant);
+    }
+
     _parametersValue.at(index).setValue(value);
 }
 
@@ -149,6 +159,11 @@ std::ostream& ObjectType::display(std::ostream& out) const
         out<<")";
     }
     return out;
+}
+
+int ObjectType::numberOfParameters() const
+{
+    return _parametersValue.size();
 }
 
 int ObjectType::numberOfDisplayableParamaters() const

@@ -37,10 +37,17 @@ Variable TypeScope::doGet(const Variant &key) const
 {
     int i = -1;
 
-    if(key.canConvertTo(Variant::integer))
+    if(key.canConvertTo(Variant::integer)) {
         i = key.toInteger();
-    else if (key.canConvertTo(Variant::string))
+    } else if (key.canConvertTo(Variant::string)) {
+        const std::string str = key.toString();
+
+        if (str == "@count") {
+            return Variable::copy(_type->numberOfParameters(), false);
+        }
+
         i = type().typeTemplate().parameterNumber(key.toString());
+    }
 
     if(i != -1 && (size_t) i < type()._parametersValue.size())
     {

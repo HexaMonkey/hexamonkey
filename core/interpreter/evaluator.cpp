@@ -104,10 +104,6 @@ ObjectType Evaluator::type(const Program &program) const
     Program arguments = program.node(1);
     for(int i = 0; i < arguments.size(); ++i)
     {
-        if(i >= type.typeTemplate().numberOfParameters())
-        {
-            Log::error("For type ",name," too many parameters given");
-        }
         if(arguments.node(i).tag() == RIGHT_VALUE)
         {
             type.setParameter(i, rightValue(arguments.node(i)).cvalue());
