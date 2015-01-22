@@ -22,7 +22,6 @@ SOURCES += \
   module.cpp \
   mapmodule.cpp \
   containerparser.cpp \
-  error/errormanager.cpp\
   file/esfragmentedfile.cpp \
   file/file.cpp \
   file/psifragmentedfile.cpp \
@@ -49,6 +48,8 @@ SOURCES += \
   interpreter/scope/localscope.cpp \
   interpreter/scope/functionscope.cpp \
   interpreter/scope/compositescope.cpp \
+  log/logger.cpp \
+  log/logmanager.cpp \
   modules/default/tupleparser.cpp \
   modules/default/fileparser.cpp \
   modules/default/defaultmodule.cpp \
@@ -75,7 +76,7 @@ SOURCES += \
   util/bitutil.cpp \
   modules/default/dataparser.cpp \
   util/osutil.cpp \
-    error/errorobserver.cpp
+
 
 HEADERS  += variant.h \
     showcase.h \
@@ -87,8 +88,6 @@ HEADERS  += variant.h \
     module.h \
     mapmodule.h \
     containerparser.h \
-    error/errormanager.h \
-    error/errorobserver.h \
     file/esfragmentedfile.h \
     file/file.h \
     file/fragmentedfile.h \
@@ -115,6 +114,8 @@ HEADERS  += variant.h \
     interpreter/scope/localscope.h \
     interpreter/scope/functionscope.h \
     interpreter/scope/compositescope.h \
+	log/logger.h \
+	log/logmanager.h \
     modules/default/tupleparser.h \
     modules/default/fileparser.h \
     modules/default/defaulttypes.h \

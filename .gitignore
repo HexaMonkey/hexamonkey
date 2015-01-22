@@ -17,9 +17,9 @@
 !core/core.pro
 !core/*.cpp
 !core/*.h
-!core/error
-!core/error/*.cpp
-!core/error/*.h
+!core/log
+!core/log/*.cpp
+!core/log/*.h
 !core/file
 !core/file/*.cpp
 !core/file/*.h
@@ -102,9 +102,9 @@ scripts/*.hmc
 !gui/tree/*.h
 !gui/mt/*.cpp
 !gui/mt/*.h
-!gui/error
-!gui/error/*.h
-!gui/error/*.cpp
+!gui/log
+!gui/log/*.h
+!gui/log/*.cpp
 gui/qrc_*.cpp
 
 #models

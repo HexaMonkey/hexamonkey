@@ -40,14 +40,14 @@ MainWindow::MainWindow(ModuleLoader &moduleLoader, const ProgramLoader &programL
 
     treeWidget = new TreeWidget(programLoader, this);
     hexFileWidget = new HexFileWidget(this);
-    errorWidget = new ErrorWindow();
+    logWidget = new LogWidget();
 
     setCentralWidget(new QWidget(this));
     QHBoxLayout* layout = new QHBoxLayout(centralWidget());
 
     QTabWidget* tab = new QTabWidget(centralWidget());
     tab->addTab(hexFileWidget, "hex");
-    tab->addTab(errorWidget, "log");
+    tab->addTab(logWidget, "log");
 
     layout->addWidget(treeWidget, 1);
     layout->addWidget(tab);

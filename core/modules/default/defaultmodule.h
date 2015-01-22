@@ -19,7 +19,7 @@
 #define DEFAULTMODULE_H
 
 #include "core/mapmodule.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 
 class DefaultModule : public MapModule
 {

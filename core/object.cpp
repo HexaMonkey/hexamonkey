@@ -20,7 +20,7 @@
 
 #include "core/object.h"
 #include "core/parser.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 #include "core/modules/stream/streammodule.h"
 
 #define BUFFER_SIZE 1048576

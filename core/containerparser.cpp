@@ -17,7 +17,7 @@
 
 #include "core/containerparser.h"
 #include "core/module.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 
 ContainerParser::ContainerParser(Object &object, const Module &module)
     : Parser(object),

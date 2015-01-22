@@ -1,7 +1,7 @@
 #include "evaluator.h"
 
 #include "compiler/model.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/program.h"
 #include "core/interpreter/scope/functionscope.h"

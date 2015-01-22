@@ -32,7 +32,7 @@
 #include "core/util/unused.h"
 #include "core/util/osutil.h"
 #include "core/util/fileutil.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 
 ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir)
     : _module(module),

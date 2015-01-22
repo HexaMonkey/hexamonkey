@@ -15,8 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/error/errorobserver.h"
-#include "core/error/errormanager.h"
+#include "core/log/logger.h"
+#include "core/log/logmanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/moduleloader.h"
 #include "core/interpreter/programloader.h"
@@ -55,13 +55,26 @@ struct CLIOptions {
 };
 typedef struct CLIOptions CLIOptions;
 
-class ErrorCLIObserver : public ErrorObserver {
+class CLILogger : public Logger {
 public:
-    virtual void update(std::string errorRaised, LogLevel level) override;
+    virtual void update(const std::string& errorRaised, LogLevel level) override;
 };
 
-void ErrorCLIObserver::update(std::string errorRaised, LogLevel /*level*/) {
-    std::cerr << "[ERROR]" << errorRaised << std::endl;
+void CLILogger::update(const std::string& errorRaised, LogLevel level) {
+    switch (level) {
+        case LogLevel::Info:
+            std::cout << "[INFO]    ";
+            break;
+
+        case LogLevel::Warning:
+            std::cout << "[WARNING] ";
+            break;
+
+        case LogLevel::Error:
+            std::cout << "[ERROR]   ";
+            break;
+    }
+    std::cout << errorRaised << std::endl;
 }
 
 void print_help()
@@ -158,7 +171,7 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
 
 int main(int argc, char *argv[])
 {
-    ErrorCLIObserver errorCliOsberver;
+    CLILogger logger;
 
     CLIOptions options;
     if(!parseArgs(argc, argv, options))

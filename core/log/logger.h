@@ -5,12 +5,12 @@
 
 enum class LogLevel {Info = 2, Warning = 1, Error = 0};
 
-class ErrorObserver
+class Logger
 {
 public:
-    ErrorObserver();
-    ~ErrorObserver();
-    virtual void update(std::string errorRaised, LogLevel level) = 0;
+    Logger();
+    ~Logger();
+    virtual void update(const std::string& errorRaised, LogLevel level) = 0;
 };
 
 #endif // ERROROBSERVER_H

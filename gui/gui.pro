@@ -23,6 +23,7 @@ SOURCES += main.cpp\
     tree/treeview.cpp \
     tree/treeobjectitem.cpp \
     tree/treemodel.cpp \
+    tree/treefileitem.cpp \
     tree/treeitem.cpp \
     tree/htmldelegate.cpp \
     tree/filterwidget.cpp \
@@ -32,14 +33,13 @@ SOURCES += main.cpp\
     hex/hexfilemodel.cpp \
     hex/hexfileheader.cpp \
     hex/hexfiledelegate.cpp \
+    log/logwidget.cpp \
     mt/worker.cpp \
     mt/tasklist.cpp \
     mt/resourcemanager.cpp \
     mt/resource.cpp \
     mt/parsingtask.cpp \
-    tree/treefileitem.cpp \
-    qtprogramloader.cpp \
-    error/errorwindow.cpp
+    qtprogramloader.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -47,6 +47,7 @@ HEADERS  += mainwindow.h \
     tree/treeview.h \
     tree/treeobjectitem.h \
     tree/treemodel.h \
+    tree/treefileitem.h \
     tree/treeitem.h \
     tree/htmldelegate.h \
     tree/filterwidget.h \
@@ -56,14 +57,13 @@ HEADERS  += mainwindow.h \
     hex/hexfilemodel.h \
     hex/hexfileheader.h \
     hex/hexfiledelegate.h \
+    log/logwidget.h \
     mt/worker.h \
     mt/tasklist.h \
     mt/resourcemanager.h \
     mt/resource.h \
     mt/parsingtask.h \
-    tree/treefileitem.h \
-    qtprogramloader.h \
-    error/errorwindow.h
+    qtprogramloader.h
 
 RESOURCES += \
     ressources.qrc

@@ -23,7 +23,7 @@
 #include "core/util/csvreader.h"
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 
 using namespace ebmlTypes;
 

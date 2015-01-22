@@ -1,24 +1,24 @@
-#include "errormanager.h"
+#include "logmanager.h"
 #include <iostream>
 
-bool ErrorManager::instanceFlag = false;
-ErrorManager* ErrorManager::single = NULL;
+bool LogManager::instanceFlag = false;
+LogManager* LogManager::single = NULL;
 
-ErrorManager::ErrorManager()
+LogManager::LogManager()
 {
     //empty
 }
 
-ErrorManager::~ErrorManager()
+LogManager::~LogManager()
 {
     instanceFlag = false;
 }
 
-ErrorManager* ErrorManager::getInstance()
+LogManager* LogManager::getInstance()
 {
     if(! instanceFlag)
     {
-        single = new ErrorManager();
+        single = new LogManager();
         instanceFlag = true;
         return single;
     }
@@ -28,12 +28,12 @@ ErrorManager* ErrorManager::getInstance()
     }
 }
 
-void ErrorManager::attach(ErrorObserver* errorObserver)
+void LogManager::attach(Logger* errorObserver)
 {
     errorObserverList.push_back(errorObserver);
 }
 
-void ErrorManager::detach(ErrorObserver* errorObserver)
+void LogManager::detach(Logger* errorObserver)
 {
     for(unsigned int i=0; i < errorObserverList.size();i++)
     {
@@ -45,7 +45,7 @@ void ErrorManager::detach(ErrorObserver* errorObserver)
     }
 }
 
-void ErrorManager::log(const std::string &message, LogLevel level)
+void LogManager::log(const std::string &message, LogLevel level)
 {
     for(unsigned int i=0; i < errorObserverList.size();i++)
     {

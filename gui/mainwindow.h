@@ -25,7 +25,7 @@
 #include <QAction>
 #include "core/formatdetector/formatdetector.h"
 
-#include "gui/error/errorwindow.h"
+#include "gui/log/logwidget.h"
 #include "gui/tree/treewidget.h"
 #include "gui/tree/htmldelegate.h"
 #include "gui/hex/hexfilewidget.h"
@@ -33,7 +33,7 @@
 #include <QAction>
 
 #include "qtprogramloader.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/modules/standard/standardmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
@@ -73,7 +73,7 @@ public:
 
     TreeWidget* treeWidget;
     HexFileWidget* hexFileWidget;
-    ErrorWindow* errorWidget;
+    LogWidget* logWidget;
 
 private slots:
     virtual void dropEvent(QDropEvent *event) final;

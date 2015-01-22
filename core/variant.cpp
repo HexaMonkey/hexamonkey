@@ -20,7 +20,7 @@
 
 #include "core/variant.h"
 #include "core/objecttype.h"
-#include "core/error/errormanager.h"
+#include "core/log/logmanager.h"
 
 const std::vector<std::string>& typeNames = {"unknown", "integer", "unsigned integer" , "float", "string","object type"};
 
