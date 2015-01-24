@@ -97,7 +97,9 @@ extern int line_number;
 "addMagicNumber"    {return ADD_MAGIC_NUMBER_TOKEN;}
 "addExtension"      {return ADD_EXTENSION_TOKEN;}
 "addSyncbyte"       {return ADD_SYNCBYTE_TOKEN;}
-      
+
+"struct"    {return STRUCT_TOKEN;}
+
 {L}{DL}* {yylval.s = strdup(yytext); return IDENT;} 
 "@"{L}{DL}* {yylval.s = strdup(yytext); return A_IDENT;} 
 "%"{L}{DL}* {yylval.s = strdup(yytext+1); return P_IDENT;}

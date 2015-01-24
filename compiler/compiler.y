@@ -39,6 +39,8 @@
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN
 
+%token STRUCT_TOKEN
+
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
 %nonassoc '?' ':'
 %left OR_TOKEN  
@@ -202,11 +204,12 @@ type_access:
 ;
 
 type:
-    identifier {push_master(ARGUMENTS,0); push_master(TYPE, 2);}
+    identifier {push_master(ARGUMENTS,0); push_master(TYPE, 2);} 
    |explicit_type
-
+   
 explicit_type:
     identifier right_value_arguments {push_master(TYPE, 2);}
+   |struct_header '{' struct_arguments '}' {push_master(TYPE, 2);}
 ;
 
 right_value_arguments:
@@ -219,6 +222,23 @@ right_value_argument_list:
     | right_value_argument_list ',' right_value {push_master(ARGUMENTS,2);}
 ;
 
+struct_header:
+	struct_type struct_name {push_master(ARGUMENTS, 1);}
+   |struct_type {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(ARGUMENTS, 1);}
+;
+
+struct_name:
+	IDENT {push_string(STRING_CONSTANT, $1); push_master(RIGHT_VALUE, 1);}
+   |'*'   {push_string(STRING_CONSTANT, "*"); push_master(RIGHT_VALUE, 1);}
+   |'#'   {push_string(STRING_CONSTANT, "#"); push_master(RIGHT_VALUE, 1);}
+   
+struct_type:
+	STRUCT_TOKEN {push_string(IDENTIFIER, "Struct");}
+
+struct_arguments:
+	/*empty*/
+   |struct_arguments type_access struct_name ';' {push_master(ARGUMENTS,3);}
+	
 extension:
     /*empty*/ {push_master(EXTENSION,0);}
    | extends_token type {push_master(EXTENSION,2);}
