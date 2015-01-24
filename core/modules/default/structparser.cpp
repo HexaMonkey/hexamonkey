@@ -1,7 +1,7 @@
 #include "structparser.h"
 #include "core/module.h"
 
-StructParser::StructParser(Object &object, const Module &module, const std::string &name) : ContainerParser(object, module), _name(name)
+StructParser::StructParser(Object &object, const Module &module) : ContainerParser(object, module)
 {
 }
 

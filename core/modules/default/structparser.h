@@ -11,7 +11,7 @@
 class StructParser : public ContainerParser
 {
 public:
-    StructParser(Object& object, const Module& module, const std::string& name);
+    StructParser(Object& object, const Module& module);
     void addElement(const ObjectType& type, const std::string& name);
 
 protected:
@@ -19,7 +19,6 @@ protected:
     void doParse();
 
 private:
-    std::string _name;
     std::vector<ObjectType> _types;
     std::vector<std::string> _names;
 

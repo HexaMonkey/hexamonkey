@@ -90,16 +90,11 @@ bool DefaultModule::doLoad()
     addTemplate(structType);
     addParser("Struct", []parserLambda
     {
-        if(type.parameterSpecified(0))
-        {
-            auto parser = new StructParser(object, module, type.parameterValue(0).toString());
-            for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
-                parser->addElement(type.parameterValue(2*i+1).toObjectType(), type.parameterValue(2*i+2).toString());
-            }
-
-            return parser;
+        auto parser = new StructParser(object, module);
+        for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
+            parser->addElement(type.parameterValue(2*i+1).toObjectType(), type.parameterValue(2*i+2).toString());
         }
-        return nullptr;
+        return parser;
     });
     setFixedSize("Struct", [this]fixedSizeLambda
     {

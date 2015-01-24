@@ -309,14 +309,11 @@ std::ostream& displayName(std::ostream& out, const std::string& name)
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name)
 {
 
-    if(type.typeTemplate().name() == "Array")
-    {
+    if (type.typeTemplate().name() == "Array") {
         displayDecl(out, type.parameterValue(0).toObjectType(), name);
         out << "&nbsp;";
         out << "[]";
-    }
-    else if(type.typeTemplate().name() == "Tuple")
-    {
+    } else if (type.typeTemplate().name() == "Tuple") {
         displayDecl(out, type.parameterValue(0).toObjectType(), name);
         out << "&nbsp;";
         out << "[";
@@ -324,10 +321,15 @@ std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::
         out << type.parameterValue(1).toInteger();
         out << "</span>";
         out << "]";
-
-    }
-    else
-    {
+    } else if (type.typeTemplate().name() == "Struct") {
+        out << "<span style=\"color:#800080;\">";
+        if (type.parameterSpecified(0)) {
+            out << type.parameterValue(0).toString();
+        } else {
+            out << "{}";
+        }
+        out << "</span>";
+    } else {
         displayType(out, type);
         out << "&nbsp;";
         displayName(out, name);
