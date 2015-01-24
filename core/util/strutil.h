@@ -113,9 +113,7 @@ std::string defineStyle(const std::string& name);
 
 
 #ifndef NO_VARIADIC
-void output(std::ostream& /*stream*/)
-{
-}
+void output(std::ostream& stream);
 
 template <typename T, typename ...P>
 void output(std::ostream& stream, const T& t,const P&... p)
