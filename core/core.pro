@@ -76,6 +76,7 @@ SOURCES += \
   util/bitutil.cpp \
   modules/default/dataparser.cpp \
   util/osutil.cpp \
+    modules/default/structparser.cpp
 
 
 HEADERS  += variant.h \
@@ -152,7 +153,8 @@ HEADERS  += variant.h \
     ../compiler/model.h \
     modules/default/dataparser.h \
     util/ptrutil.h \
-    util/osutil.h
+    util/osutil.h \
+    modules/default/structparser.h
 
 unix {
     defined(LIBDIR, var) {

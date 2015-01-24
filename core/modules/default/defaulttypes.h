@@ -30,6 +30,8 @@ namespace defaultTypes
     const ObjectTypeTemplate tuple("Tuple",{"elementType", "count"});
 
     const ObjectTypeTemplate data("Data", {"_size"});
+
+    const ObjectTypeTemplate structType("Struct", {"_name"});
 }
 
 #endif // DEFAULTTYPES_H

@@ -1,0 +1,45 @@
+#include "structparser.h"
+#include "core/module.h"
+
+StructParser::StructParser(Object &object, const Module &module, const std::string &name) : ContainerParser(object, module), _name(name)
+{
+}
+
+void StructParser::addElement(const ObjectType &type, const std::string &name)
+{
+    _types.push_back(type);
+    _names.push_back(name);
+}
+
+void StructParser::doParseHead()
+{
+    int64_t s = 0;
+    for (unsigned int i = 0; i < _types.size(); ++i) {
+        int64_t t = module().getFixedSize(_types[i]);
+        if (t > 0) {
+            s += t;
+        } else {
+            s = -1;
+        }
+    }
+
+    if (s > 0) {
+        setSize(s);
+    } else {
+        s = 0;
+        for (unsigned int i = 0; i < _types.size(); ++i) {
+            Object* object = addVariable(_types[i], _names[i]);
+            s += object->size();
+        }
+        setSize(s);
+    }
+}
+
+void StructParser::doParse()
+{
+    if (!_parsedInHead) {
+        for (unsigned int i = 0; i < _types.size(); ++i) {
+            addVariable(_types[i], _names[i]);
+        }
+    }
+}

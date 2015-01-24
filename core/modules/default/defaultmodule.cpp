@@ -21,6 +21,7 @@
 #include "core/modules/default/arrayparser.h"
 #include "core/modules/default/tupleparser.h"
 #include "core/modules/default/dataparser.h"
+#include "core/modules/default/structparser.h"
 #include "core/interpreter/variable.h"
 #include "core/interpreter/scope/scope.h"
 #include "core/util/strutil.h"
@@ -85,6 +86,34 @@ bool DefaultModule::doLoad()
             return new DataParser(object, -1);
     });
     setFixedSizeFromArg("Data", 0);
+
+    addTemplate(structType);
+    addParser("Struct", []parserLambda
+    {
+        if(type.parameterSpecified(0))
+        {
+            auto parser = new StructParser(object, module, type.parameterValue(0).toString());
+            for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
+                parser->addElement(type.parameterValue(2*i+1).toObjectType(), type.parameterValue(2*i+2).toString());
+            }
+
+            return parser;
+        }
+        return nullptr;
+    });
+    setFixedSize("Struct", [this]fixedSizeLambda
+    {
+         int s = 0;
+         for (int i = 1; i < type.numberOfParameters(); i += 2) {
+             int t = module.getFixedSize(type.parameterValue(i).toObjectType());
+             if (t != -1) {
+                 s += t;
+             } else {
+                 return -1;
+             }
+         }
+         return s;
+    });
 
     addFunction("sizeof",
                 {"type"},
