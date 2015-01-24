@@ -160,9 +160,3 @@ std::string defineStyle(const std::string& name)
     }
     return S.str();
 }
-
-
-void output(std::ostream &stream)
-{
-
-}

@@ -51,28 +51,6 @@ std::string toStr(T t)
     return S.str();
 }
 
-void output(std::ostream& stream);
-
-
-template <typename T, typename ...P>
-void output(std::ostream& stream, const T& t,const P&... p)
-{
-    stream << t;
-    if (!sizeof...(P))
-        return;
-
-    output(stream, p...);
-}
-
-/** @brief Concatenate random values using stringstream */
-template <typename T, typename ...P>
-std::string concat(T t, P ...p)
-{
-    std::stringstream s;
-    output(s, t, p...);
-    return s.str();
-}
-
 /**
  * Get an hex representation of a number
  */
@@ -132,5 +110,31 @@ std::string sizeDisplay(int64_t bitCount);
  * @brief camelCase to DEFINE_STYLE
  */
 std::string defineStyle(const std::string& name);
+
+
+#ifndef NO_VARIADIC
+void output(std::ostream& /*stream*/)
+{
+}
+
+template <typename T, typename ...P>
+void output(std::ostream& stream, const T& t,const P&... p)
+{
+    stream << t;
+    if (!sizeof...(P))
+        return;
+
+    output(stream, p...);
+}
+
+/** @brief Concatenate random values using stringstream */
+template <typename T, typename ...P>
+std::string concat(T t, P ...p)
+{
+    std::stringstream s;
+    output(s, t, p...);
+    return s.str();
+}
+#endif //NO_VARIADIC
 
 #endif // STRUTIL_H_INCLUDED

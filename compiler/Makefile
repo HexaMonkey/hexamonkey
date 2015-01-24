@@ -37,10 +37,10 @@ model.h: model ../models/hmcmodel.csv ../models/hmcoperators.csv
 	./model
 
 model: model.o ../core/util/strutil.o ../core/util/csvreader.o
-	$(CXX) $(CXXFLAGS) $(INCPATH) -o $@ $^
+	$(CXX) -DNO_VARIADIC=1 $(CXXFLAGS) $(INCPATH) -o $@ $^
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(INCPATH) -o $@ -c $<
+	$(CXX) -DNO_VARIADIC=1 $(CXXFLAGS) $(INCPATH) -o $@ -c $<
 
 
 .PHONY: clean
