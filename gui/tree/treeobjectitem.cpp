@@ -24,6 +24,8 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type);
 std::ostream& displayName(std::ostream& out, const std::string& name);
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name);
 std::ostream& displayInfo(std::ostream& out, const std::string& info);
+std::ostream& displayVariant(std::ostream& out, const Variant& variant);
+std::string getString(const Object &object);
 
 TreeObjectItem::TreeObjectItem(const ProgramLoader &programLoader, TreeItem *parent) :
     TreeItem(QList<QVariant>({"", "", ""}), parent),
@@ -169,35 +171,7 @@ void TreeObjectItem::doLoad() const
             displayDecl(S, object().type(), object().name());
         }
 
-        if(!object().info().isNull())
-            displayInfo(S, object().info().toString());
-        else
-        {
-            const Variant& value = object().value();
-            switch(value.type())
-            {
-                case Variant::string:
-                    displayInfo(S, "\""+value.toString()+"\"");
-                    break;
-
-                case Variant::integer:
-                case Variant::unsignedInteger:
-                case Variant::floating:
-                    displayInfo(S, toStr(value));
-                    break;
-
-                case Variant::objectType:
-                {
-                    std::stringstream O;
-                    displayType(O, value.toObjectType());
-                    displayInfo(S, O.str());
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
+        displayInfo(S, getString(object()));
 
         if(itemData().length() <3)
         {
@@ -212,7 +186,10 @@ void TreeObjectItem::doLoad() const
             while(true)
             {
                 displayName(S, *it);
-                displayInfo(S, object().lookUp(*it)->info().toString());
+                auto child = object().lookUp(*it);
+                if (child) {
+                    displayInfo(S, getString(*child));
+                }
 
                 ++it;
                 if(it == object().showcase().end())
@@ -258,32 +235,7 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type)
         {
             if(type.parameterSpecified(i))
             {
-                const Variant& variant = type.parameterValue(i);
-                switch(variant.type())
-                {
-                    case Variant::integer:
-                        out<<"<span style=\"color:#000080;\">"<<variant.toInteger()<<"</span>";
-                        break;
-
-                    case Variant::unsignedInteger:
-                        out<<"<span style=\"color:#000080;\">"<<variant.toUnsignedInteger()<<"</span>";
-                        break;
-
-                    case Variant::floating:
-                        out<<"<span style=\"color:#000080;\">"<<variant.toDouble()<<"</span>";
-                        break;
-
-                    case Variant::string:
-                        out<<"<span style=\"color:#008000;\">\""<<variant.toString()<<"\"</span>";
-                        break;
-
-                    case Variant::objectType:
-                        displayType(out, variant.toObjectType());
-                        break;
-
-                    default:
-                        break;
-                }
+                displayVariant(out, type.parameterValue(i));
             }
             else
             {
@@ -294,6 +246,37 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type)
         }
         out<<")";
     }
+    return out;
+}
+
+std::ostream& displayVariant(std::ostream& out, const Variant& variant)
+{
+    switch(variant.type())
+    {
+        case Variant::integer:
+            out<<"<span style=\"color:#000080;\">"<<variant.toInteger()<<"</span>";
+            break;
+
+        case Variant::unsignedInteger:
+            out<<"<span style=\"color:#000080;\">"<<variant.toUnsignedInteger()<<"</span>";
+            break;
+
+        case Variant::floating:
+            out<<"<span style=\"color:#000080;\">"<<variant.toDouble()<<"</span>";
+            break;
+
+        case Variant::string:
+            out<<"<span style=\"color:#008000;\">\""<<variant.toString()<<"\"</span>";
+            break;
+
+        case Variant::objectType:
+            displayType(out, variant.toObjectType());
+            break;
+
+        default:
+            break;
+    }
+
     return out;
 }
 
@@ -372,4 +355,35 @@ std::ostream& displayInfo(std::ostream& out, const std::string& info)
         }
     }
     return out;
+}
+
+std::string getString(const Object& object)
+{
+    if(!object.info().isNull())
+        return object.info().toString();
+    else
+    {
+        const Variant& value = object.value();
+        switch(value.type())
+        {
+            case Variant::string:
+                return "\""+value.toString()+"\"";
+
+            case Variant::integer:
+            case Variant::unsignedInteger:
+            case Variant::floating:
+                return toStr(value);
+
+            case Variant::objectType:
+            {
+                std::stringstream O;
+                displayType(O, value.toObjectType());
+                return O.str();
+            }
+
+            default:
+                return "";
+        }
+    }
+    return "";
 }
