@@ -282,7 +282,7 @@ std::ostream& displayVariant(std::ostream& out, const Variant& variant)
 
 std::ostream& displayName(std::ostream& out, const std::string& name)
 {
-    if(name != "*")
+    if(!name.empty() && name != "*" && name[0] != '_')
     {
         out<<"<span style=\"color:#800000;\">"<<name<<"</span>";
     }
