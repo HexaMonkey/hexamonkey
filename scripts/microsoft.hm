@@ -17,13 +17,16 @@
 
 import lestd
 
-class BYTE extends uint(8, 16)
-class WORD extends uint(16)
-class DWORD extends uint(32)
-class QWORD extends uint(64)
+class BYTE(_base)  extends uint(8, _base)
+class WORD(_base)  extends uint(16, _base)
+class DWORD(_base) extends uint(32, _base)
+class QWORD(_base) extends uint(64, _base)
 
-class BOOL extends int(32)
-class LONG extends int(32)
+class BOOL(_base) extends int(32, _base)
+class LONG(_base) extends int(32, _base)
+class ULONG(_base) extends uint(32, _base)
+class LONGLONG(_base) extends int(64, _base)
+class ULONGLONG(_base) extends uint(64, _base)
 
 class FOURCC extends String(4)
 
