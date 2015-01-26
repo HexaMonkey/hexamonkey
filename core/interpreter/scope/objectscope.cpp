@@ -32,11 +32,12 @@
 #define A_POS 6
 #define A_REM 7
 #define A_NUMBER_OF_CHILDREN 8
+#define A_BEGINNING_POS 9
 
 const std::map<std::string, int> reserved = {
     {"@size",A_SIZE}, {"@value",A_VALUE}, {"@info", A_INFO},
     {"@parent",A_PARENT}, {"@args",A_ARGS}, {"@rank",A_RANK},
-    {"@pos",A_POS}, {"@rem",A_REM}, {"@numberOfChildren", A_NUMBER_OF_CHILDREN}};
+    {"@pos",A_POS}, {"@rem",A_REM}, {"@numberOfChildren", A_NUMBER_OF_CHILDREN}, {"@beginningPos", A_BEGINNING_POS}};
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
     : _object(object),
@@ -91,6 +92,9 @@ Variable ObjectScope::doGet(const Variant &key) const
 
                 case A_REM:
                     return Variable::copy(_object._size.toInteger() - _object._pos.toInteger());
+
+                case A_BEGINNING_POS:
+                    return Variable::copy((long long) _object.beginningPos());
 
                 default:
                     return Variable();
