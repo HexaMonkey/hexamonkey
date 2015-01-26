@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-addMagicNumber 5A 4D
+addMagicNumber 4d 5a
 addExtension exe
 
 import microsoft
@@ -26,6 +26,7 @@ class PEFile as File
 	IMAGE_DOS_SEGMENT(_dos_header.e_lfanew-(@pos>>3)) _dos_segment;
 	IMAGE_NT_HEADERS _nt_header;
 	IMAGE_SECTION_HEADER _section_headers[_nt_header.FileHeader.NumberOfSections];
+	IMAGE_SECTIONS _image_sections;
 }
 
 class IMAGE_DOS_HEADER {      // DOS .EXE header
@@ -137,7 +138,7 @@ class IMAGE_SECTION_HEADER
     DWORD VirtualSize;
     DWORD VirtualAddress;
     DWORD SizeOfRawData;
-    DWORD PointerToRawData;
+    DWORD(16) PointerToRawData;
     DWORD PointerToRelocations;
     DWORD PointerToLinenumbers;
     WORD  NumberOfRelocations;
@@ -146,3 +147,16 @@ class IMAGE_SECTION_HEADER
 }
 
 class IMAGE_SECTION(_size) extends Data(_size<<3)
+
+class IMAGE_SECTIONS
+{
+	var n = @parent._nt_header.FileHeader.NumberOfSections;
+	for (var i = 0; i < n; ++i) {
+		var sectionOffset = @parent._section_headers[i].PointerToRawData;
+		var sectionSize = @parent._section_headers[i].SizeOfRawData;
+		%log("Offset : "+%str(sectionOffset)+", Size : "+%str(sectionSize));
+		%log(%str(@beginningPos));
+		@pos = (sectionOffset << 3) - @beginningPos;
+		IMAGE_SECTION(sectionSize) #;
+	}
+}
