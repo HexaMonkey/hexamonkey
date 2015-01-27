@@ -392,18 +392,19 @@ bool Object::exploreSome(int hint)
 
 void Object::setType(const ObjectType &type)
 {
-    if(!type.isNull())
-        _type = type;
+    if(!type.isNull()) {
+        _type.setValue(type);
+    }
 }
 
 void Object::setName(const std::string &name)
 {
-    _name = name;
+    _name.setValue(name);
 }
 
 void Object::setInfo(const std::string &info)
 {
-    _info = info;
+    _info.setValue(info);
 }
 
 Showcase &Object::showcase()

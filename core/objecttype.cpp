@@ -24,7 +24,10 @@ ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
 {
 }
 
-ObjectType::ObjectType(const ObjectTypeTemplate& _typeTemplate) : _typeTemplate(&_typeTemplate), _parametersValue(_typeTemplate.numberOfParameters())
+ObjectType::ObjectType(const ObjectTypeTemplate& _typeTemplate)
+    : _typeTemplate(&_typeTemplate),
+      _parametersValue(_typeTemplate.numberOfParameters()),
+      _name(_typeTemplate.name())
 {
 }
 
@@ -54,6 +57,16 @@ void ObjectType::setParameter(size_t index, const Variant &value)
     }
 
     _parametersValue.at(index).setValue(value);
+}
+
+const std::string &ObjectType::name() const
+{
+    return _name.toString();
+}
+
+void ObjectType::setName(const std::string &name)
+{
+    _name.setValue(name);
 }
 
 const ObjectType& ObjectType::importParameters(const ObjectType& other)
@@ -103,6 +116,9 @@ void swap(ObjectType& a, ObjectType& b)
     using std::swap;
     swap(a._typeTemplate,b._typeTemplate);
     swap(a._parametersValue, b._parametersValue);
+    swap(a._elementCount, b._elementCount);
+    swap(a._name, b._name);
+
 }
 
 ObjectType& ObjectType::operator =(ObjectType other)
@@ -144,19 +160,27 @@ bool operator< (const ObjectType& a, const ObjectType& b)
 
 std::ostream& ObjectType::display(std::ostream& out) const
 {
-    out << typeTemplate().name();
-    const int n = numberOfDisplayableParamaters();
-    if(n>0)
-    {
-        out<<"(";
-        for(int i = 0; i < n; ++i)
-        {
-            out<<parameterValue(i);
-
-            if(i < n-1)
-                out<<", ";
+    if (!elementType().isNull()) {
+        out << elementType() << "[";
+        if (!elementCount().isNull()) {
+            out << elementCount();
         }
-        out<<")";
+        out << "]";
+    } else {
+        out << name();
+        const int n = numberOfDisplayableParameters();
+        if(n>0)
+        {
+            out<<"(";
+            for(int i = 0; i < n; ++i)
+            {
+                out<<parameterValue(i);
+
+                if(i < n-1)
+                    out<<", ";
+            }
+            out<<")";
+        }
     }
     return out;
 }
@@ -166,7 +190,7 @@ int ObjectType::numberOfParameters() const
     return _parametersValue.size();
 }
 
-int ObjectType::numberOfDisplayableParamaters() const
+int ObjectType::numberOfDisplayableParameters() const
 {
     int n = typeTemplate().numberOfParameters();
     while(n >= 1 && (typeTemplate().isParameterPrivate(n-1) || !parameterSpecified(n-1)))
@@ -174,6 +198,26 @@ int ObjectType::numberOfDisplayableParamaters() const
         n--;
     }
     return n;
+}
+
+const Variant &ObjectType::elementType() const
+{
+    return _elementType;
+}
+
+void ObjectType::setElementType(const ObjectType &type)
+{
+    _elementType.setValue(type);
+}
+
+const Variant &ObjectType::elementCount() const
+{
+    return _elementCount;
+}
+
+void ObjectType::setElementCount(long long count)
+{
+    _elementCount.setValue(count);
 }
 
 std::ostream& operator<<(std::ostream& out, const ObjectType& type)

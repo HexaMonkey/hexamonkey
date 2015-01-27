@@ -98,6 +98,8 @@ Object *ContainerParser::getVariable(const ObjectType &type)
 
 Object *ContainerParser::addVariable(const ObjectType &type)
 {
+    _object.seekObjectEnd();
+
     Object* child = getVariable(type);
     addChild(child);
     return child;

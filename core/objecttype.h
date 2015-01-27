@@ -77,6 +77,12 @@ public:
     void setParameter(size_t index, const Variant& value);
 
     /**
+     * @brief Get type name (by default @link typeTemplate() template's name)
+     */
+    const std::string& name() const;
+    void setName(const std::string& name);
+
+    /**
      * @brief Set a value for the first parameters
      */
     template<typename... Args> void setParameters(Args... args){return _setParameters(0, args...);}
@@ -107,6 +113,22 @@ public:
     bool extendsDirectly(const ObjectType& other) const;
 
     /**
+     * @brief Used to know if the object should be displayed as an Array/Tuple
+     * and what type to display if so.
+     */
+    const Variant &elementType() const;
+    void setElementType(const ObjectType& type);
+
+    /**
+     * @brief Used to know if the object should be displayed as a Tuple (if the
+     * @link elementType() elementType is also not NULL) and what value is to be displayed
+     * for count if so.
+     */
+    const Variant &elementCount() const;
+    void setElementCount(long long count);
+
+
+    /**
      * @brief Output a representation of the \link ObjectType type\endlink into a stream
      *
      * Same effect as <<
@@ -115,7 +137,7 @@ public:
 
     int numberOfParameters() const;
 
-    int numberOfDisplayableParamaters() const;
+    int numberOfDisplayableParameters() const;
 
     friend void swap(ObjectType& a, ObjectType& b);
     ObjectType& operator=(ObjectType other);
@@ -124,6 +146,9 @@ private:
     friend class TypeScope;
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
+    Variant _name;
+    Variant _elementType;
+    Variant _elementCount;
 
     void _setParameters(int first);
 

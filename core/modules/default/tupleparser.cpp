@@ -25,6 +25,9 @@ TupleParser::TupleParser(Object &object, const Module &module, const ObjectType 
 
 void TupleParser::doParseHead()
 {
+    type().setElementType(elementType);
+    type().setElementCount(count);
+
     int64_t t = module().getFixedSize(elementType);
     if(t > 0)
     {
@@ -35,9 +38,9 @@ void TupleParser::doParseHead()
         int64_t s = 0;
         for(int64_t i = 0; i < count; ++i)
         {
-            Object* object = addVariable(elementType);
-            object->setName("#");
-            s+=object->size();
+            Object* child = addVariable(elementType);
+            child ->setName("#");
+            s+=child->size();
         }
         setSize(s);
     }

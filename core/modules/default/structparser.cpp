@@ -13,6 +13,14 @@ void StructParser::addElement(const ObjectType &type, const std::string &name)
 
 void StructParser::doParseHead()
 {
+    // define type name
+    const Variant& nameVariable = type().parameterValue(0);
+    if (nameVariable.isNull()) {
+        type().setName(nameVariable.toString());
+    } else {
+        type().setName("{}");
+    }
+
     int64_t s = 0;
     for (unsigned int i = 0; i < _types.size(); ++i) {
         int64_t t = module().getFixedSize(_types[i]);

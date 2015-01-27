@@ -222,29 +222,36 @@ void TreeObjectItem::doLoad() const
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type)
 {
-    const std::string templateName = type.typeTemplate().name();
-
-    out << "<span style=\"color:#800080;\">" << templateName << "</span>";
-
-    int n = type.numberOfDisplayableParamaters();
-
-    if(n>0)
-    {
-        out<<"(";
-        for(int i = 0; i < n; ++i)
-        {
-            if(type.parameterSpecified(i))
-            {
-                displayVariant(out, type.parameterValue(i));
-            }
-            else
-            {
-                out<<type.typeTemplate().parameterName(i);
-            }
-            if(i < n-1)
-                out<<", ";
+    if (!type.elementType().isNull()) {
+        displayType(out, type.elementType().toObjectType());
+        out << "&nbsp;" << "[";
+        if (!type.elementCount().isNull()) {
+            displayVariant(out, type.elementCount());
         }
-        out<<")";
+        out << "]";
+    } else {
+        out << "<span style=\"color:#800080;\">" << type.name() << "</span>";
+
+        int n = type.numberOfDisplayableParameters();
+
+        if(n>0)
+        {
+            out<<"(";
+            for(int i = 0; i < n; ++i)
+            {
+                if(type.parameterSpecified(i))
+                {
+                    displayVariant(out, type.parameterValue(i));
+                }
+                else
+                {
+                    out<<type.typeTemplate().parameterName(i);
+                }
+                if(i < n-1)
+                    out<<", ";
+            }
+            out<<")";
+        }
     }
     return out;
 }
@@ -291,27 +298,13 @@ std::ostream& displayName(std::ostream& out, const std::string& name)
 
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name)
 {
-
-    if (type.typeTemplate().name() == "Array") {
-        displayDecl(out, type.parameterValue(0).toObjectType(), name);
-        out << "&nbsp;";
-        out << "[]";
-    } else if (type.typeTemplate().name() == "Tuple") {
-        displayDecl(out, type.parameterValue(0).toObjectType(), name);
-        out << "&nbsp;";
-        out << "[";
-        out << "<span style=\"color:#000080;\">";
-        out << type.parameterValue(1).toInteger();
-        out << "</span>";
-        out << "]";
-    } else if (type.typeTemplate().name() == "Struct") {
-        out << "<span style=\"color:#800080;\">";
-        if (type.parameterSpecified(0)) {
-            out << type.parameterValue(0).toString();
-        } else {
-            out << "{}";
+    if (!type.elementType().isNull()) {
+        displayDecl(out, type.elementType().toObjectType(), name);
+        out << "&nbsp;" << "[";
+        if (!type.elementCount().isNull()) {
+            displayVariant(out, type.elementCount());
         }
-        out << "</span>";
+        out << "]";
     } else {
         displayType(out, type);
         out << "&nbsp;";
