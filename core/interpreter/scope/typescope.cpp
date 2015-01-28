@@ -19,6 +19,18 @@
 #include "core/objecttypetemplate.h"
 #include "core/interpreter/scope/typescope.h"
 
+#define A_COUNT 0
+#define A_ELEMENT_TYPE 1
+#define A_ELEMENT_COUNT 2
+#define A_NAME 3
+
+const std::map<std::string, int> reserved = {
+    {"@count", A_COUNT},
+    {"@elementType", A_ELEMENT_TYPE},
+    {"@elementCount", A_ELEMENT_COUNT},
+    {"@name", A_NAME}
+};
+
 TypeScope::TypeScope(ObjectType &type, bool modifiable)
     : _type(&type),
       _constType(&type),
@@ -42,8 +54,26 @@ Variable TypeScope::doGet(const Variant &key) const
     } else if (key.canConvertTo(Variant::string)) {
         const std::string str = key.toString();
 
-        if (str == "@count") {
-            return Variable::copy(_type->numberOfParameters(), false);
+        if(!str.empty() && str[0]=='@')
+        {
+            auto it = reserved.find(str);
+            if(it == reserved.end())
+                return Variable();
+
+            switch(it->second)
+            {
+                case A_COUNT:
+                    return Variable::copy(_type->numberOfParameters(), false);
+
+                case A_ELEMENT_TYPE:
+                    return Variable::ref(_type->_elementType, _modifiable);
+
+                case A_ELEMENT_COUNT:
+                    return Variable::ref(_type->_elementCount, _modifiable);
+
+                case A_NAME:
+                    return Variable::ref(_type->_name, _modifiable);
+            }
         }
 
         i = type().typeTemplate().parameterNumber(key.toString());
