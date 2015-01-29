@@ -135,9 +135,10 @@ class IMAGE_DATA_DIRECTORY
 class IMAGE_SECTION_HEADER
 {
     String(8) Name;
-    DWORD VirtualSize;
-    DWORD VirtualAddress;
-    DWORD SizeOfRawData;
+	@value = Name;
+    DWORD(16) VirtualSize;
+    DWORD(16) VirtualAddress;
+    DWORD(16) SizeOfRawData;
     DWORD(16) PointerToRawData;
     DWORD PointerToRelocations;
     DWORD PointerToLinenumbers;
@@ -146,17 +147,43 @@ class IMAGE_SECTION_HEADER
     DWORD Characteristics;
 }
 
-class IMAGE_SECTION(_size) extends Data(_size<<3)
+class IMAGE_SECTION(name, _size) extends Data(_size<<3)
 
 class IMAGE_SECTIONS
 {
-	var n = @parent._nt_header.FileHeader.NumberOfSections;
+	@args.@elementType = IMAGE_SECTION();
+	var n = @args.@elementCount = @parent._nt_header.FileHeader.NumberOfSections;
 	for (var i = 0; i < n; ++i) {
 		var sectionOffset = @parent._section_headers[i].PointerToRawData;
-		var sectionSize = @parent._section_headers[i].SizeOfRawData;
-		%log("Offset : "+%str(sectionOffset)+", Size : "+%str(sectionSize));
-		%log(%str(@beginningPos));
+		var sectionSize   = @parent._section_headers[i].SizeOfRawData;
+		var sectionName   = @parent._section_headers[i].Name;
+
 		@pos = (sectionOffset << 3) - @beginningPos;
-		IMAGE_SECTION(sectionSize) #;
+		IMAGE_SECTION(sectionName, sectionSize) *;
 	}
+}
+
+class IMAGE_SECTION_IAT as IMAGE_SECTION(".idata")
+{
+	IMAGE_IMPORT_DESCRIPTORS _descriptors;
+}
+
+class IMAGE_IMPORT_DESCRIPTORS
+{
+	@args.@elementType = IMAGE_IMPORT_DESCRIPTOR();
+	var n = 0;
+	do {
+		IMAGE_IMPORT_DESCRIPTOR #;
+		++n;
+	} while ([].OriginalFirstThunk != 0)
+	@args.@elementCount = n;
+}
+
+class IMAGE_IMPORT_DESCRIPTOR
+{
+    DWORD   OriginalFirstThunk; // It points to the first thunk IMAGE_THUNK_DATA
+	DWORD   TimeDateStamp;      // 0 if not bound
+    DWORD   ForwarderChain;     // -1 if no forwarders
+    DWORD   Name;               // RVA of DLL Name.
+    DWORD   FirstThunk;         // RVA to IAT (if bound this IAT has actual addresses)
 }
