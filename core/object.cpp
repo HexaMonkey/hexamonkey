@@ -242,13 +242,13 @@ void Object::dumpStreamToFile(const std::string &path)
     dumpStream(out);
 }
 
-Variant Object::getState(Variant const& key) const {
-    try
-    {
-        return _stateMap.at(key);
-    }
-    catch(std::out_of_range)
-    {
+Variant Object::getState(Variant const& key) const
+{
+    const auto it = _stateMap.find(key);
+
+    if (it != _stateMap.end()) {
+        return it->second;
+    } else {
         return Variant();
     }
 }
