@@ -31,29 +31,26 @@ void ContainerParser::addChild(Object *child)
 {
     if(child != nullptr/* && child->size() != 0*/)
     {
-        if(child->size() == -1)
-        {
-            if(_object.size() != -1 && child->_expandOnAddition)
-            {
-                child->_size.setValue(_object.size()-_object.pos());
-            }
-            else
-            {
+        std::streamoff pos = _object._pos.toUnsignedInteger();
+        if (child->size() == -1) {
+            if(_object.size() != -1 && child->_expandOnAddition) {
+                child->_size.setValue(_object.size() - pos);
+            } else {
                 child->parse();
                 child->_size.setValue(child->_contentSize);
             }
         }
 
 
-        int64_t newSize = _object._contentSize + child->size();
-        if(_autogrow && newSize > _object.size())
-        {
+        int64_t newSize = pos + child->size();
+        if (_autogrow && newSize > _object.size()) {
             _object._size = newSize;
         }
 
-        if(newSize <= _object.size() || _object.size() == -1)
-        {
-            _object._contentSize = newSize;
+        if (newSize <= _object.size() || _object.size() == -1) {
+            if (_object._contentSize < newSize) {
+                _object._contentSize = newSize;
+            }
             if(!child->name().empty())
             {
                 _object._lookUpTable[child->name()] = child;
@@ -65,9 +62,7 @@ void ContainerParser::addChild(Object *child)
             _object._ownedChildren.push_back(std::unique_ptr<Object>(child));
             child->_rank = _object._children.size() - 1;
             _object._lastChild = nullptr;
-        }
-        else
-        {
+        } else {
             _object.seekEnd();
 
             setParsed();
