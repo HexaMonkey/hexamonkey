@@ -559,6 +559,7 @@ std::ostream& Variant::display(std::ostream& out) const
             break;
 
         default:
+            out<<"NULL";
         break;
     }
     return out;
