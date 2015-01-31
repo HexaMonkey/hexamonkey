@@ -16,6 +16,8 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/modules/standard/wordparser.h"
+#include "core/log/logmanager.h"
+
 
 WordParser::WordParser(Object &object, int numberOfChars)
     : SimpleParser(object), numberOfChars(numberOfChars)
@@ -58,9 +60,21 @@ void Utf8StringParser::doParseHead()
         }
         else
         {
+            char testChar = 1;
+            //skipping extended characters but still
+            //check if no \0, to avoid infinite loop on faulty
+            //data
             for(mask>>=1; ch & mask; mask>>=1)
             {
                 file().seekg(8,std::ios::cur);
+                file().read(&testChar, 8);
+                if (testChar == '\0') {
+                    break;
+                }
+            }
+
+            if (testChar == '\0') {
+                break;
             }
         }
     }
