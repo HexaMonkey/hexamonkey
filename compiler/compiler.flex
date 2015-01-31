@@ -62,6 +62,7 @@ extern int line_number;
 "=="			{return(EQ_TOKEN);}
 "!="			{return(NE_TOKEN);}
 "..."           {return(ELLIPSIS_TOKEN);}
+"---"           {return(HEADER_TOKEN);}
 
 
 [;{}()\[\],&|+/\-*<>=.%#?:] {return *yytext;} 

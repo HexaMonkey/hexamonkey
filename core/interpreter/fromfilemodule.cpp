@@ -436,6 +436,11 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
             if(line.node(2).payload().toInteger())
                 break;
         }
+
+        //Check header mark
+        if (line.tag() == HEADER_MARK) {
+            break;
+        }
     }
 
     Program::const_iterator headerEnd = bodyBlock.begin();

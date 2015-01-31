@@ -48,8 +48,7 @@ void FromFileParser::doParseHead()
         setSize(fixedSize);
 
     _bodyExecution.execute(_headerEnd);
-    if(_bodyExecution.done())
-    {
+    if(_bodyExecution.done()) {
         setParsed();
     }
 }
