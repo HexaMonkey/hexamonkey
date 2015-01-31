@@ -72,8 +72,14 @@ void TreeWidget::displayMenu(const QPoint &pos)
         QMenu menu(this);
 
         QAction *copyAction = nullptr;
-        if(!currentItem().clipboardValue().isNull())
+        if(!currentItem().clipboardValue().isNull()) {
             copyAction = menu.addAction("Copy Value");
+        }
+
+        QAction *followLinkAction = nullptr;
+        if (currentItem().hasLinkTo()) {
+            followLinkAction = menu.addAction("Follow link");
+        }
 
         QAction *openStreamAction = nullptr, *dumpStreamAction = nullptr;
         if(currentItem().hasStream()) {
@@ -87,27 +93,21 @@ void TreeWidget::displayMenu(const QPoint &pos)
 
         QAction *trigeredAction = menu.exec(view->viewport()->mapToGlobal(pos));
 
-        if(!trigeredAction)
+        if (!trigeredAction) {
             return;
+        }
 
-        if(trigeredAction == copyAction)
-        {
+        if (trigeredAction == copyAction) {
             copy();
-        }
-        else if (trigeredAction == openStreamAction)
-        {
+        } else if (trigeredAction == followLinkAction) {
+            model->updateByFilePosition(currentItem().linkTo()/8);
+        } else if (trigeredAction == openStreamAction) {
             openStream();
-        }
-        else if (trigeredAction == dumpStreamAction)
-        {
+        } else if (trigeredAction == dumpStreamAction) {
             dumpStreamToFile();
-        }
-        else if (trigeredAction == closeFileAction)
-        {
+        } else if (trigeredAction == closeFileAction) {
             closeFile();
-        }
-        else if (trigeredAction == dumpToFileAction)
-        {
+        } else if (trigeredAction == dumpToFileAction) {
             dumpToFile();
         }
     }

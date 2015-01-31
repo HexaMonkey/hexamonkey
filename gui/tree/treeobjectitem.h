@@ -57,6 +57,8 @@ public:
     const std::string& filterExpression();
     virtual bool hasStream() const override;
     virtual QVariant clipboardValue() const override;
+    virtual bool hasLinkTo() const override;
+    virtual qint64 linkTo() const override;
 
 protected:
     TreeObjectItem(const ProgramLoader& programLoader, TreeItem *parent);

@@ -146,6 +146,13 @@ class Object
         Variant& value();
 
         /**
+         * @brief Object links to a point in file
+         */
+        bool hasLinkTo() const;
+        std::streamoff linkTo() const;
+        void setLinkTo(std::streamoff linkTo);
+
+        /**
          * @brief List of children whose value are important
          *
          * These children will always be parsed even if the the parsing is
@@ -266,6 +273,7 @@ class Object
         Variant _info;
         Variant _value;
         Variant _pos;
+        Variant _linkTo;
         Showcase _showcase;
 
         container _children;
@@ -273,6 +281,7 @@ class Object
         std::map<std::string, Object*> _lookUpTable;
 
         std::unordered_map<Variant, Variant> _stateMap;
+        std::unordered_map<Variant, Variant> _contextMap;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;

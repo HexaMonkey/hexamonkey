@@ -135,6 +135,16 @@ QVariant TreeObjectItem::clipboardValue() const
     }
 }
 
+bool TreeObjectItem::hasLinkTo() const
+{
+    return object().hasLinkTo();
+}
+
+qint64 TreeObjectItem::linkTo() const
+{
+    return object().linkTo();
+}
+
 void TreeObjectItem::onChildrenRemoved()
 {
     _synchronised=false;

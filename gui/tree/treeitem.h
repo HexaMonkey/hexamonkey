@@ -46,14 +46,18 @@ public:
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
-    virtual QVariant clipboardValue() const;
-    virtual bool hasStream() const;
+
     int row() const;
     TreeItem *parent();
     bool hasChildren() const;
 
     void load() const;
     virtual bool synchronised();
+
+    virtual QVariant clipboardValue() const;
+    virtual bool hasStream() const;
+    virtual bool hasLinkTo() const;
+    virtual qint64 linkTo() const;
 
 protected:
     TreeItem(const QList<QVariant> &data, TreeItem *parent);

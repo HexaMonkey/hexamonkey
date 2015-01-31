@@ -28,7 +28,13 @@
 #include "core/util/unused.h"
 
 const VariablePath sizeDescriptor = {"@size"};
-const std::vector<VariablePath> headerOnlyVars = {sizeDescriptor,{"@args"},{"@value"}, {"@info"}};
+const std::vector<VariablePath> headerOnlyVars = {
+    sizeDescriptor,
+    {"@args"},
+    {"@value"},
+    {"@info"},
+    {"@linkTo"}
+};
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;

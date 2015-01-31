@@ -82,6 +82,16 @@ bool TreeItem::hasStream() const
     return false;
 }
 
+bool TreeItem::hasLinkTo() const
+{
+    return false;
+}
+
+qint64 TreeItem::linkTo() const
+{
+    return 0;
+}
+
 QVariant TreeItem::clipboardValue() const
 {
     return QVariant();

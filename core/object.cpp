@@ -287,6 +287,21 @@ const Variant &Object::value() const
     return _value;
 }
 
+bool Object::hasLinkTo() const
+{
+    return !_linkTo.isNull();
+}
+
+std::streamoff Object::linkTo() const
+{
+    return _linkTo.toUnsignedInteger();
+}
+
+void Object::setLinkTo(std::streamoff linkTo)
+{
+    _linkTo.setValue(linkTo);
+}
+
 void Object::parse()
 {
     parseBody();
