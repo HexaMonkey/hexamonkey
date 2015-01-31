@@ -15,7 +15,8 @@ CONFIG   += c++11 no_include_pwd
 TARGET = hexamonkey
 TEMPLATE = app
 
-INCLUDEPATH = ..
+INCLUDEPATH += ..
+DEPENDPATH += ..
 
 SOURCES += main.cpp\
         mainwindow.cpp \
