@@ -31,7 +31,7 @@ void ContainerParser::addChild(Object *child)
 {
     if(child != nullptr/* && child->size() != 0*/)
     {
-        std::streamoff pos = _object._pos.toUnsignedInteger();
+        std::streamoff pos = _object.pos();
         if (child->size() == -1) {
             if(_object.size() != -1 && child->_expandOnAddition) {
                 child->_size.setValue(_object.size() - pos);
@@ -107,37 +107,6 @@ Object *ContainerParser::addVariable(const ObjectType &type, const std::string &
     Object* child = getVariable(type);
     addChild(child, name);
     return child;
-}
-
-void ContainerParser::addLoop(const std::function<void (ContainerParser &)> &body, const std::string &name)
-{
-    addLoop([](){return true;}, body, name);
-}
-
-void ContainerParser::addLoop(const std::function<bool ()> &guard, const std::function<void (ContainerParser &)> &body, const std::string &name)
-{
-    Object* loop = new Object(object().file());
-    ContainerParser* parser = new ContainerParser(*loop, module());
-    parser->setAutogrow();
-    loop->addParser(static_cast<Parser*>(parser));
-    while(parser->availableSize() && guard())
-    {
-        body(*parser);
-    }
-    addChild(loop, name);
-}
-
-void ContainerParser::addForLoop(int64_t max, const std::function<void (ContainerParser &, int64_t)> &body, const std::string &name)
-{
-    Object* loop = new Object(object().file());
-    ContainerParser* parser = new ContainerParser(*loop, module());
-    parser->setAutogrow();
-    loop->addParser(static_cast<Parser*>(parser));
-    for(int64_t i = 0;availableSize() && i < max; ++i)
-    {
-        body(*parser, i);
-    }
-    addChild(loop, name);
 }
 
 const Module &ContainerParser::module() const

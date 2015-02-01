@@ -60,25 +60,6 @@ public:
      */
     Object* addVariable(const ObjectType& type, const std::string& name);
 
-    /**
-     * @brief Add an \link Object object\endlink, with a parser executing
-     * a function while there is still available space
-     */
-    void addLoop(const std::function<void(ContainerParser&)>& body, const std::string& name = "");
-
-    /**
-     * @brief Add an \link Object object\endlink, with a parser executing
-     * a function while there is still available space and the guard return true
-     */
-    void addLoop(const std::function<bool()>& guard, const std::function<void(ContainerParser&)>& body, const std::string& name = "");
-
-    /**
-     * @brief Add an \link Object object\endlink, with a parser executing
-     * a function while there is still available space and the function has been
-     * executed less than max times
-     */
-    void addForLoop(int64_t max, const std::function<void(ContainerParser&, int64_t)>& body, const std::string& name = "");
-
     const Module& module() const;
 
 protected:
