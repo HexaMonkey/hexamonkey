@@ -35,9 +35,15 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
     _scope.addScope(_objectScope);
     UNUSED(hmcElemNames);
 
-    if(module.getFixedSize(type()) == -1 && headerEnd == classDefinition.begin())
-    {
+    auto bodyBlock = classDefinition.node(0);
+
+    if (module.getFixedSize(type()) == -1 && headerEnd == bodyBlock.begin()) {
         setNoHead();
+    }
+
+    auto tailProgram = classDefinition.node(1);
+    if (tailProgram.begin() == tailProgram.end()) {
+        setNoTail();
     }
 }
 

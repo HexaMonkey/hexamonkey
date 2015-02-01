@@ -144,6 +144,11 @@ protected:
      */
     void setNoHead();
 
+    /**
+     * @brief Mark the parser as tailless
+     */
+    void setNoTail();
+
 
     /**
      * @brief [Virtual] Parse what must be parsed as soon as possible (do nothing by default)
@@ -186,6 +191,7 @@ private:
     bool _parsed;
     bool _tailParsed;
     bool _hasHead;
+    bool _hasTail;
 
     class Parsing
     {
@@ -194,7 +200,7 @@ private:
         bool hasLock;
     public:
         Parsing(Parser& parser) : parser(parser), hasLock(parser.lockObject()){}
-        ~Parsing() {if(hasLock) parser.unlockObject();}
+        ~Parsing() {if (hasLock) parser.unlockObject();}
         bool available() {return hasLock;}
     };
 

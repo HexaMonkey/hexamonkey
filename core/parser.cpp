@@ -22,7 +22,8 @@ Parser::Parser(Object& object)
       _headParsed(false),
       _parsed(false),
       _tailParsed(false),
-      _hasHead(true)
+      _hasHead(true),
+      _hasTail(true)
 {
 }
 
@@ -79,7 +80,7 @@ bool Parser::parsed() const
 
 bool Parser::tailParsed() const
 {
-    return _tailParsed;
+    return _tailParsed || (!_hasTail && _parsed);
 }
 
 bool Parser::hasHead() const
@@ -124,11 +125,11 @@ File &Parser::file()
 
 int64_t Parser::availableSize() const
 {
-    if(_object.file().good())
+    if(_object.file().good()) {
         return _object.size() - _object.pos();
-    else
+    } else {
         return -1;
-
+    }
 }
 
 void Parser::setExpandOnAddition()
@@ -150,6 +151,11 @@ void Parser::setParsed()
 void Parser::setNoHead()
 {
     _hasHead = false;
+}
+
+void Parser::setNoTail()
+{
+    _hasTail = false;
 }
 
 void Parser::doParseHead()
