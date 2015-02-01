@@ -67,7 +67,7 @@ private:
     int64_t guessSize(const Program& instructions) const;
 
     static std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly);
-    static void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors);
+    static void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false);
 
     Program::const_iterator headerEnd(const std::string& name) const;
     FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;

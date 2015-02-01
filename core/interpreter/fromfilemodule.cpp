@@ -490,7 +490,7 @@ bool FromFileModule::hasParser(const ObjectType &type) const
 }
 
 
-void FromFileModule::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors)
+void FromFileModule::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors, bool areVariablesModified)
 {
     switch(instructions.tag())
     {
@@ -498,13 +498,15 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
         case CONDITIONAL_STATEMENT:
         case LOOP:
         case DO_LOOP:
-            for(Program elem : instructions)
+            for(Program elem : instructions) {
                 buildDependencies(elem, modificationOnly, descriptors);
+            }
             break;
 
         case TYPE:
-            for(Program arg : instructions.node(1))
+            for(Program arg : instructions.node(1)) {
                 buildDependencies(arg, modificationOnly, descriptors);
+            }
             break;
 
         case DECLARATION:
@@ -512,30 +514,28 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
             break;
 
         case LOCAL_DECLARATION:
-            if(instructions.size()>=2)
+            if(instructions.size()>=2) {
                 buildDependencies(instructions.node(1), modificationOnly, descriptors);
+            }
             break;
 
         case RIGHT_VALUE:
-            if(instructions.node(0).tag() == OPERATOR)
-            {
+            if(instructions.node(0).tag() == OPERATOR) {
                 int op = instructions.node(0).payload().toInteger();
-                for(int i = 0; i < operatorParameterCount[op]; ++i)
-                {
-                    if(!modificationOnly || !((1<<i)&operatorParameterRelease[op]))
-                    {
-                        buildDependencies(instructions.node(1+i), modificationOnly, descriptors);
-                    }
+                for(int i = 0; i < operatorParameterCount[op]; ++i) {
+                    buildDependencies(instructions.node(1+i), modificationOnly, descriptors, areVariablesModified || !((1<<i)&operatorParameterRelease[op]));
                 }
-            }
-            else if(instructions.node(0).tag() == VARIABLE || instructions.node(0).tag() == TYPE)
-            {
+            } else if(instructions.node(0).tag() == VARIABLE) {
+                buildDependencies(instructions.node(0), modificationOnly, descriptors, areVariablesModified);
+            } else if(instructions.node(0).tag() == TYPE) {
                 buildDependencies(instructions.node(0), modificationOnly, descriptors);
             }
             break;
 
         case VARIABLE:
-            descriptors.insert(Evaluator().variablePath(instructions));
+            if (!modificationOnly || areVariablesModified) {
+                descriptors.insert(Evaluator().variablePath(instructions));
+            }
             break;
 
         default:
