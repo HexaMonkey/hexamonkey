@@ -25,28 +25,30 @@
 
 #define A_SIZE 0
 #define A_PARENT 1
-#define A_ARGS 2
-#define A_VALUE 3
-#define A_INFO 4
-#define A_RANK 5
-#define A_POS 6
-#define A_REM 7
-#define A_NUMBER_OF_CHILDREN 8
-#define A_BEGINNING_POS 9
-#define A_LINK_TO 10
+#define A_ROOT 2
+#define A_ARGS 3
+#define A_VALUE 4
+#define A_INFO 5
+#define A_RANK 6
+#define A_POS 7
+#define A_REM 8
+#define A_NUMBER_OF_CHILDREN 9
+#define A_BEGINNING_POS 10
+#define A_LINK_TO 11
 
 const std::map<std::string, int> reserved = {
-    {"@size",A_SIZE},
-    {"@value",A_VALUE},
-    {"@info", A_INFO},
-    {"@parent",A_PARENT},
-    {"@args",A_ARGS},
-    {"@rank",A_RANK},
-    {"@pos",A_POS},
-    {"@rem",A_REM},
+    {"@size",             A_SIZE},
+    {"@value",            A_VALUE},
+    {"@info",             A_INFO},
+    {"@parent",           A_PARENT},
+    {"@root",             A_ROOT},
+    {"@args",             A_ARGS},
+    {"@rank",             A_RANK},
+    {"@pos",              A_POS},
+    {"@rem",              A_REM},
     {"@numberOfChildren", A_NUMBER_OF_CHILDREN},
-    {"@beginningPos", A_BEGINNING_POS},
-    {"@linkTo", A_LINK_TO}
+    {"@beginningPos",     A_BEGINNING_POS},
+    {"@linkTo",           A_LINK_TO}
 };
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
@@ -167,10 +169,13 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
             switch(it->second)
             {
                 case A_PARENT:
-                return Ptr::move(new ObjectScope(*_object._parent, _modifiable));
+                    return Ptr::move(new ObjectScope(*_object._parent, _modifiable));
+
+                case A_ROOT:
+                    return Ptr::move(new ObjectScope(_object.root(), _modifiable));
 
                 case A_ARGS:
-                return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
+                    return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
 
                 default:
                     return Ptr();

@@ -274,7 +274,7 @@ void Object::seekObjectEnd()
 
 std::streamoff Object::pos() const
 {
-    return _file.tellg() - _beginningPos;
+    return _pos.toUnsignedInteger();
 }
 
 Variant &Object::value()
@@ -478,6 +478,24 @@ Object* Object::parent()
 const Object *Object::parent() const
 {
     return _parent;
+}
+
+Object &Object::root()
+{
+    Object* pRoot = this;
+    while (pRoot->_parent) {
+        pRoot = pRoot->_parent;
+    }
+    return *pRoot;
+}
+
+const Object &Object::root() const
+{
+    const Object* pRoot = this;
+    while (pRoot->_parent) {
+        pRoot = pRoot->_parent;
+    }
+    return *pRoot;
 }
 
 int64_t Object::rank() const

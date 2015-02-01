@@ -174,6 +174,12 @@ class Object
         const Object* parent() const;
 
         /**
+         * @brief Reference to the root parent
+         */
+        Object& root();
+        const Object& root() const;
+
+        /**
          * @brief Index of the object as a child of its parent
          */
         int64_t rank() const;
