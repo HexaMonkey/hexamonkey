@@ -16,6 +16,7 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/modules/default/arrayparser.h"
+#include "core/module.h"
 
 ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size)
     :ContainerParser(object, module), elementType(elementType), size(size)
@@ -25,6 +26,7 @@ ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType 
 
 void ArrayParser::doParseHead()
 {
+    type().setElementType(elementType);
     setSize(size);
 }
 
