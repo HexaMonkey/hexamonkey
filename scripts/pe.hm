@@ -60,13 +60,30 @@ class IMAGE_NT_HEADERS
   if (FileHeader.SizeOfOptionalHeader) {
 	IMAGE_OPTIONAL_HEADER OptionalHeader;
   }
-} 
+}
+
+class ADDRESS extends DWORD(16)
+{
+	if (@value) {
+		@linkTo = 8*@value;
+	}
+}
+
+class RVA(_offset) extends DWORD(16)
+{
+	if (@value) {
+		var offset = @args._offset;
+		@linkTo = 8*@value + (offset?offset:0);
+	}
+}
+
+class OFFSET extends DWORD(16)
 
 class IMAGE_FILE_HEADER {
   IMAGE_FILE_MACHINE  Machine;
   WORD                NumberOfSections;
   DWORD               TimeDateStamp;      
-  DWORD               PointerToSymbolTable;
+  ADDRESS               PointerToSymbolTable;
   DWORD               NumberOfSymbols;
   WORD                SizeOfOptionalHeader;
   WORD                Characteristics;
@@ -86,14 +103,15 @@ class IMAGE_FILE_MACHINE extends WORD
 class IMAGE_OPTIONAL_HEADER 
 {
 	WORD   Magic;
-	var HDR64 = (Magic == 0x20b);
+	var HDR64 = @root._HDR64 = (Magic == 0x20b);
+	%log(""+@root._HDR64);
 	BYTE   MajorLinkerVersion;
 	BYTE   MinorLinkerVersion;
-	DWORD  SizeOfCode;
-	DWORD  SizeOfInitializedData;
-	DWORD  SizeOfUninitializedData;
-	DWORD  AddressOfEntryPoint;
-	DWORD  BaseOfCode;
+	OFFSET  SizeOfCode;
+	OFFSET  SizeOfInitializedData;
+	OFFSET  SizeOfUninitializedData;
+	OFFSET  AddressOfEntryPoint;
+	OFFSET  BaseOfCode;
 	if (HDR64) {
 		ULONGLONG  ImageBase;
 	} else {
@@ -115,7 +133,7 @@ class IMAGE_OPTIONAL_HEADER
 	WORD   Subsystem;
 	WORD   DllCharacteristics;
 	
-	var SIZE_TYPE = (HDR64 ? ULONGLONG() : DWORD());
+	var SIZE_TYPE = (HDR64 ? ULONGLONG(16) : DWORD(16));
 	(SIZE_TYPE)  SizeOfStackReserve;
 	(SIZE_TYPE)  SizeOfStackCommit;
 	(SIZE_TYPE)  SizeOfHeapReserve;
@@ -139,7 +157,8 @@ class IMAGE_SECTION_HEADER
     DWORD(16) VirtualSize;
     DWORD(16) VirtualAddress;
     DWORD(16) SizeOfRawData;
-    DWORD(16) PointerToRawData;
+    RVA PointerToRawData;
+	@linkTo = PointerToRawData.@linkTo;
     DWORD PointerToRelocations;
     DWORD PointerToLinenumbers;
     WORD  NumberOfRelocations;
@@ -147,7 +166,12 @@ class IMAGE_SECTION_HEADER
     DWORD Characteristics;
 }
 
-class IMAGE_SECTION(name, _size) extends Data(_size<<3)
+class IMAGE_SECTION(name, _size, _virtualOffset)
+{
+	_offset = @beginningPos - 8*@args._virtualOffset;
+	//%log("1:"+_virtualOffset+":"+@args._virtualOffset+":"+@args._size+@args.name);
+	@size=@args._size<<3;
+}
 
 class IMAGE_SECTIONS
 {
@@ -157,33 +181,156 @@ class IMAGE_SECTIONS
 		var sectionOffset = @parent._section_headers[i].PointerToRawData;
 		var sectionSize   = @parent._section_headers[i].SizeOfRawData;
 		var sectionName   = @parent._section_headers[i].Name;
+		var sectionVirtualOffset   = @parent._section_headers[i].VirtualAddress;
 
 		@pos = (sectionOffset << 3) - @beginningPos;
-		IMAGE_SECTION(sectionName, sectionSize) *;
+		IMAGE_SECTION(sectionName, sectionSize, sectionVirtualOffset) *;
 	}
 }
 
-class IMAGE_SECTION_IAT as IMAGE_SECTION(".idata")
+//*********************************************************
+// IAT
+//*********************************************************
+class IMAGE_SECTION_IAT() as IMAGE_SECTION(".idata")
 {
-	IMAGE_IMPORT_DESCRIPTORS _descriptors;
+	IMAGE_IMPORT_DESCRIPTORS(_offset) _descriptors;
+	var originalPos = _descriptors.@size;
+	IMAGE_IMPORT_NAMES(_offset) _names;
+	@pos = originalPos;
+	IMAGE_IMPORT_DATAS(_offset) _data;
 }
 
-class IMAGE_IMPORT_DESCRIPTORS
+
+class IMAGE_IMPORT_NAME extends String
+
+class IMAGE_IMPORT_NAMES extends Data(-1)
+{
+	@args.@elementType = IMAGE_IMPORT_NAME();
+	var n = @args.@elementCount = @parent._descriptors.@numberOfChildren - 1;
+	for  (var i = 0; i < n; ++i) {
+		@pos = @parent._descriptors[i].Name.@linkTo - @beginningPos;
+		IMAGE_IMPORT_NAME #;
+	}
+}
+
+class IMAGE_IMPORT_DATAS(_offset) extends Data(-1)
+{
+	@args.@elementType = IMAGE_IMPORT_DATA();
+	var n = @args.@elementCount = @parent._descriptors.@numberOfChildren - 1;
+	for (var i = 0; i < n; ++i) {
+		IMAGE_IMPORT_DATA(@parent._descriptors[i].OriginalFirstThunk.@linkTo, @args._offset) #;
+		@pos = 0;
+	}
+}
+
+class IMAGE_IMPORT_DATA(_originalFirstThunk, _offset) extends Data(-1)
+{
+	@pos = @args._originalFirstThunk - @beginningPos;
+	IMAGE_THUNK_DATAS(@args._offset) _data;
+	var n = _data.@numberOfChildren - 1;
+	var importCount = 0;
+	for (var i = 0; i < n; ++i) {
+		if (_data[i].@linkTo) {
+			++importCount;
+		}
+	}
+	if (importCount > 0) {
+		IMAGE_IMPORT_BY_NAMES(importCount) _;
+	}
+}
+
+class IMAGE_THUNK_DATA32(_offset) extends DWORD(16)
+{
+	if (@value & 0x80000000) {
+		@value = @value & 0x7fffffff;
+		@info = %str(@value);
+	} else if (@value) {
+		var offset = @args._offset;
+		@linkTo = 8*@value + (offset?offset:0);
+	}
+}
+
+class IMAGE_THUNK_DATA64(_offset) extends ULONGLONG(16)
+{
+	if (@value & 0x8000000000000000) {
+		@value = @value & 0x7fffffffffffffff;
+	} else if (@value) {
+		var offset = @args._offset;
+		@linkTo = 8*@value + (offset?offset:0);
+	}
+}
+
+class IMAGE_THUNK_DATAS(_offset)
+{
+	if (@root._HDR64) {
+		var elementType = IMAGE_THUNK_DATA64(@args._offset);
+	} else {
+		var elementType = IMAGE_THUNK_DATA32(@args._offset);
+	}
+	@args.@elementType = elementType;
+	var n = 0;
+	do {
+		(elementType) #;
+		++n;
+	} while ([] != 0)
+	@args.@elementCount = n;
+}
+
+class IMAGE_IMPORT_DESCRIPTORS(_offset)
 {
 	@args.@elementType = IMAGE_IMPORT_DESCRIPTOR();
 	var n = 0;
 	do {
-		IMAGE_IMPORT_DESCRIPTOR #;
+		IMAGE_IMPORT_DESCRIPTOR(@args._offset) #;
 		++n;
 	} while ([].OriginalFirstThunk != 0)
 	@args.@elementCount = n;
 }
 
-class IMAGE_IMPORT_DESCRIPTOR
+class IMAGE_IMPORT_DESCRIPTOR(_offset)
 {
-    DWORD   OriginalFirstThunk; // It points to the first thunk IMAGE_THUNK_DATA
-	DWORD   TimeDateStamp;      // 0 if not bound
-    DWORD   ForwarderChain;     // -1 if no forwarders
-    DWORD   Name;               // RVA of DLL Name.
-    DWORD   FirstThunk;         // RVA to IAT (if bound this IAT has actual addresses)
+    RVA(@args._offset)  OriginalFirstThunk; // It points to the first thunk IMAGE_THUNK_DATA
+	DWORD      TimeDateStamp;               // 0 if not bound
+	DWORD      ForwarderChain;              // -1 if no forwarders
+	RVA(@args._offset)  Name;               // RVA of DLL Name.
+	RVA(@args._offset)  FirstThunk;         // RVA to IAT (if bound this IAT has actual addresses)
+}
+
+class IMAGE_IMPORT_BY_NAME
+{
+	WORD Hint showcased;
+	String Name showcased;
+}
+
+class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)
+{
+	@args.@elementType = IMAGE_IMPORT_BY_NAME();
+	@args.@elementCount = @args._count;
+	var n = @parent._data.@numberOfChildren - 1;
+	for (var i = 0; i < n; ++i) {
+		var linkTo = @parent._data[i].@linkTo;
+		if (linkTo) {
+			@pos = @parent._data[i].@linkTo - @beginningPos;
+			IMAGE_IMPORT_BY_NAME #;
+		}
+	}
+}
+
+//*********************************************************
+// Relocation table
+//*********************************************************
+class IMAGE_SECTION_RELOCATION() as IMAGE_SECTION(".reloc")
+{
+	do {
+		IMAGE_BASE_RELOCATION #;
+    } while ([].VirtualAddress)
+}
+
+class IMAGE_BASE_RELOCATION
+{
+	DWORD VirtualAddress;
+	DWORD SizeOfBlock;
+	if (SizeOfBlock) {
+		WORD _items [(8*SizeOfBlock-@pos)/%sizeof(WORD())];
+	}
 }
