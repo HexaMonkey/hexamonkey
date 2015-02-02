@@ -805,24 +805,51 @@ Variant &Variant::operator /=(const Variant &other)
         if(other.type() == floating)
         {
             convertTo(floating);
-            _data.f /= other.toDouble();
-            break;
+            auto otherValue = other.toDouble();
+            if (otherValue) {
+                _data.f /= otherValue;
+            } else {
+                Log::error("Division by zero");
+            }
+        } else {
+            auto otherValue = other.toInteger();
+            if (otherValue) {
+                _data.l /= otherValue;
+            } else {
+                Log::error("Division by zero");
+            }
         }
-        _data.l /= other.toInteger();
         break;
 
     case unsignedInteger:
         if(other.type() == floating)
         {
             convertTo(floating);
-            _data.f /= other.toDouble();
-            break;
+            auto otherValue = other.toDouble();
+            if (otherValue) {
+                _data.f /= otherValue;
+            } else {
+                Log::error("Division by zero");
+            }
+        } else {
+            auto otherValue = other.toUnsignedInteger();
+            if (otherValue) {
+                _data.ul /= otherValue;
+            } else {
+                Log::error("Division by zero");
+            }
         }
-        _data.ul /= other.toInteger();
         break;
 
     case floating:
-        _data.f /= other.toDouble();
+        {
+            auto otherValue = other.toDouble();
+            if (otherValue) {
+                _data.f /= otherValue;
+            } else {
+                Log::error("Division by zero");
+            }
+        }
         break;
 
     default:
