@@ -517,7 +517,18 @@ int main(int argc, char *argv[])
             pop();
         
         write_node(output, &root);
+		root.id = DEBUG;
+		root.size = 0;
+		root.line_number = -1;
+		root.parent = NULL;
+		root.first_child.node = NULL;
+		root.next_sibling = NULL;
+		
+		while(!empty()) 
+            pop();
         
+        write_node(output, &root);
+		
         return EXIT_SUCCESS;
         
     }
