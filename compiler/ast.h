@@ -171,8 +171,18 @@ void set_float(double f)
 	current_node->first_child.f = f;
 }
 
+void push_master(int32_t id, int32_t count);
+void push_integer(int32_t id, int64_t i);
+void push_uinteger(int32_t id, uint64_t u);
+void push_float(int32_t id, double f);
+void push_string(int32_t id, char* s);
+
 void write_node(FILE* file, ast* node)
 {
+	push_integer(LINE_NUMBER, node->line_number);
+	push_integer(FILE_OFFSET, ftell(file));
+	push_master(CODE_INFO, 2);
+	
 	write_ebml_int(file, node->id);
 	write_ebml_int(file, node->size);
 	ast* child;

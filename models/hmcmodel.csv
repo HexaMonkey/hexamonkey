@@ -40,3 +40,8 @@ functionArguments;master;1;
 functionArgument;master;0;
 modifiable;integer;0;
 headerMark;integer;0;
+debug;master;1;
+codeInfo;master;1;
+lineNumber;integer;0;
+fileOffset;integer;0;
+
