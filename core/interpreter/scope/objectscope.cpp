@@ -59,8 +59,10 @@ ObjectScope::ObjectScope(Object &object, bool modifiable)
 {
 }
 
-Variable ObjectScope::doGet(const Variant &key) const
+Variable ObjectScope::doGet(const Variant &key, bool modifiable) const
 {
+    modifiable = _modifiable && modifiable;
+
     if(key.isNull())
     {
         int numberOfChildren = _object.numberOfChildren();
@@ -68,7 +70,7 @@ Variable ObjectScope::doGet(const Variant &key) const
             Object* elem = _object.access(numberOfChildren - 1, true);
             if(elem != nullptr)
             {
-                return Variable::ref(elem->value(), _modifiable);
+                return Variable::ref(elem->value(), modifiable);
             }
         }
     }
@@ -84,16 +86,16 @@ Variable ObjectScope::doGet(const Variant &key) const
             switch(it->second)
             {
                 case A_SIZE:
-                    return Variable::ref(_object._size, _modifiable);
+                    return Variable::ref(_object._size, modifiable);
 
                 case A_VALUE:
-                    return Variable::ref(_object._value, _modifiable);
+                    return Variable::ref(_object._value, modifiable);
 
                 case A_INFO:
-                    return Variable::ref(_object._info, _modifiable);
+                    return Variable::ref(_object._info, modifiable);
 
                 case A_POS:
-                    return Variable::ref(_object._pos, _modifiable);
+                    return Variable::ref(_object._pos, modifiable);
 
                 case A_RANK:
                     return Variable::ref(_object._rank, false);
@@ -109,19 +111,19 @@ Variable ObjectScope::doGet(const Variant &key) const
                     return Variable::copy((long long) _object.beginningPos());
 
                 case A_LINK_TO:
-                    return Variable::ref(_object._linkTo, _modifiable);
+                    return Variable::ref(_object._linkTo, modifiable);
 
                 default:
                     return Variable();
             }
         } else if(!name.empty() && name[0]=='_') {
-            return Variable::ref(_object._stateMap[key], _modifiable);
+            return Variable::ref(_object._stateMap[key], modifiable);
         }
 
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return Variable::ref(elem->value(), _modifiable);
+            return Variable::ref(elem->value(), modifiable);
         }
     }
     else if(key.canConvertTo(Variant::integer))
@@ -129,7 +131,7 @@ Variable ObjectScope::doGet(const Variant &key) const
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
         {
-            return Variable::ref(elem->value(), _modifiable);
+            return Variable::ref(elem->value(), modifiable);
         }
     }
     else if(key.canConvertTo(Variant::objectType))
@@ -137,7 +139,7 @@ Variable ObjectScope::doGet(const Variant &key) const
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return Variable::ref(elem->value(), _modifiable);
+            return Variable::ref(elem->value(), modifiable);
         }
     }
 

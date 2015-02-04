@@ -16,7 +16,7 @@ Evaluator::Evaluator(const Scope &scope, const Module &module)
     UNUSED(hmcElemNames);
 }
 
-Variable Evaluator::rightValue(const Program &program) const
+Variable Evaluator::rightValue(const Program &program, int modifiable) const
 {
     Program first = program.node(0);
     switch(first.tag())
@@ -24,16 +24,20 @@ Variable Evaluator::rightValue(const Program &program) const
         case OPERATOR:
         {
             const int op = first.payload().toInteger();
+            const int release = operatorParameterRelease[op];
             switch(operatorParameterCount[op])
             {
                 case 1:
-                    return unaryOperation  (op, rightValue(program[1]));
+                    return unaryOperation  (op, rightValue(program[1], !(1&release)));
 
                 case 2:
-                    return binaryOperation (op, rightValue(program[1]), rightValue(program[2]));
+                    return binaryOperation (op, rightValue(program[1], !(1&release)),
+                                                rightValue(program[2], !(2&release)));
 
                 case 3:
-                    return ternaryOperation(op, rightValue(program[1]), rightValue(program[2]), rightValue(program[3]));
+                    return ternaryOperation(op, rightValue(program[1], !(1&release)),
+                                                rightValue(program[2], !(2&release)),
+                                                rightValue(program[3], !(4&release)));
                 default:
                     return Variable();
             }
@@ -56,7 +60,7 @@ Variable Evaluator::rightValue(const Program &program) const
             return Variable::constRef(emptyString);
 
         case VARIABLE:
-            return variable(first);
+            return variable(first, modifiable);
 
         case TYPE:
             return Variable::copy(type(first));
@@ -286,9 +290,10 @@ Variable Evaluator::function(const Program &program) const
         if(i>=size)
             break;
 
-        Variable argumentVariable = rightValue(argument);
+        bool modifiable = parameterModifiables[i];
+        Variable argumentVariable = rightValue(argument, modifiable);
         const std::string& argName = parametersNames[i];
-        if(!parameterModifiables[i])
+        if(!modifiable)
         {
             argumentVariable.setConstant();
         }
@@ -312,7 +317,7 @@ Variable Evaluator::function(const Program &program) const
     return module.executeFunction(name, functionScope);
 }
 
-Variable Evaluator::variable(const Program &program) const
+Variable Evaluator::variable(const Program &program, bool modifiable) const
 {
-    return scope.get(variablePath(program));
+    return scope.get(variablePath(program), modifiable);
 }

@@ -28,12 +28,9 @@ unsigned int FunctionScope::getIndex(const Variant &key) const
 {
     unsigned int index = 0xffffffff;
 
-    if(key.hasNumericalType())
-    {
+    if (key.hasNumericalType()) {
         index = key.toUnsignedInteger();
-    }
-    else if(key.type() == Variant::string)
-    {
+    } else if(key.type() == Variant::string) {
         auto it = parameterIndex.find(key.toString());
         if(it != parameterIndex.end())
             index = it->second;
@@ -42,11 +39,12 @@ unsigned int FunctionScope::getIndex(const Variant &key) const
     return index;
 }
 
-Variable FunctionScope::doGet(const Variant &key) const
+Variable FunctionScope::doGet(const Variant &key, bool /*modifiable*/) const
 {
     unsigned int index = getIndex(key);
-    if(index < parameters.size())
+    if (index < parameters.size()) {
         return parameters[index];
+    }
 
     return Variable();
 }

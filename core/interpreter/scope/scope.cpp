@@ -17,24 +17,24 @@
 
 #include "core/interpreter/scope/scope.h"
 
-Variable Scope::get(const Variant &key) const
+Variable Scope::get(const Variant &key, bool modifiable) const
 {
-    return doGet(key);
+    return doGet(key, modifiable);
 }
 
-Variable Scope::get(const VariablePath &path) const
+Variable Scope::get(const VariablePath &path, bool modifiable) const
 {
     if(path.empty())
         return Variable();
 
     if(path.size() == 1)
-        return get(path[0]);
+        return get(path[0], modifiable);
 
     Ptr scope = getScope(path, path.size()-1);
 
     if(scope)
     {
-        return scope->get(path.back());
+        return scope->get(path.back(), modifiable);
     }
     else
     {
@@ -52,7 +52,7 @@ const Scope::Ptr Scope::getScope(const Variant &key) const
     return doGetScope(key);
 }
 
-Variable Scope::doGet(const Variant &/*key*/) const
+Variable Scope::doGet(const Variant &/*key*/, bool /*modifable*/) const
 {
     return Variable();
 }

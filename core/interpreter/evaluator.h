@@ -23,7 +23,7 @@ public:
     /**
      * @brief Evaluate a right value tagged \link Program program node\endlink
      */
-    Variable rightValue(const Program& program) const;
+    Variable rightValue(const Program& program, int modifiable = true) const;
 
     /**
      * @brief Get the \link VariablePath variable path\endlink of a variable
@@ -40,7 +40,7 @@ private:
     Variable binaryOperation(int op, Variable a, Variable b) const;
     Variable ternaryOperation(int op, Variable a, Variable b, Variable c) const;
     Variable function(const Program& program) const;
-    Variable variable(const Program& program) const;
+    Variable variable(const Program& program, bool modifiable) const;
 
     const Scope& scope;
     const Module& module;

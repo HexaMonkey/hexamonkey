@@ -27,11 +27,11 @@ void CompositeScope::addScope(Scope *scope)
     _scopes.push_back(Ptr::move(scope));
 }
 
-Variable CompositeScope::doGet(const Variant &key) const
+Variable CompositeScope::doGet(const Variant &key, bool modifiable) const
 {
     for(auto& scope : _scopes)
     {
-        Variable variable = scope->get(key);
+        Variable variable = scope->get(key, modifiable);
         if(variable.isDefined())
             return variable;
     }

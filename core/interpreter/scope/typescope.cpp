@@ -45,7 +45,7 @@ TypeScope::TypeScope(const ObjectType &type)
 {
 }
 
-Variable TypeScope::doGet(const Variant &key) const
+Variable TypeScope::doGet(const Variant &key, bool /*modifiable*/) const
 {
     int i = -1;
 

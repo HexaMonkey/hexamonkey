@@ -44,7 +44,7 @@ public:
     void addScope(Scope* scope);
 
 protected:
-    Variable doGet(const Variant &key) const override;
+    Variable doGet(const Variant &key, bool modifiable) const override;
     Ptr const doGetScope(const Variant &key) const override;
     Variable doDeclare(const Variant &key) override;
 private:

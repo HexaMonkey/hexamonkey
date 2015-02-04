@@ -17,7 +17,7 @@
 
 #include "core/interpreter/scope/localscope.h"
 
-Variable LocalScope::doGet(const Variant &key) const
+Variable LocalScope::doGet(const Variant &key, bool /*modifiable*/) const
 {
     if(key.canConvertTo(Variant::string))
     {

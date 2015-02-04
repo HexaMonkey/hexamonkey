@@ -35,7 +35,7 @@ class FunctionScope : public Scope
 public:
     void addParameter(const std::string& name, Variable variable);
 protected:
-    virtual Variable doGet(const Variant& key) const override;
+    virtual Variable doGet(const Variant& key, bool modifiable) const override;
 
 private:
     unsigned int getIndex(const Variant& key) const;

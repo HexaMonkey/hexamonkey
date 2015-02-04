@@ -30,7 +30,7 @@ public:
     /**
      * @brief Construct an instance not owning the object referenced
      */
-   static inline OptOwnPtr<T> ref(T& t)
+    static inline OptOwnPtr<T> ref(T& t)
     {
         return OptOwnPtr<T>(&t, false);
     }
@@ -74,7 +74,7 @@ public:
 private:
     OptOwnPtr(T* ptr, bool own) : ptr(ptr)
     {
-        if(own) owner.reset(ptr);
+        if (own) owner.reset(ptr);
     }
     T* ptr;
     std::shared_ptr<T> owner;

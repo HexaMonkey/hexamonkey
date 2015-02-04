@@ -37,7 +37,7 @@ class ObjectScope : public Scope
 public:
     ObjectScope(Object& object, bool modifiable);
 protected:
-    virtual Variable doGet(const Variant &key) const override;
+    virtual Variable doGet(const Variant &key, bool modifiable) const override;
     const Ptr doGetScope(const Variant &key) const override;
 private:
     Object& _object;
