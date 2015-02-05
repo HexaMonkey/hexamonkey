@@ -432,6 +432,43 @@ const Showcase &Object::showcase() const
     return _showcase;
 }
 
+const std::vector<std::string> &Object::showcasedAttributes() const
+{
+    return _showcasedAttributes;
+}
+
+Variant *Object::attributeValue(const Variant &key)
+{
+    auto it = _attributeMap.find(key);
+    if (it != _attributeMap.end()) {
+        return &(it->second);
+    } else {
+        return nullptr;
+    }
+}
+
+const Variant *Object::attributeValue(const Variant &key) const
+{
+    const auto it = _attributeMap.find(key);
+    if (it != _attributeMap.cend()) {
+        return &(it->second);
+    } else {
+        return nullptr;
+    }
+}
+
+Variant& Object::setAttributeValue(const Variant &key, const Variant &value)
+{
+    // add to showcase list if conditions are met
+    if (key.type() == Variant::string) {
+        const auto str = key.toString();
+        if (str.size() > 0 && str[0] != '_' && attributeValue(key) == nullptr) {
+            _showcasedAttributes.push_back(str);
+        }
+    }
+    return _attributeMap[key] = value;
+}
+
 const ObjectType &Object::type() const
 {
     return _type.toObjectType();

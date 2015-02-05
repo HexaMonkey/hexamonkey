@@ -162,6 +162,12 @@ class Object
         const Showcase &showcase() const;
         Showcase& showcase();
 
+        const std::vector<std::string>& showcasedAttributes() const;
+        Variant* attributeValue(const Variant& key);
+        const Variant* attributeValue(const Variant& key) const;
+        Variant& setAttributeValue(const Variant& key, const Variant& value);
+
+
         /**
          * @brief Standard representation for the object in an out stream
          */
@@ -288,6 +294,9 @@ class Object
 
         std::unordered_map<Variant, Variant> _stateMap;
         std::unordered_map<Variant, Variant> _contextMap;
+
+        std::unordered_map<Variant, Variant> _attributeMap;
+        std::vector<std::string> _showcasedAttributes;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;
