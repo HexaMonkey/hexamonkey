@@ -39,7 +39,7 @@ unsigned int FunctionScope::getIndex(const Variant &key) const
     return index;
 }
 
-Variable FunctionScope::doGet(const Variant &key, bool /*modifiable*/) const
+Variable FunctionScope::doGet(const Variant &key, bool /*modifiable*/)
 {
     unsigned int index = getIndex(key);
     if (index < parameters.size()) {

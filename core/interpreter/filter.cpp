@@ -60,7 +60,8 @@ bool Filter::operator()(Object& object)
 {
     if(_expression != "")
     {
-        return Evaluator(ObjectScope(object, false)).rightValue(_program).cvalue().toBool();
+        ObjectScope objectScope(object, false);
+        return Evaluator(objectScope).rightValue(_program).cvalue().toBool();
     }
     else
         return true;

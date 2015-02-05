@@ -20,6 +20,7 @@
 
 #include "core/interpreter/scope/scope.h"
 #include "core/interpreter/scope/typescope.h"
+#include "core/interpreter/scope/attributescope.h"
 
 class Object;
 
@@ -37,12 +38,13 @@ class ObjectScope : public Scope
 public:
     ObjectScope(Object& object, bool modifiable);
 protected:
-    virtual Variable doGet(const Variant &key, bool modifiable) const override;
-    const Ptr doGetScope(const Variant &key) const override;
+    virtual Variable doGet(const Variant &key, bool modifiable) override;
+    const Ptr doGetScope(const Variant &key) override;
 private:
     Object& _object;
     bool _modifiable;
     TypeScope _typeScope;
+    AttributeScope _attributeScope;
 
 };
 

@@ -18,7 +18,10 @@ public:
      * @param scope Used to access variables
      * @param module Used to access function
      */
-    Evaluator(const Scope& scope = Scope(), const Module& module = Module());
+    Evaluator();
+    Evaluator(Scope& scope);
+    Evaluator(const Module &module);
+    Evaluator(Scope& scope, const Module& module);
 
     /**
      * @brief Evaluate a right value tagged \link Program program node\endlink
@@ -42,7 +45,7 @@ private:
     Variable function(const Program& program) const;
     Variable variable(const Program& program, bool modifiable) const;
 
-    const Scope& scope;
+    Scope& scope;
     const Module& module;
 };
 

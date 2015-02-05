@@ -42,7 +42,7 @@ const std::vector<Variant> emptyParameterDefaults;
 
 FromFileModule::FromFileModule(Program program)
     :_program(program),
-      eval(Scope(), *this)
+      eval(*this)
 {
     UNUSED(hmcElemNames);
 }
@@ -280,7 +280,8 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            Program program = extension.node(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               return Evaluator(TypeScope(type), *this).type(program);
+               TypeScope typeScope(type);
+               return Evaluator(typeScope, *this).type(program);
            });
 
            std::cerr<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;

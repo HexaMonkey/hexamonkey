@@ -46,7 +46,7 @@ public:
      *
      * Returns an invalid \link Variable variable\endlink if the key isn't handled
      */
-    Variable get(const Variant& key, bool modifiable = true) const;
+    Variable get(const Variant& key, bool modifiable = true);
 
     /**
      * @brief Get a variable using a path describing the \link Scope scopes\endlink
@@ -54,7 +54,7 @@ public:
      *
      * get({a, b, c}) is equivalent to getScope(a).getScope(b).get(c)
      */
-    Variable get(const VariablePath& path, bool modifiable = true) const;
+    Variable get(const VariablePath& path, bool modifiable = true);
 
     /**
      * @brief Declare a new variable to be handled and return it
@@ -68,13 +68,13 @@ public:
      *
      * Returns a null reference if the subscope isn't handled
      */
-    const Ptr getScope(const Variant& key) const;
+    const Ptr getScope(const Variant& key);
 
 protected:
     /**
      * @brief Implentation for get
      */
-    virtual Variable doGet(const Variant& key, bool modifiable) const;
+    virtual Variable doGet(const Variant& key, bool modifiable);
     /**
      * @brief Implentation for declare
      */
@@ -82,10 +82,10 @@ protected:
     /**
      * @brief Implentation for getScope
      */
-    virtual const Ptr doGetScope(const Variant& key) const;
+    virtual const Ptr doGetScope(const Variant& key);
 
 private :
-    const Ptr getScope(const VariablePath& path, int max) const;
+    const Ptr getScope(const VariablePath& path, int max);
 };
 
 #endif // SCOPE_H

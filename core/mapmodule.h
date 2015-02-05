@@ -26,7 +26,7 @@
 
 #define parserLambda (const ObjectType &type, Object &object, const Module &module) ->Parser*
 #define fixedSizeLambda (const ObjectType &type, const Module &module) ->int64_t
-#define functionLambda (const Scope& scope, const Module &module) ->Variable
+#define functionLambda (Scope& scope, const Module &module) ->Variable
 
 /*!
  * @brief Practical \link Module module\endlink implementation object using maps to generate parsers and functions
@@ -36,7 +36,7 @@ class MapModule : public Module
 protected:
     typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
     typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
-    typedef std::function<Variable (const Scope&, const Module &)> Functor;
+    typedef std::function<Variable (Scope&, const Module &)> Functor;
 
     virtual ~MapModule(){}
 

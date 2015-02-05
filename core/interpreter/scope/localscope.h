@@ -33,7 +33,7 @@ class Variable;
 class LocalScope : public Scope
 {
 protected:
-    virtual Variable doGet(const Variant& key, bool modifiable) const;
+    virtual Variable doGet(const Variant& key, bool modifiable);
     virtual Variable doDeclare(const Variant& key);
 
 private:

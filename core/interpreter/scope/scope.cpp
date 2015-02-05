@@ -17,12 +17,12 @@
 
 #include "core/interpreter/scope/scope.h"
 
-Variable Scope::get(const Variant &key, bool modifiable) const
+Variable Scope::get(const Variant &key, bool modifiable)
 {
     return doGet(key, modifiable);
 }
 
-Variable Scope::get(const VariablePath &path, bool modifiable) const
+Variable Scope::get(const VariablePath &path, bool modifiable)
 {
     if(path.empty())
         return Variable();
@@ -47,12 +47,12 @@ Variable Scope::declare(const Variant &key)
     return doDeclare(key);
 }
 
-const Scope::Ptr Scope::getScope(const Variant &key) const
+const Scope::Ptr Scope::getScope(const Variant &key)
 {
     return doGetScope(key);
 }
 
-Variable Scope::doGet(const Variant &/*key*/, bool /*modifable*/) const
+Variable Scope::doGet(const Variant &/*key*/, bool /*modifable*/)
 {
     return Variable();
 }
@@ -62,21 +62,20 @@ Variable Scope::doDeclare(const Variant &/*key*/)
     return Variable();
 }
 
-const Scope::Ptr Scope::doGetScope(const Variant &/*key*/) const
+const Scope::Ptr Scope::doGetScope(const Variant &/*key*/)
 {
     return Ptr();
 }
 
-const Scope::Ptr Scope::getScope(const VariablePath &path, int max) const
+const Scope::Ptr Scope::getScope(const VariablePath &path, int max)
 {
-    if(max < 1)
+    if(max < 1) {
         return Ptr();
+    }
 
     Ptr current = getScope(path[0]);
-    for(int i = 1; i < max; ++i)
-    {
-        if(!current)
-        {
+    for(int i = 1; i < max; ++i) {
+        if(!current) {
             return Ptr();
         }
         current = current->getScope(path[i]);

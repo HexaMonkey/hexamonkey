@@ -8,12 +8,32 @@
 #include "core/util/unused.h"
 
 const Variant emptyString("");
+Scope emptyScope;
+const Module emptyModule;
 
-Evaluator::Evaluator(const Scope &scope, const Module &module)
+Evaluator::Evaluator()
+    : scope(emptyScope),
+      module(emptyModule)
+{
+    UNUSED(hmcElemNames);
+}
+
+Evaluator::Evaluator(Scope &scope)
+    : scope(scope),
+      module(emptyModule)
+{
+}
+
+Evaluator::Evaluator(const Module &module)
+    : scope(emptyScope),
+      module(module)
+{
+}
+
+Evaluator::Evaluator(Scope &scope, const Module &module)
     : scope(scope),
       module(module)
 {
-    UNUSED(hmcElemNames);
 }
 
 Variable Evaluator::rightValue(const Program &program, int modifiable) const

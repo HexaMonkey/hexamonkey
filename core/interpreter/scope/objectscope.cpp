@@ -35,6 +35,7 @@
 #define A_NUMBER_OF_CHILDREN 9
 #define A_BEGINNING_POS 10
 #define A_LINK_TO 11
+#define A_ATTR 12
 
 const std::map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -48,18 +49,19 @@ const std::map<std::string, int> reserved = {
     {"@rem",              A_REM},
     {"@numberOfChildren", A_NUMBER_OF_CHILDREN},
     {"@beginningPos",     A_BEGINNING_POS},
-    {"@linkTo",           A_LINK_TO}
+    {"@linkTo",           A_LINK_TO},
+    {"@attr",             A_ATTR}
 };
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
     : _object(object),
       _modifiable(modifiable),
-      _typeScope(object._type.toObjectType(), modifiable)
-
+      _typeScope(object._type.toObjectType(), modifiable),
+      _attributeScope(object, modifiable)
 {
 }
 
-Variable ObjectScope::doGet(const Variant &key, bool modifiable) const
+Variable ObjectScope::doGet(const Variant &key, bool modifiable)
 {
     modifiable = _modifiable && modifiable;
 
@@ -116,8 +118,13 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable) const
                 default:
                     return Variable();
             }
-        } else if(!name.empty() && name[0]=='_') {
-            return Variable::ref(_object._stateMap[key], modifiable);
+        } else {
+            Variable attributeVariable = _attributeScope.get(key, false);
+            if(attributeVariable.isDefined()) {
+                return attributeVariable;
+            } else if(!name.empty() && name[0]=='_') {
+                return Variable::ref(_object._stateMap[key], modifiable);
+            }
         }
 
         Object* elem = _object.lookUp(name, true);
@@ -146,7 +153,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable) const
     return Variable();
 }
 
-const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
+const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 {
     if(key.isNull())
     {
@@ -178,6 +185,9 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key) const
 
                 case A_ARGS:
                     return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
+
+                case A_ATTR:
+                    return Ptr::ref(dynamic_cast<Scope&>(_attributeScope));
 
                 default:
                     return Ptr();
