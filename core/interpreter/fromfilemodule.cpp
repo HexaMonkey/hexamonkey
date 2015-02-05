@@ -33,7 +33,8 @@ const std::vector<VariablePath> headerOnlyVars = {
     {"@args"},
     {"@value"},
     {"@info"},
-    {"@linkTo"}
+    {"@linkTo"},
+    {"@attr"}
 };
 
 const std::vector<std::string> emptyParameterNames;
@@ -404,8 +405,16 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
         return alreadyIt->second;
 
     Program bodyBlock = _definitions.find(name)->second.node(0);
-    Program::const_reverse_iterator reverseHeaderEnd = bodyBlock.rbegin();
 
+    for (Program::const_iterator headerEnd = bodyBlock.begin(); headerEnd != bodyBlock.end(); ++headerEnd) {
+        const Program& line = *headerEnd;
+        //Check header mark
+        if (line.tag() == HEADER_MARK) {
+            return ++headerEnd;
+        }
+    }
+
+    Program::const_reverse_iterator reverseHeaderEnd = bodyBlock.rbegin();
     for(;reverseHeaderEnd != bodyBlock.rend(); ++reverseHeaderEnd)
     {
         const Program& line = *reverseHeaderEnd;
@@ -428,18 +437,12 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
 
             return false;
 
-        }))
-                break;
-
-        //Check showcased declarations
-        if(line.tag() == DECLARATION)
-        {
-            if(line.node(2).payload().toInteger())
+        })) {
                 break;
         }
 
-        //Check header mark
-        if (line.tag() == HEADER_MARK) {
+        //Check showcased declarations
+        if(line.tag() == DECLARATION && line.node(2).payload().toInteger()) {
             break;
         }
     }
