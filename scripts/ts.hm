@@ -38,10 +38,12 @@ class transport_packet
     bslbf(1) transport_error_indicator;
     bslbf(1) payload_unit_start_indicator;
     bslbf(1) transport_priority;
-	uint(13, 16) PID showcased;
+	uint(13, 16) PID;
+    @attr.PID = PID;
 	bslbf(2) transport_scrambling_control;
 	bslbf(2) adaptation_field_control;
-	uimsbf(4) continuity_counter showcased;
+	uimsbf(4) continuity_counter;
+    @attr.continuity_couter = continuity_counter;
 	var size_left = 1472; // 8*187-24
     if(adaptation_field_control & 0b10)
 	{

@@ -103,7 +103,7 @@ class IMAGE_FILE_MACHINE extends WORD
 class IMAGE_OPTIONAL_HEADER 
 {
 	WORD   Magic;
-	var HDR64 = @root._HDR64 = (Magic == 0x20b);
+	var HDR64 = @root.@attr._HDR64 = (Magic == 0x20b);
 	%log(""+@root._HDR64);
 	BYTE   MajorLinkerVersion;
 	BYTE   MinorLinkerVersion;
@@ -168,9 +168,9 @@ class IMAGE_SECTION_HEADER
 
 class IMAGE_SECTION(name, _size, _virtualOffset)
 {
-	_offset = @beginningPos - 8*@args._virtualOffset;
+	@attr._offset = @beginningPos - 8*@args._virtualOffset;
 	//%log("1:"+_virtualOffset+":"+@args._virtualOffset+":"+@args._size+@args.name);
-	@size=@args._size<<3;
+	@size = @args._size<<3;
 }
 
 class IMAGE_SECTIONS
@@ -298,8 +298,10 @@ class IMAGE_IMPORT_DESCRIPTOR(_offset)
 
 class IMAGE_IMPORT_BY_NAME
 {
-	WORD Hint showcased;
-	String Name showcased;
+	WORD Hint;
+	String Name;
+    @attr.Hint = Hint;
+    @attr.Name = Name;
 }
 
 class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)

@@ -144,6 +144,7 @@ class Object
          */
         const Variant& value() const;
         Variant& value();
+        void setValue(const Variant& value);
 
         /**
          * @brief Object links to a point in file

@@ -188,21 +188,22 @@ void TreeObjectItem::doLoad() const
             std::cerr<<"Error: item data too short"<<std::endl;
                 return;
         }
-        if(!object().showcase().empty())
+        if(!object().showcasedAttributes().empty())
         {
             S << showcasePadding.str();
             S << "&nbsp;&nbsp;(";
-            Showcase::const_iterator it = object().showcase().begin();
+            auto it = object().showcasedAttributes().cbegin();
             while(true)
             {
-                displayName(S, *it);
-                auto child = object().lookUp(*it);
-                if (child) {
-                    displayInfo(S, getString(*child));
+                const std::string& key = *it;
+                Variant* value = object().attributeValue(key);
+                if (value) {
+                    displayName(S, key);
+                    S << " = ";
+                    displayVariant(S, *value);
                 }
-
                 ++it;
-                if(it == object().showcase().end())
+                if(it == object().showcasedAttributes().cend())
                     break;
                 S << ",&nbsp;";
             }

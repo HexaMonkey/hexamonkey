@@ -27,8 +27,10 @@ EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
 
 void EbmlIntegerParser::doParseHead()
 {
-    addVariable(standardTypes::integer(availableSize()),"payload");
-    showcase().add("payload");
+    Object* child = addVariable(standardTypes::integer(availableSize()),"payload");
+    if (child) {
+        object().setValue(child->value());
+    }
 }
 
 EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
@@ -38,8 +40,10 @@ EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
 
 void EbmlUIntegerParser::doParseHead()
 {
-    addVariable(standardTypes::uinteger(availableSize()),"payload");
-    showcase().add("payload");
+    Object* child = addVariable(standardTypes::uinteger(availableSize()),"payload");
+    if (child) {
+        object().setValue(child->value());
+    }
 }
 
 EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
@@ -49,8 +53,10 @@ EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
 
 void EbmlStringParser::doParseHead()
 {
-    addVariable(standardTypes::string(availableSize()/8),"payload");
-    showcase().add("payload");
+    Object* child = addVariable(standardTypes::string(availableSize()/8),"payload");
+    if (child) {
+        object().setValue(child->value());
+    }
 }
 
 EbmlBinaryParser::EbmlBinaryParser(Object& object, const Module& module)
@@ -70,8 +76,10 @@ EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& m
 
 void EbmlDateContainerParser::doParseHead()
 {
-    addVariable(ebmlTypes::Date(), "payload");
-    showcase().add("payload");
+    Object* child = addVariable(ebmlTypes::Date(), "payload");
+    if (child) {
+        object().setValue(child->value());
+    }
 }
 
 EbmlFloatParser::EbmlFloatParser(Object& object, const Module& module)
@@ -81,9 +89,13 @@ EbmlFloatParser::EbmlFloatParser(Object& object, const Module& module)
 
 void EbmlFloatParser::doParseHead()
 {
-    if(availableSize() == 32)
+    Object* child = nullptr;
+    if(availableSize() == 32) {
         addVariable(standardTypes::singleFloat(),"payload");
-    else
+    } else {
         addVariable(standardTypes::doubleFloat(),"payload");
-    showcase().add("payload");
+    }
+    if (child) {
+        object().setValue(child->value());
+    }
 }

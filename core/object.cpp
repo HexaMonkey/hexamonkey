@@ -287,6 +287,11 @@ const Variant &Object::value() const
     return _value;
 }
 
+void Object::setValue(const Variant &value)
+{
+    _value = value;
+}
+
 bool Object::hasLinkTo() const
 {
     return !_linkTo.isNull();
