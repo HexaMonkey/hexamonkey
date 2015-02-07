@@ -43,20 +43,31 @@ class Variant
 public:
     enum Type{
         ///Default type with no value, can be use as a null value, no conversion possible
-        unknown = 0,
+        unknown         = 0x00,
+        ///Internal supertype for integer, unsigned integer and floating
+        numerical       = 0x01,
         ///64 bits signed integer, conversion with other numerical
         ///types possible (ie unsignedInteger and floating)
-        integer = 1,
+        integer         = 0x05,
         ///64 bits unsigned integer, conversion with other numerical
         ///types possible (ie integer and floating)
-        unsignedInteger = 2,
+        unsignedInteger = 0x01,
         ///64 bits floating point, conversion with other numerical
         ///types possible (ie integer and unsignedInteger)
-        floating = 3,
+        floating        = 0x09,
         ///std::string, no conversion possible
-        string = 4,
+        string          = 0x02,
         ///Objectype, no conversion possible
-        objectType = 5
+        objectType      = 0x03
+    };
+
+
+
+    enum Display{
+        decimal     = 0x00,
+        binary      = 0x10,
+        octal       = 0x20,
+        hexadecimal = 0x30
     };
 
     /// @cond HIDDEN_SYMBOL
@@ -145,6 +156,7 @@ public:
 
     friend bool operator==(const Variant& a, const Variant& b);
     friend bool operator< (const Variant& a, const Variant& b);
+    friend bool operator<=(const Variant& a, const Variant& b);
 
     Variant& operator+=(const Variant& other);
     Variant& operator-=(const Variant& other);
@@ -182,9 +194,13 @@ private:
         ObjectType* t;
     } Data;
 
-    Data _data;
-    Type _type;
+    Data    _data;
+    uint8_t _type;
 
+    static const uint8_t superTypeMask = 0x03;
+    static const uint8_t typeMask = 0x0f;
+    static const uint8_t displayMask = 0x30;
+    static const uint8_t signedBit = 0x04;
 };
 
 void swap(Variant& a, Variant& b);

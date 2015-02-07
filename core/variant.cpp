@@ -33,20 +33,11 @@ Variant::Variant() : _type(unknown)
 
 Variant::Variant(const Variant& other) : _type(other._type)
 {
-    switch(_type)
+    switch(_type&superTypeMask)
     {
-        case integer:
-            _data.l = other._data.l;
+        case numerical:
+            _data = other._data;
             break;
-
-        case unsignedInteger:
-            _data.ul = other._data.ul;
-            break;
-
-        case floating:
-            _data.f = other._data.f;
-            break;
-
 
         case string:
             _data.s = new std::string(*other._data.s);
@@ -57,85 +48,72 @@ Variant::Variant(const Variant& other) : _type(other._type)
             break;
 
         default:
-        break;
+            break;
     }
 }
 
-Variant::Variant(bool l)
+Variant::Variant(bool l) : _type(integer)
 {
-    _type = integer;
     _data.l = l;
 }
 
-Variant::Variant(char l)
+Variant::Variant(char l) : _type(integer)
 {
-    _type = integer;
     _data.l = l;
 }
 
-Variant::Variant(int l)
+Variant::Variant(int l) : _type(integer)
 {
-    _type = integer;
     _data.l = l;
 }
 
-Variant::Variant(long l)
+Variant::Variant(long l) : _type(integer)
 {
-    _type = integer;
     _data.l = l;
 }
 
-Variant::Variant(long long l)
+Variant::Variant(long long l) : _type(integer)
 {
-    _type = integer;
     _data.l = l;
 }
 
-Variant::Variant(unsigned char ul)
+Variant::Variant(unsigned char ul) : _type(unsignedInteger)
 {
-    _type = unsignedInteger;
     _data.ul = ul;
 }
 
-Variant::Variant(unsigned int ul)
+Variant::Variant(unsigned int ul) : _type(unsignedInteger)
 {
-    _type = unsignedInteger;
     _data.ul = ul;
 }
 
-Variant::Variant(unsigned long ul)
+Variant::Variant(unsigned long ul) : _type(unsignedInteger)
 {
-    _type = unsignedInteger;
     _data.ul = ul;
 }
 
-Variant::Variant(unsigned long long ul)
+Variant::Variant(unsigned long long ul) : _type(unsignedInteger)
 {
-    _type = unsignedInteger;
     _data.ul = ul;
 }
 
-Variant::Variant(float f)
+Variant::Variant(float f) : _type(floating)
 {
-    _type = floating;
     _data.f = f;
 }
 
-Variant::Variant(double f)
+Variant::Variant(double f) : _type(floating)
 {
-    _type = floating;
     _data.f = f;
 }
 
-Variant::Variant(const std::string& s)
+Variant::Variant(const std::string& s) : _type(string)
 {
-    _type = string;
     _data.s = new std::string(s);
 }
 
-Variant::Variant(const char* s)
+Variant::Variant(const char* s) : _type(string)
 {
-    _type = string;
     _data.s = new std::string(s);
 }
 
@@ -268,7 +246,7 @@ void Variant::setValue(const ObjectType& t)
 
 void Variant::clear()
 {
-    switch(_type)
+    switch(_type&superTypeMask)
     {
         case string:
             delete _data.s;
@@ -285,212 +263,130 @@ void Variant::clear()
 
 bool Variant::canConvertTo(Variant::Type otherType) const
 {
-    if(_type == otherType)
-        return true;
-
-    switch(_type)
-    {
-        case integer:
-            switch(otherType)
-            {
-                case unsignedInteger:
-                return true;
-
-                case floating:
-                return true;
-
-                default:
-                return false;
-            }
-
-        case unsignedInteger:
-            switch(otherType)
-            {
-                case integer:
-                return true;
-
-                case floating:
-                return true;
-
-                default:
-                return false;
-            }
-
-        case floating:
-            switch(otherType)
-            {
-                case integer:
-                return true;
-
-                case unsignedInteger:
-                return true;
-
-                default:
-                return false;
-            }
-        default:
-            return false;
-    }
+    return (_type & superTypeMask) == (otherType & superTypeMask);
 }
 
 Variant& Variant::convertTo(Variant::Type newType)
 {
-    if(_type == newType)
-        return *this;
+    uint8_t type = _type&typeMask;
 
-    switch(_type)
-    {
-        case integer:
-            switch(newType)
-            {
-                case unsignedInteger:
-                    _data.ul = (unsigned long long) _data.l;
-                    break;
+    if (type != newType) {
+        switch(type)
+        {
+            case integer:
+                switch(newType)
+                {
+                    case unsignedInteger:
+                        _data.ul = (unsigned long long) _data.l;
+                        break;
 
-                case floating:
-                    _data.f = (double) _data.l;
-                    break;
+                    case floating:
+                        _data.f = (double) _data.l;
+                        break;
 
-                default:
-                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
-                    clear();
-            }
-            break;
+                    default:
+                        Log::error("Invalid type conversion : ", typeNames[type], " to ", typeNames[newType]);
+                        clear();
+                }
+                break;
 
-        case unsignedInteger:
-            switch(newType)
-            {
-                case integer:
-                    _data.l = (long long) _data.ul;
-                    break;
+            case unsignedInteger:
+                switch(newType)
+                {
+                    case integer:
+                        _data.l = (long long) _data.ul;
+                        break;
 
-                case floating:
-                    _data.f = (double) _data.ul;
-                    break;
+                    case floating:
+                        _data.f = (double) _data.ul;
+                        break;
 
-                default:
-                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
-                    clear();
-            }
-            break;
+                    default:
+                        Log::error("Invalid type conversion : ", typeNames[type], " to ", typeNames[newType]);
+                        clear();
+                }
+                break;
 
-        case floating:
-            switch(newType)
-            {
-                case integer:
-                    _data.l = (long long) _data.f;
-                    break;
+            case floating:
+                switch(newType)
+                {
+                    case integer:
+                        _data.l = (long long) _data.f;
+                        break;
 
-                case unsignedInteger:
-                    _data.ul = (double) _data.f;
-                    break;
+                    case unsignedInteger:
+                        _data.ul = (double) _data.f;
+                        break;
 
-                default:
-                    Log::error("Invalid type conversion : ", typeNames[_type], " to ", typeNames[newType]);
-                    clear();
-            }
-            break;
+                    default:
+                        Log::error("Invalid type conversion : ", typeNames[type], " to ", typeNames[newType]);
+                        clear();
+                }
+                break;
 
-        default:
-            Log::error("Invalid type conversion : ", typeNames[_type], " to ",typeNames[newType]);
-            clear();
+            default:
+                Log::error("Invalid type conversion : ", typeNames[type], " to ",typeNames[newType]);
+                clear();
+        }
     }
-    _type = newType;
+    _type = newType|(_type&displayMask);
     return *this;
 }
 
 long long Variant::toInteger() const
 {
-    if(_type == integer || _type == unsignedInteger)
-    {
-        return _data.l;
-    }
-    else
-    {
-        if(canConvertTo(integer))
-        {
-            return Variant(*this).convertTo(integer)._data.l;
+    if ((_type & superTypeMask) == numerical) {
+        if ((_type & typeMask) == floating) {
+            return _data.f;
+        } else {
+            return _data.l;
         }
-        else
-        {
-            return 0LL;
-        }
+    } else {
+        return 0LL;
     }
 }
 
 unsigned long long Variant::toUnsignedInteger() const
 {
-    if(_type == integer || _type == unsignedInteger)
-    {
-        return _data.ul;
-    }
-    else
-    {
-        if(canConvertTo(unsignedInteger))
-        {
-            return Variant(*this).convertTo(unsignedInteger)._data.ul;
+    if ((_type & superTypeMask) == numerical) {
+        if ((_type & typeMask) == floating) {
+            return _data.f;
+        } else {
+            return _data.ul;
         }
-        else
-        {
-            return 0LL;
-        }
+    } else {
+        return 0LL;
     }
 }
 
 double Variant::toDouble() const
 {
-    if(_type == floating)
-    {
-        return _data.f;
-    }
-    else
-    {
-        if(canConvertTo(floating))
-        {
-            return Variant(*this).convertTo(floating)._data.f;
+    if ((_type & superTypeMask) == numerical) {
+        if ((_type & typeMask) == floating) {
+            return _data.f;
+        } else {
+            return _data.l;
         }
-        else
-        {
-            return 0.;
-        }
+    } else {
+        return 0.;
     }
 }
 
 const std::string& Variant::toString() const
 {
-    if(_type == string)
-    {
+    if((_type & typeMask) == string) {
         return *_data.s;
-    }
-    else
-    {
-        if(canConvertTo(string))
-        {
-            return *Variant(*this).convertTo(string)._data.s;
-        }
-        else
-        {
-            return emptyString;
-        }
+    } else {
+        return emptyString;
     }
 }
 
 const ObjectType& Variant::toObjectType() const
 {
-    if(_type == objectType)
-    {
+    if((_type & typeMask) == objectType) {
         return *_data.t;
-    }
-    else
-    {
-        if(canConvertTo(objectType))
-        {
-            return *Variant(*this).convertTo(objectType)._data.t;
-        }
-        else
-        {
-            return nullType;
-        }
+    } else {
+        return nullType;
     }
 }
 
@@ -501,37 +397,57 @@ ObjectType& Variant::toObjectType()
 
 bool Variant::toBool() const
 {
-    switch(_type)
+    switch(_type&typeMask)
     {
-    case integer:
-        return _data.l != 0LL;
-    case unsignedInteger:
-        return _data.ul != 0LL;
-    case floating:
-        return _data.f != 0.;
-    case string:
-        return !_data.s->empty();
-    case objectType:
-        return !_data.t->isNull();
-    default:
-        return false;
+        case integer:
+            return _data.l != 0LL;
+        case unsignedInteger:
+            return _data.ul != 0LL;
+        case floating:
+            return _data.f != 0.;
+        case string:
+            return !_data.s->empty();
+        case objectType:
+            return !_data.t->isNull();
+        default:
+            return false;
 
     }
 }
 
 Variant::Type Variant::type() const
 {
-    return _type;
+    switch(_type&typeMask)
+    {
+        case integer:
+            return integer;
+
+        case unsignedInteger:
+            return unsignedInteger;
+
+        case floating:
+            return floating;
+
+        case string:
+            return string;
+
+        case objectType:
+            return objectType;
+
+        default:
+            return unknown;
+    }
+    return unknown;
 }
 
 bool Variant::hasNumericalType() const
 {
-    return _type == integer || _type == unsignedInteger || _type == floating;
+    return (_type & superTypeMask) == numerical;
 }
 
 bool Variant::isNull() const
 {
-    return _type == unknown;
+    return (_type & typeMask) == unknown;
 }
 
 std::ostream& Variant::display(std::ostream& out) const
@@ -567,54 +483,35 @@ std::ostream& Variant::display(std::ostream& out) const
 
 bool operator==(const Variant& a, const Variant& b)
 {
+    uint8_t aSuperType = a._type&Variant::superTypeMask;
+    uint8_t bSuperType = b._type&Variant::superTypeMask;
 
-    if(a._type != b._type)
-    {
-        if(b._type == Variant::Type::floating)
-        {
-            if(a.canConvertTo(b._type))
-            {
-                Variant converted = a;
-                converted.convertTo(b._type);
-                return b == converted;
-            }
-            else
-            {
-                return false;
-            }
+    if (aSuperType == bSuperType) {
+        switch (aSuperType) {
+            case Variant::numerical:
+                {
+                    bool aFloating = (a._type & Variant::typeMask) == Variant::floating;
+                    bool bFloating = (b._type & Variant::typeMask) == Variant::floating;
+                    if (aFloating && bFloating) {
+                        return a._data.f == b._data.f;
+                    } else if (aFloating) {
+                        return a._data.f == b._data.l;
+                    } else if (bFloating) {
+                        return a._data.l == b._data.f;
+                    } else {
+                        return a._data.l == b._data.l;
+                    }
+                }
+
+            case Variant::string:
+                return *a._data.s == *b._data.s;
+
+            case Variant::objectType:
+                return *a._data.t == *b._data.t;
         }
-        else if(b.canConvertTo(a.type()))
-        {
-            Variant converted = b;
-            converted.convertTo(a._type);
-            return a == converted;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
-    switch(a._type)
-    {
-        case Variant::integer:
-            return (a._data.l == b._data.l);
-
-        case Variant::unsignedInteger:
-            return (a._data.ul == b._data.ul);
-
-        case Variant::floating:
-            return (a._data.f == b._data.f);
-
-        case Variant::string:
-            return (*a._data.s == *b._data.s);
-
-        case Variant::objectType:
-            return (*a._data.t == *b._data.t);
-
-        default:
-            return true;
+        return false;
+    } else {
+        return false;
     }
 }
 
@@ -625,45 +522,70 @@ bool operator!=(const Variant& a, const Variant& b)
 
 bool operator< (const Variant& a, const Variant& b)
 {
-    if(a._type != b._type)
-    {
-        if(b.canConvertTo(a.type()))
-        {
-            Variant converted = b;
-            converted.convertTo(a._type);
-            return a < converted;
+    uint8_t aSuperType = a._type&Variant::superTypeMask;
+    uint8_t bSuperType = b._type&Variant::superTypeMask;
+
+    if (aSuperType == bSuperType) {
+        switch (aSuperType) {
+            case Variant::numerical:
+                {
+                    bool aFloating = (a._type & Variant::typeMask) == Variant::floating;
+                    bool bFloating = (b._type & Variant::typeMask) == Variant::floating;
+                    if (aFloating && bFloating) {
+                        return a._data.f < b._data.f;
+                    } else if (aFloating) {
+                        return a._data.f < b._data.l;
+                    } else if (bFloating) {
+                        return a._data.l < b._data.f;
+                    } else {
+                        return a._data.l < b._data.l;
+                    }
+                }
+
+            case Variant::string:
+                return *a._data.s < *b._data.s;
+
+            case Variant::objectType:
+                return *a._data.t < *b._data.t;
         }
-        else
-        {
-            return a._type < b._type;
-        }
-    }
-
-    switch(a._type)
-    {
-        case Variant::integer:
-            return (a._data.l < b._data.l);
-
-        case Variant::unsignedInteger:
-            return (a._data.ul < b._data.ul);
-
-        case Variant::floating:
-            return (a._data.f < b._data.f);
-
-        case Variant::string:
-            return (*a._data.s < *b._data.s);
-
-        case Variant::objectType:
-            return (*a._data.t < *b._data.t);
-
-        default:
-            return false;
+        return false;
+    } else {
+        return aSuperType < bSuperType;
     }
 }
 
 bool operator<=(const Variant& a, const Variant& b)
 {
-    return a==b || a<b;
+    uint8_t aSuperType = a._type&Variant::superTypeMask;
+    uint8_t bSuperType = b._type&Variant::superTypeMask;
+
+    if (aSuperType == bSuperType) {
+        switch (aSuperType) {
+            case Variant::numerical:
+                {
+                    bool aFloating = (a._type & Variant::typeMask) == Variant::floating;
+                    bool bFloating = (b._type & Variant::typeMask) == Variant::floating;
+                    if (aFloating && bFloating) {
+                        return a._data.f <= b._data.f;
+                    } else if (aFloating) {
+                        return a._data.f <= b._data.l;
+                    } else if (bFloating) {
+                        return a._data.l <= b._data.f;
+                    } else {
+                        return a._data.l <= b._data.l;
+                    }
+                }
+
+            case Variant::string:
+                return *a._data.s <= *b._data.s;
+
+            case Variant::objectType:
+                return *a._data.t <= *b._data.t;
+        }
+        return true;
+    } else {
+        return aSuperType <= bSuperType;
+    }
 }
 
 bool operator> (const Variant& a, const Variant& b)
@@ -684,46 +606,21 @@ std::ostream& operator<<(std::ostream& out, const Variant& variant)
 
 Variant &Variant::operator +=(const Variant &other)
 {
-    if(_type == string || other._type == string)
-    {
+    uint8_t superType = _type & superTypeMask;
+    uint8_t otherSuperType = other._type & superTypeMask;
+    if(superType == string || otherSuperType == string) {
         std::stringstream S;
         S<<*this<<other;
         setValue(S.str());
-    }
-    else
-    {
-        switch(_type)
-        {
-        case integer:
-            if(other.type() == floating)
-            {
-                convertTo(floating);
-                _data.f += other.toDouble();
-                break;
-            }
-            _data.l += other.toInteger();
-            break;
+    } else if (superType == numerical && otherSuperType == numerical) {
+        uint8_t type = _type & typeMask;
 
-        case unsignedInteger:
-            if(other.type() == floating)
-            {
-                convertTo(floating);
-                _data.f += other.toDouble();
-                break;
-            }
-            _data.ul += other.toInteger();
-            break;
-
-        case floating:
+        if (type == floating) {
             _data.f += other.toDouble();
-            break;
-
-        case string:
-            *_data.s += other.toString();
-            break;
-
-        default:
-            Log::error("Invalid operation : +=");
+        } else if ((other._type & typeMask) == floating) {
+            setValue(toDouble() + other._data.f);
+        } else {
+            _data.ul += other._data.ul;
         }
     }
     return *this;
@@ -731,169 +628,123 @@ Variant &Variant::operator +=(const Variant &other)
 
 Variant &Variant::operator -=(const Variant &other)
 {
-    switch(_type)
-    {
-    case integer:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
+    uint8_t superType = _type & superTypeMask;
+    uint8_t otherSuperType = other._type & superTypeMask;
+    if (superType == numerical && otherSuperType == numerical) {
+        uint8_t type = _type & typeMask;
+
+        if (type == floating) {
             _data.f -= other.toDouble();
-            break;
+        } else if ((other._type & typeMask) == floating) {
+            setValue(toDouble() - other._data.f);
+        } else {
+            if (type == unsignedInteger && _data.ul < other._data.ul) {
+                _type |= 0x4;
+            }
+            _data.l -= other._data.l;
         }
-        _data.l -= other.toInteger();
-        break;
-
-    case unsignedInteger:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
-            _data.f -= other.toDouble();
-            break;
-        }
-        _data.ul -= other.toInteger();
-        break;
-
-    case floating:
-        _data.f -= other.toDouble();
-        break;
-
-    default:
-        Log::error("Invalid operation : -=");
     }
     return *this;
 }
 
 Variant &Variant::operator *=(const Variant &other)
 {
-    switch(_type)
-    {
-    case integer:
-        _data.l *= other.toInteger();
-        if(other.type() == floating)
-        {
-            convertTo(floating);
+    uint8_t superType = _type & superTypeMask;
+    uint8_t otherSuperType = other._type & superTypeMask;
+    if (superType == numerical && otherSuperType == numerical) {
+        uint8_t type = _type & typeMask;
+
+        if (type == floating) {
             _data.f *= other.toDouble();
-            break;
+        } else if ((other._type & typeMask) == floating) {
+            setValue(toDouble()*other._data.f);
+        } else {
+            _data.l *= other._data.l;
         }
-        break;
-
-    case unsignedInteger:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
-            _data.f *= other.toDouble();
-            break;
-        }
-        _data.ul *= other.toInteger();
-        break;
-
-    case floating:
-        _data.f *= other.toDouble();
-        break;
-
-    default:
-        Log::error("Invalid operation : *=");
     }
     return *this;
 }
 
 Variant &Variant::operator /=(const Variant &other)
 {
-    switch(_type)
-    {
-    case integer:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
-            auto otherValue = other.toDouble();
-            if (otherValue) {
-                _data.f /= otherValue;
+    uint8_t superType = _type & superTypeMask;
+    uint8_t otherSuperType = other._type & superTypeMask;
+    if (superType == numerical && otherSuperType == numerical) {
+        uint8_t type = _type & typeMask;
+
+        if (type == floating) {
+            double otherValue = other.toDouble();
+            if (otherValue != 0) {
+                _data.f /= other.toDouble();
+            } else {
+                Log::error("Division by zero");
+            }
+        } else if ((other._type & typeMask) == floating) {
+            if (other._data.f != 0) {
+                setValue(toDouble() / other._data.f);
             } else {
                 Log::error("Division by zero");
             }
         } else {
-            auto otherValue = other.toInteger();
-            if (otherValue) {
-                _data.l /= otherValue;
+            if (other._data.l != 0) {
+                _data.l /= other._data.l;
             } else {
                 Log::error("Division by zero");
             }
         }
-        break;
-
-    case unsignedInteger:
-        if(other.type() == floating)
-        {
-            convertTo(floating);
-            auto otherValue = other.toDouble();
-            if (otherValue) {
-                _data.f /= otherValue;
-            } else {
-                Log::error("Division by zero");
-            }
-        } else {
-            auto otherValue = other.toUnsignedInteger();
-            if (otherValue) {
-                _data.ul /= otherValue;
-            } else {
-                Log::error("Division by zero");
-            }
-        }
-        break;
-
-    case floating:
-        {
-            auto otherValue = other.toDouble();
-            if (otherValue) {
-                _data.f /= otherValue;
-            } else {
-                Log::error("Division by zero");
-            }
-        }
-        break;
-
-    default:
-        Log::error("Invalid operation : /=");
     }
     return *this;
 }
 
 Variant &Variant::operator %=(const Variant &other)
 {
-    switch(_type)
-    {
-    case integer:
-        _data.l %= other.toInteger();
-        break;
+    uint8_t superType = _type & superTypeMask;
+    uint8_t otherSuperType = other._type & superTypeMask;
+    if (superType == numerical && otherSuperType == numerical) {
+        uint8_t type = _type & typeMask;
 
-    case unsignedInteger:
-        _data.ul %= other.toInteger();
-        break;
-
-    default:
-        Log::error("Invalid operation : %=");
+        if (type == floating) {
+            double otherValue = other.toDouble();
+            if (otherValue != 0) {
+                _data.f = fmod(_data.f, other.toDouble());
+            } else {
+                Log::error("Division by zero");
+            }
+        } else if ((other._type & typeMask) == floating) {
+            if (other._data.f != 0) {
+                setValue(fmod(toDouble(), other._data.f));
+            } else {
+                Log::error("Division by zero");
+            }
+        } else {
+            if (other._data.l != 0) {
+                _data.l %= other._data.l;
+            } else {
+                Log::error("Division by zero");
+            }
+        }
     }
     return *this;
 }
 
 Variant &Variant::operator ++()
 {
-    switch(_type)
+    switch(_type&typeMask)
     {
-    case integer:
-        ++_data.l;
-        break;
+        case integer:
+            ++_data.l;
+            break;
 
-    case unsignedInteger:
-        ++_data.ul;
-        break;
+        case unsignedInteger:
+            ++_data.ul;
+            break;
 
-    case floating:
-        ++_data.f;
-        break;
+        case floating:
+            ++_data.f;
+            break;
 
-    default:
-        Log::error("Invalid operation : *=");
+        default:
+            break;
     }
     return *this;
 }
@@ -907,25 +758,25 @@ Variant Variant::operator ++(int)
 
 Variant &Variant::operator --()
 {
-    switch(_type)
-    {
-    case integer:
-        --_data.l;
-        break;
+    switch (_type&typeMask) {
+        case integer:
+            --_data.l;
+            break;
 
-    case unsignedInteger:
-        if(_data.ul == 0)
-            convertTo(integer);
-        --_data.ul;
+        case unsignedInteger:
+            if(_data.ul == 0) {
+                convertTo(integer);
+            }
+            --_data.ul;
 
-        break;
+            break;
 
-    case floating:
-        --_data.f;
-        break;
+        case floating:
+            --_data.f;
+            break;
 
-    default:
-        Log::error("Invalid operation : --");
+        default:
+            break;
     }
     return *this;
 }
@@ -940,7 +791,7 @@ Variant Variant::operator --(int)
 Variant Variant::operator -() const
 {
     Variant result = *this;
-    switch(_type)
+    switch (_type&typeMask)
     {
         case unsignedInteger:
             result.convertTo(integer);
@@ -951,92 +802,60 @@ Variant Variant::operator -() const
         case floating:
             result._data.f = -result._data.f;
             break;
-
-        default:
-            Log::error("Invalid operation : -");
-
     }
     return result;
 }
 
 Variant &Variant::operator |=(const Variant &other)
 {
-    if(hasNumericalType() && other.hasNumericalType())
-    {
+    if ((_type & superTypeMask) == numerical && (other._type & superTypeMask) == numerical) {
         _data.ul |= other._data.ul;
-    }
-    else
-    {
-        Log::error("Invalid operation : |=");
     }
     return *this;
 }
 
 Variant &Variant::operator ^=(const Variant &other)
 {
-    if(hasNumericalType() && other.hasNumericalType())
-    {
+    if ((_type & superTypeMask) == numerical && (other._type & superTypeMask) == numerical) {
         _data.ul ^= other._data.ul;
-    }
-    else
-    {
-        Log::error("Invalid operation : ^=");
     }
     return *this;
 }
 
 Variant &Variant::operator &=(const Variant &other)
 {
-    if(hasNumericalType() && other.hasNumericalType())
-    {
+    if ((_type & superTypeMask) == numerical && (other._type & superTypeMask) == numerical) {
         _data.ul &= other._data.ul;
-    }
-    else
-    {
-        Log::error("Invalid operation : &=");
     }
     return *this;
 }
 
 Variant &Variant::operator <<=(const Variant &other)
 {
-    if(hasNumericalType() && other.hasNumericalType())
-    {
-        convertTo(unsignedInteger);
-        _data.ul <<= other.toInteger();
-    }
-    else
-    {
-        Log::error("Invalid operation : <<=");
+    if ((_type & superTypeMask) == numerical && (other._type & superTypeMask) == numerical) {
+        _data.ul <<= other.toUnsignedInteger();
     }
     return *this;
 }
 
 Variant &Variant::operator >>=(const Variant &other)
 {
-    if(hasNumericalType() && other.hasNumericalType())
-    {
-        convertTo(unsignedInteger);
-        _data.ul >>= other.toInteger();
-    }
-    else
-    {
-        Log::error("Invalid operation : >>=");
+    if ((_type & superTypeMask) == numerical && (other._type & superTypeMask) == numerical) {
+        _data.ul >>= other.toUnsignedInteger();
     }
     return *this;
 }
 
 Variant Variant::operator ~() const
 {
-    if(!hasNumericalType())
+    if((_type & superTypeMask) == numerical)
     {
-        Log::error("Invalid operation : ~");
-        return *this;
+        Variant result = *this;
+        result._data.ul = ~result._data.ul;
+        return result;
+    } else {
+        return Variant();
     }
-
-    Variant result = *this;
-    result._data.ul = ~result._data.ul;
-    return result;
 }
 
 bool Variant::operator !() const
