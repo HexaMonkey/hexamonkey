@@ -458,46 +458,71 @@ void Variant::setDisplayType(Variant::Display display)
 std::ostream& Variant::display(std::ostream& out) const
 {
     uint8_t displayType = (_type & displayMask);
-    switch (displayType) {
-        case octal:
-            out << std::oct << std::showbase;
-            break;
-
-        case hexadecimal:
-            out << std::hex << std::showbase;
-            break;
-    }
-
     uint8_t type = (_type & typeMask);
-    switch (type)
-    {
-        case integer:
-            out<<_data.l;
-            break;
+    if (displayType == binary && (_type & typeMask & unsignedInteger) == unsignedInteger) {
+        unsigned long long ul;
+        if (type == integer && _data.l < 0) {
+            ul = (unsigned long long) (-_data.l);
+            out << "-";
+        } else {
+            ul = _data.ul;
+        }
+        out << "0b";
+        bool displayedOne = false;
+        for (int i = 0; i < 64; ++ i) {
+            if (ul & 0x8000000000000000) {
+                out << "1";
+            } else if (displayedOne) {
+                out << "0";
+            }
+            ul <<= 1;
+        }
 
-        case unsignedInteger:
-            out<<_data.ul;
-            break;
+        if (!displayedOne) {
+            out << "0";
+        }
 
-        case floating:
-            out<<_data.f;
-            break;
+    } else {
+        switch (displayType) {
+            case octal:
+                out << std::oct << std::showbase;
+                break;
 
-        case string:
-            out<<*_data.s;
-            break;
+            case hexadecimal:
+                out << std::hex << std::showbase;
+                break;
+        }
 
-        case objectType:
-            out<<*_data.t;
-            break;
 
-        default:
-            out<<"NULL";
-        break;
+        switch (type)
+        {
+            case integer:
+                out<<_data.l;
+                break;
+
+            case unsignedInteger:
+                out<<_data.ul;
+                break;
+
+            case floating:
+                out<<_data.f;
+                break;
+
+            case string:
+                out<<*_data.s;
+                break;
+
+            case objectType:
+                out<<*_data.t;
+                break;
+
+            default:
+                out<<"NULL";
+            break;
+        }
+
+        out << std::dec;
     }
-
-    out << std::dec;
-
     return out;
 }
 
