@@ -643,7 +643,6 @@ class DataPacket(size) extends Data(size)
 	{
 		BITS(2) PayloadLengthType;
 		BITS(6) NumberOfPayloads;
-		NumberOfPayloads.@info = %str(NumberOfPayloads);//decimal representation
 		Payload Payloads[NumberOfPayloads];
 	}
 	else

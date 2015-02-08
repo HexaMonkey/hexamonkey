@@ -103,11 +103,6 @@ protected:
     void setName(const std::string& name);
 
     /**
-     * @brief Set the \link Object::info info \endlink of the \link Object object\endlink
-     */
-    void setInfo(const std::string& info);
-
-    /**
      * @brief Set the \link Object::value value \endlink of the \link Object object\endlink
      */
     void setValue(const Variant& value);

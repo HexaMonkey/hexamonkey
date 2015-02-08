@@ -17,6 +17,7 @@
 
 #include <algorithm> //swap
 #include <sstream>
+#include <iomanip>
 
 #include "core/variant.h"
 #include "core/objecttype.h"
@@ -33,7 +34,7 @@ Variant::Variant() : _type(unknown)
 
 Variant::Variant(const Variant& other) : _type(other._type)
 {
-    switch(_type&superTypeMask)
+    switch(_type & superTypeMask)
     {
         case numerical:
             _data = other._data;
@@ -117,9 +118,8 @@ Variant::Variant(const char* s) : _type(string)
     _data.s = new std::string(s);
 }
 
-Variant::Variant(const ObjectType& t)
+Variant::Variant(const ObjectType& t) : _type(objectType)
 {
-    _type = objectType;
     _data.t = new ObjectType(t);
 }
 
@@ -246,7 +246,7 @@ void Variant::setValue(const ObjectType& t)
 
 void Variant::clear()
 {
-    switch(_type&superTypeMask)
+    switch(_type & superTypeMask)
     {
         case string:
             delete _data.s;
@@ -268,7 +268,7 @@ bool Variant::canConvertTo(Variant::Type otherType) const
 
 Variant& Variant::convertTo(Variant::Type newType)
 {
-    uint8_t type = _type&typeMask;
+    uint8_t type = _type & typeMask;
 
     if (type != newType) {
         switch(type)
@@ -329,7 +329,7 @@ Variant& Variant::convertTo(Variant::Type newType)
                 clear();
         }
     }
-    _type = newType|(_type&displayMask);
+    _type = (_type & ~typeMask)|newType;
     return *this;
 }
 
@@ -397,7 +397,7 @@ ObjectType& Variant::toObjectType()
 
 bool Variant::toBool() const
 {
-    switch(_type&typeMask)
+    switch(_type & typeMask)
     {
         case integer:
             return _data.l != 0LL;
@@ -417,7 +417,7 @@ bool Variant::toBool() const
 
 Variant::Type Variant::type() const
 {
-    switch(_type&typeMask)
+    switch (_type & typeMask)
     {
         case integer:
             return integer;
@@ -450,9 +450,26 @@ bool Variant::isNull() const
     return (_type & typeMask) == unknown;
 }
 
+void Variant::setDisplayType(Variant::Display display)
+{
+    _type = (_type & ~displayMask) | display;
+}
+
 std::ostream& Variant::display(std::ostream& out) const
 {
-    switch(_type)
+    uint8_t displayType = (_type & displayMask);
+    switch (displayType) {
+        case octal:
+            out << std::oct << std::showbase;
+            break;
+
+        case hexadecimal:
+            out << std::hex << std::showbase;
+            break;
+    }
+
+    uint8_t type = (_type & typeMask);
+    switch (type)
     {
         case integer:
             out<<_data.l;
@@ -478,13 +495,16 @@ std::ostream& Variant::display(std::ostream& out) const
             out<<"NULL";
         break;
     }
+
+    out << std::dec;
+
     return out;
 }
 
 bool operator==(const Variant& a, const Variant& b)
 {
-    uint8_t aSuperType = a._type&Variant::superTypeMask;
-    uint8_t bSuperType = b._type&Variant::superTypeMask;
+    uint8_t aSuperType = a._type & Variant::superTypeMask;
+    uint8_t bSuperType = b._type & Variant::superTypeMask;
 
     if (aSuperType == bSuperType) {
         switch (aSuperType) {
@@ -522,8 +542,8 @@ bool operator!=(const Variant& a, const Variant& b)
 
 bool operator< (const Variant& a, const Variant& b)
 {
-    uint8_t aSuperType = a._type&Variant::superTypeMask;
-    uint8_t bSuperType = b._type&Variant::superTypeMask;
+    uint8_t aSuperType = a._type & Variant::superTypeMask;
+    uint8_t bSuperType = b._type & Variant::superTypeMask;
 
     if (aSuperType == bSuperType) {
         switch (aSuperType) {
@@ -556,8 +576,8 @@ bool operator< (const Variant& a, const Variant& b)
 
 bool operator<=(const Variant& a, const Variant& b)
 {
-    uint8_t aSuperType = a._type&Variant::superTypeMask;
-    uint8_t bSuperType = b._type&Variant::superTypeMask;
+    uint8_t aSuperType = a._type & Variant::superTypeMask;
+    uint8_t bSuperType = b._type & Variant::superTypeMask;
 
     if (aSuperType == bSuperType) {
         switch (aSuperType) {
@@ -729,7 +749,7 @@ Variant &Variant::operator %=(const Variant &other)
 
 Variant &Variant::operator ++()
 {
-    switch(_type&typeMask)
+    switch(_type & typeMask)
     {
         case integer:
             ++_data.l;
@@ -758,7 +778,7 @@ Variant Variant::operator ++(int)
 
 Variant &Variant::operator --()
 {
-    switch (_type&typeMask) {
+    switch (_type & typeMask) {
         case integer:
             --_data.l;
             break;
@@ -791,7 +811,7 @@ Variant Variant::operator --(int)
 Variant Variant::operator -() const
 {
     Variant result = *this;
-    switch (_type&typeMask)
+    switch (_type & typeMask)
     {
         case unsignedInteger:
             result.convertTo(integer);

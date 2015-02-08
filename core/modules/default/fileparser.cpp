@@ -27,5 +27,5 @@ void FileParser::doParseHead()
     int64_t size = file().size();
     setSize(size);
 
-    setInfo("\""+file().path()+"\"");
+    setValue(file().path());
 }

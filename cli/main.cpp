@@ -261,10 +261,6 @@ int main(int argc, char *argv[])
                 std::cout << objs[objs.size()-1]->type() << std::endl;
                 break;
 
-            case info:
-                std::cout << objs[0]->info() << std::endl;
-                break;
-
             case value:
                 std::cout << objs[0]->value() << std::endl;
                 break;

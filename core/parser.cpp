@@ -103,11 +103,6 @@ void Parser::setName(const std::string &name)
     _object._name = name;
 }
 
-void Parser::setInfo(const std::string &info)
-{
-    _object._info = info;
-}
-
 void Parser::setValue(const Variant &value)
 {
     _object._value = value;

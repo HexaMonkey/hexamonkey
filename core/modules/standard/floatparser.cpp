@@ -31,7 +31,6 @@ void SingleFloatParser::doParseHead()
         val.i = __builtin_bswap32(val.i);
 
     setValue(val.f);
-    setInfo(toStr(val.f));
 }
 
 
@@ -49,7 +48,6 @@ void DoubleFloatParser::doParseHead()
         val.i = __builtin_bswap64(val.i);
 
     setValue(val.f);
-    setInfo(toStr(val.f));
 }
 
 
@@ -69,7 +67,6 @@ void FixedFloat16Parser::doParseHead()
 
     double f = integer + decimal/pow(2,8);
     setValue(f);
-    setInfo(toStr(f));
 }
 
 
@@ -91,5 +88,4 @@ void FixedFloat32Parser::doParseHead()
 
     double f = integer + decimal/pow(2,16);
     setValue(f);
-    setInfo(toStr(f));
 }

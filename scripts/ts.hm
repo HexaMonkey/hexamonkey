@@ -336,17 +336,17 @@ class Descriptor {
 	uimsbf(8) descriptor_length;
 	@size = 8*descriptor_length+16;
 	if(descriptor_tag == 0x48) {
-		@info = "service descriptor";
+		@value = "service descriptor";
 		uimsbf(8) service_type;
 		uimsbf(8) service_provider_name_length;
 		String(service_provider_name_length) service_provider_name;
 		uimsbf(8) service_name_length;
 		String(service_name_length) service_name;
 	} else if(descriptor_tag == 0x5D) {
-		@info = "multilingual_service_name_descriptor";
+		@value = "multilingual_service_name_descriptor";
 		while(1) MultilingualServiceNameDescriptor_item #;
 	} else if(descriptor_tag == 0x5F) {
-		@info = "private_data_specifier_descriptor";
+		@value = "private_data_specifier_descriptor";
 		uint(32, 16) private_data_specifier;
 	} else {
 		Data(8*descriptor_length) descriptor_data;
@@ -399,7 +399,7 @@ class ES_data_table extends Data
 
 class ES_data {
 	uint(8) stream_type;
-	stream_type.@info = %stream_type_string(stream_type);
+	stream_type.@attr[] = %stream_type_string(stream_type);
 	Data(3) reserved_bits;
 	uint(13, 16) es_pid;
 	var pmt_pid = @parent.@parent.@parent.@args.pid;

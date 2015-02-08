@@ -41,8 +41,9 @@ void BitParser::doParseHead()
         flag <<= 1;
         flag |= bit;
     }
-    setInfo("0b"+flag.to_string().substr(64 - size, size));
-    setValue(flag.to_ullong());
+    Variant value(flag.to_ullong());
+    value.setDisplayType(Variant::binary);
+    setValue(value);
 }
 
 

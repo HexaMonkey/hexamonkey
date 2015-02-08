@@ -34,26 +34,41 @@ bool StandardModule::doLoad()
     addTemplate(integer);
     addParser("int", [this]parserLambda
     {
-        if(type.parameterSpecified(0))
-        {
+        if (type.parameterSpecified(0)) {
             int size = type.parameterValue(0).toInteger();
-            int base = 10;
-            if(type.parameterSpecified(1))
+            int base = 0;
+            if (type.parameterSpecified(1)) {
                 base = type.parameterValue(1).toInteger();
+            }
+            Variant::Display display = Variant::decimal;
+            switch (base) {
+                case 2:
+                    display = Variant::binary;
+                    break;
+
+                case 8:
+                    display = Variant::octal;
+                    break;
+
+                case 16:
+                    display = Variant::hexadecimal;
+                    break;
+            }
+
             if(size<=64)
             {
                 switch(size)
                 {
                     case 8:
-                        return new Int8Parser(object, base);
+                        return new Int8Parser(object, display);
                     case 16:
-                        return new Int16Parser(object, bigEndian, base);
+                        return new Int16Parser(object, bigEndian, display);
                     case 32:
-                        return new Int32Parser(object, bigEndian, base);
+                        return new Int32Parser(object, bigEndian, display);
                     case 64:
-                        return new Int64Parser(object, bigEndian, base);
+                        return new Int64Parser(object, bigEndian, display);
                     default:
-                        return new IntXParser(object, size, bigEndian, base);
+                        return new IntXParser(object, size, bigEndian, display);
                 }
             }
         }
@@ -65,26 +80,41 @@ bool StandardModule::doLoad()
     addTemplate(uinteger);
     addParser("uint", [this]parserLambda
     {
-        if(type.parameterSpecified(0))
-        {
+        if (type.parameterSpecified(0)) {
             int size = type.parameterValue(0).toInteger();
-            int base = 10;
-            if(type.parameterSpecified(1))
+            int base = 0;
+            if (type.parameterSpecified(1)) {
                 base = type.parameterValue(1).toInteger();
+            }
+            Variant::Display display = Variant::decimal;
+            switch (base) {
+                case 2:
+                    display = Variant::binary;
+                    break;
+
+                case 8:
+                    display = Variant::octal;
+                    break;
+
+                case 16:
+                    display = Variant::hexadecimal;
+                    break;
+            }
+
             if(size<=64)
             {
                 switch(size)
                 {
                     case 8:
-                        return new UInt8Parser(object, base);
+                        return new UInt8Parser(object, display);
                     case 16:
-                        return new UInt16Parser(object, bigEndian, base);
+                        return new UInt16Parser(object, bigEndian, display);
                     case 32:
-                        return new UInt32Parser(object, bigEndian, base);
+                        return new UInt32Parser(object, bigEndian, display);
                     case 64:
-                        return new UInt64Parser(object, bigEndian, base);
+                        return new UInt64Parser(object, bigEndian, display);
                     default:
-                        return new UIntXParser(object, size, bigEndian, base);
+                        return new UIntXParser(object, size, bigEndian, display);
                 }
             }
         }
@@ -95,7 +125,7 @@ bool StandardModule::doLoad()
     addTemplate(byte);
     addParser("byte", [this]parserLambda
     {
-        return new UInt8Parser(object, 16);
+        return new UInt8Parser(object, Variant::hexadecimal);
     });
     setFixedSize("byte", 8);
 

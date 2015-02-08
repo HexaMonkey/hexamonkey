@@ -45,8 +45,7 @@ class Parser;
  *
  * It is part of a tree structure, it can threfore have a \link parent() parent\endlink and be subdivided
  * into children. The children can be access through iteration of the object or by using access functions.
- * It can also have a \link value() value\endlink and an \link info() information string\endlink that formats
- * the \link value() value\endlink displayed on screen.
+ * It can also have a \link value() value\endlink.
  */
 class Object
 {
@@ -134,12 +133,6 @@ class Object
         void setName(const std::string& name);
 
         /**
-         * @brief String representation of the value
-         */
-        const Variant &info() const;
-        void setInfo(const std::string& info);
-
-        /**
          * @brief Value of the object set during parsing
          */
         const Variant& value() const;
@@ -167,6 +160,7 @@ class Object
         Variant* attributeValue(const Variant& key);
         const Variant* attributeValue(const Variant& key) const;
         Variant& setAttributeValue(const Variant& key, const Variant& value);
+        int maxAttributeNumber() const;
 
 
         /**
@@ -283,7 +277,6 @@ class Object
 
         Variant _type;
         Variant _name;
-        Variant _info;
         Variant _value;
         Variant _pos;
         Variant _linkTo;
@@ -298,6 +291,7 @@ class Object
 
         std::unordered_map<Variant, Variant> _attributeMap;
         std::vector<std::string> _showcasedAttributes;
+        int _maxAttributeNumber;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;

@@ -23,109 +23,109 @@
 class Int8Parser : public SimpleParser
 {
 public:
-    Int8Parser(Object& object, int base = 10);
+    Int8Parser(Object& object, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
-	int base;
+    Variant::Display display;
 };
 
 class Int16Parser : public SimpleParser
 {
 public:
-    Int16Parser(Object& object, bool bigEndian, int base = 10);
+    Int16Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class Int32Parser : public SimpleParser
 {
 public:
-    Int32Parser(Object& object, bool bigEndian, int base = 10);
+    Int32Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class Int64Parser : public SimpleParser
 {
 public:
-    Int64Parser(Object& object, bool bigEndian, int base = 10);
+    Int64Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class IntXParser : public SimpleParser
 {
 public:
-    IntXParser(Object& object, uint8_t size, bool bigEndian, int base = 10);
+    IntXParser(Object& object, uint8_t size, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     uint8_t size;
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class UInt8Parser : public SimpleParser
 {
 public:
-    UInt8Parser(Object& object, int base = 10);
+    UInt8Parser(Object& object, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
-	int base;
+    Variant::Display display;
 };
 
 class UInt16Parser : public SimpleParser
 {
 public:
-    UInt16Parser(Object& object, bool bigEndian, int base = 10);
+    UInt16Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class UInt32Parser : public SimpleParser
 {
 public:
-    UInt32Parser(Object& object, bool bigEndian, int base = 10);
+    UInt32Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class UInt64Parser : public SimpleParser
 {
 public:
-    UInt64Parser(Object& object, bool bigEndian, int base = 10);
+    UInt64Parser(Object& object, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 class UIntXParser : public SimpleParser
 {
 public:
-    UIntXParser(Object& object, uint8_t size, bool bigEndian, int base = 10);
+    UIntXParser(Object& object, uint8_t size, bool bigEndian, Variant::Display display = Variant::decimal);
 protected:
     void doParseHead();
 private:
     uint8_t size;
     bool bigEndian;
-    int base;
+    Variant::Display display;
 };
 
 #endif // INTPARSER_H

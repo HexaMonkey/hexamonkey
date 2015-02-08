@@ -92,11 +92,11 @@ class IMAGE_FILE_HEADER {
 class IMAGE_FILE_MACHINE extends WORD
 {
 	if (@value == 0x014c) {
-		@info = '"x86"';
+		@attr[] = '"x86"';
 	} else if (@value == 0x0200) {
-		@info = '"Intel Itanium"';
+		@attr[] = '"Intel Itanium"';
 	} else if (@value == 0x8664) {
-		@info = '"x64"';
+		@attr[] = '"x64"';
 	}
 }
 
@@ -242,22 +242,24 @@ class IMAGE_IMPORT_DATA(_originalFirstThunk, _offset) extends Data(-1)
 class IMAGE_THUNK_DATA32(_offset) extends DWORD(16)
 {
 	if (@value & 0x80000000) {
-		@value = @value & 0x7fffffff;
-		@info = %str(@value);
+		@attr.Ordinal = @value & 0x7fffffff;
 	} else if (@value) {
 		var offset = @args._offset;
 		@linkTo = 8*@value + (offset?offset:0);
+		@attr.AddressOfData = @value;
 	}
 }
 
 class IMAGE_THUNK_DATA64(_offset) extends ULONGLONG(16)
 {
 	if (@value & 0x8000000000000000) {
-		@value = @value & 0x7fffffffffffffff;
+		@attr.Ordinal = @value & 0x7fffffffffffffff;
 	} else if (@value) {
 		var offset = @args._offset;
 		@linkTo = 8*@value + (offset?offset:0);
+		@attr.AddressOfData = @value;
 	}
+	@value = NULL;
 }
 
 class IMAGE_THUNK_DATAS(_offset)

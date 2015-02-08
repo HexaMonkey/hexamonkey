@@ -998,28 +998,28 @@ class string(size) extends String(size)
 
 class date(size) extends uint(size)
 {
-	@info = '"'+%formatDate(@value - 2082844800)+'"';
+	@attr[] = %formatDate(@value - 2082844800);
 }
 
 class duration(size, scale) extends uint(size)
 {
 	if(@args.scale == NULL)
-		@info = '"'+%formatDuration(@value)+'"';
+		@attr[] = %formatDuration(@value);
 	else
-		@info = '"'+%formatDuration(@value/@args.scale)+'"';
+		@attr[] = %formatDuration(@value/@args.scale);
 }
 
 class fixedPoint(dec, frac) extends int(dec+frac)
 {
-	@info = %str(%float(@value)/(1<<@args.frac));
+	@value = %float(@value)/(1<<@args.frac);
 }
 
 class language extends uint(16)
 {
-	@info = '"';
+	var code = "";
 	for(var i = 2; i >= 0; --i)
 	{
-		@info += %fromAscii(((@value>>(5*i))&0b11111) + 0x60);
+		code += %fromAscii(((@value>>(5*i))&0b11111) + 0x60);
 	}
-	@info += '"'; 
+	@attr.code = code;
 }

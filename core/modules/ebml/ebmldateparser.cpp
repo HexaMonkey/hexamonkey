@@ -24,5 +24,5 @@ EbmlDateParser::EbmlDateParser(Object &object)
 
 void EbmlDateParser::doParseHead()
 {
-    setInfo("\""+formatDate(secsFrom1970to2001+object().value().toInteger()/1000000000LL)+"\"");
+    setValue(formatDate(secsFrom1970to2001+object().value().toInteger()/1000000000LL));
 }

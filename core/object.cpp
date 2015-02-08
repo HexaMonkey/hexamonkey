@@ -36,6 +36,7 @@ Object::Object(File& file) :
     _name("*"),
     _pos(0),
     _children(0),
+    _maxAttributeNumber(0),
     _expandOnAddition(false),
     _parsedCount(0),
     _parsingInProgress(false)
@@ -422,11 +423,6 @@ void Object::setName(const std::string &name)
     _name.setValue(name);
 }
 
-void Object::setInfo(const std::string &info)
-{
-    _info.setValue(info);
-}
-
 Showcase &Object::showcase()
 {
     return _showcase;
@@ -444,7 +440,14 @@ const std::vector<std::string> &Object::showcasedAttributes() const
 
 Variant *Object::attributeValue(const Variant &key)
 {
-    auto it = _attributeMap.find(key);
+    Variant _key = key;
+    if (_key.type() == Variant::unknown && _maxAttributeNumber > 0) {
+        _key.setValue(_maxAttributeNumber - 1);
+    } else if (_key.hasNumericalType()) {
+        _key.convertTo(Variant::integer);
+    }
+
+    auto it = _attributeMap.find(_key);
     if (it != _attributeMap.end()) {
         return &(it->second);
     } else {
@@ -454,7 +457,14 @@ Variant *Object::attributeValue(const Variant &key)
 
 const Variant *Object::attributeValue(const Variant &key) const
 {
-    const auto it = _attributeMap.find(key);
+    Variant _key = key;
+    if (_key.type() == Variant::unknown && _maxAttributeNumber > 0) {
+        _key.setValue(_maxAttributeNumber - 1);
+    } else if (_key.hasNumericalType()) {
+        _key.convertTo(Variant::integer);
+    }
+
+    const auto it = _attributeMap.find(_key);
     if (it != _attributeMap.cend()) {
         return &(it->second);
     } else {
@@ -464,14 +474,28 @@ const Variant *Object::attributeValue(const Variant &key) const
 
 Variant& Object::setAttributeValue(const Variant &key, const Variant &value)
 {
+    Variant _key = key;
     // add to showcase list if conditions are met
-    if (key.type() == Variant::string) {
-        const auto str = key.toString();
-        if (str.size() > 0 && str[0] != '_' && attributeValue(key) == nullptr) {
+    if (_key.type() == Variant::string) {
+        const auto str = _key.toString();
+        if (str.size() > 0 && str[0] != '_' && attributeValue(_key) == nullptr) {
             _showcasedAttributes.push_back(str);
         }
+    } else if (_key.type() == Variant::unknown) {
+        _key.setValue(_maxAttributeNumber++);
+    } else if (_key.hasNumericalType()) {
+        _key.convertTo(Variant::integer);
+        long long i = _key.toInteger();
+        if (i >= _maxAttributeNumber) {
+            _maxAttributeNumber = i + 1;
+        }
     }
-    return _attributeMap[key] = value;
+    return _attributeMap[_key] = value;
+}
+
+int Object::maxAttributeNumber() const
+{
+    return _maxAttributeNumber;
 }
 
 const ObjectType &Object::type() const
@@ -482,11 +506,6 @@ const ObjectType &Object::type() const
 const std::string &Object::name() const
 {
     return _name.toString();
-}
-
-const Variant &Object::info() const
-{
-    return _info;
 }
 
 File &Object::file()
@@ -561,8 +580,8 @@ void Object::addParser(Parser *parser)
 std::ostream& Object::display(std::ostream& out, std::string prefix) const
 {
     out << prefix << type() << " " << name();
-    if(!info().isNull())
-        out << " = " << info();
+    if(!value().isNull())
+        out << " = " << value();
     out<<std::endl;
 
     if(numberOfChildren() < 20)

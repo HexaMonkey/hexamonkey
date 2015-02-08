@@ -28,19 +28,17 @@
 #define A_ROOT 2
 #define A_ARGS 3
 #define A_VALUE 4
-#define A_INFO 5
-#define A_RANK 6
-#define A_POS 7
-#define A_REM 8
-#define A_NUMBER_OF_CHILDREN 9
-#define A_BEGINNING_POS 10
-#define A_LINK_TO 11
-#define A_ATTR 12
+#define A_RANK 5
+#define A_POS 6
+#define A_REM 7
+#define A_NUMBER_OF_CHILDREN 8
+#define A_BEGINNING_POS 9
+#define A_LINK_TO 10
+#define A_ATTR 11
 
 const std::map<std::string, int> reserved = {
     {"@size",             A_SIZE},
     {"@value",            A_VALUE},
-    {"@info",             A_INFO},
     {"@parent",           A_PARENT},
     {"@root",             A_ROOT},
     {"@args",             A_ARGS},
@@ -92,9 +90,6 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
 
                 case A_VALUE:
                     return Variable::ref(_object._value, modifiable);
-
-                case A_INFO:
-                    return Variable::ref(_object._info, modifiable);
 
                 case A_POS:
                     return Variable::ref(_object._pos, modifiable);
@@ -187,7 +182,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
                     return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
 
                 case A_ATTR:
-                    return Ptr::ref(dynamic_cast<Scope&>(_attributeScope));
+                    return Ptr::move(new AttributeScope(_object, _modifiable));
 
                 default:
                     return Ptr();

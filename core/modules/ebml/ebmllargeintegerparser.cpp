@@ -42,5 +42,4 @@ void EbmlLargeIntegerParser::doParseHead()
     }
     setSize(8*count);
     setValue(var);
-    setInfo(toStr(var));
 }

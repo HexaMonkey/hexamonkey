@@ -182,7 +182,9 @@ public:
 
     bool operator!() const;
 
+    void setDisplayType(Display display);
     std::ostream& display(std::ostream& out) const;
+
 
 
 private:

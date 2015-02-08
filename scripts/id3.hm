@@ -31,5 +31,5 @@ class ID3File as File
 class SynchSafeInteger
 {
 	String(4) data;
-	@info = %str(data[0] << 21 | data[1] << 14 | data[2] << 7 |  data[3]);
+	@value = %str(data[0] << 21 | data[1] << 14 | data[2] << 7 |  data[3]);
 }

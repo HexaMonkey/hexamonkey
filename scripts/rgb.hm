@@ -22,7 +22,7 @@ class RGB
 	byte red;
 	byte green;
 	byte blue;
-	@info = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+	@value = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
 }
 
 class RGBA
@@ -31,5 +31,5 @@ class RGBA
 	byte green;
 	byte blue;
 	byte alpha;
-	@info = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+%str(alpha, 16, 2);
+	@value = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+%str(alpha, 16, 2);
 }
