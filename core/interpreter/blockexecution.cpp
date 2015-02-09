@@ -197,15 +197,12 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
     {
         ObjectType type = eval.rightValue(declaration.node(0)).cvalue().toObjectType();
         std::string name = declaration.node(1).payload().toString();
-        bool showcased = declaration.node(2).payload().toInteger();
 #ifdef EXECUTION_TRACE
         std::cerr<<"Declaration "<<type<<" "<<name<<std::endl;
 #endif
-        if(parser().addVariable(type, name) != nullptr){
+        if (parser().addVariable(type, name) != nullptr) {
             --parseQuota;
         }
-        if(showcased)
-            parser().showcase().add(name);
     }
     ++current;
 }
@@ -217,7 +214,7 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
     std::cerr<<"Local declaration "<<declaration.node(0).payload();
 #endif
 
-    if(declaration.size() >= 2 && variable.isDefined())
+    if (declaration.size() >= 2 && variable.isDefined())
     {
         variable.value() = eval.rightValue(declaration.node(1)).cvalue();
 #ifdef EXECUTION_TRACE

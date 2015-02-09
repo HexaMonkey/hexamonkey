@@ -423,16 +423,6 @@ void Object::setName(const std::string &name)
     _name.setValue(name);
 }
 
-Showcase &Object::showcase()
-{
-    return _showcase;
-}
-
-const Showcase &Object::showcase() const
-{
-    return _showcase;
-}
-
 const std::vector<std::string> &Object::showcasedAttributes() const
 {
     return _showcasedAttributes;

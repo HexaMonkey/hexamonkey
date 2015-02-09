@@ -147,21 +147,13 @@ class Object
         void setLinkTo(std::streamoff linkTo);
 
         /**
-         * @brief List of children whose value are important
-         *
-         * These children will always be parsed even if the the parsing is
-         * not done fully and the children values will be displayed prominently
-         * in the display of the object
+         * @brief Attributes values
          */
-        const Showcase &showcase() const;
-        Showcase& showcase();
-
-        const std::vector<std::string>& showcasedAttributes() const;
         Variant* attributeValue(const Variant& key);
         const Variant* attributeValue(const Variant& key) const;
         Variant& setAttributeValue(const Variant& key, const Variant& value);
         int maxAttributeNumber() const;
-
+        const std::vector<std::string>& showcasedAttributes() const;
 
         /**
          * @brief Standard representation for the object in an out stream

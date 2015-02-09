@@ -108,11 +108,6 @@ void Parser::setValue(const Variant &value)
     _object._value = value;
 }
 
-Showcase &Parser::showcase()
-{
-    return _object.showcase();
-}
-
 File &Parser::file()
 {
     return _object._file;

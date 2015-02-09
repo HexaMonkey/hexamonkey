@@ -108,11 +108,6 @@ protected:
     void setValue(const Variant& value);
 
     /**
-     * @brief Get the \link Object::showcase showcase \endlink of the \link Object object\endlink
-     */
-    Showcase& showcase();
-
-    /**
      * @brief Get the \link File file\endlink used for parsing
      */
     File& file();
