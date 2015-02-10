@@ -26,7 +26,7 @@ class tcimsbf(size) extends int(size)
 
 class TsFile as File
 {
-	_pmt_pids_size = 0;
+	@attr._pmt_pids_size = 0;
 	while(1) transport_packet #;
 }
 
@@ -60,7 +60,7 @@ class transport_packet
 				PSI_table(size_left, PID, 0) psi_table;
 			}
 		} else {
-			if(@parent["_pmt_pids_size"]==0) {
+			if(@root.@attr._pmt_pids_size==0) {
 				var index = @rank;
 				while(index>0) {
 					index--;
@@ -75,8 +75,8 @@ class transport_packet
 				}
 			}
 			var isPMT = 0;
-			for(var i=0;i<@parent["_pmt_pids_size"];i++) {
-				if(PID == @parent["_pmt_pid_"+i]) {
+			for(var i=0;i<@root.@attr._pmt_pids_size;i++) {
+				if(PID == @root.@attr["_pmt_pid_"+i]) {
 					isPMT = 1;
 				}
 			}
@@ -88,8 +88,8 @@ class transport_packet
 				}
 			} else {
 				var isES = 0;
-				for(var i=0;(i<@parent["_pmt_pids_size"]&&isES==0);i++) {
-					var pmt_pid = @parent["_pmt_pid_"+i];
+				for(var i=0;(i<@root.@attr._pmt_pids_size&&isES==0);i++) {
+					var pmt_pid = @root.@attr["_pmt_pid_"+i];
 					var index2 = @rank;
 					while(index2>0) {
 						index2--;
@@ -99,8 +99,8 @@ class transport_packet
 							break;
 						}
 					}
-					for(var j=0;j<@parent["_es_"+pmt_pid+"_size"];j++) {
-						if(@parent["_es_pid_"+pmt_pid+"_"+j] == PID) {
+					for(var j=0;j<@root.@attr["_es_"+pmt_pid+"_size"];j++) {
+						if(@root.@attr["_es_pid_"+pmt_pid+"_"+j] == PID) {
 							isES = 1;
 						}
 					}
@@ -270,8 +270,8 @@ class PSI_table_data(size, pid) extends Data(size)
 		EIT(@args.size) eit;
 	} else if (@parent.@args.assembled == 0) {
 		var isPMT = 0;
-		for(var i=0;i<@parent.@parent.@parent["_pmt_pids_size"];i++) {
-			if(@args.pid == @parent.@parent.@parent["_pmt_pid_"+i]) {
+		for(var i=0;i<@root.@attr._pmt_pids_size;i++) {
+			if(@args.pid == @root.@attr["_pmt_pid_"+i]) {
 				isPMT = 1;
 			}
 		}
@@ -296,10 +296,9 @@ class PAT_item
 	Data(3)   reserved_bits;
 	uint(13, 16) program_pid;
 	// todo check no existence
-	var pmt_pids_size = @parent.@parent.@parent.@parent.@parent["_pmt_pids_size"];
-	@parent.@parent.@parent.@parent.@parent["_pmt_pid_"+pmt_pids_size] = program_pid;
-	@parent.@parent.@parent.@parent.@parent["_es_"+program_pid+"_size"] = 0;
-	@parent.@parent.@parent.@parent.@parent["_pmt_pids_size"] = pmt_pids_size+1;
+	var pmt_pids_size = @root.@attr._pmt_pids_size++;
+	@root.@attr["_pmt_pid_"+pmt_pids_size] = program_pid;
+	@root.@attr["_es_"+program_pid+"_size"] = 0;
 }
 
 class CAT
@@ -403,10 +402,10 @@ class ES_data {
 	Data(3) reserved_bits;
 	uint(13, 16) es_pid;
 	var pmt_pid = @parent.@parent.@parent.@args.pid;
-	var es_pids_size = @parent.@parent.@parent.@parent.@parent.@parent["_es_"+pmt_pid+"_size"];
-	@parent.@parent.@parent.@parent.@parent.@parent["_es_stream_type_"+pmt_pid+"_"+es_pids_size] = stream_type;
-	@parent.@parent.@parent.@parent.@parent.@parent["_es_pid_"+pmt_pid+"_"+es_pids_size] = es_pid;
-	@parent.@parent.@parent.@parent.@parent.@parent["_es_"+pmt_pid+"_size"] = es_pids_size+1;
+	var es_pids_size = @root.@attr["_es_"+pmt_pid+"_size"]++;
+	@root.@attr["_es_stream_type_"+pmt_pid+"_"+es_pids_size] = stream_type;
+	@root.@attr["_es_pid_"+pmt_pid+"_"+es_pids_size] = es_pid;
+	@root.@attr["_es_"+pmt_pid+"_size"] = es_pids_size+1;
 	Data(4) reserved_bits2;
 	Data(2) es_info_length_unused;
 	uint(10) es_info_length;

@@ -264,7 +264,7 @@ class IMAGE_THUNK_DATA64(_offset) extends ULONGLONG(16)
 
 class IMAGE_THUNK_DATAS(_offset)
 {
-	if (@root._HDR64) {
+	if (@root.@attr._HDR64) {
 		var elementType = IMAGE_THUNK_DATA64(@args._offset);
 	} else {
 		var elementType = IMAGE_THUNK_DATA32(@args._offset);

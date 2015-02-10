@@ -44,7 +44,6 @@ private:
     Object& _object;
     bool _modifiable;
     TypeScope _typeScope;
-    AttributeScope _attributeScope;
 
 };
 

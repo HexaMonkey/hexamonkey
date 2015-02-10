@@ -54,8 +54,7 @@ const std::map<std::string, int> reserved = {
 ObjectScope::ObjectScope(Object &object, bool modifiable)
     : _object(object),
       _modifiable(modifiable),
-      _typeScope(object._type.toObjectType(), modifiable),
-      _attributeScope(object, modifiable)
+      _typeScope(object._type.toObjectType(), modifiable)
 {
 }
 
@@ -112,13 +111,6 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
 
                 default:
                     return Variable();
-            }
-        } else {
-            Variable attributeVariable = _attributeScope.get(key, false);
-            if(attributeVariable.isDefined()) {
-                return attributeVariable;
-            } else if(!name.empty() && name[0]=='_') {
-                return Variable::ref(_object._stateMap[key], modifiable);
             }
         }
 
