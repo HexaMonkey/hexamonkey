@@ -117,9 +117,9 @@ void MainWindow::openFile(const std::string& path)
 }
 
 void MainWindow::openFragmentedFile(Object& object) {
-    FragmentedFile* fragFile = StreamModule::getFragmentedFile(&object);
+    FragmentedFile* fragFile = StreamModule::getFragmentedFile(object);
     if(fragFile) {
-        std::string moduleName = StreamModule::getFragmentedModule(&object);
+        std::string moduleName = StreamModule::getFragmentedModule(object);
         const Module& module = moduleLoader.getModule(moduleName);
         treeWidget->setCurrentIndex(treeWidget->addFile(fragFile, module));
     } else {

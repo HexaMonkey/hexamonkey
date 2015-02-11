@@ -240,8 +240,6 @@ class Object
 
         void dumpStreamToFile(const std::string& path);
 
-        Variant getState(Variant const& key) const;
-
     private:
         friend class Parser;
         friend class SimpleParser;
@@ -278,7 +276,6 @@ class Object
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::map<std::string, Object*> _lookUpTable;
 
-        std::unordered_map<Variant, Variant> _stateMap;
         std::unordered_map<Variant, Variant> _contextMap;
 
         std::unordered_map<Variant, Variant> _attributeMap;

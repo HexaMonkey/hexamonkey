@@ -107,9 +107,8 @@ class transport_packet
 				}
 				if(isES)
 				{
-					["_isES"] = 1;
-					["_stream"] = 1;
-					["_stream_type"] = "es";
+					@attr._stream = 1;
+					@attr._stream_type = "es";
 					//%log(PID+" is an PES fragment");
 					Data(size_left) payload;
 				}
@@ -237,8 +236,8 @@ class PSI_table(size, pid, assembled) {
 				Data unused;
 			} else {
 				Data psi_begin;
-				["_stream"] = 1;
-				["_stream_type"] = "psi";
+				@attr._stream = 1;
+				@attr._stream_type = "psi";
 			}
 		} else {
 			PSI_table_data(8*section_length, @args.pid) psi_table_data;
@@ -394,7 +393,8 @@ class PMT extends Data
 
 class ES_data_table extends Data
 {
-	while(1) ES_data #; }
+	while(1) ES_data #; 
+}
 
 class ES_data {
 	uint(8) stream_type;

@@ -223,18 +223,16 @@ void Object::dumpToFile(const std::string &path) const
 
 bool Object::hasStream() const
 {
-    try {
-        return !_stateMap.at("_stream").isNull();
-    } catch(std::out_of_range) {
-        return false;
-    }
+    const Variant* streamAttribute = attributeValue("_stream");
+    return streamAttribute && !(streamAttribute->isNull());
 }
 
 void Object::dumpStream(std::ostream &out)
 {
-    FragmentedFile* file = StreamModule::getFragmentedFile(this);
-    if(file)
+    FragmentedFile* file = StreamModule::getFragmentedFile(*this);
+    if(file) {
         file->dump(out);
+    }
 }
 
 void Object::dumpStreamToFile(const std::string &path)
@@ -242,18 +240,6 @@ void Object::dumpStreamToFile(const std::string &path)
     std::ofstream out (path, std::ios::out | std::ios::binary);
     dumpStream(out);
 }
-
-Variant Object::getState(Variant const& key) const
-{
-    const auto it = _stateMap.find(key);
-
-    if (it != _stateMap.end()) {
-        return it->second;
-    } else {
-        return Variant();
-    }
-}
-
 
 void Object::seekBeginning()
 {

@@ -5,33 +5,34 @@
 #include "core/file/esfragmentedfile.h"
 #include "core/modules/stream/parentpidparser.h"
 
-FragmentedFile* StreamModule::getFragmentedFile(Object* object) {
-    std::string streamType = object->getState("_stream_type").toString();
-    if(!streamType.compare("psi")) {
+FragmentedFile* StreamModule::getFragmentedFile(Object& object)
+{
+    const Variant *streamTypeAttribute = object.attributeValue("_stream_type");
 
-        return new PsiFragmentedFile(object);
+    if (streamTypeAttribute) {
+        const std::string& streamType = streamTypeAttribute->toString();
+        if (!streamType.compare("psi")) {
+            return new PsiFragmentedFile(&object);
+        } else if (!streamType.compare("es")) {
+            return new EsFragmentedFile(&object);
+        }
     }
-    else if(!streamType.compare("es")) {
-        return new EsFragmentedFile(object);
-    }
-    else {
-        return nullptr;
-    }
+    return nullptr;
 }
 
-std::string StreamModule::getFragmentedModule(Object* object) {
-    std::string streamType = object->getState("_stream_type").toString();
-    if(!streamType.compare("psi")) {
+std::string StreamModule::getFragmentedModule(Object& object)
+{
+    const Variant *streamTypeAttribute = object.attributeValue("_stream_type");
 
-        return "psi_table";
+    if (streamTypeAttribute) {
+        const std::string& streamType = streamTypeAttribute->toString();
+        if (!streamType.compare("psi")) {
+            return "psi_table";
+        } else if (!streamType.compare("es")) {
+            return "pes";
+        }
     }
-    else if(!streamType.compare("es")) {
-        return "pes";
-    }
-    else {
-        return nullptr;
-    }
-
+    return "";
 }
 
 bool StreamModule::doLoad()

@@ -10,8 +10,8 @@ const ObjectTypeTemplate parentPID("ParentPID");
 class StreamModule : public MapModule
 {
 public:
-    static FragmentedFile* getFragmentedFile(Object* object);
-    static std::string getFragmentedModule(Object* object);
+    static FragmentedFile* getFragmentedFile(Object &object);
+    static std::string getFragmentedModule(Object &object);
 protected:
     bool doLoad() override;
 };
