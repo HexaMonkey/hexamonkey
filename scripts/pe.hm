@@ -104,7 +104,6 @@ class IMAGE_OPTIONAL_HEADER
 {
 	WORD   Magic;
 	var HDR64 = @root.@attr._HDR64 = (Magic == 0x20b);
-	%log(""+@root._HDR64);
 	BYTE   MajorLinkerVersion;
 	BYTE   MinorLinkerVersion;
 	OFFSET  SizeOfCode;
@@ -169,7 +168,6 @@ class IMAGE_SECTION_HEADER
 class IMAGE_SECTION(name, _size, _virtualOffset)
 {
 	@attr._offset = @beginningPos - 8*@args._virtualOffset;
-	//%log("1:"+_virtualOffset+":"+@args._virtualOffset+":"+@args._size+@args.name);
 	@size = @args._size<<3;
 }
 
@@ -193,11 +191,12 @@ class IMAGE_SECTIONS
 //*********************************************************
 class IMAGE_SECTION_IAT() as IMAGE_SECTION(".idata")
 {
-	IMAGE_IMPORT_DESCRIPTORS(_offset) _descriptors;
+	var offset = @attr._offset;
+	IMAGE_IMPORT_DESCRIPTORS(offset) _descriptors;
 	var originalPos = _descriptors.@size;
-	IMAGE_IMPORT_NAMES(_offset) _names;
+	IMAGE_IMPORT_NAMES(offset) _names;
 	@pos = originalPos;
-	IMAGE_IMPORT_DATAS(_offset) _data;
+	IMAGE_IMPORT_DATAS(offset) _data;
 }
 
 
@@ -323,7 +322,7 @@ class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)
 //*********************************************************
 // Relocation table
 //*********************************************************
-class IMAGE_SECTION_RELOCATION() as IMAGE_SECTION(".reloc")
+class IMAGE_SECTION_RELOCATION as IMAGE_SECTION(".reloc")
 {
 	do {
 		IMAGE_BASE_RELOCATION #;
@@ -335,6 +334,12 @@ class IMAGE_BASE_RELOCATION
 	DWORD VirtualAddress;
 	DWORD SizeOfBlock;
 	if (SizeOfBlock) {
-		WORD _items [(8*SizeOfBlock-@pos)/%sizeof(WORD())];
+		IMAGE_BASE_RELOCATION_ITEM _items [(8*SizeOfBlock-@pos)/%sizeof(WORD())];
 	}
+}
+
+class IMAGE_BASE_RELOCATION_ITEM extends WORD
+{
+	@attr.Type = @value >> 12;
+	@value &= 0x0fff;
 }
