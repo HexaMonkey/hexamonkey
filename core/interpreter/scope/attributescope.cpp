@@ -12,10 +12,15 @@ Variable AttributeScope::doGet(const Variant &key, bool modifiable)
 {
     modifiable = _modifiable && modifiable;
 
+    Variant* value = _object.attributeValue(key);
     if (modifiable) {
-        return Variable::ref(_object.setAttributeValue(key, Variant()));
+        if (value) {
+            return Variable::ref(*value);
+        } else {
+            return Variable::ref(_object.setAttributeValue(key, Variant()));
+        }
     } else {
-        Variant* value = _object.attributeValue(key);
+
         if (value) {
             return Variable::constRef(*value);
         } else {
