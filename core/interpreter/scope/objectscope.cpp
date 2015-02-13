@@ -109,6 +109,9 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
                 case A_LINK_TO:
                     return Variable::ref(_object._linkTo, modifiable);
 
+                case A_ARGS:
+                    return Variable::copy(_object.type());
+
                 default:
                     return Variable();
             }
