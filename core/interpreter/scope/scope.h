@@ -46,7 +46,7 @@ public:
      *
      * Returns an invalid \link Variable variable\endlink if the key isn't handled
      */
-    Variable get(const Variant& key, bool modifiable = true);
+    Variable get(const Variant& key, bool modifiable = false);
 
     /**
      * @brief Get a variable using a path describing the \link Scope scopes\endlink
@@ -54,7 +54,7 @@ public:
      *
      * get({a, b, c}) is equivalent to getScope(a).getScope(b).get(c)
      */
-    Variable get(const VariablePath& path, bool modifiable = true);
+    Variable get(const VariablePath& path, bool modifiable = false);
 
     /**
      * @brief Declare a new variable to be handled and return it

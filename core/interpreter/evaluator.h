@@ -26,7 +26,7 @@ public:
     /**
      * @brief Evaluate a right value tagged \link Program program node\endlink
      */
-    Variable rightValue(const Program& program, int modifiable = true) const;
+    Variable rightValue(const Program& program, int modifiable = false) const;
 
     /**
      * @brief Get the \link VariablePath variable path\endlink of a variable
