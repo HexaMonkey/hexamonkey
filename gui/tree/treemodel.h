@@ -25,7 +25,6 @@
 
 #include "core/object.h"
 #include "core/modules/hmc/hmcmodule.h"
-#include "gui/mt/resourcemanager.h"
 #include "gui/tree/treefileitem.h"
 #include "gui/tree/treeview.h"
 
@@ -78,8 +77,6 @@ public:
     quint64 position(QModelIndex index) const;
     quint64 size    (QModelIndex index) const;
 
-    void addResource(Object& object);
-
     void updateByFilePosition(quint64 pos);
 
 public slots:
@@ -106,7 +103,6 @@ private:
     TreeItem *rootItem;
     QModelIndex current;
     const ProgramLoader& programLoader;
-    ResourceManager _resourceManager;
 };
 
 #endif // TREEMODEL_H

@@ -22,7 +22,6 @@
 #include <QGridLayout>
 #include <QString>
 
-#include "gui/mt/resourcemanager.h"
 #include "gui/tree/treemodel.h"
 #include "gui/tree/treeview.h"
 #include "gui/tree/htmldelegate.h"

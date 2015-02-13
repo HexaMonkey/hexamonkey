@@ -295,10 +295,10 @@ void HexFileModel::setFile(const QString &path)
         file.setFileName(path);
         file.open(QIODevice::ReadWrite);
         fileSize = file.size();
-#if 1
+
         if (file.size() > 1000000000)
             fileSize = 100000000;
-#endif
+
         headerCharCount = toHex(fileSize).size();
         beginInsertRows(QModelIndex(),0,rowCount(QModelIndex()));
         endInsertRows();

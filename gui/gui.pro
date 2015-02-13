@@ -35,11 +35,6 @@ SOURCES += main.cpp\
     hex/hexfileheader.cpp \
     hex/hexfiledelegate.cpp \
     log/logwidget.cpp \
-    mt/worker.cpp \
-    mt/tasklist.cpp \
-    mt/resourcemanager.cpp \
-    mt/resource.cpp \
-    mt/parsingtask.cpp \
     qtprogramloader.cpp
 
 
@@ -59,11 +54,6 @@ HEADERS  += mainwindow.h \
     hex/hexfileheader.h \
     hex/hexfiledelegate.h \
     log/logwidget.h \
-    mt/worker.h \
-    mt/tasklist.h \
-    mt/resourcemanager.h \
-    mt/resource.h \
-    mt/parsingtask.h \
     qtprogramloader.h
 
 RESOURCES += \

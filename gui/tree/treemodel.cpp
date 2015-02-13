@@ -18,8 +18,6 @@
 #include <QMessageBox>
 
 #include "core/modules/default/defaulttypes.h"
-#include "gui/mt/resource.h"
-#include "gui/mt/resourcemanager.h"
 #include "gui/tree/treemodel.h"
 #include "gui/tree/treeitem.h"
 #include "gui/tree/treeobjectitem.h"
@@ -27,8 +25,7 @@
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, TreeView* view, QObject *parent) :
     QAbstractItemModel(parent),
     view(view),
-    programLoader(programLoader),
-    _resourceManager(*this)
+    programLoader(programLoader)
 {
     QList<QVariant> rootData;
     rootData << "Struct" << "Beginning position" << "Size";
@@ -181,7 +178,6 @@ int TreeModel::updateChildren(const QModelIndex& index)
     TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
     int count = 0;
     int first = realRowCount(index);
-    _resourceManager.lock(item.object());
     for(Object::iterator it = item.nextChild(); it != item.end(); ++it)
     {
         Object* object = *it;
@@ -201,7 +197,6 @@ int TreeModel::updateChildren(const QModelIndex& index)
     {
         emit dataChanged(index.child(0,0), index.child(count-1,columnCount(index)-1));
     }
-    _resourceManager.unlock(item.object());
     return count;
 }
 
@@ -251,7 +246,6 @@ int TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, uns
     unsigned int count = 0;
     unsigned int tries = maxTries;
 
-#if 1
     while(count<minCount && (!item.object().parsed() || !item.synchronised()) && tries>0)
     {
         if(!objectData.parsed())
@@ -261,18 +255,6 @@ int TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, uns
         count += updateChildren(index);
         --tries;
     }
-#else
-    _resourceManager.lock(*objectData);
-    if(!objectData->parsed())
-    {
-        QModelIndex i = index;
-        _resourceManager.resource(*objectData).taskList().addPriorityTask(*objectData, i);
-        emit work();
-    }
-    _resourceManager.unlock(*objectData);
-    //QThread::msleep(100);
-    //updateChildren(index);
-#endif
 
     return count;
 }
@@ -315,11 +297,6 @@ quint64 TreeModel::size(QModelIndex index) const
 {
     Object& object = static_cast<TreeObjectItem*>(index.internalPointer())->object();
     return object.size();
-}
-
-void TreeModel::addResource(Object &object)
-{
-    _resourceManager.insert(object.file());
 }
 
 // this function develops the tree for a given position in the file.
