@@ -48,28 +48,6 @@ class Box(boxtype, extended_type)
 	}
 }
 
-class NextFragInfo(size)
-{
-    int(@args.size) frag_start;
-    int(@args.size) frag_duration;
-}
-
-class NextFragTimeDurationBox extends FullBox as Box("uuid", "D4807EF2-CA39-4695-8E5426CB9E46A79F")
-{
-    // TfrfBox in [MS-SSTR]
-    var size = version ? 64 : 32;
-    uint(8) number_of_entry;
-    NextFragInfo(size) next_frags[number_of_entry];
-}
-
-class FragTimeDurationBox extends FullBox as Box("uuid", "6D1D9B05-42D5-44E6-80E2141DAFF757B2")
-{
-    // TfxdBox in [MS-SSTR]
-    var size = version ? 64 : 32;
-    int(size) frag_start;
-    int(size) frag_duration;
-}
-
 class FullBox(boxtype, v, f) extends Box(boxtype)
 {
 	uint(8) version;
@@ -991,6 +969,25 @@ class TrackFragmentBaseMediaDecodeTimeBox extends FullBox as Box("tfdt")
 {
     var size = version ? 64 : 32;
     uint(size) baseMediaDecodeTime;
+}
+
+class NextFragTimeDurationBox extends FullBox as Box("uuid", "D4807EF2-CA39-4695-8E5426CB9E46A79F")
+{
+    // TfrfBox in [MS-SSTR]
+    var size = version ? 64 : 32;
+    uint(8) number_of_entry;
+    struct NextFragInfo {
+        int(size) frag_start;
+        int(size) frag_duration;
+    } next_frags [number_of_entry];
+}
+
+class FragTimeDurationBox extends FullBox as Box("uuid", "6D1D9B05-42D5-44E6-80E2141DAFF757B2")
+{
+    // TfxdBox in [MS-SSTR]
+    var size = version ? 64 : 32;
+    int(size) frag_start;
+    int(size) frag_duration;
 }
 
 class bit(size) extends Bitset(size)
