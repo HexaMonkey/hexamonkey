@@ -156,6 +156,13 @@ class Object
         const std::vector<std::string>& showcasedAttributes() const;
 
         /**
+         * @brief Context values
+         */
+        Variant* contextValue(const Variant& key);
+        const Variant* contextValue(const Variant& key) const;
+        Variant& setContextValue(const Variant& key, const Variant& value);
+
+        /**
          * @brief Standard representation for the object in an out stream
          */
         std::ostream& display(std::ostream& out, std::string prefix = "") const;

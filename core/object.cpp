@@ -474,6 +474,35 @@ int Object::maxAttributeNumber() const
     return _maxAttributeNumber;
 }
 
+Variant *Object::contextValue(const Variant &key)
+{
+    for (Object* object = this; object; object = object->_parent){
+        auto it = object->_contextMap.find(key);
+        if (it != object->_contextMap.cend()) {
+            return &(it->second);
+        }
+    }
+
+    return nullptr;
+}
+
+const Variant *Object::contextValue(const Variant &key) const
+{
+    for (const Object* object = this; object; object = object->_parent){
+        const auto it = object->_contextMap.find(key);
+        if (it != object->_contextMap.cend()) {
+            return &(it->second);
+        }
+    }
+
+    return nullptr;
+}
+
+Variant &Object::setContextValue(const Variant &key, const Variant &value)
+{
+    return _contextMap[key] = value;
+}
+
 const ObjectType &Object::type() const
 {
     return _type.toObjectType();
