@@ -20,7 +20,6 @@
 
 #include "core/interpreter/scope/scope.h"
 #include "core/interpreter/scope/typescope.h"
-#include "core/interpreter/scope/attributescope.h"
 
 class Object;
 

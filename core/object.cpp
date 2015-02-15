@@ -478,7 +478,7 @@ Variant *Object::contextValue(const Variant &key)
 {
     for (Object* object = this; object; object = object->_parent){
         auto it = object->_contextMap.find(key);
-        if (it != object->_contextMap.cend()) {
+        if (it != object->_contextMap.end()) {
             return &(it->second);
         }
     }

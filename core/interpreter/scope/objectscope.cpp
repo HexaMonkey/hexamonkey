@@ -22,6 +22,9 @@
 #include "core/object.h"
 #include "core/objecttypetemplate.h"
 #include "core/interpreter/scope/objectscope.h"
+#include "core/interpreter/scope/attributescope.h"
+#include "core/interpreter/scope/contextscope.h"
+
 
 #define A_SIZE 0
 #define A_PARENT 1
@@ -35,6 +38,8 @@
 #define A_BEGINNING_POS 9
 #define A_LINK_TO 10
 #define A_ATTR 11
+#define A_CONTEXT 12
+#define A_GLOBAL 13
 
 const std::map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -48,7 +53,9 @@ const std::map<std::string, int> reserved = {
     {"@numberOfChildren", A_NUMBER_OF_CHILDREN},
     {"@beginningPos",     A_BEGINNING_POS},
     {"@linkTo",           A_LINK_TO},
-    {"@attr",             A_ATTR}
+    {"@attr",             A_ATTR},
+    {"@context",          A_CONTEXT},
+    {"@global",           A_GLOBAL}
 };
 
 ObjectScope::ObjectScope(Object &object, bool modifiable)
@@ -178,6 +185,12 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 
                 case A_ATTR:
                     return Ptr::move(new AttributeScope(_object, _modifiable));
+
+                case A_CONTEXT:
+                    return Ptr::move(new ContextScope(_object, _modifiable));
+
+                case A_GLOBAL:
+                    return Ptr::move(new ContextScope(_object.root(), _modifiable));
 
                 default:
                     return Ptr();
