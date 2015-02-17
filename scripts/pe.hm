@@ -145,8 +145,8 @@ class IMAGE_OPTIONAL_HEADER
 
 class IMAGE_DATA_DIRECTORY
 {
-	DWORD VirtualAddress;
-	DWORD Size;
+	DWORD(16) VirtualAddress;
+	DWORD(16) Size;
 }
 
 class IMAGE_SECTION_HEADER
@@ -165,10 +165,24 @@ class IMAGE_SECTION_HEADER
     DWORD Characteristics;
 }
 
-class IMAGE_SECTION(name, _size, _virtualOffset)
+class IMAGE_SECTION(name, _size, _virtualOffset) as Data(_size << 3)
 {
-	@context.currentOffset = @beginningPos - 8*@args._virtualOffset;
-	@size = @args._size<<3;
+	var minVirtualOffset = @args._virtualOffset;
+	var maxVirtualOffset = @args._virtualOffset + @args._size;
+	var currentOffset = @context.currentOffset = @beginningPos - 8*minVirtualOffset;
+	---
+	var count = @root._nt_header.OptionalHeader.NumberOfRvaAndSizes;
+	%log("count : "+count);
+	for (var i = 0; i < count; ++i) {
+		var directoryVirtualOffset = @root._nt_header.OptionalHeader.DataDirectory[i].VirtualAddress;
+		%log("Offset check "+i+" "+ minVirtualOffset + "<=" + directoryVirtualOffset + "<" + maxVirtualOffset);
+		if (minVirtualOffset <= directoryVirtualOffset && directoryVirtualOffset < maxVirtualOffset) {
+			@pos = 8*(directoryVirtualOffset - minVirtualOffset);
+			%log(""+@pos+" -> "+(@root._nt_header.OptionalHeader.DataDirectory[i].Size << 3));
+			IMAGE_DIRECTORY_ENTRY(i, @root._nt_header.OptionalHeader.DataDirectory[i].Size << 3) _;
+			@pos = 0;
+		}
+	}
 }
 
 class IMAGE_SECTIONS
@@ -186,10 +200,75 @@ class IMAGE_SECTIONS
 	}
 }
 
+class IMAGE_DIRECTORY_ENTRY(index, _size) extends Data(-1)
+
 //*********************************************************
-// IAT
+// Export table
 //*********************************************************
-class IMAGE_SECTION_IAT as IMAGE_SECTION(".idata")
+class IMAGE_DIRECTORY_ENTRY_EXPORT as IMAGE_DIRECTORY_ENTRY(0)
+{
+	IMAGE_EXPORT_DIRECTORY _directory;
+	
+	@pos = _directory.AddressOfFunctions.@linkTo - @beginningPos;
+	DWORD FunctionsAddresses[_directory.NumberOfFunctions];
+	
+	var numberOfNames = _directory.NumberOfNames;
+	
+	@pos = _directory.AddressOfNames.@linkTo - @beginningPos;
+	RVA NamesAddresses[numberOfNames];
+	
+	@pos = _directory.AddressOfNameOrdinals.@linkTo - @beginningPos;
+	WORD NamesOrdinals[numberOfNames];
+	
+	@pos = _directory.Name.@linkTo - @beginningPos;
+	String Name;
+	
+	if (numberOfNames > 0) {
+		var minLink = NamesAddresses[0].@linkTo;
+		for (var i = 1; i < numberOfNames; ++i) {
+			var link = NamesAddresses[i].@linkTo;
+			%log(link);
+			if (link < minLink) {
+				link = minLink;
+			}
+		}
+		
+		@pos = minLink - @beginningPos;
+		
+		IMAGE_EXPORT_NAMES(numberOfNames) _names;
+	}
+}
+
+class IMAGE_EXPORT_DIRECTORY
+{
+    DWORD   Characteristics;
+    DWORD   TimeDateStamp;
+    WORD    MajorVersion;
+    WORD    MinorVersion;
+    RVA     Name;
+    DWORD   Base;
+    DWORD   NumberOfFunctions;
+    DWORD   NumberOfNames;
+    RVA     AddressOfFunctions;
+    RVA     AddressOfNames;
+    RVA     AddressOfNameOrdinals;
+}
+
+class IMAGE_EXPORT_NAMES(_count) extends Data(-1)
+{
+	@args.@elementType = String();
+	var count = @args.@elementCount = @args._count;
+	for (var i = 0; i < count; ++i) {
+		@pos = @parent.NamesAddresses[i].@linkTo - @beginningPos;
+		String #;
+		@pos = 0;
+	}
+}
+
+//*********************************************************
+// Import table
+//*********************************************************
+class IMAGE_DIRECTORY_ENTRY_IMPORT as IMAGE_DIRECTORY_ENTRY(1)
 {
 	IMAGE_IMPORT_DESCRIPTORS _descriptors;
 	var originalPos = _descriptors.@size;
@@ -320,72 +399,27 @@ class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)
 }
 
 //*********************************************************
-// EAT
+// Resource
 //*********************************************************
-class IMAGE_SECTION_EAT as IMAGE_SECTION(".edata")
-{
-	IMAGE_EXPORT_DIRECTORY _directory;
-	
-	@pos = _directory.AddressOfFunctions.@linkTo - @beginningPos;
-	DWORD FunctionsAddresses[_directory.NumberOfFunctions];
-	
-	var numberOfNames = _directory.NumberOfNames;
-	
-	@pos = _directory.AddressOfNames.@linkTo - @beginningPos;
-	RVA NamesAddresses[numberOfNames];
-	
-	@pos = _directory.AddressOfNameOrdinals.@linkTo - @beginningPos;
-	WORD NamesOrdinals[numberOfNames];
-	
-	@pos = _directory.Name.@linkTo - @beginningPos;
-	String Name;
-	
-	if (numberOfNames > 0) {
-		var minLink = NamesAddresses[0].@linkTo;
-		for (var i = 1; i < numberOfNames; ++i) {
-			var link = NamesAddresses[i].@linkTo;
-			%log(link);
-			if (link < minLink) {
-				link = minLink;
-			}
-		}
-		
-		@pos = minLink - @beginningPos;
-		
-		IMAGE_EXPORT_NAMES(numberOfNames) _names;
-	}
-}
 
-class IMAGE_EXPORT_DIRECTORY
-{
-    DWORD   Characteristics;
-    DWORD   TimeDateStamp;
-    WORD    MajorVersion;
-    WORD    MinorVersion;
-    RVA     Name;
-    DWORD   Base;
-    DWORD   NumberOfFunctions;
-    DWORD   NumberOfNames;
-    RVA     AddressOfFunctions;
-    RVA     AddressOfNames;
-    RVA     AddressOfNameOrdinals;
-}
+class IMAGE_DIRECTORY_ENTRY_RESOURCE as IMAGE_DIRECTORY_ENTRY(2)
 
-class IMAGE_EXPORT_NAMES(_count) extends Data(-1)
-{
-	@args.@elementType = String();
-	var count = @args.@elementCount = @args._count;
-	for (var i = 0; i < count; ++i) {
-		@pos = @parent.NamesAddresses[i].@linkTo - @beginningPos;
-		String #;
-		@pos = 0;
-	}
-}
+//*********************************************************
+// Exception
+//*********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_EXCEPTION as IMAGE_DIRECTORY_ENTRY(3)
+
+//*********************************************************
+// Security
+//*********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_SECURITY as IMAGE_DIRECTORY_ENTRY(4)
 
 //*********************************************************
 // Relocation table
 //*********************************************************
-class IMAGE_SECTION_RELOCATION as IMAGE_SECTION(".reloc")
+class IMAGE_DIRECTORY_ENTRY_BASERELOC as IMAGE_DIRECTORY_ENTRY(5)
 {
 	do {
 		IMAGE_BASE_RELOCATION #;
@@ -406,3 +440,64 @@ class IMAGE_BASE_RELOCATION_ITEM extends WORD
 	@attr.Type = @value >> 12;
 	@value &= 0x0fff;
 }
+
+//*********************************************************
+// Debug
+//*********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_DEBUG as IMAGE_DIRECTORY_ENTRY(6)
+
+//*********************************************************
+// Copyright
+//*********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_COPYRIGHT as IMAGE_DIRECTORY_ENTRY(7)
+
+//*********************************************************
+// Global ptr
+//*********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_EXCEPTION as IMAGE_DIRECTORY_ENTRY(8)
+
+//********************************************************
+// Thread local storage
+//********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_TLS as IMAGE_DIRECTORY_ENTRY(9)
+
+//********************************************************
+// Load configuration
+//********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG as IMAGE_DIRECTORY_ENTRY(10)
+
+//********************************************************
+// Bound import
+//********************************************************
+
+class IMAGE_DIRECTORY_BOUND_IMPORT as IMAGE_DIRECTORY_ENTRY(11)
+
+//********************************************************
+// Import address table
+//********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_IAT as IMAGE_DIRECTORY_ENTRY(12)
+
+//********************************************************
+// Delay import descriptor
+//********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_DELAY as IMAGE_DIRECTORY_ENTRY(13)
+
+//********************************************************
+// COM+ Runtime Header
+//********************************************************
+
+class IMAGE_DIRECTORY_ENTRY_COM as IMAGE_DIRECTORY_ENTRY(14)
+
+
+
+
+
+
+
