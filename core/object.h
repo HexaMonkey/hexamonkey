@@ -27,7 +27,6 @@
 
 #include "core/file/realfile.h"
 #include "core/objecttype.h"
-#include "core/showcase.h"
 #include "core/variant.h"
 #include "core/util/strutil.h"
 
@@ -277,7 +276,6 @@ class Object
         Variant _value;
         Variant _pos;
         Variant _linkTo;
-        Showcase _showcase;
 
         container _children;
         std::vector<std::unique_ptr<Object> > _ownedChildren;

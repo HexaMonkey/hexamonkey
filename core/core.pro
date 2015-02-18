@@ -13,7 +13,6 @@ INCLUDEPATH = ..
 
 SOURCES += \
   variant.cpp \
-  showcase.cpp \
   parser.cpp \
   objecttypetemplate.cpp \
   objecttype.cpp \
@@ -82,7 +81,6 @@ SOURCES += \
 
 
 HEADERS  += variant.h \
-    showcase.h \
     parser.h \
     objecttypetemplate.h \
     objecttype.h \
