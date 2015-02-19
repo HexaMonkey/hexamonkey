@@ -20,7 +20,7 @@
 
 #include "core/interpreter/variable.h"
 #include "core/interpreter/variablepath.h"
-#include "core/util/ptrutil.h"
+#include "core/interpreter/scope/scopeptr.h"
 
 class Variant;
 
@@ -38,7 +38,7 @@ class Variant;
 class Scope
 {
 public:
-    typedef OptOwnPtr<Scope> Ptr;
+    typedef ScopePtr Ptr;
 
     virtual ~Scope() {}
     /**

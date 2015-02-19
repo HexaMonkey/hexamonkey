@@ -302,7 +302,7 @@ Variable Evaluator::function(const Program &program) const
     const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
     const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
 
-    FunctionScope functionScope;
+    FunctionScope& functionScope = *(new FunctionScope);
     unsigned int size = parametersNames.size();
     size_t i = 0;
     for(Program argument:arguments)
@@ -334,7 +334,7 @@ Variable Evaluator::function(const Program &program) const
         ++i;
     }
 
-    return module.executeFunction(name, functionScope);
+    return module.executeFunction(name, ScopePtr::move(&functionScope));
 }
 
 Variable Evaluator::variable(const Program &program, bool modifiable) const

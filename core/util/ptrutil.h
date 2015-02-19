@@ -38,7 +38,7 @@ public:
     /**
      * @brief Get a pointer to the reference object
      */
-    T* get()
+    T* get() const
     {
         return ptr;
     }
@@ -51,25 +51,15 @@ public:
         return ptr != nullptr;
     }
 
-    T& operator*()
-    {
-        return *ptr;
-    }
-    const T& operator*() const
+    T& operator*() const
     {
         return *ptr;
     }
 
-    T* operator->()
+    T* operator->() const
     {
         return ptr;
     }
-
-    const T* operator->() const
-    {
-        return ptr;
-    }
-
 
 private:
     OptOwnPtr(T* ptr, bool own) : ptr(ptr)

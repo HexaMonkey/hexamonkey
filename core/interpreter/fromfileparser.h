@@ -50,8 +50,6 @@ private:
     BlockExecution& blockExecution();
     Program::const_iterator _headerEnd;
 
-    ObjectScope _objectScope;
-    LocalScope _localScope;
     CompositeScope _scope;
 
     Evaluator _evaluator;

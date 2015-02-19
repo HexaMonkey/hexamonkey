@@ -156,7 +156,8 @@ HEADERS  += variant.h \
     util/osutil.h \
     modules/default/structparser.h \
     interpreter/scope/attributescope.h \
-    interpreter/scope/contextscope.h
+    interpreter/scope/contextscope.h \
+    interpreter/scope/scopeptr.h
 
 unix {
     defined(LIBDIR, var) {

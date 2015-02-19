@@ -25,14 +25,13 @@
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd)
     : ContainerParser(object, module),
       _headerEnd(headerEnd),
-      _objectScope(object, true),
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
       _tailExecution(classDefinition.node(1), _evaluator, _scope, this),
       _object(object)
 {
-    _scope.addScope(_localScope);
-    _scope.addScope(_objectScope);
+    _scope.addScope(new LocalScope);
+    _scope.addScope(new ObjectScope(object, true));
     UNUSED(hmcElemNames);
 
     auto bodyBlock = classDefinition.node(0);

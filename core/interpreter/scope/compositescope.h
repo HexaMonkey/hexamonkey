@@ -35,13 +35,11 @@ class CompositeScope : public Scope
 {
 public:
     /**
-     * @brief Add a scope without owning the memory
-     */
-    void addScope(Scope& scope);
-    /**
-     * @brief Add a scope without and owns the memory
+     * @brief Add a scope and owns the memory
      */
     void addScope(Scope* scope);
+
+    void addScope(const Scope::Ptr& scope);
 
 protected:
     Variable doGet(const Variant &key, bool modifiable) override;

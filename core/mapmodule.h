@@ -88,7 +88,7 @@ private:
     int64_t doGetFixedSize(const ObjectType &type, const Module &module) const override;
 
     bool doCanHandleFunction(const std::string& name) const override;
-    Variable doExecuteFunction(const std::string& name, Scope &params, const Module &fromModule) const override;
+    Variable doExecuteFunction(const std::string& name, const ScopePtr &params, const Module &fromModule) const override;
     const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const override;
     const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const override;
     const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const override;

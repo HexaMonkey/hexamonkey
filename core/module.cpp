@@ -282,7 +282,7 @@ const Module *Module::functionHandler(const std::string &name) const
     return nullptr;
 }
 
-Variable Module::executeFunction(const std::string &name, Scope &params) const
+Variable Module::executeFunction(const std::string &name, const ScopePtr &params) const
 {
     return executeFunction(name, params, *this);
 }
@@ -330,7 +330,7 @@ bool Module::doCanHandleFunction(const std::string &/*name*/) const
     return false;
 }
 
-Variable Module::doExecuteFunction(const std::string &/*name*/, Scope &/*params*/, const Module &/*fromModule*/) const
+Variable Module::doExecuteFunction(const std::string &/*name*/, const ScopePtr &/*params*/, const Module &/*fromModule*/) const
 {
     return Variable();
 }
@@ -350,7 +350,7 @@ const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::st
     return emptyParameterDefaults;
 }
 
-Variable Module::executeFunction(const std::string &name, Scope &params, const Module &fromModule) const
+Variable Module::executeFunction(const std::string &name, const ScopePtr &params, const Module &fromModule) const
 {
     const Module* handlerModule = functionHandler(name);
     if(handlerModule == nullptr)

@@ -17,14 +17,14 @@
 
 #include "core/interpreter/scope/compositescope.h"
 
-void CompositeScope::addScope(Scope &scope)
-{
-    _scopes.push_back(Ptr::ref(scope));
-}
-
 void CompositeScope::addScope(Scope *scope)
 {
     _scopes.push_back(Ptr::move(scope));
+}
+
+void CompositeScope::addScope(const Scope::Ptr &scope)
+{
+    _scopes.push_back(scope);
 }
 
 Variable CompositeScope::doGet(const Variant &key, bool modifiable)

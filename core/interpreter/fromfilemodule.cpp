@@ -138,7 +138,7 @@ bool FromFileModule::doCanHandleFunction(const std::string &name) const
     return _functions.find(name) != _functions.end();
 }
 
-Variable FromFileModule::doExecuteFunction(const std::string &name, Scope &params, const Module &fromModule) const
+Variable FromFileModule::doExecuteFunction(const std::string &name, const ScopePtr &params, const Module &fromModule) const
 {
     auto it = functionDescriptor(name);
 
@@ -146,9 +146,8 @@ Variable FromFileModule::doExecuteFunction(const std::string &name, Scope &param
         return Variable();
 
     CompositeScope scope;
-    LocalScope localScope;
 
-    scope.addScope(localScope);
+    scope.addScope(new LocalScope);
     scope.addScope(params);
 
     const Program& definition = std::get<3>(it->second);
