@@ -334,7 +334,7 @@ Variable Evaluator::function(const Program &program) const
         ++i;
     }
 
-    return module.executeFunction(name, ScopePtr::move(&functionScope));
+    return module.executeFunction(name, ScopePtr(&functionScope));
 }
 
 Variable Evaluator::variable(const Program &program, bool modifiable) const

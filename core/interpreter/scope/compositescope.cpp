@@ -19,7 +19,7 @@
 
 void CompositeScope::addScope(Scope *scope)
 {
-    _scopes.push_back(Ptr::move(scope));
+    _scopes.emplace_back(scope);
 }
 
 void CompositeScope::addScope(const Scope::Ptr &scope)

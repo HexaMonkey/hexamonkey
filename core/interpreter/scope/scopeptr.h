@@ -2,8 +2,9 @@
 #define SCOPEPTR_H
 
 #include "core/util/ptrutil.h"
+#include <memory>
 
 class Scope;
-typedef OptOwnPtr<Scope> ScopePtr;
+typedef std::shared_ptr<Scope> ScopePtr;
 
 #endif // SCOPEPTR_H

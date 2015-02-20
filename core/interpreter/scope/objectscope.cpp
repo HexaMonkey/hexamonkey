@@ -159,7 +159,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             Object* elem = _object.access(numberOfChildren - 1, true);
             if(elem != nullptr)
             {
-                return Ptr::move(new ObjectScope(*elem, _modifiable));
+                return Ptr(new ObjectScope(*elem, _modifiable));
             }
         }
     }
@@ -175,22 +175,22 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             switch(it->second)
             {
                 case A_PARENT:
-                    return Ptr::move(new ObjectScope(*_object._parent, _modifiable));
+                    return Ptr(new ObjectScope(*_object._parent, _modifiable));
 
                 case A_ROOT:
-                    return Ptr::move(new ObjectScope(_object.root(), _modifiable));
+                    return Ptr(new ObjectScope(_object.root(), _modifiable));
 
                 case A_ARGS:
-                    return Ptr::move(new TypeScope(_object._type.toObjectType(), _modifiable));
+                    return Ptr(new TypeScope(_object._type.toObjectType(), _modifiable));
 
                 case A_ATTR:
-                    return Ptr::move(new AttributeScope(_object, _modifiable));
+                    return Ptr(new AttributeScope(_object, _modifiable));
 
                 case A_CONTEXT:
-                    return Ptr::move(new ContextScope(_object, _modifiable));
+                    return Ptr(new ContextScope(_object, _modifiable));
 
                 case A_GLOBAL:
-                    return Ptr::move(new ContextScope(_object.root(), _modifiable));
+                    return Ptr(new ContextScope(_object.root(), _modifiable));
 
                 default:
                     return Ptr();
@@ -200,7 +200,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return Ptr::move(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem, _modifiable));
         }
     }
     else if(key.canConvertTo(Variant::integer))
@@ -208,12 +208,12 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         int index = key.toInteger();
         if(index == _object.numberOfChildren() && _object._lastChild != nullptr)
         {
-            return Ptr::move(new ObjectScope(*_object._lastChild, _modifiable));
+            return Ptr(new ObjectScope(*_object._lastChild, _modifiable));
         }
         Object* elem = _object.access(index, true);
         if(elem != nullptr)
         {
-            return Ptr::move(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem, _modifiable));
         }
     }
     else if(key.canConvertTo(Variant::objectType))
@@ -221,7 +221,7 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return Ptr::move(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem, _modifiable));
         }
     }
 
