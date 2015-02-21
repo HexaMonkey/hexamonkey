@@ -46,8 +46,6 @@ private:
     virtual bool doParseSome(int hint) final;
     virtual void doParseTail() final;
 
-    Scope &scope();
-    BlockExecution& blockExecution();
     Program::const_iterator _headerEnd;
 
     CompositeScope _scope;
