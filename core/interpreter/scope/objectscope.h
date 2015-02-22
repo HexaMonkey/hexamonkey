@@ -38,7 +38,8 @@ public:
     ObjectScope(Object& object, bool modifiable);
 protected:
     virtual Variable doGet(const Variant &key, bool modifiable) override;
-    const Ptr doGetScope(const Variant &key) override;
+    Ptr doGetScope(const Variant &key) override;
+    Variable getValue(bool modifiable);
 private:
     Object& _object;
     bool _modifiable;

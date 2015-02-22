@@ -68,7 +68,7 @@ public:
      *
      * Returns a null reference if the subscope isn't handled
      */
-    const Ptr getScope(const Variant& key);
+    Ptr getScope(const Variant& key);
 
 protected:
     /**
@@ -82,7 +82,12 @@ protected:
     /**
      * @brief Implentation for getScope
      */
-    virtual const Ptr doGetScope(const Variant& key);
+    virtual Ptr doGetScope(const Variant& key);
+
+    /**
+     * @brief Get designated value for the scope
+     */
+    virtual Variable getValue(bool modifiable);
 
 private :
     const Ptr getScope(const VariablePath& path, int max);

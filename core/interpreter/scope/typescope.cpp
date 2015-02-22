@@ -94,6 +94,11 @@ Variable TypeScope::doGet(const Variant &key, bool /*modifiable*/)
     return Variable();
 }
 
+Variable TypeScope::getValue(bool /*modifiable*/)
+{
+    return Variable::constRef(_type);
+}
+
 const ObjectType &TypeScope::type() const
 {
     return *_constType;

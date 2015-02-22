@@ -150,7 +150,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
     return Variable();
 }
 
-const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
+Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 {
     if(key.isNull())
     {
@@ -226,4 +226,9 @@ const Scope::Ptr ObjectScope::doGetScope(const Variant &key)
     }
 
     return Ptr();
+}
+
+Variable ObjectScope::getValue(bool modifiable)
+{
+    return Variable::ref(_object._value, modifiable&&_modifiable);
 }

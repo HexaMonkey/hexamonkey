@@ -43,7 +43,7 @@ public:
 
 protected:
     Variable doGet(const Variant &key, bool modifiable) override;
-    Ptr const doGetScope(const Variant &key) override;
+    Ptr doGetScope(const Variant &key) override;
     Variable doDeclare(const Variant &key) override;
 private:
     std::vector<Scope::Ptr> _scopes;

@@ -38,7 +38,7 @@ Variable CompositeScope::doGet(const Variant &key, bool modifiable)
     return Variable();
 }
 
-const Scope::Ptr CompositeScope::doGetScope(const Variant &key)
+Scope::Ptr CompositeScope::doGetScope(const Variant &key)
 {
     for(auto& scope : _scopes)
     {

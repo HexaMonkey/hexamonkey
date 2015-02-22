@@ -47,7 +47,7 @@ Variable Scope::declare(const Variant &key)
     return doDeclare(key);
 }
 
-const Scope::Ptr Scope::getScope(const Variant &key)
+Scope::Ptr Scope::getScope(const Variant &key)
 {
     return doGetScope(key);
 }
@@ -62,9 +62,14 @@ Variable Scope::doDeclare(const Variant &/*key*/)
     return Variable();
 }
 
-const Scope::Ptr Scope::doGetScope(const Variant &/*key*/)
+Scope::Ptr Scope::doGetScope(const Variant &/*key*/)
 {
     return Ptr();
+}
+
+Variable Scope::getValue(bool /*modifiable*/)
+{
+    return Variable();
 }
 
 const Scope::Ptr Scope::getScope(const VariablePath &path, int max)

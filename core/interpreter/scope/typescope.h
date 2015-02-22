@@ -33,6 +33,7 @@ public:
     TypeScope(const ObjectType& type);
 protected:
     virtual Variable doGet(const Variant &key, bool modifiable) override;
+    virtual Variable getValue(bool modifiable) override;
 
     const ObjectType& type() const;
 private:
