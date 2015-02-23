@@ -70,6 +70,11 @@ public:
      */
     Ptr getScope(const Variant& key);
 
+    /**
+     * @brief Get designated value for the scope
+     */
+    virtual Variable getValue(bool modifiable);
+
 protected:
     /**
      * @brief Implentation for get
@@ -83,11 +88,6 @@ protected:
      * @brief Implentation for getScope
      */
     virtual Ptr doGetScope(const Variant& key);
-
-    /**
-     * @brief Get designated value for the scope
-     */
-    virtual Variable getValue(bool modifiable);
 
 private :
     const Ptr getScope(const VariablePath& path, int max);

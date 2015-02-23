@@ -77,7 +77,8 @@ SOURCES += \
   util/osutil.cpp \
     modules/default/structparser.cpp \
     interpreter/scope/attributescope.cpp \
-    interpreter/scope/contextscope.cpp
+    interpreter/scope/contextscope.cpp \
+    interpreter/scope/constscope.cpp
 
 
 HEADERS  += variant.h \
@@ -157,7 +158,8 @@ HEADERS  += variant.h \
     modules/default/structparser.h \
     interpreter/scope/attributescope.h \
     interpreter/scope/contextscope.h \
-    interpreter/scope/scopeptr.h
+    interpreter/scope/scopeptr.h \
+    interpreter/scope/constscope.h
 
 unix {
     defined(LIBDIR, var) {

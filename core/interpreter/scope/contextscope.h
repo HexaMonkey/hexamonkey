@@ -9,14 +9,12 @@ class Object;
 class ContextScope : public Scope
 {
 public:
-    ContextScope(Object& object, bool modifiable);
+    ContextScope(Object& object);
 
 protected:
     virtual Variable doGet(const Variant &key, bool modifiable) override;
 
 private:
     Object& _object;
-    bool _modifiable;
-
 };
 #endif // CONTEXTSCOPE_H

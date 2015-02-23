@@ -20,7 +20,7 @@
 
 void FunctionScope::addParameter(const std::string &name, Variable variable)
 {
-    parameterIndex[name]=parameters.size();
+    parameterIndex[name] = parameters.size();
     parameters.push_back(variable);
 }
 

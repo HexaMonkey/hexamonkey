@@ -2,16 +2,13 @@
 
 #include "core/object.h"
 
-ContextScope::ContextScope(Object &object, bool modifiable)
-    : _object(object),
-      _modifiable(modifiable)
+ContextScope::ContextScope(Object &object)
+    : _object(object)
 {
 }
 
 Variable ContextScope::doGet(const Variant &key, bool modifiable)
 {
-    modifiable = _modifiable && modifiable;
-
     Variant* value = _object.contextValue(key);
     if (modifiable) {
         if (value) {
@@ -20,7 +17,6 @@ Variable ContextScope::doGet(const Variant &key, bool modifiable)
             return Variable::ref(_object.setContextValue(key, Variant()));
         }
     } else {
-
         if (value) {
             return Variable::constRef(*value);
         } else {

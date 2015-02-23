@@ -2,16 +2,13 @@
 
 #include "core/object.h"
 
-AttributeScope::AttributeScope(Object &object, bool modifiable)
-    : _object(object),
-      _modifiable(modifiable)
+AttributeScope::AttributeScope(Object &object)
+    : _object(object)
 {
 }
 
 Variable AttributeScope::doGet(const Variant &key, bool modifiable)
 {
-    modifiable = _modifiable && modifiable;
-
     Variant* value = _object.attributeValue(key);
     if (modifiable) {
         if (value) {

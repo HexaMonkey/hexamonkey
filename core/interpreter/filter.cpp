@@ -22,6 +22,7 @@
 #include "core/interpreter/programloader.h"
 #include "core/interpreter/variable.h"
 #include "core/interpreter/scope/objectscope.h"
+#include "core/interpreter/scope/constscope.h"
 
 Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {
@@ -58,12 +59,11 @@ const std::string &Filter::expression()
 
 bool Filter::operator()(Object& object)
 {
-    if(_expression != "")
-    {
-        ObjectScope objectScope(object, false);
+    if(_expression != "") {
+        ConstScope objectScope(Scope::Ptr(new ObjectScope(object)));
         return Evaluator(objectScope).rightValue(_program).cvalue().toBool();
-    }
-    else
+    } else {
         return true;
+    }
 }
 

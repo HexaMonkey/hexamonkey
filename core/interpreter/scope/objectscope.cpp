@@ -58,17 +58,14 @@ const std::map<std::string, int> reserved = {
     {"@global",           A_GLOBAL}
 };
 
-ObjectScope::ObjectScope(Object &object, bool modifiable)
+ObjectScope::ObjectScope(Object &object)
     : _object(object),
-      _modifiable(modifiable),
-      _typeScope(object._type.toObjectType(), modifiable)
+      _typeScope(object._type.toObjectType())
 {
 }
 
 Variable ObjectScope::doGet(const Variant &key, bool modifiable)
 {
-    modifiable = _modifiable && modifiable;
-
     if(key.isNull())
     {
         int numberOfChildren = _object.numberOfChildren();
@@ -159,7 +156,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             Object* elem = _object.access(numberOfChildren - 1, true);
             if(elem != nullptr)
             {
-                return Ptr(new ObjectScope(*elem, _modifiable));
+                return Ptr(new ObjectScope(*elem));
             }
         }
     }
@@ -175,22 +172,22 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             switch(it->second)
             {
                 case A_PARENT:
-                    return Ptr(new ObjectScope(*_object._parent, _modifiable));
+                    return Ptr(new ObjectScope(*_object._parent));
 
                 case A_ROOT:
-                    return Ptr(new ObjectScope(_object.root(), _modifiable));
+                    return Ptr(new ObjectScope(_object.root()));
 
                 case A_ARGS:
-                    return Ptr(new TypeScope(_object._type.toObjectType(), _modifiable));
+                    return Ptr(new TypeScope(_object._type.toObjectType()));
 
                 case A_ATTR:
-                    return Ptr(new AttributeScope(_object, _modifiable));
+                    return Ptr(new AttributeScope(_object));
 
                 case A_CONTEXT:
-                    return Ptr(new ContextScope(_object, _modifiable));
+                    return Ptr(new ContextScope(_object));
 
                 case A_GLOBAL:
-                    return Ptr(new ContextScope(_object.root(), _modifiable));
+                    return Ptr(new ContextScope(_object.root()));
 
                 default:
                     return Ptr();
@@ -200,7 +197,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         Object* elem = _object.lookUp(name, true);
         if(elem != nullptr)
         {
-            return Ptr(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem));
         }
     }
     else if(key.canConvertTo(Variant::integer))
@@ -208,12 +205,12 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         int index = key.toInteger();
         if(index == _object.numberOfChildren() && _object._lastChild != nullptr)
         {
-            return Ptr(new ObjectScope(*_object._lastChild, _modifiable));
+            return Ptr(new ObjectScope(*_object._lastChild));
         }
         Object* elem = _object.access(index, true);
         if(elem != nullptr)
         {
-            return Ptr(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem));
         }
     }
     else if(key.canConvertTo(Variant::objectType))
@@ -221,7 +218,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
         Object* elem = _object.lookForType(key.toObjectType(), true);
         if(elem != nullptr)
         {
-            return Ptr(new ObjectScope(*elem, _modifiable));
+            return Ptr(new ObjectScope(*elem));
         }
     }
 
@@ -230,5 +227,5 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 
 Variable ObjectScope::getValue(bool modifiable)
 {
-    return Variable::ref(_object._value, modifiable&&_modifiable);
+    return Variable::ref(_object._value, modifiable);
 }

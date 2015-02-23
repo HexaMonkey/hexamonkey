@@ -8,14 +8,13 @@ class Object;
 class AttributeScope : public Scope
 {
 public:
-    AttributeScope(Object& object, bool modifiable);
+    AttributeScope(Object& object);
 
 protected:
     virtual Variable doGet(const Variant &key, bool modifiable) override;
 
 private:
     Object& _object;
-    bool _modifiable;
 
 };
 

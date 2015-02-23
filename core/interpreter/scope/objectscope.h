@@ -35,14 +35,13 @@ class Object;
 class ObjectScope : public Scope
 {
 public:
-    ObjectScope(Object& object, bool modifiable);
+    ObjectScope(Object& object);
 protected:
     virtual Variable doGet(const Variant &key, bool modifiable) override;
     Ptr doGetScope(const Variant &key) override;
     Variable getValue(bool modifiable);
 private:
     Object& _object;
-    bool _modifiable;
     TypeScope _typeScope;
 
 };
