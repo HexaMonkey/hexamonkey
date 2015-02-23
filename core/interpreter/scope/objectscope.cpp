@@ -178,7 +178,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
                     return Ptr(new ObjectScope(_object.root()));
 
                 case A_ARGS:
-                    return Ptr(new TypeScope(_object._type.toObjectType()));
+                    return Ptr(new TypeScope(_object._type.toObjectType(), true));
 
                 case A_ATTR:
                     return Ptr(new AttributeScope(_object));

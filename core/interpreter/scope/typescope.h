@@ -39,7 +39,6 @@ protected:
 private:
     ObjectType* _type;
     const ObjectType* _constType;
-    bool _modifiable;
 };
 
 

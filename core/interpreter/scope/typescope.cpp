@@ -32,22 +32,23 @@ const std::map<std::string, int> reserved = {
 };
 
 TypeScope::TypeScope(ObjectType &type, bool modifiable)
-    : _type(&type),
-      _constType(&type),
-      _modifiable(modifiable)
+    : _type(modifiable? &type : nullptr),
+      _constType(&type)
 {
 }
 
 TypeScope::TypeScope(const ObjectType &type)
     : _type(nullptr),
-      _constType(&type),
-      _modifiable(false)
+      _constType(&type)
 {
 }
 
-Variable TypeScope::doGet(const Variant &key, bool /*modifiable*/)
+Variable TypeScope::doGet(const Variant &key, bool modifiable)
 {
     int i = -1;
+
+    ObjectType* pType = modifiable ? _type : nullptr;
+    const ObjectType& constType = *_constType;
 
     if(key.canConvertTo(Variant::integer)) {
         i = key.toInteger();
@@ -63,38 +64,43 @@ Variable TypeScope::doGet(const Variant &key, bool /*modifiable*/)
             switch(it->second)
             {
                 case A_COUNT:
-                    return Variable::copy(_type->numberOfParameters(), false);
+                    return Variable::copy(_constType->numberOfParameters(), false);
 
                 case A_ELEMENT_TYPE:
-                    return Variable::ref(_type->_elementType, _modifiable);
+                    if (pType) {
+                        return Variable::ref(pType->_elementType);
+                    } else {
+                        return Variable::constRef(constType._elementType);
+                    }
 
                 case A_ELEMENT_COUNT:
-                    return Variable::ref(_type->_elementCount, _modifiable);
+                    if (pType) {
+                        return Variable::ref(pType->_elementCount);
+                    } else {
+                        return Variable::constRef(constType._elementCount);
+                    }
 
                 case A_NAME:
-                    return Variable::ref(_type->_name, _modifiable);
+                    if (pType) {
+                        return Variable::ref(pType->_name);
+                    } else {
+                        return Variable::constRef(constType._name);
+                    }
             }
         }
 
-        i = type().typeTemplate().parameterNumber(key.toString());
+        i = constType.typeTemplate().parameterNumber(key.toString());
     }
 
-    if(i != -1 && (size_t) i < type()._parametersValue.size())
+    if(i != -1 && (size_t) i < constType._parametersValue.size())
     {
-        if(_modifiable)
+        if(pType)
         {
-            return Variable::ref(_type->_parametersValue[i]);
-        }
-        else
-        {
-            return Variable::constRef(_constType->_parametersValue[i]);
+            return Variable::ref(pType->_parametersValue[i]);
+        } else {
+            return Variable::constRef(constType._parametersValue[i]);
         }
     }
 
     return Variable();
-}
-
-const ObjectType &TypeScope::type() const
-{
-    return *_constType;
 }
