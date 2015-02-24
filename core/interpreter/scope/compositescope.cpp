@@ -27,35 +27,55 @@ void CompositeScope::addScope(const Scope::Ptr &scope)
     _scopes.push_back(scope);
 }
 
+void CompositeScope::addSubScope(const std::string &key, const Scope::Ptr &scope)
+{
+    _subScopes.insert(std::make_pair(key, scope));
+}
+
+void CompositeScope::addSubScope(const std::string &key, Scope* scope)
+{
+    _subScopes.emplace(std::make_pair(key, Scope::Ptr(scope)));
+}
+
 Variable CompositeScope::doGet(const Variant &key, bool modifiable)
 {
     for(auto& scope : _scopes)
     {
         Variable variable = scope->get(key, modifiable);
-        if(variable.isDefined())
+        if (variable.isDefined()) {
             return variable;
+        }
     }
     return Variable();
 }
 
 Scope::Ptr CompositeScope::doGetScope(const Variant &key)
 {
-    for(auto& scope : _scopes)
+    if (key.type() == Variant::string) {
+        auto subScopeIt = _subScopes.find(key.toString());
+        if (subScopeIt != _subScopes.end()) {
+            return subScopeIt->second;
+        }
+    }
+
+    for (auto& scope : _scopes)
     {
         Scope::Ptr s = scope->getScope(key);
-        if(s)
+        if (s) {
             return s;
+        }
     }
     return Ptr();
 }
 
 Variable CompositeScope::doDeclare(const Variant &key)
 {
-    for(auto& scope : _scopes)
+    for (auto& scope : _scopes)
     {
         Variable variable = scope->declare(key);
-        if(variable.isDefined())
+        if(variable.isDefined()) {
             return variable;
+        }
     }
     return Variable();
 }

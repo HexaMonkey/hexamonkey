@@ -19,6 +19,7 @@
 #define COMPOSITESCOPE_H
 
 #include <vector>
+#include <unordered_map>
 
 #include "core/interpreter/scope/scope.h"
 
@@ -41,12 +42,16 @@ public:
 
     void addScope(const Scope::Ptr& scope);
 
+    void addSubScope(const std::string& key, const Scope::Ptr& scope);
+
+    void addSubScope(const std::string& key, Scope* scope);
 protected:
     Variable doGet(const Variant &key, bool modifiable) override;
     Ptr doGetScope(const Variant &key) override;
     Variable doDeclare(const Variant &key) override;
 private:
     std::vector<Scope::Ptr> _scopes;
+    std::unordered_map<std::string, Scope::Ptr> _subScopes;
 };
 
 #endif // COMPOSITESCOPE_H
