@@ -63,6 +63,11 @@ public:
     virtual void parseTail();
 
     /**
+     * @brief Check if the head has been parsed
+     */
+    bool headParsed() const;
+
+    /**
      * @brief Check if the parsing is done except the tail
      */
     bool parsed() const;
@@ -73,16 +78,9 @@ public:
     bool tailParsed() const;
 
     /**
-     * @brief Check if the \link Parser parser\endlink requires anything to be parsed
-     * as soon as possible
-     */
-    bool hasHead() const;
-
-    /**
      * @brief Get the \link Object object\endlink manipulated by the \link Parser parser\endlink
      */
     Object &object();
-
 
 protected:
     Parser(Object& object);
@@ -90,7 +88,8 @@ protected:
     /**
      * @brief Get the \link Object::type type\endlink of the \link Object object\endlink
      */
-    ObjectType& type();
+    ObjectType *modifiableType();
+    const ObjectType& constType() const;
 
     /**
      * @brief Set the \link Object::size size\endlink of the \link Object object\endlink
@@ -123,6 +122,11 @@ protected:
      * expand to occupy the father's available space.
      */
     void setExpandOnAddition();
+
+    /**
+     * @brief Mark the head as parsed
+     */
+    void setHeadParsed();
 
     /**
      * @brief Mark the parser as done
@@ -171,8 +175,10 @@ private:
     friend class SimpleParser;
     friend class ContainerParser;
     friend class BlockExecution;
+    friend class ParserTypeScope;
 
     Object& _object;
+    std::unique_ptr<ObjectType> _type;
 
     bool lockObject();
     void unlockObject();

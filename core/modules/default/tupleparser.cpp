@@ -25,8 +25,9 @@ TupleParser::TupleParser(Object &object, const Module &module, const ObjectType 
 
 void TupleParser::doParseHead()
 {
-    type().setElementType(elementType);
-    type().setElementCount(count);
+    ObjectType& type = *modifiableType();
+    type.setElementType(elementType);
+    type.setElementCount(count);
 
     int64_t t = module().getFixedSize(elementType);
     if(t > 0)

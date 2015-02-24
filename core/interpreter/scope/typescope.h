@@ -20,29 +20,46 @@
 
 #include "core/interpreter/scope/scope.h"
 
+class Parser;
 class ObjectType;
 /**
  * @brief Scope implementation that gives access to a \link ObjectType type\endlink's parameters
  *
  * The arguments can either be access by their index or name.
  */
-class TypeScope : public Scope
+class AbstractTypeScope : public Scope
+{
+protected:
+    virtual Variable doGet(const Variant &key, bool modifiable) override;
+    virtual Variable getValue(bool) override;
+
+    virtual ObjectType* modifiableType() = 0;
+    virtual const ObjectType& constType() = 0;
+};
+
+class TypeScope : public AbstractTypeScope
 {
 public:
     TypeScope(ObjectType& type, bool modifiable);
     TypeScope(const ObjectType& type);
 protected:
-    virtual Variable doGet(const Variant &key, bool modifiable) override;
-    virtual Variable getValue(bool modifiable) override;
-
-    const ObjectType& type() const;
+    virtual ObjectType* modifiableType() override;
+    virtual const ObjectType& constType() override;
 private:
     ObjectType* _type;
-    const ObjectType* _constType;
+    const ObjectType& _constType;
 };
 
-
-
+class ParserTypeScope : public AbstractTypeScope
+{
+public:
+    ParserTypeScope(Parser& parser);
+protected:
+    virtual ObjectType* modifiableType() override;
+    virtual const ObjectType& constType() override;
+private:
+    Parser& _parser;
+};
 
 
 #endif // TYPESCOPE_H

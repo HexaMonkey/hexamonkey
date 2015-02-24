@@ -17,6 +17,7 @@
 
 #include "core/objecttype.h"
 #include "core/objecttypetemplate.h"
+#include "core/parser.h"
 #include "core/interpreter/scope/typescope.h"
 
 #define A_COUNT 0
@@ -31,24 +32,12 @@ const std::map<std::string, int> reserved = {
     {"@name", A_NAME}
 };
 
-TypeScope::TypeScope(ObjectType &type, bool modifiable)
-    : _type(modifiable? &type : nullptr),
-      _constType(&type)
-{
-}
-
-TypeScope::TypeScope(const ObjectType &type)
-    : _type(nullptr),
-      _constType(&type)
-{
-}
-
-Variable TypeScope::doGet(const Variant &key, bool modifiable)
+Variable AbstractTypeScope::doGet(const Variant &key, bool modifiable)
 {
     int i = -1;
 
-    ObjectType* pType = modifiable ? _type : nullptr;
-    const ObjectType& constType = *_constType;
+    ObjectType* mType = modifiable ? modifiableType() : nullptr;
+    const ObjectType& cType = constType();
 
     if(key.canConvertTo(Variant::integer)) {
         i = key.toInteger();
@@ -64,43 +53,86 @@ Variable TypeScope::doGet(const Variant &key, bool modifiable)
             switch(it->second)
             {
                 case A_COUNT:
-                    return Variable::copy(_constType->numberOfParameters(), false);
+                    return Variable::copy(constType().numberOfParameters(), false);
 
                 case A_ELEMENT_TYPE:
-                    if (pType) {
-                        return Variable::ref(pType->_elementType);
+                    if (mType) {
+                        return Variable::ref(mType->_elementType);
                     } else {
-                        return Variable::constRef(constType._elementType);
+                        return Variable::constRef(cType._elementType);
                     }
 
                 case A_ELEMENT_COUNT:
-                    if (pType) {
-                        return Variable::ref(pType->_elementCount);
+                    if (mType) {
+                        return Variable::ref(mType->_elementCount);
                     } else {
-                        return Variable::constRef(constType._elementCount);
+                        return Variable::constRef(cType._elementCount);
                     }
 
                 case A_NAME:
-                    if (pType) {
-                        return Variable::ref(pType->_name);
+                    if (mType) {
+                        return Variable::ref(mType->_name);
                     } else {
-                        return Variable::constRef(constType._name);
+                        return Variable::constRef(cType._name);
                     }
             }
         }
 
-        i = constType.typeTemplate().parameterNumber(key.toString());
+        i = cType.typeTemplate().parameterNumber(key.toString());
     }
 
-    if(i != -1 && (size_t) i < constType._parametersValue.size())
+    if(i != -1 && (size_t) i < cType._parametersValue.size())
     {
-        if(pType)
+        if(mType)
         {
-            return Variable::ref(pType->_parametersValue[i]);
+            return Variable::ref(mType->_parametersValue[i]);
         } else {
-            return Variable::constRef(constType._parametersValue[i]);
+            return Variable::constRef(cType._parametersValue[i]);
         }
     }
 
     return Variable();
+}
+
+Variable AbstractTypeScope::getValue(bool /*modifiable*/)
+{
+    return Variable::copy(constType());
+}
+
+TypeScope::TypeScope(ObjectType &type, bool modifiable)
+    : _type(modifiable? &type : nullptr),
+      _constType(type)
+{
+}
+
+TypeScope::TypeScope(const ObjectType &type)
+    : _type(nullptr),
+      _constType(type)
+{
+}
+
+ObjectType *TypeScope::modifiableType()
+{
+    return _type;
+}
+
+const ObjectType &TypeScope::constType()
+{
+    return _constType;
+}
+
+
+ParserTypeScope::ParserTypeScope(Parser &parser)
+    :_parser(parser)
+{
+}
+
+ObjectType *ParserTypeScope::modifiableType()
+{
+    return _parser.modifiableType();
+}
+
+const ObjectType &ParserTypeScope::constType()
+{
+    return _parser.constType();
 }

@@ -30,7 +30,7 @@ void EbmlContainerParser::doParseHead()
 
     setSize(8*p_size->value().toInteger()+p_id->size()+p_size->size());
 
-    type().setParameter(0, p_id->value());
+    modifiableType()->setParameter(0, p_id->value());
 }
 
 

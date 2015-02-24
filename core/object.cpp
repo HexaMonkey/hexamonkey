@@ -573,7 +573,7 @@ void Object::addParser(Parser *parser)
 {
     if(parser != nullptr)
     {
-        if(parser->hasHead())
+        if(parser->headParsed())
         {
             parseBody();
             parser->parseHead();

@@ -36,8 +36,11 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
 
     auto bodyBlock = classDefinition.node(0);
 
-    if (module.getFixedSize(type()) == -1 && headerEnd == bodyBlock.begin()) {
-        setNoHead();
+    if (module.getFixedSize(constType()) == -1 && headerEnd == bodyBlock.begin()) {
+        setHeadParsed();
+        if(_bodyExecution.done()) {
+            setParsed();
+        }
     }
 
     auto tailProgram = classDefinition.node(1);
@@ -48,7 +51,7 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
 
 void FromFileParser::doParseHead()
 {
-    int64_t fixedSize = module().getFixedSize(type());
+    int64_t fixedSize = module().getFixedSize(constType());
     if(fixedSize > 0)
         setSize(fixedSize);
 

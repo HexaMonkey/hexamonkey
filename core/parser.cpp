@@ -16,6 +16,9 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/parser.h"
+#include "core/log/logmanager.h"
+
+ObjectType errorType;
 
 Parser::Parser(Object& object)
     : _object(object),
@@ -33,7 +36,7 @@ void Parser::parseHead()
     if(parsing.available() && !_headParsed)
     {
         doParseHead();
-        _headParsed = true;
+        setHeadParsed();
     }
 }
 
@@ -73,6 +76,11 @@ void Parser::parseTail()
     }
 }
 
+bool Parser::headParsed() const
+{
+    return _headParsed;
+}
+
 bool Parser::parsed() const
 {
     return _parsed;
@@ -83,14 +91,23 @@ bool Parser::tailParsed() const
     return _tailParsed || (!_hasTail && _parsed);
 }
 
-bool Parser::hasHead() const
+ObjectType *Parser::modifiableType()
 {
-    return _hasHead;
+    if (_headParsed) {
+        Log::error("Cannot modify parser type's once it has been parsed");
+        return nullptr;
+    } else {
+        return &_object._type.toObjectType();
+    }
 }
 
-ObjectType &Parser::type()
+const ObjectType &Parser::constType() const
 {
-    return _object._type.toObjectType();
+    if (_headParsed) {
+        return *_type;
+    } else {
+        return _object._type.toObjectType();
+    }
 }
 
 void Parser::setSize(int64_t size)
@@ -134,13 +151,14 @@ Object &Parser::object()
 
 void Parser::setParsed()
 {
-    _headParsed = true;
+    setHeadParsed();
     _parsed = true;
 }
 
 void Parser::setNoHead()
 {
     _hasHead = false;
+    setHeadParsed();
 }
 
 void Parser::setNoTail()
@@ -182,6 +200,14 @@ void Parser::unlockObject()
     _object._parsingInProgress = false;
 }
 
+void Parser::setHeadParsed()
+{
+    if (!_headParsed) {
+        _type.reset(new ObjectType(_object._type.toObjectType()));
+        _headParsed = true;
+    }
+}
+
 
 SimpleParser::SimpleParser(Object &object) : Parser(object)
 {
@@ -194,7 +220,7 @@ void SimpleParser::parseHead()
     if(parsing.available() && !_headParsed)
     {
         doParseHead();
-        _headParsed = true;
+        setHeadParsed();
         _parsed = true;
         _tailParsed = true;
     }
