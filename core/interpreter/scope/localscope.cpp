@@ -17,22 +17,61 @@
 
 #include "core/interpreter/scope/localscope.h"
 
-Variable LocalScope::doGet(const Variant &key, bool /*modifiable*/)
+LocalScope::LocalScope(const Scope::Ptr &contextScope)
+    :_contextScope(contextScope)
 {
-    if(key.canConvertTo(Variant::string))
-    {
-        auto it = _map.find(key.toString());
-        if(it != _map.end())
-        {
+}
+
+LocalScope::LocalScope(Scope * contextScope)
+    :_contextScope(Scope::Ptr(contextScope))
+{
+}
+
+Variable LocalScope::doGet(const Variant &key, bool modifiable)
+{
+    if(key.type() == Variant::string) {
+        auto it = _variables.find(key.toString());
+        if (it != _variables.end()) {
             return it->second;
         }
     }
+
+    if (_contextScope) {
+        return _contextScope->get(key, modifiable);
+    }
+
     return Variable();
 }
 
 Variable LocalScope::doDeclare(const Variant &key)
 {
     Variable value = Variable::null();
-    _map[key.toString()] = value;
+    _variables[key.toString()] = value;
     return value;
+}
+
+Scope::Ptr LocalScope::doGetScope(const Variant &key)
+{
+    if(key.type() == Variant::string) {
+        auto it = _subscopes.find(key.toString());
+        if (it != _subscopes.end()) {
+            return it->second;
+        }
+    }
+
+    if (_contextScope) {
+        return _contextScope->getScope(key);
+    }
+
+    return Ptr();
+}
+
+bool LocalScope::doAssignSubscope(const Variant &key, const Scope::Ptr &subscope)
+{
+    if(key.type() == Variant::string) {
+        _subscopes[key.toString()] = subscope;
+        return true;
+    }
+
+    return false;
 }

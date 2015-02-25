@@ -48,14 +48,14 @@ private:
 
     Program::const_iterator _headerEnd;
 
-    CompositeScope _scope;
-
     Evaluator _evaluator;
 
     BlockExecution _bodyExecution;
     BlockExecution _tailExecution;
 
     Object& _object;
+
+    LocalScope _scope;
 
 };
 

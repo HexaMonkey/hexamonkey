@@ -145,10 +145,7 @@ Variable FromFileModule::doExecuteFunction(const std::string &name, const ScopeP
     if(it == _functionDescriptors.end())
         return Variable();
 
-    CompositeScope scope;
-
-    scope.addScope(new LocalScope);
-    scope.addScope(params);
+    LocalScope scope(params);
 
     const Program& definition = std::get<3>(it->second);
     Evaluator eval(scope, fromModule);

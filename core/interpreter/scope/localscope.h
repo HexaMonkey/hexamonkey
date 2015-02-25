@@ -18,7 +18,7 @@
 #ifndef LOCALSCOPE_H
 #define LOCALSCOPE_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 #include "core/interpreter/scope/scope.h"
@@ -32,12 +32,20 @@ class Variable;
  */
 class LocalScope : public Scope
 {
+public:
+    LocalScope(const Ptr& contextScope = Ptr());
+    LocalScope(Scope* contextScope);
+
 protected:
-    virtual Variable doGet(const Variant& key, bool modifiable);
-    virtual Variable doDeclare(const Variant& key);
+    virtual Variable doGet(const Variant& key, bool modifiable) override;
+    virtual Variable doDeclare(const Variant& key) override;
+    virtual Ptr doGetScope(const Variant &key) override;
+    virtual bool doAssignSubscope(const Variant &key, const Ptr &subscope) override;
 
 private:
-    std::map<std::string, Variable> _map;
+    std::unordered_map<std::string, Variable> _variables;
+    std::unordered_map<std::string, Ptr> _subscopes;
+    Ptr _contextScope;
 };
 
 #endif // LOCALSCOPE_H

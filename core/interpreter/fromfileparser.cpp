@@ -28,11 +28,10 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
       _tailExecution(classDefinition.node(1), _evaluator, _scope, this),
-      _object(object)
+      _object(object),
+      _scope(new ObjectScope(object))
 {
-    _scope.addScope(new LocalScope);
-    _scope.addScope(new ObjectScope(object));
-    _scope.addSubScope("@args", new ParserTypeScope(*this));
+    _scope.assignSubscope("@args", new ParserTypeScope(*this));
     UNUSED(hmcElemNames);
 
     auto bodyBlock = classDefinition.node(0);
