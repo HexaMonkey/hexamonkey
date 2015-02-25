@@ -27,12 +27,12 @@ void CompositeScope::addScope(const Scope::Ptr &scope)
     _scopes.push_back(scope);
 }
 
-void CompositeScope::addSubScope(const std::string &key, const Scope::Ptr &scope)
+void CompositeScope::addSubscope(const std::string &key, const Scope::Ptr &scope)
 {
     _subScopes.insert(std::make_pair(key, scope));
 }
 
-void CompositeScope::addSubScope(const std::string &key, Scope* scope)
+void CompositeScope::addSubscope(const std::string &key, Scope* scope)
 {
     _subScopes.emplace(std::make_pair(key, Scope::Ptr(scope)));
 }

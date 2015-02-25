@@ -42,9 +42,9 @@ public:
 
     void addScope(const Scope::Ptr& scope);
 
-    void addSubScope(const std::string& key, const Scope::Ptr& scope);
+    void addSubscope(const std::string& key, const Scope::Ptr& scope);
 
-    void addSubScope(const std::string& key, Scope* scope);
+    void addSubscope(const std::string& key, Scope* scope);
 protected:
     Variable doGet(const Variant &key, bool modifiable) override;
     Ptr doGetScope(const Variant &key) override;
