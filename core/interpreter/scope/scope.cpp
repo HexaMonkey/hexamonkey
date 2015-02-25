@@ -47,6 +47,16 @@ Variable Scope::declare(const Variant &key)
     return doDeclare(key);
 }
 
+bool Scope::assignSubscope(const Variant &key, const Ptr &subscope)
+{
+    return doAssignSubscope(key, subscope);
+}
+
+bool Scope::assignSubscope(const Variant &key, Scope *subscope)
+{
+    return doAssignSubscope(key, Ptr(subscope));
+}
+
 Scope::Ptr Scope::getScope(const Variant &key)
 {
     return doGetScope(key);
@@ -65,6 +75,11 @@ Variable Scope::doDeclare(const Variant &/*key*/)
 Scope::Ptr Scope::doGetScope(const Variant &/*key*/)
 {
     return Ptr();
+}
+
+bool Scope::doAssignSubscope(const Variant &/*key*/, const Scope::Ptr &/*subscope*/)
+{
+    return false;
 }
 
 Variable Scope::getValue(bool /*modifiable*/)

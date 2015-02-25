@@ -64,6 +64,14 @@ public:
     Variable declare(const Variant& key);
 
     /**
+     * @brief Assign subscope whith the given key
+     *
+     * Return true if the assignment was successful
+     */
+    bool assignSubscope(const Variant& key, const Ptr& subscope);
+    bool assignSubscope(const Variant &key, Scope* subscope);
+
+    /**
      * @brief Get a reference to a \link Scope subscope\endlink by its key
      *
      * Returns a null reference if the subscope isn't handled
@@ -77,17 +85,22 @@ public:
 
 protected:
     /**
-     * @brief Implentation for get
+     * @brief Implementation for get
      */
     virtual Variable doGet(const Variant& key, bool modifiable);
     /**
-     * @brief Implentation for declare
+     * @brief Implementation for declare
      */
     virtual Variable doDeclare(const Variant& key);
     /**
-     * @brief Implentation for getScope
+     * @brief Implementation for getScope
      */
     virtual Ptr doGetScope(const Variant& key);
+
+    /**
+     * @brief Implementation for assignSubscope
+     */
+    virtual bool doAssignSubscope(const Variant& key, const Ptr& subscope);
 
 private :
     const Ptr getScope(const VariablePath& path, int max);
