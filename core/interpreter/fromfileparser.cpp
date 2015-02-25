@@ -32,6 +32,7 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
 {
     _scope.addScope(new LocalScope);
     _scope.addScope(new ObjectScope(object));
+    _scope.addSubScope("@args", new ParserTypeScope(*this));
     UNUSED(hmcElemNames);
 
     auto bodyBlock = classDefinition.node(0);

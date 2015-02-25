@@ -29,24 +29,22 @@
 #define A_SIZE 0
 #define A_PARENT 1
 #define A_ROOT 2
-#define A_ARGS 3
-#define A_VALUE 4
-#define A_RANK 5
-#define A_POS 6
-#define A_REM 7
-#define A_NUMBER_OF_CHILDREN 8
-#define A_BEGINNING_POS 9
-#define A_LINK_TO 10
-#define A_ATTR 11
-#define A_CONTEXT 12
-#define A_GLOBAL 13
+#define A_VALUE 3
+#define A_RANK 4
+#define A_POS 5
+#define A_REM 6
+#define A_NUMBER_OF_CHILDREN 7
+#define A_BEGINNING_POS 8
+#define A_LINK_TO 9
+#define A_ATTR 10
+#define A_CONTEXT 11
+#define A_GLOBAL 12
 
 const std::map<std::string, int> reserved = {
     {"@size",             A_SIZE},
     {"@value",            A_VALUE},
     {"@parent",           A_PARENT},
     {"@root",             A_ROOT},
-    {"@args",             A_ARGS},
     {"@rank",             A_RANK},
     {"@pos",              A_POS},
     {"@rem",              A_REM},
@@ -113,9 +111,6 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
                 case A_LINK_TO:
                     return Variable::ref(_object._linkTo, modifiable);
 
-                case A_ARGS:
-                    return Variable::copy(_object.type());
-
                 default:
                     return Variable();
             }
@@ -176,9 +171,6 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 
                 case A_ROOT:
                     return Ptr(new ObjectScope(_object.root()));
-
-                case A_ARGS:
-                    return Ptr(new TypeScope(_object._type.toObjectType(), true));
 
                 case A_ATTR:
                     return Ptr(new AttributeScope(_object));
