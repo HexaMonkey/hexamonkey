@@ -34,6 +34,7 @@ Program::Program(Object &object, std::shared_ptr<Memory> memory)
     : _object(&object),
       _memory(memory)
 {
+    _object->explore();
 }
 
 bool Program::isValid() const

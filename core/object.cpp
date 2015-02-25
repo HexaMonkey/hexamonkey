@@ -78,14 +78,13 @@ Object::const_iterator Object::end() const
 
 Object::const_iterator Object::last() const
 {
-    if(_children.begin() != _children.end())
-    {
+    if(_children.begin() != _children.end()) {
         Object::const_iterator it = _children.end();
         --it;
         return  it;
-    }
-    else
+    } else {
         return _children.end();
+    }
 }
 
 Object::reverse_iterator Object::rbegin()
@@ -115,12 +114,9 @@ int Object::numberOfChildren() const
 
 Object *Object::access(int64_t index, bool forceParse)
 {
-    if(index >=0 && index < numberOfChildren())
-    {
+    if(index >=0 && index < numberOfChildren()) {
         return _children[index];
-    }
-    if(forceParse && !parsed())
-    {
+    } else if(forceParse && !parsed()) {
         int64_t pos = file().tellg();
         int n = numberOfChildren();
         exploreSome(128);
@@ -131,9 +127,7 @@ Object *Object::access(int64_t index, bool forceParse)
         }
         file().seekg(pos, std::ios_base::beg);
         return access(index, true);
-    }
-    else
-    {
+    } else {
         Log::error("Requested variable not in range");
         return nullptr;
     }
@@ -142,12 +136,12 @@ Object *Object::access(int64_t index, bool forceParse)
 Object* Object::lookUp(const std::string &name, bool forceParse)
 {
     std::map<std::string, Object*>::iterator it = _lookUpTable.find(name);
-    if(it != _lookUpTable.end())
-    {
+    if (it != _lookUpTable.end()) {
+
         return it->second;
-    }
-    if(forceParse && !parsed())
-    {
+
+    } else if (forceParse && !parsed()) {
+
         int64_t pos = file().tellg();
         int n = numberOfChildren();
         exploreSome(128);
@@ -158,31 +152,27 @@ Object* Object::lookUp(const std::string &name, bool forceParse)
         }
         file().seekg(pos, std::ios_base::beg);
         return lookUp(name, true);
-    }
-    else
-    {
+
+    } else {
+
         return nullptr;
     }
 }
 
 Object* Object::lookForType(const ObjectType &targetType, bool forceParse)
 {
-    for(Object::iterator it = begin(); it != end(); ++it)
-    {
-        if ((*it)->type().extendsDirectly(targetType))
-        {
+    for (Object::iterator it = begin(); it != end(); ++it) {
+        if ((*it)->type().extendsDirectly(targetType)) {
             return *it;
         }
     }
-    if(forceParse && !parsed())
-    {
+
+    if (forceParse && !parsed()) {
         int64_t pos = file().tellg();
         exploreSome(128);
         file().seekg(pos, std::ios_base::beg);
         return lookForType(targetType, false);
-    }
-    else
-    {
+    } else {
         return nullptr;
     }
 }
@@ -192,8 +182,7 @@ void Object::dump(std::ostream &out) const
     // make sure it is not packetised ?
     std::ifstream in  (file().path(), std::ios::in | std::ios::binary);
 
-    if(size() == -1)
-    {
+    if (size() == -1) {
         return;
     }
 
@@ -204,9 +193,7 @@ void Object::dump(std::ostream &out) const
 
     char buffer[BUFFER_SIZE];
     //Copy file part by chunks
-    while(done < n)
-    {
-
+    while(done < n) {
         size_t chunkSize = std::min<size_t>(n - done, BUFFER_SIZE);
         in.read(buffer, chunkSize);
 
@@ -352,15 +339,12 @@ void Object::parseTail()
 
 void Object::explore(int depth)
 {
-    if(depth == 0)
-    {
+    if(depth == 0) {
         return;
     }
 
-    if(!parsed())
-    {
-        if(!file().good())
-        {
+    if(!parsed()) {
+        if(!file().good()) {
             _file.clear();
             std::cerr<<"clearing file"<<std::endl;
         }
@@ -368,14 +352,10 @@ void Object::explore(int depth)
         parse();
     }
 
-    for(Object::iterator it = begin(); it != end(); ++it)
-    {
-        if(depth == -1)
-        {
+    for(Object::iterator it = begin(); it != end(); ++it) {
+        if(depth == -1) {
             (*it)->explore(-1);
-        }
-        else
-        {
+        } else {
             (*it)->explore(depth-1);
         }
     }
@@ -383,10 +363,8 @@ void Object::explore(int depth)
 
 bool Object::exploreSome(int hint)
 {
-    if(!parsed())
-    {
-        if(!file().good())
-        {
+    if(!parsed()) {
+        if(!file().good()) {
             _file.clear();
             std::cerr<<"clearing file"<<std::endl;
         }
@@ -573,7 +551,7 @@ void Object::addParser(Parser *parser)
 {
     if(parser != nullptr)
     {
-        if(parser->headParsed())
+        if(!parser->headParsed())
         {
             parseBody();
             parser->parseHead();

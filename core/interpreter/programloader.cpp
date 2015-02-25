@@ -120,7 +120,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     file.setPath(path);
 
     Object& fileObject = memory.setFileObject(_module.handle(defaultTypes::file(), file));
-    fileObject.explore(-1);
+    fileObject.explore(1);
 
     if(fileObject.numberOfChildren() >= 2)
     {
