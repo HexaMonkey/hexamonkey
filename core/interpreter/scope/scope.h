@@ -70,6 +70,7 @@ public:
      */
     bool assignSubscope(const Variant& key, const Ptr& subscope);
     bool assignSubscope(const Variant &key, Scope* subscope);
+    bool assignSubscope(const VariablePath& path, const Ptr& subscope);
 
     /**
      * @brief Get a reference to a \link Scope subscope\endlink by its key
@@ -77,6 +78,8 @@ public:
      * Returns a null reference if the subscope isn't handled
      */
     Ptr getScope(const Variant& key);
+
+    Ptr getScope(const VariablePath& path);
 
     /**
      * @brief Get designated value for the scope
@@ -103,7 +106,7 @@ protected:
     virtual bool doAssignSubscope(const Variant& key, const Ptr& subscope);
 
 private :
-    const Ptr getScope(const VariablePath& path, int max);
+    const Ptr _getScope(const VariablePath& path, int max);
 };
 
 #endif // SCOPE_H

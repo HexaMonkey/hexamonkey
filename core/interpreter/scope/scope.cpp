@@ -24,20 +24,19 @@ Variable Scope::get(const Variant &key, bool modifiable)
 
 Variable Scope::get(const VariablePath &path, bool modifiable)
 {
-    if(path.empty())
+    if(path.empty()) {
         return Variable();
-
-    if(path.size() == 1)
-        return get(path[0], modifiable);
-
-    Ptr scope = getScope(path, path.size()-1);
-
-    if(scope)
-    {
-        return scope->get(path.back(), modifiable);
     }
-    else
-    {
+
+    if(path.size() == 1) {
+        return get(path[0], modifiable);
+    }
+
+    Ptr scope = _getScope(path, path.size()-1);
+
+    if(scope) {
+        return scope->get(path.back(), modifiable);
+    } else {
         return Variable();
     }
 }
@@ -57,9 +56,29 @@ bool Scope::assignSubscope(const Variant &key, Scope *subscope)
     return doAssignSubscope(key, Ptr(subscope));
 }
 
+bool Scope::assignSubscope(const VariablePath &path, const Scope::Ptr &subscope)
+{
+    if(path.size() == 1) {
+        return assignSubscope(path[0], subscope);
+    }
+
+    Ptr scope = _getScope(path, path.size() - 1);
+
+    if (scope) {
+        return scope->assignSubscope(path.back(), subscope);
+    } else {
+        return false;
+    }
+}
+
 Scope::Ptr Scope::getScope(const Variant &key)
 {
     return doGetScope(key);
+}
+
+Scope::Ptr Scope::getScope(const VariablePath &path)
+{
+    return _getScope(path, path.size());
 }
 
 Variable Scope::doGet(const Variant &/*key*/, bool /*modifable*/)
@@ -87,7 +106,7 @@ Variable Scope::getValue(bool /*modifiable*/)
     return Variable();
 }
 
-const Scope::Ptr Scope::getScope(const VariablePath &path, int max)
+const Scope::Ptr Scope::_getScope(const VariablePath &path, int max)
 {
     if(max < 1) {
         return Ptr();
@@ -102,4 +121,3 @@ const Scope::Ptr Scope::getScope(const VariablePath &path, int max)
     }
     return current;
 }
-

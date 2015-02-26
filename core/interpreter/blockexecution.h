@@ -9,6 +9,7 @@ class Evaluator;
 #include <memory>
 
 #include "core/interpreter/program.h"
+#include "core/interpreter/scope/scopeptr.h"
 
 /**
  * @brief Controls the execution of a program block
@@ -95,6 +96,7 @@ private:
 
     void handleDeclaration(const Program& declaration, size_t& parseQuota);
     void handleLocalDeclaration(const Program& declaration);
+    void handleSubscopeAssign(const Program& assign);
     void handleRightValue(const Program& rightValue);
     void handleCondition(const Program& condition);
     void handleLoop(const Program& loop);
@@ -105,6 +107,8 @@ private:
 
     bool loopCondition(const Program& loop);
     static bool hasDeclaration(const Program& instructions);
+
+    ScopePtr handleScope(const Program& scope);
 
     Program program;
     const Program::const_iterator begin;

@@ -41,6 +41,7 @@
 
 %token STRUCT_TOKEN
 
+%right SUBSCOPE_ASSIGN_TOKEN
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
 %nonassoc '?' ':'
 %left OR_TOKEN  
@@ -280,6 +281,7 @@ statement:
 simple_statement:
     local_declaration 
    |declaration
+   |subscope_assignment
    |right_value
    |break
    |continue
@@ -436,7 +438,17 @@ variable:
    |variable '.' extended_identifier {push_master(VARIABLE, 2);}
    |variable '[' right_value ']' {push_master(VARIABLE, 2);}
    |variable '[' ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 2);}
-    
+   
+scope:
+	variable {push_master(SCOPE, 1);}
+   |explicit_scope
+
+explicit_scope:
+	variable '.' {push_master(SCOPE, 1);}
+
+subscope_assignment:
+	variable SUBSCOPE_ASSIGN_TOKEN scope {push_master(SUBSCOPE_ASSIGN, 2);}
+	
 conditional_statement:
     if_token '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,4);}
    |if_token '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(CONDITIONAL_STATEMENT,4);}

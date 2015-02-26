@@ -114,6 +114,10 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                     handleLocalDeclaration(line);
                     break;
 
+                case SUBSCOPE_ASSIGN:
+                    handleSubscopeAssign(line);
+                    break;
+
                 case RIGHT_VALUE:
                     handleRightValue(line);
                     break;
@@ -225,6 +229,18 @@ void BlockExecution::handleLocalDeclaration(const Program &declaration)
     std::cerr<<std::endl;
 #endif
 
+    ++current;
+}
+
+void BlockExecution::handleSubscopeAssign(const Program &assign)
+{
+    const int size = assign.size();
+
+    Scope::Ptr subscope = handleScope(assign.node(size - 1));
+    for (int i = size - 2; i >= 0; --i) {
+        VariablePath variablePath = eval.variablePath(assign.node(i));
+        scope.assignSubscope(variablePath, subscope);
+    }
     ++current;
 }
 
@@ -383,4 +399,16 @@ bool BlockExecution::hasDeclaration(const Program &instructions)
         }
     }
     return false;
+}
+
+Scope::Ptr BlockExecution::handleScope(const Program & s)
+{
+    Program node = s.node(0);
+
+    switch (node.tag()) {
+        case VARIABLE:
+            return scope.getScope(eval.variablePath(node));
+    }
+
+    return Scope::Ptr();
 }
