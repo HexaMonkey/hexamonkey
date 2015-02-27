@@ -4,8 +4,17 @@
 #
 #-------------------------------------------------
 
-! include( ../common_link.pri ) {
-error( "Could not find the common_link.pri file!" )
+unix {
+	! include( ../common_link.pri ) {
+		error( "Could not find the common_link.pri file!" )
+	}
+	DEPENDPATH += ..
+}
+
+win32 {
+	! include(../core/core.pri) {
+		error( "Could not find the core.pri file!" )
+	}
 }
 
 QT       += core gui widgets
@@ -16,10 +25,10 @@ TARGET = hexamonkey
 TEMPLATE = app
 
 INCLUDEPATH += ..
-DEPENDPATH += ..
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
+SOURCES += \ 
+	main.cpp\
+    mainwindow.cpp \
     tree/treewidget.cpp \
     tree/treeview.cpp \
     tree/treeobjectitem.cpp \
@@ -38,7 +47,8 @@ SOURCES += main.cpp\
     qtprogramloader.cpp
 
 
-HEADERS  += mainwindow.h \
+HEADERS  += \ 
+    mainwindow.h \
     tree/treewidget.h \
     tree/treeview.h \
     tree/treeobjectitem.h \
@@ -64,8 +74,6 @@ RC_FILE = logo.rc
 DEFINES += USE_QT
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
-
-win32: PRE_TARGETDEPS += ../core
 
 unix {
     defined(BINDIR, var) {

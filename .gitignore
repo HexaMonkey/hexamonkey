@@ -15,6 +15,7 @@
 #core of the program
 !core
 !core/core.pro
+!core/core.pri
 !core/*.cpp
 !core/*.h
 !core/log

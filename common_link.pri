@@ -9,5 +9,3 @@ win32 {
         LIBS += -L$$SRCDIR/core/release -lhexamonkey
     }
 }
-
-
