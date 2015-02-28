@@ -30,9 +30,16 @@ LocalScope::LocalScope(Scope * contextScope)
 Variable LocalScope::doGet(const Variant &key, bool modifiable)
 {
     if(key.type() == Variant::string) {
-        auto it = _variables.find(key.toString());
-        if (it != _variables.end()) {
-            return it->second;
+        const std::string& string = key.toString();
+
+        auto variableIt = _variables.find(string);
+        if (variableIt != _variables.end()) {
+            return variableIt->second;
+        }
+
+        auto scopeIt = _subscopes.find(string);
+        if (scopeIt != _subscopes.end()) {
+            return scopeIt->second->getValue(modifiable);
         }
     }
 
@@ -69,7 +76,9 @@ Scope::Ptr LocalScope::doGetScope(const Variant &key)
 bool LocalScope::doAssignSubscope(const Variant &key, const Scope::Ptr &subscope)
 {
     if(key.type() == Variant::string) {
-        _subscopes[key.toString()] = subscope;
+        const std::string& string = key.toString();
+        _variables.erase(string);
+        _subscopes[string] = subscope;
         return true;
     }
 
