@@ -203,7 +203,7 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 {
     if(hasParser())
     {
-        ObjectType type = eval.rightValue(declaration.node(0)).cvalue().toObjectType();
+        ObjectType type = eval.rightValue(declaration.node(0)).value().toObjectType();
         std::string name = declaration.node(1).payload().toString();
 #ifdef EXECUTION_TRACE
         std::cerr<<"Declaration "<<type<<" "<<name<<std::endl;
@@ -224,7 +224,7 @@ void BlockExecution::handleLocalDeclarations(const Program &declarations)
 
         if (declaration.size() >= 2)
         {
-            scope.declare(declaration.node(0).payload(), eval.rightValue(declaration.node(1)).cvalue());
+            scope.declare(declaration.node(0).payload(), eval.rightValue(declaration.node(1)).value());
 #ifdef EXECUTION_TRACE
             std::cerr<<" = "<<variable.cvalue();
 #endif
@@ -275,7 +275,7 @@ void BlockExecution::handleCondition(const Program &condition)
 #ifdef EXECUTION_TRACE
     std::cerr<<"Condition"<<std::endl;
 #endif
-    if(eval.rightValue(condition.node(0)).cvalue().toBool())
+    if(eval.rightValue(condition.node(0)).value().toBool())
     {
 #ifdef EXECUTION_TRACE
         std::cerr<<" then";
@@ -381,7 +381,9 @@ void BlockExecution::handleReturn(const Program &line)
 
 bool BlockExecution::loopCondition(const Program &loop)
 {
-    return eval.rightValue(loop.node(0)).cvalue().toBool()
+    Variable variable = eval.rightValue(loop.node(0));
+    bool check = variable.value().toBool();
+    return check
             && ((!hasDeclaration(loop.node(1)) || (hasParser() && parser().availableSize()!= 0)));
 }
 

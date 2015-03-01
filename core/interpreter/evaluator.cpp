@@ -100,7 +100,7 @@ VariablePath Evaluator::variablePath(const Program &program) const
                 break;
 
             case RIGHT_VALUE:
-                path.push_back(rightValue(elem).cvalue());
+                path.push_back(rightValue(elem).value());
                 break;
 
             case TYPE:
@@ -130,7 +130,7 @@ ObjectType Evaluator::type(const Program &program) const
     {
         if(arguments.node(i).tag() == RIGHT_VALUE)
         {
-            type.setParameter(i, rightValue(arguments.node(i)).cvalue());
+            type.setParameter(i, rightValue(arguments.node(i)).value());
         }
     }
     return type;
@@ -141,28 +141,38 @@ Variable Evaluator::unaryOperation(int op, Variable a) const
     switch(op)
     {
         case NOT_OP:
-            return Variable::copy(!a.cvalue());
+            return Variable::copy(!a.value());
 
         case BITWISE_NOT_OP:
-            return Variable::copy(~a.cvalue());
+            return Variable::copy(~a.value());
 
         case OPP_OP:
-            return Variable::copy(-a.cvalue());;
+            return Variable::copy(-a.value());;
             break;
 
         case PRE_INC_OP:
-            ++a.value();
+            a.setValue(a.value()+1);
             return a;
 
         case PRE_DEC_OP:
-            --a.value();
+            a.setValue(a.value()-1);
             return a;
 
         case SUF_INC_OP:
-            return Variable::copy(a.value()++);
+        {
+            const Variant& value = a.value();
+            Variable aCopy = Variable::copy(value);
+            a.setValue(value + 1);
+            return aCopy;
+        }
 
         case SUF_DEC_OP:
-            return Variable::copy(a.value()--);
+        {
+            const Variant& value = a.value();
+            Variable aCopy = Variable::copy(value);
+            a.setValue(value - 1);
+            return aCopy;
+        }
 
         default:
             break;
@@ -175,102 +185,102 @@ Variable Evaluator::binaryOperation(int op, Variable a, Variable b) const
     switch(op)
     {
         case ASSIGN_OP:
-            a.value() = b.cvalue();
+            a.setValue(b.value());
             return a;
 
         case RIGHT_ASSIGN_OP:
-            a.value() >>= b.cvalue();
+            a.setValue(a.value() >> b.value());
             return a;
 
         case LEFT_ASSIGN_OP:
-            a.value() <<= b.cvalue();
+            a.setValue(a.value() << b.value());
             return a;
 
         case ADD_ASSIGN_OP:
-            a.value() += b.cvalue();
+            a.setValue(a.value() + b.value());
             return a;
 
         case SUB_ASSIGN_OP:
-            a.value() -= b.cvalue();
+            a.setValue(a.value() - b.value());
             return a;
 
         case MUL_ASSIGN_OP:
-            a.value() *= b.cvalue();
+            a.setValue(a.value() * b.value());
             return a;
 
         case DIV_ASSIGN_OP:
-            a.value() /= b.cvalue();
+            a.setValue(a.value() / b.value());
             return a;
 
         case MOD_ASSIGN_OP:
-            a.value() %= b.cvalue();
+            a.setValue(a.value() % b.value());
             return a;
 
         case AND_ASSIGN_OP:
-            a.value() &= b.cvalue();
+            a.setValue(a.value() & b.value());
             return a;
 
         case XOR_ASSIGN_OP:
-            a.value() ^= b.cvalue();
+            a.setValue(a.value() ^ b.value());
             return a;
 
         case OR_ASSIGN_OP:
-            a.value() |= b.cvalue();
+            a.setValue(a.value() | b.value());
             return a;
 
         case OR_OP:
-            return Variable::copy(a.cvalue() || b.cvalue());
+            return Variable::copy(a.value() || b.value());
 
         case AND_OP:
-            return Variable::copy(a.cvalue() && b.cvalue());
+            return Variable::copy(a.value() && b.value());
 
         case BITWISE_OR_OP:
-            return Variable::copy(a.cvalue() | b.cvalue());
+            return Variable::copy(a.value() | b.value());
 
         case BITWISE_XOR_OP:
-            return Variable::copy(a.cvalue() ^ b.cvalue());
+            return Variable::copy(a.value() ^ b.value());
 
         case BITWISE_AND_OP:
-            return Variable::copy(a.cvalue() & b.cvalue());
+            return Variable::copy(a.value() & b.value());
 
         case EQ_OP:
-            return Variable::copy(a.cvalue() == b.cvalue());
+            return Variable::copy(a.value() == b.value());
 
         case NE_OP:
-            return Variable::copy(a.cvalue() != b.cvalue());
+            return Variable::copy(a.value() != b.value());
 
         case GE_OP:
-            return Variable::copy(a.cvalue() >= b.cvalue());
+            return Variable::copy(a.value() >= b.value());
 
         case GT_OP:
-            return Variable::copy(a.cvalue() > b.cvalue());
+            return Variable::copy(a.value() > b.value());
 
         case LE_OP:
-            return Variable::copy(a.cvalue() <= b.cvalue());
+            return Variable::copy(a.value() <= b.value());
 
         case LT_OP:
-            return Variable::copy(a.cvalue() < b.cvalue());
+            return Variable::copy(a.value() < b.value());
 
         case RIGHT_OP:
-            return Variable::copy(a.cvalue() >> b.cvalue());
+            return Variable::copy(a.value() >> b.value());
 
         case LEFT_OP:
-            return Variable::copy(a.cvalue() << b.cvalue());
+            return Variable::copy(a.value() << b.value());
 
         case ADD_OP:
-            return Variable::copy(a.cvalue() + b.cvalue());
+            return Variable::copy(a.value() + b.value());
 
         case SUB_OP:
-            return Variable::copy(a.cvalue() - b.cvalue());
+            return Variable::copy(a.value() - b.value());
 
         case MUL_OP:
-            return Variable::copy(a.cvalue() * b.cvalue());
+            return Variable::copy(a.value() * b.value());
 
         case DIV_OP:
-            return Variable::copy(a.cvalue() / b.cvalue());
+            return Variable::copy(a.value() / b.value());
 
         case MOD_OP:
-            return Variable::copy(a.cvalue() % b.cvalue());
+            return Variable::copy(a.value() % b.value());
 
         default:
             break;
@@ -283,10 +293,10 @@ Variable Evaluator::ternaryOperation(int op, Variable a, Variable b, Variable c)
     switch(op)
     {
         case TERNARY_OP:
-            if(a.cvalue().toBool())
-                return Variable::copy(b.cvalue());
+            if(a.value().toBool())
+                return Variable::copy(b.value());
             else
-                return Variable::copy(c.cvalue());
+                return Variable::copy(c.value());
 
         default:
             break;

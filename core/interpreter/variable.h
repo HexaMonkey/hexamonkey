@@ -23,17 +23,18 @@
 
 #include "core/variant.h"
 
+class VariableImplementation;
+
 /**
- * @brief Holds the memory for valued object used during program
- * interpretation.
- *
- * The variable can either own the value or be a reference to it.
- * In the case of owning, reference counting is used to keep track
- * of shared memory, in case of copying.
+ * @brief Accesser (getter and setter) for a value
  *
  * The variable can also be constant or modifiable. When the variable
- * is constant and a modifiable reference is requested then a copy
- * reference to a copy will be given.
+ * is constant and the setter is used then the variable will be transformed
+ * into a copy of the current value
+ *
+ * A variable owns a \link VariableImplementation variable implementation\endlink that actually define
+ * the getter and setter for the \link Variable variable\endlink. Common implementations can be used via
+ * the static constructors: copy, ref, constRef, null and nullConstant.
  */
 class Variable
 {
@@ -42,30 +43,32 @@ public:
      * @brief Construct an undefined \link Variable variable\endlink.
      */
     Variable();
+    /**
+     * @brief Construct a variable
+     * @param implementation Must be a new created instance of a subclass of \link VariableImplementation variable implementation\endlink
+     * @param modifiable
+     */
+    Variable(VariableImplementation* implementation, bool modifiable);
 
     /**
-     * @brief Get a modifiable reference to the value
-     *
-     * If the \link Variable variable\endlink is constant, then a copy
-     * is made. The variable becomes modifiable.
-     *
-     * The reference is valid as long as the variable lives and no operation
-     * are done on it.
+     * @brief Set the value of the \link Variable variable\endlink
      */
-    Variant& value() const;
+    void setValue(const Variant &value);
 
     /**
-     * @brief Get a constant reference to the value
-     *
-     * The reference is valid as long as the \link Variable variable\endlink lives and no operation
-     * are done on it.
+     * @brief Get the value of the \link Variable variable\endlink
      */
-    const Variant& cvalue() const;
+    Variant value() const;
 
     /**
      * @brief Set the variable as constant which prevents modification of the value
      */
     void setConstant();
+
+    /**
+     * @brief Transform the variable into a copy of the current value
+     */
+    void inPlaceCopy(bool modifiable = true);
 
     /**
      * @brief Check if the variable not been constructed by the default constructor.
@@ -76,11 +79,6 @@ public:
      * @brief Construct a \link Variable variable\endlink copying and then owning a value
      */
     static Variable copy(const Variant& value, bool modifiable = true);
-
-    /**
-     * @brief Construct a \link Variable variable\endlink managing the value given as a pointer
-     */
-    static Variable move(Variant* value, bool modifiable = true);
 
     /**
      * @brief Construct a \link Variable variable\endlink referencing a value (modifiable or constant reference)
@@ -103,14 +101,24 @@ public:
     static Variable nullConstant();
 
 private:
+    enum class Tag {undefined = 0, constant = 1, modifiable = 2};
 
-    Variable(bool own, bool modifiable , Variant* var);
-    Variable(bool own, bool constant , Variant* var, const Variant* constVar);
+    std::shared_ptr<VariableImplementation> _implementation;
+    Tag _tag;
+};
 
-    mutable bool _modifiable;
-    mutable Variant* _var;
-    mutable const Variant* _constVar;
-    mutable std::shared_ptr<Variant> _owner;
+/**
+ * @brief Actual implementation for variable
+ */
+class VariableImplementation
+{
+public:
+    virtual ~VariableImplementation();
+protected:
+    friend class Variable;
+
+    virtual void doSetValue(const Variant& value);
+    virtual Variant doGetValue();
 };
 
 #endif // VARIABLE_H

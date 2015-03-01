@@ -18,87 +18,161 @@
 #include "core/variant.h"
 #include "core/interpreter/variable.h"
 
-const Variant undefinedVariant;
 const Variant nullVariant;
 
 Variable::Variable()
-    : Variable(false, false, nullptr, &undefinedVariant)
+    :_implementation(new VariableImplementation),
+     _tag(Variable::Tag::undefined)
 {
 }
 
-Variant &Variable::value() const
+Variable::Variable(VariableImplementation *implementation, bool modifiable)
+    : _implementation(implementation),
+      _tag(modifiable ? Variable::Tag::modifiable : Variable::Tag::constant)
+
 {
-    if(!_modifiable)
-    {
-        Variant* newValue = new Variant(*_constVar);
-        _owner.reset(newValue);
-        _modifiable = true;
-        _var = newValue;
-        _constVar = newValue;
+}
+
+void Variable::setValue(const Variant &value)
+{
+    if (_tag != Tag::modifiable) {
+        inPlaceCopy(true);
     }
-    return *_var;
+
+    _implementation->doSetValue(value);
 }
 
-const Variant &Variable::cvalue() const
+Variant Variable::value() const
 {
-    return *_constVar;
+    return _implementation->doGetValue();
 }
 
 void Variable::setConstant()
 {
-    _modifiable = false;
+    if (_tag == Tag::modifiable) {
+        _tag = Tag::constant;
+    }
 }
 
 bool Variable::isDefined() const
 {
-    return _constVar != &undefinedVariant;
+    return _tag != Tag::undefined;
+}
+
+VariableImplementation::~VariableImplementation()
+{
+}
+
+void VariableImplementation::doSetValue(const Variant &/*value*/)
+{
+}
+
+Variant VariableImplementation::doGetValue()
+{
+    return nullVariant;
+}
+
+class OwningVariableImplementation : public VariableImplementation
+{
+public:
+    OwningVariableImplementation(Variant value);
+protected:
+    virtual void doSetValue(const Variant& value) override;
+    virtual Variant doGetValue() override;
+private:
+    Variant _value;
+};
+
+OwningVariableImplementation::OwningVariableImplementation(Variant value)
+    : _value(value)
+{
+}
+
+void OwningVariableImplementation::doSetValue(const Variant &value)
+{
+    _value = value;
+}
+
+Variant OwningVariableImplementation::doGetValue()
+{
+    return _value;
+}
+
+class RefVariableImplementation : public VariableImplementation
+{
+public:
+    RefVariableImplementation(Variant& value);
+protected:
+    virtual void doSetValue(const Variant& value) override;
+    virtual Variant doGetValue() override;
+private:
+    Variant& _value;
+};
+
+
+RefVariableImplementation::RefVariableImplementation(Variant& value)
+    : _value(value)
+{
+}
+
+void RefVariableImplementation::doSetValue(const Variant &value)
+{
+    _value = value;
+}
+
+Variant RefVariableImplementation::doGetValue()
+{
+    return _value;
+}
+
+class ConstRefVariableImplementation : public VariableImplementation
+{
+public:
+    ConstRefVariableImplementation(const Variant& value);
+protected:
+    virtual Variant doGetValue() override;
+private:
+    Variant _value;
+};
+
+
+ConstRefVariableImplementation::ConstRefVariableImplementation(const Variant& value)
+    : _value(value)
+{
+}
+
+Variant ConstRefVariableImplementation::doGetValue()
+{
+    return _value;
+}
+
+void Variable::inPlaceCopy(bool modifiable)
+{
+    _tag = modifiable ? Tag::modifiable : Tag::constant;
+    _implementation.reset(new OwningVariableImplementation(value()));
 }
 
 Variable Variable::copy(const Variant &value, bool modifiable)
 {
-    return Variable(true, modifiable, new Variant(value));
-}
-
-Variable Variable::move(Variant *value, bool modifiable)
-{
-    return Variable(true, modifiable, value);
+    return Variable(new OwningVariableImplementation(value), modifiable);
 }
 
 Variable Variable::ref(Variant &value, bool modifiable)
 {
-    return Variable(false, modifiable, &value);
+    return Variable(new RefVariableImplementation(value), modifiable);
 }
 
 Variable Variable::constRef(const Variant &value)
 {
-    return Variable(false, false, nullptr, &value);
+    return Variable(new ConstRefVariableImplementation(value), false);
 }
 
 Variable Variable::null()
 {
-    return Variable(true, true, new Variant);
+    return Variable(new OwningVariableImplementation(Variant()), true);
 }
 
 Variable Variable::nullConstant()
 {
-    return Variable(false, false, nullptr, &nullVariant);
+    return Variable(new ConstRefVariableImplementation(nullVariant), false);
 }
-
-Variable::Variable(bool own, bool modifiable , Variant* var)
-    : Variable(own, modifiable, var, var)
-{
-}
-
-Variable::Variable(bool own, bool modifiable , Variant* var, const Variant* constVar)
-    : _modifiable(modifiable),
-      _var(var),
-      _constVar(constVar)
-{
-    if(own)
-    {
-        _owner.reset(var);
-    }
-}
-
-
-

@@ -61,7 +61,7 @@ bool Filter::operator()(Object& object)
 {
     if(_expression != "") {
         ConstScope objectScope(Scope::Ptr(new ObjectScope(object)));
-        return Evaluator(objectScope).rightValue(_program).cvalue().toBool();
+        return Evaluator(objectScope).rightValue(_program).value().toBool();
     } else {
         return true;
     }

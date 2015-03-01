@@ -30,11 +30,11 @@ Object::Object(File& file) :
     _beginningPos(_file.tellg()),
     _size(-1),
     _contentSize(0),
+    _pos(0),
     _parent(nullptr),
     _lastChild(nullptr),
     _rank(-1),
     _name("*"),
-    _pos(0),
     _children(0),
     _maxAttributeNumber(0),
     _expandOnAddition(false),
@@ -235,20 +235,42 @@ void Object::seekBeginning()
 
 void Object::seekEnd()
 {
-    if(size() != -1)
+    if(size() != -1) {
         _file.seekg(_beginningPos+size(), std::ios::beg);
-    else
+    } else {
         _file.seekg(_beginningPos, std::ios::beg);
+    }
 }
 
 void Object::seekObjectEnd()
 {
-    _file.seekg(_beginningPos+static_cast<std::streamoff>(_pos.toUnsignedInteger()), std::ios::beg);
+    _file.seekg(_beginningPos+static_cast<std::streamoff>(_pos), std::ios::beg);
 }
 
 std::streamoff Object::pos() const
 {
-    return _pos.toUnsignedInteger();
+    return _pos;
+}
+
+void Object::setPos(std::streamoff pos)
+{
+    if (pos >= 0) {
+        if (size() != -1) {
+            if (pos < size()) {
+                _pos = pos;
+            } else {
+                Log::warning("Trying to set a position outside of the bounds of the object");
+            }
+        } else {
+            if (_beginningPos + pos < file().size()) {
+                _pos = pos;
+            } else {
+                Log::warning("Trying to set a position outside of the bounds of the file");
+            }
+        }
+    } else {
+        Log::warning("Trying to set a negative value as position");
+    }
 }
 
 Variant &Object::value()

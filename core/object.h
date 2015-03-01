@@ -76,6 +76,8 @@ class Object
          */
         std::streamoff pos() const;
 
+        void setPos(std::streamoff pos);
+
         /** @brief Move the \link file() file\endlink current position to the \link beginningPos()
          *  beginning position\endlink of the object.
          */
@@ -266,6 +268,7 @@ class Object
         std::streampos _beginningPos;
         Variant _size;
         std::streamoff _contentSize;
+        std::streamoff _pos;
 
         Object* _parent;
         Object* _lastChild;
@@ -274,7 +277,6 @@ class Object
         Variant _type;
         Variant _name;
         Variant _value;
-        Variant _pos;
         Variant _linkTo;
 
         container _children;

@@ -25,6 +25,8 @@
 #include "core/interpreter/scope/attributescope.h"
 #include "core/interpreter/scope/contextscope.h"
 
+#include "core/log/logmanager.h"
+
 
 #define A_SIZE 0
 #define A_PARENT 1
@@ -54,6 +56,18 @@ const std::map<std::string, int> reserved = {
     {"@attr",             A_ATTR},
     {"@context",          A_CONTEXT},
     {"@global",           A_GLOBAL}
+};
+
+class ObjectPosVariableImplementation : public VariableImplementation
+{
+public:
+    ObjectPosVariableImplementation(Object& object);
+
+protected:
+    virtual void doSetValue(const Variant& value);
+    virtual Variant doGetValue();
+private:
+    Object& _object;
 };
 
 ObjectScope::ObjectScope(Object &object)
@@ -93,7 +107,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
                     return Variable::ref(_object._value, modifiable);
 
                 case A_POS:
-                    return Variable::ref(_object._pos, modifiable);
+                    return Variable(new ObjectPosVariableImplementation(_object), modifiable);
 
                 case A_RANK:
                     return Variable::ref(_object._rank, false);
@@ -103,7 +117,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
                     return Variable::copy(_object.numberOfChildren());
 
                 case A_REM:
-                    return Variable::copy(_object._size.toInteger() - _object._pos.toInteger());
+                    return Variable::copy(_object._size.toInteger() - _object._pos);
 
                 case A_BEGINNING_POS:
                     return Variable::copy((long long) _object.beginningPos());
@@ -220,4 +234,24 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 Variable ObjectScope::getValue(bool modifiable)
 {
     return Variable::ref(_object._value, modifiable);
+}
+
+
+ObjectPosVariableImplementation::ObjectPosVariableImplementation(Object &object)
+    :_object(object)
+{
+}
+
+void ObjectPosVariableImplementation::doSetValue(const Variant &value)
+{
+    if (value.hasNumericalType()) {
+        _object.setPos(value.toInteger());
+    } else {
+        Log::warning("Trying to set a non numerical value a pos");
+    }
+}
+
+Variant ObjectPosVariableImplementation::doGetValue()
+{
+    return Variant((long long) _object.pos());
 }

@@ -353,7 +353,7 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
                 if(!variableDependencies(line.node(0),false).empty())
                     return -1;
 
-                ObjectType type = eval.rightValue(line.node(0)).cvalue().toObjectType();
+                ObjectType type = eval.rightValue(line.node(0)).value().toObjectType();
                 if(type.isNull())
                     return -1;
 
@@ -471,7 +471,7 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
     {
         parameterNames.push_back(argument.node(1).payload().toString());
         parameterModifiables.push_back(argument.node(0).payload().toBool());
-        parameterDefaults.push_back(eval.rightValue(argument.node(2)).cvalue());
+        parameterDefaults.push_back(eval.rightValue(argument.node(2)).value());
     }
 
     auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);

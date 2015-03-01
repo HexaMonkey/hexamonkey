@@ -116,7 +116,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        const ObjectType& type = scope.get(0).cvalue().toObjectType();
+        const ObjectType& type = scope.get(0).value().toObjectType();
         int64_t size = module.getFixedSize(type);
         if(size != -1)
             return Variable::copy(size);
@@ -131,7 +131,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        const Variant& value = scope.get(0).cvalue();
+        const Variant& value = scope.get(0).value();
         if(value.canConvertTo(Variant::integer))
         {
             return Variable::copy(value.toInteger());
@@ -153,7 +153,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        const Variant& value = scope.get(0).cvalue();
+        const Variant& value = scope.get(0).value();
         if(value.canConvertTo(Variant::floating))
         {
             return Variable::copy(value.toDouble());
@@ -176,7 +176,7 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         std::stringstream S;
-        S<<std::setbase(scope.get(1).cvalue().toInteger())<<std::setw(scope.get(2).cvalue().toInteger())<<std::setfill('0')<<scope.get(0).cvalue();
+        S<<std::setbase(scope.get(1).value().toInteger())<<std::setw(scope.get(2).value().toInteger())<<std::setfill('0')<<scope.get(0).value();
         const std::string& s = S.str();
         return Variable::copy(s);
     });
@@ -187,7 +187,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        const char ch = scope.get(0).cvalue().toInteger();
+        const char ch = scope.get(0).value().toInteger();
         const std::string s(1, ch);
         return Variable::copy(s);
     });
@@ -198,7 +198,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        const std::string& str = scope.get(0).cvalue().toString();
+        const std::string& str = scope.get(0).value().toString();
         if(str.empty())
             return Variable();
         else
@@ -211,7 +211,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::string str = toStr(scope.get(0).cvalue());
+        std::string str = toStr(scope.get(0).value());
         std::transform(str.begin(), str.end(),str.begin(), ::toupper);
         return Variable::copy(str);
     });
@@ -222,7 +222,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        std::string str = toStr(scope.get(0).cvalue());
+        std::string str = toStr(scope.get(0).value());
         std::transform(str.begin(), str.end(),str.begin(), ::tolower);
         return Variable::copy(str);
     });
@@ -233,7 +233,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        uint64_t word = scope.get(0).cvalue().toUnsignedInteger();
+        uint64_t word = scope.get(0).value().toUnsignedInteger();
         return Variable::copy(popCount(word));
     });
 
@@ -243,7 +243,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        uint64_t secs = scope.get(0).cvalue().toUnsignedInteger();
+        uint64_t secs = scope.get(0).value().toUnsignedInteger();
         return Variable::copy(formatDate(secs));
     });
 
@@ -253,7 +253,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        uint64_t secs = scope.get(0).cvalue().toUnsignedInteger();
+        uint64_t secs = scope.get(0).value().toUnsignedInteger();
         return Variable::copy(formatDuration(secs));
     });
 
@@ -264,22 +264,22 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
 
-        if(   scope.get(0).cvalue().canConvertTo(Variant::string)
-           && scope.get(1).cvalue().canConvertTo(Variant::unsignedInteger))
+        if(   scope.get(0).value().canConvertTo(Variant::string)
+           && scope.get(1).value().canConvertTo(Variant::unsignedInteger))
         {
-            const std::string& str    = scope.get(0).cvalue().toString();
+            const std::string& str    = scope.get(0).value().toString();
 
             uint64_t start;
             uint64_t size;
-            if(scope.get(2).cvalue().canConvertTo(Variant::unsignedInteger))
+            if(scope.get(2).value().canConvertTo(Variant::unsignedInteger))
             {
-                start = scope.get(1).cvalue().toUnsignedInteger();
-                size = scope.get(2).cvalue().toUnsignedInteger();
+                start = scope.get(1).value().toUnsignedInteger();
+                size = scope.get(2).value().toUnsignedInteger();
             }
             else
             {
                 start = 0;
-                size = scope.get(1).cvalue().toUnsignedInteger();
+                size = scope.get(1).value().toUnsignedInteger();
             }
 
             if(start < str.size())
@@ -300,7 +300,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        Log::info(scope.get(0).cvalue().toString());
+        Log::info(scope.get(0).value().toString());
         return Variable();
     });
 
@@ -310,7 +310,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        Log::error(scope.get(0).cvalue().toString());
+        Log::error(scope.get(0).value().toString());
         return Variable();
     });
 
@@ -320,7 +320,7 @@ bool DefaultModule::doLoad()
                 {},
                 []functionLambda
     {
-        Log::warning(scope.get(0).cvalue().toString());
+        Log::warning(scope.get(0).value().toString());
         return Variable();
     });
 
