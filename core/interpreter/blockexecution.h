@@ -95,8 +95,9 @@ private:
     void resetSubBlock();
 
     void handleDeclaration(const Program& declaration, size_t& parseQuota);
-    void handleLocalDeclaration(const Program& declaration);
+    void handleLocalDeclarations(const Program& declarations);
     void handleSubscopeAssign(const Program& assign);
+    void handleRemove(const Program& remove);
     void handleRightValue(const Program& rightValue);
     void handleCondition(const Program& condition);
     void handleLoop(const Program& loop);

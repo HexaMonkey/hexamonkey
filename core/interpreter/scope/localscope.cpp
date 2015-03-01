@@ -84,3 +84,12 @@ bool LocalScope::doAssignSubscope(const Variant &key, const Scope::Ptr &subscope
 
     return false;
 }
+
+void LocalScope::doRemove(const Variant &key)
+{
+    if(key.type() == Variant::string) {
+        const std::string& string = key.toString();
+        _variables.erase(string);
+        _subscopes.erase(string);
+    }
+}

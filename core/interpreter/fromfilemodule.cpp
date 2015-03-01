@@ -513,9 +513,11 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
             buildDependencies(instructions.node(0), modificationOnly, descriptors);
             break;
 
-        case LOCAL_DECLARATION:
-            if(instructions.size()>=2) {
-                buildDependencies(instructions.node(1), modificationOnly, descriptors);
+        case LOCAL_DECLARATIONS:
+            for (const Program& localDeclaration : instructions) {
+                if(localDeclaration.size()>=2) {
+                    buildDependencies(localDeclaration.node(1), modificationOnly, descriptors);
+                }
             }
             break;
 

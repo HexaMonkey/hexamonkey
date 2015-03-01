@@ -48,12 +48,20 @@ Variable Scope::declare(const Variant &key)
 
 bool Scope::assignSubscope(const Variant &key, const Ptr &subscope)
 {
-    return doAssignSubscope(key, subscope);
+    if (subscope) {
+        return doAssignSubscope(key, subscope);
+    } else {
+        return false;
+    }
 }
 
 bool Scope::assignSubscope(const Variant &key, Scope *subscope)
 {
-    return doAssignSubscope(key, Ptr(subscope));
+    if (subscope) {
+        return doAssignSubscope(key, Ptr(subscope));
+    } else {
+        return false;
+    }
 }
 
 bool Scope::assignSubscope(const VariablePath &path, const Scope::Ptr &subscope)
@@ -68,6 +76,25 @@ bool Scope::assignSubscope(const VariablePath &path, const Scope::Ptr &subscope)
         return scope->assignSubscope(path.back(), subscope);
     } else {
         return false;
+    }
+}
+
+void Scope::remove(const Variant &key)
+{
+    doRemove(key);
+}
+
+void Scope::remove(const VariablePath &path)
+{
+    if(path.size() == 1) {
+        remove(path[0]);
+    } else {
+
+        Ptr scope = _getScope(path, path.size() - 1);
+
+        if (scope) {
+            return scope->remove(path.back());
+        }
     }
 }
 
@@ -99,6 +126,10 @@ Scope::Ptr Scope::doGetScope(const Variant &/*key*/)
 bool Scope::doAssignSubscope(const Variant &/*key*/, const Scope::Ptr &/*subscope*/)
 {
     return false;
+}
+
+void Scope::doRemove(const Variant &/*key*/)
+{
 }
 
 Variable Scope::getValue(bool /*modifiable*/)

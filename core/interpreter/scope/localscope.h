@@ -41,6 +41,7 @@ protected:
     virtual Variable doDeclare(const Variant& key) override;
     virtual Ptr doGetScope(const Variant &key) override;
     virtual bool doAssignSubscope(const Variant &key, const Ptr &subscope) override;
+    virtual void doRemove(const Variant &key) override;
 
 private:
     std::unordered_map<std::string, Variable> _variables;

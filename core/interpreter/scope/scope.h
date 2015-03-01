@@ -73,6 +73,12 @@ public:
     bool assignSubscope(const VariablePath& path, const Ptr& subscope);
 
     /**
+     * @brief Delete variable and/or subscope
+     */
+    void remove(const Variant& key);
+    void remove(const VariablePath& path);
+
+    /**
      * @brief Get a reference to a \link Scope subscope\endlink by its key
      *
      * Returns a null reference if the subscope isn't handled
@@ -105,8 +111,13 @@ protected:
      */
     virtual bool doAssignSubscope(const Variant& key, const Ptr& subscope);
 
+    /**
+     * @brief Implementation for remove
+     */
+    virtual void doRemove(const Variant &key);
+
 private :
-    const Ptr _getScope(const VariablePath& path, int max);
+    const Scope::Ptr _getScope(const VariablePath& path, int max);
 };
 
 #endif // SCOPE_H

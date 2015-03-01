@@ -93,6 +93,7 @@ extern int line_number;
 "const"     {return CONST_TOKEN;}  
 "showcased" {return SHOWCASED_TOKEN;}
 "NULL"      {return NULL_TOKEN;}
+"delete"    {return REMOVE_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}
 "addMagicNumber"    {return ADD_MAGIC_NUMBER_TOKEN;}

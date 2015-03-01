@@ -37,10 +37,11 @@
 %token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN
 %right IF_TOKEN ELSE_TOKEN
 
-%token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN
+%token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN REMOVE_TOKEN
 
 %token STRUCT_TOKEN
 
+%left ',' 
 %right SUBSCOPE_ASSIGN_TOKEN
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
 %nonassoc '?' ':'
@@ -279,9 +280,10 @@ statement:
 ;
 
 simple_statement:
-    local_declaration 
+    local_declarations 
    |declaration
    |subscope_assignment
+   |remove
    |right_value
    |break
    |continue
@@ -332,15 +334,19 @@ _declaration:
     }
 ;
 
-
-                                        
-local_declaration:   
-    var_token identifier {push_master(LOCAL_DECLARATION, 2);}  
-   |var_token identifier '=' right_value{push_master(LOCAL_DECLARATION, 3);}  
+local_declarations:
+	VAR_TOKEN _local_declarations
 ;
-
-var_token:
-	VAR_TOKEN {push_line();}
+       
+_local_declarations:
+	local_declaration {push_master(LOCAL_DECLARATIONS, 1);}
+   |_local_declarations ',' local_declaration {push_master(LOCAL_DECLARATIONS, 2);}
+;
+	   
+local_declaration:   
+    identifier {push_master(LOCAL_DECLARATION, 1);}  
+   |identifier '=' right_value{push_master(LOCAL_DECLARATION, 2);}  
+;
 
 identifier:
     IDENT {push_string(IDENTIFIER, $1);}
@@ -401,6 +407,7 @@ right_value:
     |variable                                    {push_master(RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(RIGHT_VALUE, 1);}
     |function_identifier right_value_arguments   {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
+	|scope '.' function_identifier right_value_arguments   {push_master(METHOD_EVALUATION, 3);push_master(RIGHT_VALUE, 1);}
     |'('right_value')'                          
 ;
 
@@ -448,7 +455,11 @@ explicit_scope:
 
 subscope_assignment:
 	variable SUBSCOPE_ASSIGN_TOKEN scope {push_master(SUBSCOPE_ASSIGN, 2);}
-	
+   |variable SUBSCOPE_ASSIGN_TOKEN subscope_assignment {push_master(SUBSCOPE_ASSIGN, 2);}
+
+remove:
+	REMOVE_TOKEN variable {push_master(REMOVE, 1);}
+
 conditional_statement:
     if_token '(' right_value ')' execution_block {push_master(EXECUTION_BLOCK,0); push_master(CONDITIONAL_STATEMENT,4);}
    |if_token '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(CONDITIONAL_STATEMENT,4);}

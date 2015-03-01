@@ -110,12 +110,16 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                     handleDeclaration(line, parseQuota);
                     break;
 
-                case LOCAL_DECLARATION:
-                    handleLocalDeclaration(line);
+                case LOCAL_DECLARATIONS:
+                    handleLocalDeclarations(line);
                     break;
 
                 case SUBSCOPE_ASSIGN:
                     handleSubscopeAssign(line);
+                    break;
+
+                case REMOVE:
+                    handleRemove(line);
                     break;
 
                 case RIGHT_VALUE:
@@ -211,24 +215,25 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
     ++current;
 }
 
-void BlockExecution::handleLocalDeclaration(const Program &declaration)
+void BlockExecution::handleLocalDeclarations(const Program &declarations)
 {
-    Variable variable = scope.declare(declaration.node(0).payload());
+    for (const Program& declaration : declarations) {
+        Variable variable = scope.declare(declaration.node(0).payload());
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Local declaration "<<declaration.node(0).payload();
+        std::cerr<<"Local declaration "<<declaration.node(0).payload();
 #endif
 
-    if (declaration.size() >= 2 && variable.isDefined())
-    {
-        variable.value() = eval.rightValue(declaration.node(1)).cvalue();
+        if (declaration.size() >= 2 && variable.isDefined())
+        {
+            variable.value() = eval.rightValue(declaration.node(1)).cvalue();
 #ifdef EXECUTION_TRACE
-        std::cerr<<" = "<<variable.cvalue();
+            std::cerr<<" = "<<variable.cvalue();
+#endif
+        }
+#ifdef EXECUTION_TRACE
+        std::cerr<<std::endl;
 #endif
     }
-#ifdef EXECUTION_TRACE
-    std::cerr<<std::endl;
-#endif
-
     ++current;
 }
 
@@ -241,6 +246,13 @@ void BlockExecution::handleSubscopeAssign(const Program &assign)
         VariablePath variablePath = eval.variablePath(assign.node(i));
         scope.assignSubscope(variablePath, subscope);
     }
+    ++current;
+}
+
+void BlockExecution::handleRemove(const Program &remove)
+{
+    scope.remove(eval.variablePath(remove.node(0)));
+
     ++current;
 }
 
