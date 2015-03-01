@@ -48,7 +48,7 @@ public:
 protected:
     Variable doGet(const Variant &key, bool modifiable) override;
     Ptr doGetScope(const Variant &key) override;
-    Variable doDeclare(const Variant &key) override;
+    Variable doDeclare(const Variant &key, const Variant& initialValue) override;
 private:
     std::vector<Scope::Ptr> _scopes;
     std::unordered_map<std::string, Scope::Ptr> _subScopes;

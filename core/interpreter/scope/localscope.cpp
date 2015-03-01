@@ -50,11 +50,11 @@ Variable LocalScope::doGet(const Variant &key, bool modifiable)
     return Variable();
 }
 
-Variable LocalScope::doDeclare(const Variant &key)
+Variable LocalScope::doDeclare(const Variant &key, const Variant& initialValue)
 {
-    Variable value = Variable::null();
-    _variables[key.toString()] = value;
-    return value;
+    Variable variable = Variable::copy(initialValue);
+    _variables[key.toString()] = variable;
+    return variable;
 }
 
 Scope::Ptr LocalScope::doGetScope(const Variant &key)

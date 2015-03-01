@@ -218,17 +218,18 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 void BlockExecution::handleLocalDeclarations(const Program &declarations)
 {
     for (const Program& declaration : declarations) {
-        Variable variable = scope.declare(declaration.node(0).payload());
 #ifdef EXECUTION_TRACE
         std::cerr<<"Local declaration "<<declaration.node(0).payload();
 #endif
 
-        if (declaration.size() >= 2 && variable.isDefined())
+        if (declaration.size() >= 2)
         {
-            variable.value() = eval.rightValue(declaration.node(1)).cvalue();
+            scope.declare(declaration.node(0).payload(), eval.rightValue(declaration.node(1)).cvalue());
 #ifdef EXECUTION_TRACE
             std::cerr<<" = "<<variable.cvalue();
 #endif
+        } else {
+            scope.declare(declaration.node(0).payload());
         }
 #ifdef EXECUTION_TRACE
         std::cerr<<std::endl;

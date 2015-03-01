@@ -68,11 +68,11 @@ Scope::Ptr CompositeScope::doGetScope(const Variant &key)
     return Ptr();
 }
 
-Variable CompositeScope::doDeclare(const Variant &key)
+Variable CompositeScope::doDeclare(const Variant &key, const Variant& initialValue)
 {
     for (auto& scope : _scopes)
     {
-        Variable variable = scope->declare(key);
+        Variable variable = scope->declare(key, initialValue);
         if(variable.isDefined()) {
             return variable;
         }

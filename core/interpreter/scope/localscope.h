@@ -38,7 +38,7 @@ public:
 
 protected:
     virtual Variable doGet(const Variant& key, bool modifiable) override;
-    virtual Variable doDeclare(const Variant& key) override;
+    virtual Variable doDeclare(const Variant& key, const Variant &initialValue) override;
     virtual Ptr doGetScope(const Variant &key) override;
     virtual bool doAssignSubscope(const Variant &key, const Ptr &subscope) override;
     virtual void doRemove(const Variant &key) override;

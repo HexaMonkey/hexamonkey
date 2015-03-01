@@ -61,7 +61,7 @@ public:
      *
      * Returns an invalid \link Variable variable\endlink if it cannot be declared
      */
-    Variable declare(const Variant& key);
+    Variable declare(const Variant& key, const Variant &initialValue = Variant());
 
     /**
      * @brief Assign subscope whith the given key
@@ -100,7 +100,7 @@ protected:
     /**
      * @brief Implementation for declare
      */
-    virtual Variable doDeclare(const Variant& key);
+    virtual Variable doDeclare(const Variant& key, const Variant& initialValue);
     /**
      * @brief Implementation for getScope
      */

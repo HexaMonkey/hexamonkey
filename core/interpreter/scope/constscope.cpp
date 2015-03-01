@@ -16,7 +16,7 @@ Scope::Ptr ConstScope::doGetScope(const Variant &key)
     return Scope::Ptr(new ConstScope(_scope.getScope(key)));
 }
 
-Variable ConstScope::doDeclare(const Variant &/*key*/)
+Variable ConstScope::doDeclare(const Variant &/*key*/, const Variant& /*initialValue*/)
 {
     return Variable();
 }

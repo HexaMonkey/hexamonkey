@@ -41,9 +41,9 @@ Variable Scope::get(const VariablePath &path, bool modifiable)
     }
 }
 
-Variable Scope::declare(const Variant &key)
+Variable Scope::declare(const Variant &key, const Variant& initialValue)
 {
-    return doDeclare(key);
+    return doDeclare(key, initialValue);
 }
 
 bool Scope::assignSubscope(const Variant &key, const Ptr &subscope)
@@ -113,7 +113,7 @@ Variable Scope::doGet(const Variant &/*key*/, bool /*modifable*/)
     return Variable();
 }
 
-Variable Scope::doDeclare(const Variant &/*key*/)
+Variable Scope::doDeclare(const Variant &/*key*/, const Variant& /*initialValue*/)
 {
     return Variable();
 }
