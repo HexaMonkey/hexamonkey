@@ -71,6 +71,8 @@ class Object
          */
         std::streamoff size() const;
 
+        void setSize(std::streamoff size);
+
         /** @brief Access the current position of the \link file() file\endlink relative to
          *  the \link beginningPos beginning position\endlink of the \link file() file\endlink.
          */
@@ -146,6 +148,7 @@ class Object
         bool hasLinkTo() const;
         std::streamoff linkTo() const;
         void setLinkTo(std::streamoff linkTo);
+        void removeLinkTo();
 
         /**
          * @brief Attributes values
@@ -266,7 +269,7 @@ class Object
 
         File& _file;
         std::streampos _beginningPos;
-        Variant _size;
+        std::streamoff _size;
         std::streamoff _contentSize;
         std::streamoff _pos;
 

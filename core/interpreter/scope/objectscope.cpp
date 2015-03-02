@@ -61,11 +61,64 @@ const std::map<std::string, int> reserved = {
 class ObjectPosVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectPosVariableImplementation(Object& object);
+    ObjectPosVariableImplementation(Object& object) : _object(object) {}
 
 protected:
-    virtual void doSetValue(const Variant& value);
-    virtual Variant doGetValue();
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _object.setPos(value.toInteger());
+        } else {
+            Log::warning("Trying to set a non numerical value for a pos");
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant((long long) _object.pos());
+    }
+private:
+    Object& _object;
+};
+
+class ObjectSizeVariableImplementation : public VariableImplementation
+{
+public:
+    ObjectSizeVariableImplementation(Object& object) : _object(object) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _object.setSize(value.toInteger());
+        } else {
+            Log::warning("Trying to set a non numerical value for a size");
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant((long long) _object.size());
+    }
+private:
+    Object& _object;
+};
+
+class ObjectLinkToVariableImplementation : public VariableImplementation
+{
+public:
+    ObjectLinkToVariableImplementation(Object& object) : _object(object) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _object.setLinkTo(value.toInteger());
+        } else if (value.isNull()) {
+            _object.removeLinkTo();
+        } else {
+            Log::warning("Trying to set a non numerical value for a linkTo");
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return _object.hasLinkTo() ? Variant((long long) _object.linkTo()) : Variant();
+    }
 private:
     Object& _object;
 };
@@ -101,29 +154,29 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
             switch(it->second)
             {
                 case A_SIZE:
-                    return Variable::ref(_object._size, modifiable);
+                    return Variable(new ObjectSizeVariableImplementation(_object), modifiable);
 
                 case A_VALUE:
-                    return Variable::ref(_object._value, modifiable);
+                    return Variable::ref(_object.value(), modifiable);
 
                 case A_POS:
                     return Variable(new ObjectPosVariableImplementation(_object), modifiable);
 
                 case A_RANK:
-                    return Variable::ref(_object._rank, false);
+                    return Variable::copy(_object.rank());
 
                 case A_NUMBER_OF_CHILDREN:
                     _object.explore(1);
                     return Variable::copy(_object.numberOfChildren());
 
                 case A_REM:
-                    return Variable::copy(_object._size.toInteger() - _object._pos);
+                    return Variable::copy(_object.size() - _object.pos());
 
                 case A_BEGINNING_POS:
                     return Variable::copy((long long) _object.beginningPos());
 
                 case A_LINK_TO:
-                    return Variable::ref(_object._linkTo, modifiable);
+                    return Variable(new ObjectLinkToVariableImplementation(_object), modifiable);
 
                 default:
                     return Variable();
@@ -234,24 +287,4 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 Variable ObjectScope::getValue(bool modifiable)
 {
     return Variable::ref(_object._value, modifiable);
-}
-
-
-ObjectPosVariableImplementation::ObjectPosVariableImplementation(Object &object)
-    :_object(object)
-{
-}
-
-void ObjectPosVariableImplementation::doSetValue(const Variant &value)
-{
-    if (value.hasNumericalType()) {
-        _object.setPos(value.toInteger());
-    } else {
-        Log::warning("Trying to set a non numerical value a pos");
-    }
-}
-
-Variant ObjectPosVariableImplementation::doGetValue()
-{
-    return Variant((long long) _object.pos());
 }

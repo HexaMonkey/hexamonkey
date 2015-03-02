@@ -32,19 +32,19 @@ void ContainerParser::addChild(Object *child)
     if(child != nullptr/* && child->size() != 0*/)
     {
         std::streamoff pos = _object.pos();
-        if (child->size() == -1) {
-            if(_object.size() != -1 && child->_expandOnAddition) {
-                child->_size.setValue(_object.size() - pos);
+        if (child->size() == -1LL) {
+            if(_object.size() != -1LL && child->_expandOnAddition) {
+                child->setSize(_object.size() - pos);
             } else {
                 child->parse();
-                child->_size.setValue(child->_contentSize);
+                child->setSize(child->_contentSize);
             }
         }
 
 
         int64_t newSize = pos + child->size();
         if (_autogrow && newSize > _object.size()) {
-            _object._size = newSize;
+            _object.setSize(newSize);
         }
 
         if (newSize <= _object.size() || _object.size() == -1) {

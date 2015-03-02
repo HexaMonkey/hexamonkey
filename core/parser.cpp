@@ -112,7 +112,7 @@ const ObjectType &Parser::constType() const
 
 void Parser::setSize(int64_t size)
 {
-    _object._size = size;
+    _object.setSize(size);
 }
 
 void Parser::setName(const std::string &name)

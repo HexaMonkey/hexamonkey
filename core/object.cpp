@@ -300,7 +300,16 @@ std::streamoff Object::linkTo() const
 
 void Object::setLinkTo(std::streamoff linkTo)
 {
-    _linkTo.setValue(linkTo);
+    if (linkTo >= 0LL) {
+        _linkTo.setValue(linkTo);
+    } else {
+        Log::warning("Trying to set a negative value for a linkTo");
+    }
+}
+
+void Object::removeLinkTo()
+{
+    _linkTo.setValue(Variant());
 }
 
 void Object::parse()
@@ -530,10 +539,16 @@ std::streampos Object::beginningPos() const
 
 std::streamoff Object::size() const
 {
-    if(_size.hasNumericalType())
-        return _size.toInteger();
-    else
-        return -1LL;
+    return _size;
+}
+
+void Object::setSize(std::streamoff size)
+{
+    if (size >= 0) {
+        _size = size;
+    } else {
+        Log::warning("Trying to set a negative value for a size");
+    }
 }
 
 Object* Object::parent()
