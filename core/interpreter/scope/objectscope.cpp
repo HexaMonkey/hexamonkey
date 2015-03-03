@@ -125,7 +125,7 @@ private:
 
 ObjectScope::ObjectScope(Object &object)
     : _object(object),
-      _typeScope(object._type.toObjectType())
+      _typeScope(object.type())
 {
 }
 
@@ -234,7 +234,11 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             switch(it->second)
             {
                 case A_PARENT:
-                    return Ptr(new ObjectScope(*_object._parent));
+                    if (_object.parent()) {
+                        return Ptr(new ObjectScope(*_object.parent()));
+                    } else {
+                        return Ptr();
+                    }
 
                 case A_ROOT:
                     return Ptr(new ObjectScope(_object.root()));
@@ -262,10 +266,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
     else if(key.canConvertTo(Variant::integer))
     {
         int index = key.toInteger();
-        if(index == _object.numberOfChildren() && _object._lastChild != nullptr)
-        {
-            return Ptr(new ObjectScope(*_object._lastChild));
-        }
+
         Object* elem = _object.access(index, true);
         if(elem != nullptr)
         {
@@ -286,5 +287,5 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
 
 Variable ObjectScope::getValue(bool modifiable)
 {
-    return Variable::ref(_object._value, modifiable);
+    return Variable::ref(_object.value(), modifiable);
 }

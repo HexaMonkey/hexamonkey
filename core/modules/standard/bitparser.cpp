@@ -31,19 +31,19 @@ void BitParser::doParseHead()
     {
         std::cerr<<"Warning size to large for bitset"<<std::endl;
     }
-    setSize(size);
+    object().setSize(size);
 
     std::bitset<64> flag;
     char bit;
     for(unsigned int i = 0; i < size; i+=1)
     {
-        file().read(&bit, 1);
+        object().file().read(&bit, 1);
         flag <<= 1;
         flag |= bit;
     }
     Variant value(flag.to_ullong());
     value.setDisplayType(Variant::binary);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -51,10 +51,10 @@ ContentParser::ContentParser(Object &object, int64_t size)
     : SimpleParser(object),
       size(size)
 {
-    setExpandOnAddition();
+    object.setToExpandOnAddition();
 }
 
 void ContentParser::doParseHead()
 {
-    setSize(size);
+    object().setSize(size);
 }

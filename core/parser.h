@@ -81,6 +81,7 @@ public:
      * @brief Get the \link Object object\endlink manipulated by the \link Parser parser\endlink
      */
     Object &object();
+    const Object &object() const;
 
 protected:
     Parser(Object& object);
@@ -92,36 +93,10 @@ protected:
     const ObjectType& constType() const;
 
     /**
-     * @brief Set the \link Object::size size\endlink of the \link Object object\endlink
-     */
-    void setSize(int64_t size);
-
-    /**
-     * @brief Set the \link Object::name name \endlink of the \link Object object\endlink
-     */
-    void setName(const std::string& name);
-
-    /**
-     * @brief Set the \link Object::value value \endlink of the \link Object object\endlink
-     */
-    void setValue(const Variant& value);
-
-    /**
-     * @brief Get the \link File file\endlink used for parsing
-     */
-    File& file();
-
-    /**
      * @brief Get the number of bits between the current position in the \link File file\endlink and
      * the end of the \link Object object\endlink
      */
     int64_t availableSize() const;
-
-    /**
-     * @brief Insure that when the object is added into its father its size will
-     * expand to occupy the father's available space.
-     */
-    void setExpandOnAddition();
 
     /**
      * @brief Mark the head as parsed
@@ -188,18 +163,6 @@ private:
     bool _tailParsed;
     bool _hasHead;
     bool _hasTail;
-
-    class Parsing
-    {
-    private:
-        Parser& parser;
-        bool hasLock;
-    public:
-        Parsing(Parser& parser) : parser(parser), hasLock(parser.lockObject()){}
-        ~Parsing() {if (hasLock) parser.unlockObject();}
-        bool available() {return hasLock;}
-    };
-
 };
 
 /**

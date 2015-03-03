@@ -25,7 +25,7 @@ EbmlLargeIntegerParser::EbmlLargeIntegerParser(Object &object)
 void EbmlLargeIntegerParser::doParseHead()
 {
     uint8_t byte;
-    file().read(reinterpret_cast<char*>(&byte), 8);
+    object().file().read(reinterpret_cast<char*>(&byte), 8);
     int count;
     for(count = 1; count <= 8; ++count)
     {
@@ -37,9 +37,9 @@ void EbmlLargeIntegerParser::doParseHead()
     for(int i = 1; i < count; ++i)
     {
         uint8_t byte;
-        file().read(reinterpret_cast<char*>(&byte), 8);
+        object().file().read(reinterpret_cast<char*>(&byte), 8);
         var = var<<8 | byte;
     }
-    setSize(8*count);
-    setValue(var);
+    object().setSize(8*count);
+    object().setValue(var);
 }

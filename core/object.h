@@ -55,6 +55,17 @@ class Object
         typedef container::reverse_iterator reverse_iterator;
         typedef container::const_reverse_iterator const_reverse_iterator;
 
+        friend class Parsing;
+        class Parsing
+        {
+        public:
+            Parsing(Object& object);
+            ~Parsing();
+            bool isAvailable() const;
+        private:
+            Object& _object;
+            bool _isAvailable;
+        };
 
         /** @brief Access the file associated. */
         File& file();
@@ -70,8 +81,9 @@ class Object
          *  If the size is yet unknown then -1 will be returned.
          */
         std::streamoff size() const;
-
         void setSize(std::streamoff size);
+        bool isSetToExpandOnAddition() const;
+        void setToExpandOnAddition();
 
         /** @brief Access the current position of the \link file() file\endlink relative to
          *  the \link beginningPos beginning position\endlink of the \link file() file\endlink.
@@ -127,6 +139,7 @@ class Object
          * @brief Type used by the module to generate parsers for the object
          */
         const ObjectType &type() const;
+        ObjectType &type();
         void setType(const ObjectType& type);
 
         /**
@@ -252,13 +265,8 @@ class Object
         void dumpStreamToFile(const std::string& path);
 
     private:
-        friend class Parser;
-        friend class SimpleParser;
-        friend class ContainerParser;
-
         friend class Module;
-
-        friend class ObjectScope;
+        friend class ContainerParser;
 
         Object(File& file);
 
@@ -277,8 +285,8 @@ class Object
         Object* _lastChild;
         Variant _rank;
 
-        Variant _type;
-        Variant _name;
+        ObjectType _type;
+        std::string _name;
         Variant _value;
         Variant _linkTo;
 

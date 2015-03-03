@@ -52,8 +52,9 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
 void FromFileParser::doParseHead()
 {
     int64_t fixedSize = module().getFixedSize(constType());
-    if(fixedSize > 0)
-        setSize(fixedSize);
+    if(fixedSize > 0) {
+        object().setSize(fixedSize);
+    }
 
     _bodyExecution.execute(_headerEnd);
     if(_bodyExecution.done()) {

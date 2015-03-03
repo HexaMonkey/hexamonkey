@@ -32,7 +32,7 @@ void TupleParser::doParseHead()
     int64_t t = module().getFixedSize(elementType);
     if(t > 0)
     {
-        setSize(count*t);
+        object().setSize(count*t);
     }
     else
     {
@@ -43,7 +43,7 @@ void TupleParser::doParseHead()
             child ->setName("#");
             s+=child->size();
         }
-        setSize(s);
+        object().setSize(s);
     }
 }
 

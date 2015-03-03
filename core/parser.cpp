@@ -32,8 +32,8 @@ Parser::Parser(Object& object)
 
 void Parser::parseHead()
 {
-    Parsing parsing(*this);
-    if(parsing.available() && !_headParsed)
+    Object::Parsing parsing(object());
+    if(parsing.isAvailable() && !_headParsed)
     {
         doParseHead();
         setHeadParsed();
@@ -43,19 +43,22 @@ void Parser::parseHead()
 void Parser::parse()
 {
     parseHead();
-    Parsing parsing(*this);
-    if(parsing.available() && !_parsed)
+
     {
-        doParse();
-        _parsed = true;
+        Object::Parsing parsing(object());
+        if(parsing.isAvailable() && !_parsed)
+        {
+            doParse();
+            _parsed = true;
+        }
     }
 }
 
 bool Parser::parseSome(int hint)
 {
     parseHead();
-    Parsing parsing(*this);
-    if(parsing.available() && !_parsed && doParseSome(hint))
+    Object::Parsing parsing(object());
+    if(parsing.isAvailable() && !_parsed && doParseSome(hint))
     {
         _parsed = true;
     }
@@ -97,7 +100,7 @@ ObjectType *Parser::modifiableType()
         Log::error("Cannot modify parser type's once it has been parsed");
         return nullptr;
     } else {
-        return &_object._type.toObjectType();
+        return &object().type();
     }
 }
 
@@ -106,28 +109,8 @@ const ObjectType &Parser::constType() const
     if (_headParsed) {
         return *_type;
     } else {
-        return _object._type.toObjectType();
+        return object().type();
     }
-}
-
-void Parser::setSize(int64_t size)
-{
-    _object.setSize(size);
-}
-
-void Parser::setName(const std::string &name)
-{
-    _object._name = name;
-}
-
-void Parser::setValue(const Variant &value)
-{
-    _object._value = value;
-}
-
-File &Parser::file()
-{
-    return _object._file;
 }
 
 int64_t Parser::availableSize() const
@@ -139,12 +122,12 @@ int64_t Parser::availableSize() const
     }
 }
 
-void Parser::setExpandOnAddition()
+Object &Parser::object()
 {
-    _object._expandOnAddition = true;
+    return _object;
 }
 
-Object &Parser::object()
+const Object &Parser::object() const
 {
     return _object;
 }
@@ -184,26 +167,10 @@ void Parser::doParseTail()
 {
 }
 
-bool Parser::lockObject()
-{
-    if(_object._parsingInProgress == true)
-        return false;
-    else
-    {
-        _object._parsingInProgress = true;
-        return true;
-    }
-}
-
-void Parser::unlockObject()
-{
-    _object._parsingInProgress = false;
-}
-
 void Parser::setHeadParsed()
 {
     if (!_headParsed) {
-        _type.reset(new ObjectType(_object._type.toObjectType()));
+        _type.reset(new ObjectType(object().type()));
         _headParsed = true;
     }
 }
@@ -215,9 +182,9 @@ SimpleParser::SimpleParser(Object &object) : Parser(object)
 
 void SimpleParser::parseHead()
 {
-    Parsing parsing(*this);
+    Object::Parsing parsing(object());
 
-    if(parsing.available() && !_headParsed)
+    if(parsing.isAvailable() && !_headParsed)
     {
         doParseHead();
         setHeadParsed();

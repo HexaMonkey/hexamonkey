@@ -17,17 +17,18 @@
 
 #include "core/modules/default/arrayparser.h"
 #include "core/module.h"
+#include "core/object.h"
 
 ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size)
     :ContainerParser(object, module), elementType(elementType), size(size)
 {
-    setExpandOnAddition();
+    object.setToExpandOnAddition();
 }
 
 void ArrayParser::doParseHead()
 {
     modifiableType()->setElementType(elementType);
-    setSize(size);
+    object().setSize(size);
 }
 
 void ArrayParser::doParse()

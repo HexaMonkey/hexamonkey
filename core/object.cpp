@@ -374,8 +374,8 @@ void Object::explore(int depth)
         return;
     }
 
-    if(!parsed()) {
-        if(!file().good()) {
+    if (!parsed()) {
+        if (!file().good()) {
             _file.clear();
             std::cerr<<"clearing file"<<std::endl;
         }
@@ -383,7 +383,7 @@ void Object::explore(int depth)
         parse();
     }
 
-    for(Object::iterator it = begin(); it != end(); ++it) {
+    for (Object::iterator it = begin(); it != end(); ++it) {
         if(depth == -1) {
             (*it)->explore(-1);
         } else {
@@ -404,18 +404,6 @@ bool Object::exploreSome(int hint)
         return parseSome(hint);
     }
     return true;
-}
-
-void Object::setType(const ObjectType &type)
-{
-    if(!type.isNull()) {
-        _type.setValue(type);
-    }
-}
-
-void Object::setName(const std::string &name)
-{
-    _name.setValue(name);
 }
 
 const std::vector<std::string> &Object::showcasedAttributes() const
@@ -514,12 +502,29 @@ Variant &Object::setContextValue(const Variant &key, const Variant &value)
 
 const ObjectType &Object::type() const
 {
-    return _type.toObjectType();
+    return _type;
+}
+
+ObjectType &Object::type()
+{
+    return _type;
+}
+
+void Object::setType(const ObjectType &type)
+{
+    if(!type.isNull()) {
+        _type = type;
+    }
 }
 
 const std::string &Object::name() const
 {
-    return _name.toString();
+    return _name;
+}
+
+void Object::setName(const std::string &name)
+{
+    _name = name;
 }
 
 File &Object::file()
@@ -549,6 +554,16 @@ void Object::setSize(std::streamoff size)
     } else {
         Log::warning("Trying to set a negative value for a size");
     }
+}
+
+bool Object::isSetToExpandOnAddition() const
+{
+    return _expandOnAddition;
+}
+
+void Object::setToExpandOnAddition()
+{
+    _expandOnAddition = true;
 }
 
 Object* Object::parent()
@@ -630,4 +645,24 @@ bool Object::parsed()
 std::ostream& operator <<(std::ostream& out, const Object& object)
 {
     return object.display(out);
+}
+
+
+Object::Parsing::Parsing(Object &object)
+    :_object(object),
+      _isAvailable(!object._parsingInProgress)
+{
+    object._parsingInProgress = true;
+}
+
+Object::Parsing::~Parsing()
+{
+    if (_isAvailable) {
+        _object._parsingInProgress = false;
+    }
+}
+
+bool Object::Parsing::isAvailable() const
+{
+    return _isAvailable;
 }

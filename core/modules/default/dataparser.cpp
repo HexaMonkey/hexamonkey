@@ -4,10 +4,12 @@ DataParser::DataParser(Object &object, int64_t size)
     : SimpleParser(object),
       size(size)
 {
-    if(size==-1) setExpandOnAddition();
+    if(size==-1) {
+        object.setToExpandOnAddition();
+    }
 }
 
 void DataParser::doParseHead()
 {
-    setSize(size);
+    object().setSize(size);
 }

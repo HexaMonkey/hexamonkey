@@ -23,13 +23,13 @@ Int8Parser::Int8Parser(Object &object, Variant::Display display) : SimpleParser(
 
 void Int8Parser::doParseHead()
 {
-    setSize(8);
+    object().setSize(8);
     int8_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 8);
+    object().file().read(reinterpret_cast<char* >(&integer), 8);
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -40,19 +40,19 @@ Int16Parser::Int16Parser(Object &object, bool bigEndian, Variant::Display displa
 
 void Int16Parser::doParseHead()
 {
-    setSize(16);
+    object().setSize(16);
     int16_t integer;
     if(bigEndian)
     {
-        file().read(reinterpret_cast<char* >(&integer)+1, 8);
-        file().read(reinterpret_cast<char* >(&integer), 8);
+        object().file().read(reinterpret_cast<char* >(&integer)+1, 8);
+        object().file().read(reinterpret_cast<char* >(&integer), 8);
     } else {
-        file().read(reinterpret_cast<char* >(&integer), 16);
+        object().file().read(reinterpret_cast<char* >(&integer), 16);
     }
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -63,16 +63,16 @@ Int32Parser::Int32Parser(Object &object, bool bigEndian, Variant::Display displa
 
 void Int32Parser::doParseHead()
 {
-    setSize(32);
+    object().setSize(32);
     int32_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 32);
+    object().file().read(reinterpret_cast<char* >(&integer), 32);
     if(bigEndian) {
         integer = __builtin_bswap32(integer);
     }
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -83,15 +83,15 @@ Int64Parser::Int64Parser(Object &object, bool bigEndian, Variant::Display displa
 
 void Int64Parser::doParseHead()
 {
-    setSize(64);
+    object().setSize(64);
     int64_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 64);
+    object().file().read(reinterpret_cast<char* >(&integer), 64);
     if(bigEndian)
         integer = __builtin_bswap64(integer);
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -105,12 +105,12 @@ IntXParser::IntXParser(Object &object, uint8_t size, bool bigEndian, Variant::Di
 
 void IntXParser::doParseHead()
 {
-    setSize(size);
+    object().setSize(size);
     int byteSize = (size % 8 == 0) ? size/8 : size/8 + 1;
     char buffer[byteSize];
     int64_t integer = 0;
     char* pInteger = reinterpret_cast<char* >(&integer);
-    file().read(buffer, size);
+    object().file().read(buffer, size);
     for (int i = 0 ; i < byteSize ; i++) {
         if(bigEndian)
             pInteger[byteSize - 1 - i] = buffer[i];
@@ -124,7 +124,7 @@ void IntXParser::doParseHead()
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -134,13 +134,13 @@ UInt8Parser::UInt8Parser(Object &object, Variant::Display display) : SimpleParse
 
 void UInt8Parser::doParseHead()
 {
-    setSize(8);
+    object().setSize(8);
     uint8_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 8);
+    object().file().read(reinterpret_cast<char* >(&integer), 8);
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 UInt16Parser::UInt16Parser(Object &object, bool bigEndian, Variant::Display display)
@@ -150,18 +150,18 @@ UInt16Parser::UInt16Parser(Object &object, bool bigEndian, Variant::Display disp
 
 void UInt16Parser::doParseHead()
 {
-    setSize(16);
+    object().setSize(16);
     uint16_t integer;
     if (bigEndian) {
-        file().read(reinterpret_cast<char* >(&integer)+1, 8);
-        file().read(reinterpret_cast<char* >(&integer), 8);
+        object().file().read(reinterpret_cast<char* >(&integer)+1, 8);
+        object().file().read(reinterpret_cast<char* >(&integer), 8);
     } else {
-        file().read(reinterpret_cast<char* >(&integer), 16);
+        object().file().read(reinterpret_cast<char* >(&integer), 16);
     }
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -172,16 +172,16 @@ UInt32Parser::UInt32Parser(Object &object, bool bigEndian, Variant::Display disp
 
 void UInt32Parser::doParseHead()
 {
-    setSize(32);
+    object().setSize(32);
     uint32_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 32);
+    object().file().read(reinterpret_cast<char* >(&integer), 32);
     if (bigEndian) {
         integer = __builtin_bswap32(integer);
     }
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -192,16 +192,16 @@ UInt64Parser::UInt64Parser(Object &object, bool bigEndian, Variant::Display disp
 
 void UInt64Parser::doParseHead()
 {
-    setSize(64);
+    object().setSize(64);
     uint64_t integer;
-    file().read(reinterpret_cast<char* >(&integer), 64);
+    object().file().read(reinterpret_cast<char* >(&integer), 64);
     if(bigEndian) {
         integer = __builtin_bswap64(integer);
     }
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }
 
 
@@ -215,12 +215,12 @@ UIntXParser::UIntXParser(Object &object, uint8_t size, bool bigEndian, Variant::
 
 void UIntXParser::doParseHead()
 {
-    setSize(size);
+    object().setSize(size);
     int byteSize = ((size & 7) == 0) ? size/8 : size/8 + 1;
     char buffer[byteSize];
     uint64_t integer = 0;
     char* pInteger = reinterpret_cast<char* >(&integer);
-    file().read(buffer, size);
+    object().file().read(buffer, size);
     for (int i = 0 ; i < byteSize ; ++i) {
         if(bigEndian) {
             pInteger[byteSize -1 - i] = buffer[i];
@@ -231,5 +231,5 @@ void UIntXParser::doParseHead()
 
     Variant value(integer);
     value.setDisplayType(display);
-    setValue(value);
+    object().setValue(value);
 }

@@ -24,8 +24,8 @@ FileParser::FileParser(Object &object) : SimpleParser(object)
 
 void FileParser::doParseHead()
 {
-    int64_t size = file().size();
-    setSize(size);
+    int64_t size = object().file().size();
+    object().setSize(size);
 
-    setValue(file().path());
+    object().setValue(object().file().path());
 }

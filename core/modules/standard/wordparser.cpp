@@ -26,11 +26,11 @@ WordParser::WordParser(Object &object, int numberOfChars)
 
 void WordParser::doParseHead()
 {
-    setSize(numberOfChars * 8 );
+    object().setSize(numberOfChars * 8 );
     char* _word = new char[numberOfChars+1];
-    file().read(_word, object().size());
+    object().file().read(_word, object().size());
     _word[numberOfChars] = '\0';
-    setValue(std::string(_word));
+    object().setValue(std::string(_word));
     delete(_word);
 }
 
@@ -44,10 +44,10 @@ void Utf8StringParser::doParseHead()
 {
     std::stringstream S;
     std::streamoff stringLength = 0;
-    while(file().good())
+    while(object().file().good())
     {
         char ch;
-        file().read(&ch, 8);
+        object().file().read(&ch, 8);
         ++stringLength;
         if(ch == '\0')
         {
@@ -66,8 +66,8 @@ void Utf8StringParser::doParseHead()
             //data
             for(mask>>=1; ch & mask; mask>>=1)
             {
-                file().seekg(8,std::ios::cur);
-                file().read(&testChar, 8);
+                object().file().seekg(8,std::ios::cur);
+                object().file().read(&testChar, 8);
                 if (testChar == '\0') {
                     break;
                 }
@@ -78,8 +78,8 @@ void Utf8StringParser::doParseHead()
             }
         }
     }
-    setValue(S.str());
-    setSize(8*stringLength);
+    object().setValue(S.str());
+    object().setSize(8*stringLength);
 }
 
 
@@ -90,7 +90,7 @@ WideStringParser::WideStringParser(Object &object, int numberOfChars, bool bigEn
 
 void WideStringParser::doParseHead()
 {
-    setSize(numberOfChars * 16);
+    object().setSize(numberOfChars * 16);
     std::string word('?', numberOfChars);
 
     for(int i = 0; i < numberOfChars; ++i)
@@ -98,12 +98,12 @@ void WideStringParser::doParseHead()
         uint16_t ch = 0;
         if(bigEndian)
         {
-            file().read(reinterpret_cast<char*>(&ch)+1, 8);
-            file().read(reinterpret_cast<char*>(&ch), 8);
+            object().file().read(reinterpret_cast<char*>(&ch)+1, 8);
+            object().file().read(reinterpret_cast<char*>(&ch), 8);
         }
         else
         {
-            file().read(reinterpret_cast<char*>(&ch), 16);
+            object().file().read(reinterpret_cast<char*>(&ch), 16);
         }
 
         if(ch == 0)
@@ -117,5 +117,5 @@ void WideStringParser::doParseHead()
         }
     }
 
-    setValue(word);
+    object().setValue(word);
 }

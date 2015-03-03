@@ -28,7 +28,7 @@ void EbmlContainerParser::doParseHead()
     Object* p_id = addVariable(ebmlTypes::largeInteger(), "id");
     Object* p_size = addVariable(ebmlTypes::largeInteger(), "size");
 
-    setSize(8*p_size->value().toInteger()+p_id->size()+p_size->size());
+    object().setSize(8*p_size->value().toInteger()+p_id->size()+p_size->size());
 
     modifiableType()->setParameter(0, p_id->value());
 }

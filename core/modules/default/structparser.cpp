@@ -33,14 +33,14 @@ void StructParser::doParseHead()
     }
 
     if (s > 0) {
-        setSize(s);
+        object().setSize(s);
     } else {
         s = 0;
         for (unsigned int i = 0; i < _types.size(); ++i) {
             Object* object = addVariable(_types[i], _names[i]);
             s += object->size();
         }
-        setSize(s);
+        object().setSize(s);
     }
 }
 
