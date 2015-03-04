@@ -132,11 +132,11 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         const Variant& value = scope.get(0).value();
-        if(value.canConvertTo(Variant::integer))
+        if(value.canConvertTo(Variant::integerType))
         {
             return Variable::copy(value.toInteger());
         }
-        else if(value.canConvertTo(Variant::string))
+        else if(value.canConvertTo(Variant::stringType))
         {
             std::stringstream S;
             S<<value.toString();
@@ -154,11 +154,11 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         const Variant& value = scope.get(0).value();
-        if(value.canConvertTo(Variant::floating))
+        if(value.canConvertTo(Variant::floatingType))
         {
             return Variable::copy(value.toDouble());
         }
-        else if(value.canConvertTo(Variant::string))
+        else if(value.canConvertTo(Variant::stringType))
         {
             std::stringstream S;
             S<<value.toString();
@@ -264,14 +264,14 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
 
-        if(   scope.get(0).value().canConvertTo(Variant::string)
-           && scope.get(1).value().canConvertTo(Variant::unsignedInteger))
+        if(   scope.get(0).value().canConvertTo(Variant::stringType)
+           && scope.get(1).value().canConvertTo(Variant::unsignedIntegerType))
         {
             const std::string& str    = scope.get(0).value().toString();
 
             uint64_t start;
             uint64_t size;
-            if(scope.get(2).value().canConvertTo(Variant::unsignedInteger))
+            if(scope.get(2).value().canConvertTo(Variant::unsignedIntegerType))
             {
                 start = scope.get(1).value().toUnsignedInteger();
                 size = scope.get(2).value().toUnsignedInteger();

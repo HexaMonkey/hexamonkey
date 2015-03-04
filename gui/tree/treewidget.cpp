@@ -100,7 +100,8 @@ void TreeWidget::displayMenu(const QPoint &pos)
         if (trigeredAction == copyAction) {
             copy();
         } else if (trigeredAction == followLinkAction) {
-            model->updateByFilePosition(currentItem().linkTo()/8);
+            emit positionChanged(currentItem().linkTo(), 1);
+            //model->updateByFilePosition(currentItem().linkTo()/8);
         } else if (trigeredAction == openStreamAction) {
             openStream();
         } else if (trigeredAction == dumpStreamAction) {

@@ -29,7 +29,7 @@ LocalScope::LocalScope(Scope * contextScope)
 
 Variable LocalScope::doGet(const Variant &key, bool modifiable)
 {
-    if(key.type() == Variant::string) {
+    if(key.type() == Variant::stringType) {
         const std::string& string = key.toString();
 
         auto variableIt = _variables.find(string);
@@ -59,7 +59,7 @@ Variable LocalScope::doDeclare(const Variant &key, const Variant& initialValue)
 
 Scope::Ptr LocalScope::doGetScope(const Variant &key)
 {
-    if(key.type() == Variant::string) {
+    if(key.type() == Variant::stringType) {
         auto it = _subscopes.find(key.toString());
         if (it != _subscopes.end()) {
             return it->second;
@@ -75,7 +75,7 @@ Scope::Ptr LocalScope::doGetScope(const Variant &key)
 
 bool LocalScope::doAssignSubscope(const Variant &key, const Scope::Ptr &subscope)
 {
-    if(key.type() == Variant::string) {
+    if(key.type() == Variant::stringType) {
         const std::string& string = key.toString();
         _variables.erase(string);
         _subscopes[string] = subscope;
@@ -87,7 +87,7 @@ bool LocalScope::doAssignSubscope(const Variant &key, const Scope::Ptr &subscope
 
 void LocalScope::doRemove(const Variant &key)
 {
-    if(key.type() == Variant::string) {
+    if(key.type() == Variant::stringType) {
         const std::string& string = key.toString();
         _variables.erase(string);
         _subscopes.erase(string);

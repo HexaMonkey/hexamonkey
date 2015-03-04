@@ -142,7 +142,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
             }
         }
     }
-    else if(key.canConvertTo(Variant::string))
+    else if(key.canConvertTo(Variant::stringType))
     {
         const std::string& name = key.toString();
         if(!name.empty() && name[0]=='@')
@@ -189,7 +189,7 @@ Variable ObjectScope::doGet(const Variant &key, bool modifiable)
             return Variable::ref(elem->value(), modifiable);
         }
     }
-    else if(key.canConvertTo(Variant::integer))
+    else if(key.canConvertTo(Variant::integerType))
     {
         Object* elem = _object.access(key.toInteger(), true);
         if(elem != nullptr)
@@ -222,7 +222,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             }
         }
     }
-    else if(key.canConvertTo(Variant::string))
+    else if(key.canConvertTo(Variant::stringType))
     {
         const std::string& name = key.toString();
         if(!name.empty() && name[0]=='@')
@@ -263,7 +263,7 @@ Scope::Ptr ObjectScope::doGetScope(const Variant &key)
             return Ptr(new ObjectScope(*elem));
         }
     }
-    else if(key.canConvertTo(Variant::integer))
+    else if(key.canConvertTo(Variant::integerType))
     {
         int index = key.toInteger();
 

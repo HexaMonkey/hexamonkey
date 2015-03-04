@@ -35,6 +35,7 @@ Object::Object(File& file) :
     _lastChild(nullptr),
     _rank(-1),
     _name("*"),
+    _value(Variant::null()),
     _children(0),
     _maxAttributeNumber(0),
     _expandOnAddition(false),
@@ -211,7 +212,7 @@ void Object::dumpToFile(const std::string &path) const
 bool Object::hasStream() const
 {
     const Variant* streamAttribute = attributeValue("_stream");
-    return streamAttribute && !(streamAttribute->isNull());
+    return streamAttribute && !(streamAttribute->isValueless());
 }
 
 void Object::dumpStream(std::ostream &out)
@@ -290,7 +291,7 @@ void Object::setValue(const Variant &value)
 
 bool Object::hasLinkTo() const
 {
-    return !_linkTo.isNull();
+    return !_linkTo.isValueless();
 }
 
 std::streamoff Object::linkTo() const
@@ -414,10 +415,10 @@ const std::vector<std::string> &Object::showcasedAttributes() const
 Variant *Object::attributeValue(const Variant &key)
 {
     Variant _key = key;
-    if (_key.type() == Variant::unknown && _maxAttributeNumber > 0) {
+    if (_key.type() == Variant::valuelessType && _maxAttributeNumber > 0) {
         _key.setValue(_maxAttributeNumber - 1);
     } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integer);
+        _key.convertTo(Variant::integerType);
     }
 
     auto it = _attributeMap.find(_key);
@@ -431,10 +432,10 @@ Variant *Object::attributeValue(const Variant &key)
 const Variant *Object::attributeValue(const Variant &key) const
 {
     Variant _key = key;
-    if (_key.type() == Variant::unknown && _maxAttributeNumber > 0) {
+    if (_key.type() == Variant::valuelessType && _maxAttributeNumber > 0) {
         _key.setValue(_maxAttributeNumber - 1);
     } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integer);
+        _key.convertTo(Variant::integerType);
     }
 
     const auto it = _attributeMap.find(_key);
@@ -449,15 +450,15 @@ Variant& Object::setAttributeValue(const Variant &key, const Variant &value)
 {
     Variant _key = key;
     // add to showcase list if conditions are met
-    if (_key.type() == Variant::string) {
+    if (_key.type() == Variant::stringType) {
         const auto str = _key.toString();
         if (str.size() > 0 && str[0] != '_' && attributeValue(_key) == nullptr) {
             _showcasedAttributes.push_back(str);
         }
-    } else if (_key.type() == Variant::unknown) {
+    } else if (_key.type() == Variant::valuelessType) {
         _key.setValue(_maxAttributeNumber++);
     } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integer);
+        _key.convertTo(Variant::integerType);
         long long i = _key.toInteger();
         if (i >= _maxAttributeNumber) {
             _maxAttributeNumber = i + 1;
@@ -615,7 +616,7 @@ void Object::addParser(Parser *parser)
 std::ostream& Object::display(std::ostream& out, std::string prefix) const
 {
     out << prefix << type() << " " << name();
-    if(!value().isNull())
+    if(!value().isValueless())
         out << " = " << value();
     out<<std::endl;
 

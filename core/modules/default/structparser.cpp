@@ -16,7 +16,7 @@ void StructParser::doParseHead()
     // define type name
     ObjectType& type = *modifiableType();
     const Variant& nameVariable = type.parameterValue(0);
-    if (nameVariable.isNull()) {
+    if (nameVariable.isValueless()) {
         type.setName(nameVariable.toString());
     } else {
         type.setName("{}");

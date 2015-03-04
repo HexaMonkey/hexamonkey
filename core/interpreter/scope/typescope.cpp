@@ -39,9 +39,9 @@ Variable AbstractTypeScope::doGet(const Variant &key, bool modifiable)
     ObjectType* mType = modifiable ? modifiableType() : nullptr;
     const ObjectType& cType = constType();
 
-    if(key.canConvertTo(Variant::integer)) {
+    if(key.canConvertTo(Variant::integerType)) {
         i = key.toInteger();
-    } else if (key.canConvertTo(Variant::string)) {
+    } else if (key.canConvertTo(Variant::stringType)) {
         const std::string str = key.toString();
 
         if(!str.empty() && str[0]=='@')

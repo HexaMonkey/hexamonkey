@@ -18,7 +18,8 @@
 #include "core/variant.h"
 #include "core/interpreter/variable.h"
 
-const Variant nullVariant;
+const Variant undefinedVariant;
+const Variant nullVariant = Variant::null();
 
 Variable::Variable()
     :_implementation(new VariableImplementation),
@@ -69,7 +70,7 @@ void VariableImplementation::doSetValue(const Variant &/*value*/)
 
 Variant VariableImplementation::doGetValue()
 {
-    return nullVariant;
+    return undefinedVariant;
 }
 
 class OwningVariableImplementation : public VariableImplementation
@@ -165,11 +166,6 @@ Variable Variable::ref(Variant &value, bool modifiable)
 Variable Variable::constRef(const Variant &value)
 {
     return Variable(new ConstRefVariableImplementation(value), false);
-}
-
-Variable Variable::null()
-{
-    return Variable(new OwningVariableImplementation(Variant()), true);
 }
 
 Variable Variable::nullConstant()

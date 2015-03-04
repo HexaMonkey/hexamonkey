@@ -51,7 +51,7 @@ Variable CompositeScope::doGet(const Variant &key, bool modifiable)
 
 Scope::Ptr CompositeScope::doGetScope(const Variant &key)
 {
-    if (key.type() == Variant::string) {
+    if (key.type() == Variant::stringType) {
         auto subScopeIt = _subScopes.find(key.toString());
         if (subScopeIt != _subScopes.end()) {
             return subScopeIt->second;

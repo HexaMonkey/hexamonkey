@@ -7,7 +7,7 @@
 
 namespace mkvTypes
 {
-    const ObjectTypeTemplate EBMLElement("EBMLElement", Variant::integer, "id");
+    const ObjectTypeTemplate EBMLElement("EBMLElement", Variant::integerType, "id");
 
     const ObjectTypeTemplate largeInteger("LargeInteger");
     const ObjectTypeTemplate Date("Date");

@@ -30,7 +30,7 @@ unsigned int FunctionScope::getIndex(const Variant &key) const
 
     if (key.hasNumericalType()) {
         index = key.toUnsignedInteger();
-    } else if(key.type() == Variant::string) {
+    } else if(key.type() == Variant::stringType) {
         auto it = parameterIndex.find(key.toString());
         if(it != parameterIndex.end())
             index = it->second;

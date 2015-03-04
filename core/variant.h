@@ -42,26 +42,28 @@ class Variant
 {
 public:
     enum Type{
-        ///Default type with no value, can be use as a null value, no conversion possible
-        unknown         = 0x00,
+        ///Default supertype
+        valuelessType       = 0x00,
+        ///Undefined variant
+        undefinedType       = 0x00,
+        ///Defined variant with no value
+        nullType            = 0x04,
         ///Internal supertype for integer, unsigned integer and floating
-        numerical       = 0x01,
+        numericalType       = 0x01,
         ///64 bits signed integer, conversion with other numerical
         ///types possible (ie unsignedInteger and floating)
-        integer         = 0x05,
+        integerType         = 0x05,
         ///64 bits unsigned integer, conversion with other numerical
         ///types possible (ie integer and floating)
-        unsignedInteger = 0x01,
+        unsignedIntegerType = 0x01,
         ///64 bits floating point, conversion with other numerical
         ///types possible (ie integer and unsignedInteger)
-        floating        = 0x09,
+        floatingType        = 0x09,
         ///std::string, no conversion possible
-        string          = 0x02,
+        stringType          = 0x02,
         ///Objectype, no conversion possible
-        objectType      = 0x03
+        objectType          = 0x03
     };
-
-
 
     enum Display{
         decimal     = 0x00,
@@ -89,6 +91,7 @@ public:
     /// @endcond
 
     Variant();
+    static Variant null();
 
     Variant(const Variant& other);
 
@@ -152,7 +155,9 @@ public:
 
     Type type() const;
     bool hasNumericalType() const;
+    bool isValueless() const;
     bool isNull() const;
+    bool isUndefined() const;
 
     friend bool operator==(const Variant& a, const Variant& b);
     friend bool operator< (const Variant& a, const Variant& b);

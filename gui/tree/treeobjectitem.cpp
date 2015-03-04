@@ -110,12 +110,9 @@ bool TreeObjectItem::hasStream() const
 QVariant TreeObjectItem::clipboardValue() const
 {
     const Variant& value = object().value();
-    if(!value.isNull())
-    {
+    if(!value.isValueless()) {
         return QString(toStr(value).c_str());
-    }
-    else
-    {
+    } else {
         return QVariant();
     }
 }
@@ -229,7 +226,7 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type)
     if (!type.elementType().isNull()) {
         displayType(out, type.elementType().toObjectType());
         out << "&nbsp;" << "[";
-        if (!type.elementCount().isNull()) {
+        if (!type.elementCount().isValueless()) {
             displayVariant(out, type.elementCount());
         }
         out << "]";
@@ -264,13 +261,13 @@ std::ostream& displayVariant(std::ostream& out, const Variant& variant)
 {
     switch(variant.type())
     {
-        case Variant::integer:
-        case Variant::unsignedInteger:
-        case Variant::floating:
+        case Variant::integerType:
+        case Variant::unsignedIntegerType:
+        case Variant::floatingType:
             out<<"<span style=\"color:#000080;\">"<<variant<<"</span>";
             break;
 
-        case Variant::string:
+        case Variant::stringType:
             out<<"<span style=\"color:#008000;\">\""<<variant<<"\"</span>";
             break;
 
@@ -298,7 +295,7 @@ std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::
     if (!type.elementType().isNull()) {
         displayDecl(out, type.elementType().toObjectType(), name);
         out << "&nbsp;" << "[";
-        if (!type.elementCount().isNull()) {
+        if (!type.elementCount().isValueless()) {
             displayVariant(out, type.elementCount());
         }
         out << "]";

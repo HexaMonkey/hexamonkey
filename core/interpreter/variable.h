@@ -91,11 +91,6 @@ public:
     static Variable constRef(const Variant& value);
 
     /**
-     * @brief Construct a \link Variable variable\endlink owning a null value
-     */
-    static Variable null();
-
-    /**
      * @brief Construct a \link Variable variable\endlink referencing the null constant (HMScript's NULL)
      */
     static Variable nullConstant();

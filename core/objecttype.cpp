@@ -18,7 +18,8 @@
 #include "core/objecttype.h"
 #include "core/objecttypetemplate.h"
 
-Variant nullVariant;
+Variant undefinedVariant;
+Variant nullVariant = Variant::null();
 
 ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
 {
@@ -41,19 +42,19 @@ const Variant& ObjectType::parameterValue(size_t index) const
     if (index < _parametersValue.size()) {
         return _parametersValue[index];
     } else {
-        return nullVariant;
+        return undefinedVariant;
     }
 }
 
 bool ObjectType::parameterSpecified(size_t index) const
 {
-    return (index < _parametersValue.size()) && (_parametersValue[index].type() != Variant::unknown);
+    return (index < _parametersValue.size()) && (!_parametersValue[index].isUndefined());
 }
 
 void ObjectType::setParameter(size_t index, const Variant &value)
 {
     while(index >= _parametersValue.size()) {
-        _parametersValue.push_back(nullVariant);
+        _parametersValue.push_back(undefinedVariant);
     }
 
     _parametersValue.at(index).setValue(value);
@@ -97,7 +98,7 @@ bool ObjectType::extendsDirectly(const ObjectType& other) const
 
     for(int i = 0; i < typeTemplate().numberOfParameters();++i)
     {
-        if(other.parameterValue(i).type() != Variant::unknown
+        if(other.parameterValue(i).type() != Variant::valuelessType
            && parameterValue(i) != other.parameterValue(i))
         {
             return false;
@@ -160,9 +161,9 @@ bool operator< (const ObjectType& a, const ObjectType& b)
 
 std::ostream& ObjectType::display(std::ostream& out) const
 {
-    if (!elementType().isNull()) {
+    if (!elementType().isValueless()) {
         out << elementType() << "[";
-        if (!elementCount().isNull()) {
+        if (!elementCount().isValueless()) {
             out << elementCount();
         }
         out << "]";
