@@ -76,6 +76,9 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
         case NULL_CONSTANT:
             return Variable::nullConstant();
 
+        case UNDEFINED_CONSTANT:
+            return Variable();
+
         case EMPTY_STRING_CONSTANT:
             return Variable::constRef(emptyString);
 

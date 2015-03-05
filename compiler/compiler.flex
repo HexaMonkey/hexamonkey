@@ -92,7 +92,8 @@ extern int line_number;
 "function"  {return FUNCTION_TOKEN;}  
 "const"     {return CONST_TOKEN;}  
 "showcased" {return SHOWCASED_TOKEN;}
-"NULL"      {return NULL_TOKEN;}
+"null"      {return NULL_TOKEN;}
+"undefined" {return UNDEFINED_TOKEN;}
 "delete"    {return REMOVE_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}

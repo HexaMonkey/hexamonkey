@@ -134,7 +134,7 @@ void Scope::doRemove(const Variant &/*key*/)
 
 Variable Scope::getValue(bool /*modifiable*/)
 {
-    return Variable();
+    return Variable::nullConstant();
 }
 
 const Scope::Ptr Scope::_getScope(const VariablePath &path, int max)

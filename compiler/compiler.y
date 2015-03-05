@@ -69,6 +69,7 @@
 %token <s> MAGIC_NUMBER
 
 %token NULL_TOKEN
+%token UNDEFINED_TOKEN
 %token EMPTY_STRING_TOKEN
 %token <s> STRING_VALUE 
 %token <i> INT_VALUE 
@@ -417,6 +418,7 @@ constant_value:
    |string_constant
    |float_constant
    |null_constant
+   |undefined_constant
    |empty_string_constant
 ;
 
@@ -434,6 +436,9 @@ float_constant :
     
 null_constant:
     NULL_TOKEN {push_integer(NULL_CONSTANT, 0);}
+	
+undefined_constant:
+    UNDEFINED_TOKEN {push_integer(UNDEFINED_CONSTANT, 0);}
     
 empty_string_constant:
     EMPTY_STRING_TOKEN {push_integer(EMPTY_STRING_CONSTANT, 0);}

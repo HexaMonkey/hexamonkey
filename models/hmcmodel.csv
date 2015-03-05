@@ -4,6 +4,7 @@ uintConstant;uinteger;0;
 floatConstant;float;0;
 stringConstant;string;0;
 nullConstant;integer;0;
+undefinedConstant;integer;0;
 identifier;string;0;
 classDeclaration;master;0;
 classInfo;master;0;

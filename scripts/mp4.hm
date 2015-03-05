@@ -1000,7 +1000,7 @@ class date(size) extends uint(size)
 
 class duration(size, scale) extends uint(size)
 {
-	if(@args.scale == NULL)
+	if(!@args.scale)
 		@attr[] = %formatDuration(@value);
 	else
 		@attr[] = %formatDuration(@value/@args.scale);
