@@ -16,7 +16,7 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/variant.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 
 const Variant undefinedVariant;
 const Variant nullVariant = Variant::null();

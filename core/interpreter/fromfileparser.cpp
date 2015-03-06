@@ -19,7 +19,7 @@
 #include "core/objecttypetemplate.h"
 #include "core/interpreter/fromfileparser.h"
 #include "core/interpreter/programloader.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/util/unused.h"
 
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd)

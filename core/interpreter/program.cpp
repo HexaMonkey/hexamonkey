@@ -19,7 +19,7 @@
 #include "core/variant.h"
 #include "core/parser.h"
 #include "core/interpreter/program.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/interpreter/scope/scope.h"
 #include "core/interpreter/scope/functionscope.h"
 #include "core/util/unused.h"

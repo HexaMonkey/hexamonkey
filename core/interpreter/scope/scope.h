@@ -18,8 +18,8 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-#include "core/interpreter/variable.h"
-#include "core/interpreter/variablepath.h"
+#include "core/variable/variable.h"
+#include "core/variable/variablepath.h"
 #include "core/interpreter/scope/scopeptr.h"
 
 class Variant;

@@ -23,7 +23,7 @@
 
 #include "core/object.h"
 #include "core/module.h"
-#include "core/interpreter/variablepath.h"
+#include "core/variable/variablepath.h"
 
 /**
  * @brief Node of the abstract syntaxing tree of an HmScript file

@@ -69,7 +69,8 @@ void ContainerParser::addChild(Object *child)
             Log::error("Too big", child->type(), " ", child->name());
         }
     }
-    object().setPos(object().file().tellg() - _object._beginningPos);
+    std::streamoff newPos = object().file().tellg() - _object._beginningPos;
+    object().setPos(newPos);
 }
 
 void ContainerParser::addChild(Object *child, const std::string &name)

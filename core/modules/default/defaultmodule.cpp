@@ -22,7 +22,7 @@
 #include "core/modules/default/tupleparser.h"
 #include "core/modules/default/dataparser.h"
 #include "core/modules/default/structparser.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/interpreter/scope/scope.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"

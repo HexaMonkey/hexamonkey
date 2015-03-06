@@ -2,8 +2,8 @@
 #define EVALUATOR_H
 
 #include "core/module.h"
-#include "core/interpreter/variable.h"
-#include "core/interpreter/variablepath.h"
+#include "core/variable/variable.h"
+#include "core/variable/variablepath.h"
 #include "core/interpreter/scope/scope.h"
 
 class Program;

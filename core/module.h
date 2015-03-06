@@ -27,7 +27,7 @@
 #include "core/objecttype.h"
 #include "core/objecttypetemplate.h"
 #include "core/formatdetector/standardformatdetector.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/interpreter/scope/scopeptr.h"
 
 class Object;

@@ -21,8 +21,8 @@ SOURCES += \
     ../core/formatdetector/formatdetector.cpp \
     ../core/formatdetector/extensionformatdetector.cpp \
     ../core/formatdetector/compositeformatdetector.cpp \
-    ../core/interpreter/variablepath.cpp \
-    ../core/interpreter/variable.cpp \
+    ../core/variable/variablepath.cpp \
+    ../core/variable/variable.cpp \
     ../core/interpreter/program.cpp \
     ../core/interpreter/programloader.cpp \
     ../core/interpreter/fromfileparser.cpp \
@@ -90,8 +90,8 @@ HEADERS  += \
     ../core/formatdetector/formatdetector.h \
     ../core/formatdetector/extensionformatdetector.h \
     ../core/formatdetector/compositeformatdetector.h \
-    ../core/interpreter/variablepath.h \
-    ../core/interpreter/variable.h \
+    ../core/variable/variablepath.h \
+    ../core/variable/variable.h \
     ../core/interpreter/program.h \
     ../core/interpreter/programloader.h \
     ../core/interpreter/fromfileparser.h \

@@ -23,7 +23,7 @@
 
 #include "core/parser.h"
 #include "core/interpreter/programloader.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/interpreter/evaluator.h"
 
 class Object;

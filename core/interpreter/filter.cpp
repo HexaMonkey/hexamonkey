@@ -20,7 +20,7 @@
 #include "core/objecttypetemplate.h"
 #include "core/interpreter/filter.h"
 #include "core/interpreter/programloader.h"
-#include "core/interpreter/variable.h"
+#include "core/variable/variable.h"
 #include "core/interpreter/scope/objectscope.h"
 #include "core/interpreter/scope/constscope.h"
 
