@@ -257,13 +257,13 @@ void Object::setPos(std::streamoff pos)
 {
     if (pos >= 0) {
         if (size() != -1) {
-            if (pos < size()) {
+            if (pos <= size()) {
                 _pos = pos;
             } else {
                 Log::warning("Trying to set a position outside of the bounds of the object");
             }
         } else {
-            if (_beginningPos + pos < file().size()) {
+            if (_beginningPos + pos <= file().size()) {
                 _pos = pos;
             } else {
                 Log::warning("Trying to set a position outside of the bounds of the file");
