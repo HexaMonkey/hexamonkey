@@ -163,7 +163,7 @@ void TreeObjectItem::doLoad() const
             displayDecl(S, object().type(), object().name());
         }
 
-        if (!object().value().isNull()) {
+        if (!object().value().isValueless()) {
             S << "&nbsp;=&nbsp;";
             displayVariant(S, object().value());
         }
@@ -223,7 +223,7 @@ void TreeObjectItem::doLoad() const
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type)
 {
-    if (!type.elementType().isNull()) {
+    if (!type.elementType().isValueless()) {
         displayType(out, type.elementType().toObjectType());
         out << "&nbsp;" << "[";
         if (!type.elementCount().isValueless()) {
@@ -292,7 +292,7 @@ std::ostream& displayName(std::ostream& out, const std::string& name)
 
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name)
 {
-    if (!type.elementType().isNull()) {
+    if (!type.elementType().isValueless()) {
         displayDecl(out, type.elementType().toObjectType(), name);
         out << "&nbsp;" << "[";
         if (!type.elementCount().isValueless()) {
