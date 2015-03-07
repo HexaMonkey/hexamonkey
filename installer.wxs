@@ -2,12 +2,12 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
 
   <Product Name='HexaMonkey' Id='B2D4B8F2-AA5F-4b62-8FFD-59D523F7559A' UpgradeCode='13BEF67B-6BD2-4e5d-96C9-B3101E314C73'
-    Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='HexaMonkey'>
-    <Package Id='*' Keywords='Installer' Description="Hexamonkey 1.0 Installer"
+    Language='1033' Codepage='1252' Version='0.1.0' Manufacturer='HexaMonkey'>
+    <Package Id='*' Keywords='Installer' Description="Hexamonkey 0.1 Installer"
       Comments='HexaMonkey' Manufacturer='HexaMonkey'
       InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 	  <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
-    <Property Id='DiskPrompt' Value="HexaMonkey 1.0 Installation [1]" />
+    <Property Id='DiskPrompt' Value="HexaMonkey 0.1 Installation [1]" />
 		<Directory Id='TARGETDIR' Name='SourceDir'>
 			<Directory Id='ProgramFilesFolder' Name='PFiles'>
 				<Directory Id='INSTALLDIR' Name='HexaMonkey'>
@@ -64,7 +64,6 @@
 						<File Id='IcuucDLL' Name='icuuc49.dll' DiskId='1' Source='dll\icuuc49.dll' KeyPath='yes' />
 					</Component>
 					
-					
 					<Component Id='D3DCompiler' Guid='77640412-A6F4-43d1-A2D7-87A6915E5DBB'>
 						<File Id='D3DCompilerDLL' Name='D3DCompiler_43.dll' DiskId='1' Source='dll\D3DCompiler_43.dll' KeyPath='yes' />
 					</Component>
@@ -94,7 +93,7 @@
 					<Component Id='MkvModel' Guid='B003227F-8A80-4116-8483-A7D55660DBD8'>
 						<File Id='MkvModelXML' Name='mkvmodel.xml' DiskId='1' Source='models\mkvmodel.xml' KeyPath='yes' />
 					</Component>
-					
+
 					<Directory Id="ScriptsFolder" Name="scripts">
 						<Component Id='AsfModule' Guid='016FDEEF-6C95-4f54-8D05-86FBF8F50849'>
 							<File Id='AsfModuleHM' Name='asf.hm' DiskId='1' Source='scripts\asf.hm' KeyPath='yes' />
@@ -102,6 +101,14 @@
 						
 						<Component Id='AviModule' Guid='9172EC4D-7497-41dd-8B4D-59822EF3EF6E'>
 							<File Id='AviModuleHM' Name='avi.hm' DiskId='1' Source='scripts\avi.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='GifModule' Guid='3A5C62C5-A9A1-429d-A7F8-4D8694643BA2'>
+							<File Id='GifModuleHM' Name='gif.hm' DiskId='1' Source='scripts\gif.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='Id3Module' Guid='8FDE0D35-14F8-4a10-BFA6-5E33428FAF31'>
+							<File Id='Id3ModuleHM' Name='id3.hm' DiskId='1' Source='scripts\id3.hm' KeyPath='yes' />
 						</Component>
 						
 						<Component Id='JpegModule' Guid='C4F27232-1B4D-4720-A217-3A5D8F3401BB'>
@@ -115,13 +122,25 @@
 						<Component Id='Mp4Module' Guid='5FDE29B5-0054-4514-A9F3-42011C41934D'>
 							<File Id='Mp4ModuleHM' Name='mp4.hm' DiskId='1' Source='scripts\mp4.hm' KeyPath='yes' />
 						</Component>
-												
+						
+						<Component Id='PesModule' Guid='43B0E6C6-316A-4b2a-AB0A-5FE1D9ED5262'>
+							<File Id='PesModuleHM' Name='pes.hm' DiskId='1' Source='scripts\pes.hm' KeyPath='yes' />
+						</Component>
+						
 						<Component Id='PngModule' Guid='F6EE8F34-ECCB-4222-9BC1-6AEFACBC0FD0'>
 							<File Id='PngModuleHM' Name='png.hm' DiskId='1' Source='scripts\png.hm' KeyPath='yes' />
 						</Component>
-												
+						
+						<Component Id='PsiTableModule' Guid='2516420D-B4D9-4bed-A137-9B8DE13840B4'>
+							<File Id='PsiTableModuleHM' Name='psi_table.hm' DiskId='1' Source='scripts\psi_table.hm' KeyPath='yes' />
+						</Component>
+						
 						<Component Id='RgbModule' Guid='E0B123F5-0173-47b9-A62D-7924FC1F1D23'>
 							<File Id='RgbModuleHM' Name='rgb.hm' DiskId='1' Source='scripts\rgb.hm' KeyPath='yes' />
+						</Component>
+						
+						<Component Id='SqliteModule' Guid='9F0A885F-D031-499e-B245-B4225820C977'>
+							<File Id='SqliteModuleHM' Name='sqlite.hm' DiskId='1' Source='scripts\sqlite.hm' KeyPath='yes' />
 						</Component>
 						
 						<Component Id='TsModule' Guid='C36661E3-255E-42ab-87DA-081ACFE8A635'>
@@ -173,11 +192,16 @@
 			<ComponentRef Id='MkvModel'/>
 			<ComponentRef Id='AsfModule'/>
 			<ComponentRef Id='AviModule'/>
+			<ComponentRef Id='GifModule'/>
+			<ComponentRef Id='Id3Module'/>
 			<ComponentRef Id='JpegModule'/>
 			<ComponentRef Id='MicrosoftModule'/>
 			<ComponentRef Id='Mp4Module'/>
+			<ComponentRef Id='PesModule'/>
 			<ComponentRef Id='PngModule'/>
+			<ComponentRef Id='PsiTableModule'/>
 			<ComponentRef Id='RgbModule'/>
+			<ComponentRef Id='SqliteModule'/>
 			<ComponentRef Id='TsModule'/>
 			<ComponentRef Id='UuidModule'/>
 			<ComponentRef Id='ZipModule'/>
