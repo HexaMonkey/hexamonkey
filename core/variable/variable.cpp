@@ -17,12 +17,21 @@
 
 #include "core/variant.h"
 #include "core/variable/variable.h"
+#include "core/variable/commonvariable.h"
+#include "core/log/logmanager.h"
 
 const Variant undefinedVariant;
 const Variant nullVariant = Variant::null();
 
+
+class UndefinedVariableImplementation : public VariableImplementation
+{
+protected:
+    virtual Variant doGetValue() override;
+};
+
 Variable::Variable()
-    :_implementation(new VariableImplementation),
+    :_implementation(new UndefinedVariableImplementation),
      _tag(Variable::Tag::undefined)
 {
 }
@@ -34,18 +43,28 @@ Variable::Variable(VariableImplementation *implementation, bool modifiable)
 {
 }
 
-void Variable::setValue(const Variant &value)
-{
-    if (_tag != Tag::modifiable) {
-        inPlaceCopy(true);
-    }
-
-    _implementation->doSetValue(value);
-}
-
 Variant Variable::value() const
 {
     return _implementation->doGetValue();
+}
+
+void Variable::setValue(const Variant &value)
+{
+    if (_tag == Tag::modifiable) {
+        _implementation->doSetValue(value);
+    } else {
+        Log::warning("Trying to set the value of a constant variable");
+    }
+}
+
+Variable Variable::field(const Variant &key, bool modifiable)
+{
+    return _implementation->doGetField(key, modifiable);
+}
+
+void Variable::setField(const Variant &key, const Variable &variable)
+{
+    _implementation->doSetField(key, variable);
 }
 
 void Variable::setConstant()
@@ -58,93 +77,6 @@ void Variable::setConstant()
 bool Variable::isDefined() const
 {
     return _tag != Tag::undefined;
-}
-
-VariableImplementation::~VariableImplementation()
-{
-}
-
-void VariableImplementation::doSetValue(const Variant &/*value*/)
-{
-}
-
-Variant VariableImplementation::doGetValue()
-{
-    return undefinedVariant;
-}
-
-class OwningVariableImplementation : public VariableImplementation
-{
-public:
-    OwningVariableImplementation(Variant value);
-protected:
-    virtual void doSetValue(const Variant& value) override;
-    virtual Variant doGetValue() override;
-private:
-    Variant _value;
-};
-
-OwningVariableImplementation::OwningVariableImplementation(Variant value)
-    : _value(value)
-{
-}
-
-void OwningVariableImplementation::doSetValue(const Variant &value)
-{
-    _value = value;
-}
-
-Variant OwningVariableImplementation::doGetValue()
-{
-    return _value;
-}
-
-class RefVariableImplementation : public VariableImplementation
-{
-public:
-    RefVariableImplementation(Variant& value);
-protected:
-    virtual void doSetValue(const Variant& value) override;
-    virtual Variant doGetValue() override;
-private:
-    Variant& _value;
-};
-
-
-RefVariableImplementation::RefVariableImplementation(Variant& value)
-    : _value(value)
-{
-}
-
-void RefVariableImplementation::doSetValue(const Variant &value)
-{
-    _value = value;
-}
-
-Variant RefVariableImplementation::doGetValue()
-{
-    return _value;
-}
-
-class ConstRefVariableImplementation : public VariableImplementation
-{
-public:
-    ConstRefVariableImplementation(const Variant& value);
-protected:
-    virtual Variant doGetValue() override;
-private:
-    Variant _value;
-};
-
-
-ConstRefVariableImplementation::ConstRefVariableImplementation(const Variant& value)
-    : _value(value)
-{
-}
-
-Variant ConstRefVariableImplementation::doGetValue()
-{
-    return _value;
 }
 
 void Variable::inPlaceCopy(bool modifiable)
@@ -171,4 +103,35 @@ Variable Variable::constRef(const Variant &value)
 Variable Variable::nullConstant()
 {
     return Variable(new ConstRefVariableImplementation(nullVariant), false);
+}
+
+
+VariableImplementation::~VariableImplementation()
+{
+}
+
+Variant VariableImplementation::doGetValue()
+{
+    return nullVariant;
+}
+
+void VariableImplementation::doSetValue(const Variant &/*value*/)
+{
+    Log::warning("Trying to assign a value to a variable that doesn't support assignment");
+}
+
+Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modifiable*/)
+{
+    return Variable();
+}
+
+void VariableImplementation::doSetField(const Variant &/*key*/, const Variable &/*variable*/)
+{
+    Log::warning("Trying to assign a field on a variable that doesn't support assignment");
+}
+
+
+Variant UndefinedVariableImplementation::doGetValue()
+{
+    return undefinedVariant;
 }

@@ -67,7 +67,8 @@ SOURCES += \
     ../core/util/fileutil.cpp \
     ../core/util/csvreader.cpp \
     ../core/util/bitutil.cpp \
-    ../core/util/osutil.cpp
+    ../core/util/osutil.cpp \
+    ../core/variable/commonvariable.cpp
 
 HEADERS  += \ 
     ../core/variant.h \
@@ -148,4 +149,5 @@ HEADERS  += \
     ../core/util/rapidxml/rapidxml_print.hpp \
     ../core/util/rapidxml/rapidxml_iterators.hpp \
     ../core/util/rapidxml/rapidxml.hpp \
-    ../compiler/model.h
+    ../compiler/model.h \
+    ../core/variable/commonvariable.h

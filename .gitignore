@@ -33,6 +33,9 @@
 !core/interpreter/scope
 !core/interpreter/scope/*.cpp
 !core/interpreter/scope/*.h
+!core/variable
+!core/variable/*.cpp
+!core/variable/*.h
 !core/modules
 !core/modules/default
 !core/modules/default/*.cpp

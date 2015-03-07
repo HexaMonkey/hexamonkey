@@ -61,19 +61,31 @@ public:
     Variant value() const;
 
     /**
+     * @brief Get field by key
+     * @param key
+     * @param modifable Set to true if the returned variable will used as left-value
+     */
+    Variable field(const Variant& key, bool modifable = false);
+
+    /**
+     * @brief Set field by key
+     */
+    void setField(const Variant& key, const Variable& variable);
+
+    /**
      * @brief Set the variable as constant which prevents modification of the value
      */
     void setConstant();
 
     /**
-     * @brief Transform the variable into a copy of the current value
-     */
-    void inPlaceCopy(bool modifiable = true);
-
-    /**
      * @brief Check if the variable not been constructed by the default constructor.
      */
     bool isDefined() const;
+
+    /**
+     * @brief Transform the varaible into a simple copy of its current value
+     */
+    void inPlaceCopy(bool modifiable = true);
 
     /**
      * @brief Construct a \link Variable variable\endlink copying and then owning a value
@@ -112,8 +124,11 @@ public:
 protected:
     friend class Variable;
 
-    virtual void doSetValue(const Variant& value);
     virtual Variant doGetValue();
+    virtual void doSetValue(const Variant& value);
+
+    virtual Variable doGetField(const Variant& key, bool modifiable);
+    virtual void doSetField(const Variant& key, const Variable& variable);
 };
 
 #endif // VARIABLE_H
