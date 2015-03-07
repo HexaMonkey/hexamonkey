@@ -11,5 +11,7 @@ DataParser::DataParser(Object &object, int64_t size)
 
 void DataParser::doParseHead()
 {
-    object().setSize(size);
+    if (size != -1) {
+        object().setSize(size);
+    }
 }

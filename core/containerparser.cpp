@@ -66,7 +66,7 @@ void ContainerParser::addChild(Object *child)
             object().seekEnd();
 
             setParsed();
-            Log::error("Too big", child->type(), " ", child->name());
+            Log::error("Too big ", child->type(), " ", child->name());
         }
     }
     std::streamoff newPos = object().file().tellg() - _object._beginningPos;

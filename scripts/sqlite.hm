@@ -31,6 +31,7 @@ class DataBaseHeader
 {
     String(16) HeaderString;
     uint(16) DatabasePageSize;
+	@global.databasePageSize = 8*DatabasePageSize;
     uint(8) FileFormatWrite;
     uint(8) FileFormatRead;
     uint(8) ReservedSpace;
@@ -59,7 +60,7 @@ class BTreePage
     if(@rank == 0) {
         DataBaseHeader db_header;
     }
-    @size = 8*@parent[0].db_header.DatabasePageSize;
+    @size = @global.databasePageSize;
 
     BTreePageHeader btreePageHeader;
 
@@ -72,7 +73,6 @@ class BTreePage
     }
 
     Data(unalloc_size) unallocatedSpace;
-
     if(btreePageHeader.PageType == 2) {
         IndexInteriorCell cells[btreePageHeader.CellsNumber];
     } else if(btreePageHeader.PageType == 5) {
@@ -86,8 +86,7 @@ class BTreePage
     Data data;
 }
 
-class TableLeafCell(size) {
-    @size = size;
+class TableLeafCell {
     Varint payload_size;
     Varint row_id;
     Record(payload_size) payload; // todo : take into account overflow
@@ -115,7 +114,6 @@ class IndexInteriorCell {
 }
 
 class Varint {
-    @size = 64;
     @value = 0;
     var i;
     for(i=1;i<10;i++) {
@@ -131,7 +129,6 @@ class Varint {
             @value = (@value << 8) + []; // to verify
         }
     }
-    @size = 8*i;
 }
 
 class Record(bytesize) {
@@ -153,7 +150,7 @@ class BTreePageHeader
 }
 
 class FreeListTrunkPage {
-    @size = 8*@parent[0].db_header.DatabasePageSize;
+    @size = @global.databasePageSize;
     uint(32) next_freelist_trunk_page;
     uint(32) leaf_pages_size;
     for(var i=0;i<leaf_pages_size;i++) {
@@ -162,13 +159,13 @@ class FreeListTrunkPage {
 }
 
 class FreeListLeafPage {
-    @size = 8*@parent[0].db_header.DatabasePageSize;
+    @size = @global.databasePageSize;
     Data unused_space;
 }
 
 
 class PtrMapPage {
-    @size = 8*@parent[0].db_header.DatabasePageSize;
+    @size = @global.databasePageSize;
     while(1) {
         PtrMapEntry *;
     }
@@ -178,4 +175,3 @@ class PtrMapEntry {
     uint(8) type;
     uint(32) page_number;
 }
-
