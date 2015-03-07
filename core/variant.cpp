@@ -475,7 +475,7 @@ void Variant::setDisplayType(Variant::Display display)
     _type = (_type & ~displayMask) | display;
 }
 
-std::ostream& Variant::display(std::ostream& out) const
+std::ostream& Variant::display(std::ostream& out, bool setFlags) const
 {
     uint8_t displayType = (_type & displayMask);
     uint8_t type = (_type & typeMask);
@@ -503,14 +503,16 @@ std::ostream& Variant::display(std::ostream& out) const
         }
 
     } else {
-        switch (displayType) {
-            case octal:
-                out << std::oct << std::showbase;
-                break;
+        if (setFlags) {
+            switch (displayType) {
+                case octal:
+                    out << std::oct << std::showbase;
+                    break;
 
-            case hexadecimal:
-                out << std::hex << std::showbase;
-                break;
+                case hexadecimal:
+                    out << std::hex << std::showbase;
+                    break;
+            }
         }
 
 
@@ -536,12 +538,17 @@ std::ostream& Variant::display(std::ostream& out) const
                 out<<*_data.t;
                 break;
 
+            case nullType:
+                out<<"null";
+                break;
+
             default:
-                out<<"NULL";
+                out<<"undefined";
             break;
         }
-
-        out << std::dec;
+        if (setFlags) {
+            out << std::dec;
+        }
     }
     return out;
 }

@@ -188,7 +188,7 @@ public:
     bool operator!() const;
 
     void setDisplayType(Display display);
-    std::ostream& display(std::ostream& out) const;
+    std::ostream& display(std::ostream& out, bool setFlags = true) const;
 
 
 

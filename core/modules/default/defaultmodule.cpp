@@ -176,7 +176,8 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         std::stringstream S;
-        S<<std::setbase(scope.get(1).value().toInteger())<<std::setw(scope.get(2).value().toInteger())<<std::setfill('0')<<scope.get(0).value();
+        S<<std::setbase(scope.get(1).value().toInteger())<<std::setw(scope.get(2).value().toInteger())<<std::setfill('0');
+        scope.get(0).value().display(S, false);
         const std::string& s = S.str();
         return Variable::copy(s);
     });
