@@ -28,7 +28,9 @@ ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType 
 void ArrayParser::doParseHead()
 {
     modifiableType()->setElementType(elementType);
-    object().setSize(size);
+    if (size != -1) {
+        object().setSize(size);
+    }
 }
 
 void ArrayParser::doParse()

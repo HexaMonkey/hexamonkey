@@ -18,12 +18,13 @@ class CHUNK(code)
 	//two letters and two digits i
 	var subCode1 = %substr(dwFourCC,0,2);
 	var subCode2 = %substr(dwFourCC,2,2);
-	if(%int(subCode1) != null)
+	if (%int(subCode1) != undefined) {
 		@args.code = subCode2;
-	else if(%int(subCode2) != null)
+	} else if (%int(subCode2) != undefined) {
 		@args.code = subCode1;
-	else
+	} else {
 		@args.code = dwFourCC;
+	}
 }
 
 class LIST(code) as CHUNK("LIST"), RIFF(code) as CHUNK("RIFF")

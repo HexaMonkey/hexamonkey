@@ -268,17 +268,14 @@ bool DefaultModule::doLoad()
         if(   scope.get(0).value().canConvertTo(Variant::stringType)
            && scope.get(1).value().canConvertTo(Variant::unsignedIntegerType))
         {
-            const std::string& str    = scope.get(0).value().toString();
+            const std::string str = scope.get(0).value().toString();
 
             uint64_t start;
             uint64_t size;
-            if(scope.get(2).value().canConvertTo(Variant::unsignedIntegerType))
-            {
+            if(scope.get(2).value().canConvertTo(Variant::unsignedIntegerType)) {
                 start = scope.get(1).value().toUnsignedInteger();
                 size = scope.get(2).value().toUnsignedInteger();
-            }
-            else
-            {
+            } else {
                 start = 0;
                 size = scope.get(1).value().toUnsignedInteger();
             }
