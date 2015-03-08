@@ -20,6 +20,9 @@
 
 #include "core/variable/variable.h"
 
+/**
+ * @brief Basic variable implentation owning a \link Variant value\endlink by copy
+ */
 class OwningVariableImplementation : public VariableImplementation
 {
 public:
@@ -31,6 +34,9 @@ private:
     Variant _value;
 };
 
+/**
+ * @brief Basic variable implentation referencing a \link Variant value\endlink
+ */
 class RefVariableImplementation : public VariableImplementation
 {
 public:
@@ -42,6 +48,9 @@ private:
     Variant& _value;
 };
 
+/**
+ * @brief Basic variable implentation const referencing a \link Variant value\endlink
+ */
 class ConstRefVariableImplementation : public VariableImplementation
 {
 public:

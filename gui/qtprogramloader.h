@@ -3,6 +3,9 @@
 
 #include "core/interpreter/programloader.h"
 
+/**
+ * @brief Program loader using some advanced Qt functions
+ */
 class QtProgramLoader : public ProgramLoader
 {
 public:

@@ -35,8 +35,7 @@ class ObjectType;
  * Explicit conversion are allowed in some cases : you can check if a conversion is possible
  * using canConvertTo and then convert the internal value using convertTo.
  *
- * Most usual operators have been overloaded and behave as exepcted is c/c++, errors are thrown when the opearator is
- * not allowed for the types (such as multiplying two strings)
+ * Most usual operators have been overloaded and behave as exepected is c/c++
  */
 class Variant
 {
@@ -236,7 +235,7 @@ bool operator||(const Variant& a, const Variant& b);
 
 std::ostream& operator<<(std::ostream& out, const Variant& variant);
 
-
+/** @cond */
 namespace std
 {
     template<>
@@ -250,6 +249,6 @@ namespace std
         }
     };
 }
-
+/** @endcond */
 
 #endif // VARIANT_H

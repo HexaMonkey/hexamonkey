@@ -37,6 +37,9 @@ protected:
     virtual const ObjectType& constType() = 0;
 };
 
+/**
+ * @brief Type scope implementation given a reference to a \link ObjectType type\endlink
+ */
 class TypeScope : public AbstractTypeScope
 {
 public:
@@ -50,6 +53,9 @@ private:
     const ObjectType& _constType;
 };
 
+/**
+ * @brief Type scope implementation given a reference to a \link Parser parser\endlink
+ */
 class ParserTypeScope : public AbstractTypeScope
 {
 public:

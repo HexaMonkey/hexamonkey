@@ -29,7 +29,7 @@
 #include "core/interpreter/scope/compositescope.h"
 
 /**
- * @brief Parser implementation using an HMScript class definition
+ * @brief Parser implementation using an HMDL class definition
  *
  * Uses an instance of BlockExecution to execute the program.
  * A breakpoint is given to isolate the head, which is computed

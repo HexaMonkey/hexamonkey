@@ -33,8 +33,8 @@ class HmcModule;
  * @brief Compile and load \link Program programs\endlink
  *
  * The \link ProgramLoader program loader\endlink can load a \link Program program\endlink
- * from a compiled HmScript file to be used as a \link Module module\endlink : FromFileModule. It can also
- * compile a HmScript file in order to load subsequently the compiled version.
+ * from a compiled HMDL file to be used as a \link Module module\endlink : FromFileModule. It can also
+ * compile a HMDL file in order to load subsequently the compiled version.
  *
  * The program loader can also load a \link Program program\endlink from a string compiled by expcompiler
  * to be used as a right value that can be evaluated. This is for instance used by \link Filter filters\endlink
@@ -44,7 +44,9 @@ class ProgramLoader
 {
 public:
     /**
-     * @param module used to parse compiled HMScript files
+     * @param module used to parse compiled HMDL files
+     * @param compilerDirs
+     * @param userDir
      */
     ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir);
 
@@ -54,13 +56,13 @@ public:
     Program fromString(const std::string &exp) const;
 
     /**
-     * @brief Compile and load a \link Program program\endlink from an HmScript file to be
+     * @brief Compile and load a \link Program program\endlink from an HMDL file to be
      * used as a \link Module module\endlink.
      */
     Program fromHM (const std::string& path) const;
 
     /**
-     * @brief Compile \link Program program\endlink from a compiled HmScript file to be
+     * @brief Compile \link Program program\endlink from a compiled HMDL file to be
      * used as a \link Module module\endlink.
      */
     Program fromHMC(const std::string& path) const;
@@ -68,8 +70,8 @@ public:
     /**
      * @brief Load a \link Program program\endlink from the appopriate source to be used as a module.
      *
-     * The basePath is the name of the HmScript file stripped of its extension. The function will either
-     * use the HmScript file or the compiled Hmscript file, depending on their existences and their last
+     * The basePath is the name of the HMDL file stripped of its extension. The function will either
+     * use the HMDL file or the compiled HMDL file, depending on their existences and their last
      * modification times.
      */
     Program fromFile(const std::string& basePath) const;

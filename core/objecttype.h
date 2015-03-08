@@ -77,7 +77,7 @@ public:
     void setParameter(size_t index, const Variant& value);
 
     /**
-     * @brief Get type name (by default @link typeTemplate() template's name)
+     * @brief Get type name (by default @link ObjectTypeTemplate template\endlink's name)
      */
     const std::string& name() const;
     void setName(const std::string& name);
@@ -121,7 +121,7 @@ public:
 
     /**
      * @brief Used to know if the object should be displayed as a Tuple (if the
-     * @link elementType() elementType is also not NULL) and what value is to be displayed
+     * @link elementType elementType \endlink is also not NULL) and what value is to be displayed
      * for count if so.
      */
     const Variant &elementCount() const;

@@ -48,7 +48,7 @@ class Scope;
  * \link ObjectType type\endlink A and A's specification is B then \link Parser parser\endlink for B will be subsequently added and the
  * \link ObjectType type\endlink of the \link Object object\endlink will be B.
  *
- * It can also define functions that can be used in hmscripts.
+ * It can also define functions that can be used in HMDLs.
  *
  * Other modules can be imported, in which case if a \link ObjectType type\endlink or a function can not be handle by the \link Module module\endlink,
  * then the imported \link Module modules\endlink will serve as fallback with priority for the last loaded.
@@ -243,7 +243,7 @@ protected:
      * accessed by its name by the function getTemplate.
      *
      * Every \link ObjectTypeTemplate type template\endlink should be registered so that when the \link Module module\endlink
-     * is imported into an \link FromFileModule HMScript module\endlink, the \link ObjectTypeTemplate type template\endlink
+     * is imported into an \link FromFileModule HMDL module\endlink, the \link ObjectTypeTemplate type template\endlink
      * can be recognized.
      */
     void addTemplate(const ObjectTypeTemplate& typeTemplate);

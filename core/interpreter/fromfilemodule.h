@@ -25,7 +25,7 @@
 #include "core/interpreter/evaluator.h"
 
 /**
- * @brief Module implementation created from an HMScript file
+ * @brief Module implementation created from an HMDL file
  *
  * The module generates instances of FromFileParser as parsers.
  */

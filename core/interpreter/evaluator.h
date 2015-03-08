@@ -14,10 +14,6 @@ class Program;
 class Evaluator
 {
 public:
-    /**
-     * @param scope Used to access variables
-     * @param module Used to access function
-     */
     Evaluator();
     Evaluator(Scope& scope);
     Evaluator(const Module &module);

@@ -3,6 +3,9 @@
 
 #include "core/interpreter/scope/scope.h"
 
+/**
+ * @brief Scope wrapper permitting only const actions
+ */
 class ConstScope : public Scope
 {
 public:

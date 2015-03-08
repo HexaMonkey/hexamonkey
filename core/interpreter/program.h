@@ -26,7 +26,7 @@
 #include "core/variable/variablepath.h"
 
 /**
- * @brief Node of the abstract syntaxing tree of an HmScript file
+ * @brief Node of the abstract syntaxing tree of an HMDL file
  *
  * The root of a \link Program program\endlink can be loaded by the
  * \link ProgramLoader program loader\endlink. The children nodes can then be generated

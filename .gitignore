@@ -9,7 +9,7 @@
 !LICENSE.txt
 !README.md
 !TODO
-
+!mainpage.dox
 !common_link.pri
 
 #core of the program

@@ -6,6 +6,9 @@
 
 class Object;
 
+/**
+ * @brief Scope accessing the context of an \link Object object\endlink
+ */
 class ContextScope : public Scope
 {
 public:

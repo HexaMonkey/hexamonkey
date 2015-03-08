@@ -5,6 +5,9 @@
 
 class Object;
 
+/**
+ * @brief Scope accessing the attributes of an \link Object object\endlink
+ */
 class AttributeScope : public Scope
 {
 public:

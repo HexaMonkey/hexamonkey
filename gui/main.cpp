@@ -15,30 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-/**
- *\mainpage HexaMonkey developper documentation
- *
- * This is a documentation for those who wish to contribute to the HexaMonkey software.
- * For those who wish to write or modify HMScript the documentation can be found
- * <a href="../hmdoc.php">here</a>.
- *
- * The code is written in C++11 and is released under the GPLv2 licence. It is divided into
- * two main blocks : the core and the gui. The core is responsible for all file manipulation
- * and object parsing and the gui is reponsible for the Qt graphical user interface.
- *
- * The core has no library dependencies other than the standard library and rapidxml
- * that is directly included in the code. It can be included into any project to parse files.
- *
- * More details on the architecture of HexaMonkey <a href="../archdoc.php">here</a>.
- *
- * The gui is written using Qt 5.0. It is currently divided into two main widget : the \link TreeWidget tree
- * widget \endlink and the \link HexFileWidget hexadecimal widget \endlink. The tree widget is the main
- * controller, it allows to parse files and explore the structure. The hexadecimal widget display the current
- * file in hexadecimal form and in ASCII form, the memory area corresponding to the node selected in the tree
- * view is highlighted.
- */
-
-
 #include <QtGui>
 #include <QApplication>
 #include <QIcon>

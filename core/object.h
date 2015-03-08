@@ -55,7 +55,11 @@ class Object
         typedef container::reverse_iterator reverse_iterator;
         typedef container::const_reverse_iterator const_reverse_iterator;
 
+
         friend class Parsing;
+        /**
+         * @brief RAII object used to lock parsing to avoid reentrency
+         */
         class Parsing
         {
         public:

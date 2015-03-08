@@ -29,7 +29,7 @@
 class Object;
 
 /**
- * @brief Evaluate an HMScript statement on an object
+ * @brief Evaluate an HMDL statement on an object
  */
 class Filter
 {

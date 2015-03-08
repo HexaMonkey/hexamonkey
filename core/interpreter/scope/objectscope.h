@@ -29,7 +29,7 @@ class Object;
  *
  * The members can either be accesses by their index, name or \link ObjectType type\endlink
  *
- * See the HMScript language documentation for reserved
+ * See the HMDL language documentation for reserved
  * \link Variable variables\endlink/\link Scope scopes\endlink
  */
 class ObjectScope : public Scope

@@ -56,12 +56,12 @@ public:
     void setValue(const Variant &value);
 
     /**
-     * @brief Get the value of the \link Variable variable\endlink
+     * @brief (Not yet in use) Get the value of the \link Variable variable\endlink
      */
     Variant value() const;
 
     /**
-     * @brief Get field by key
+     * @brief (Not yet in use) Get field by key
      * @param key
      * @param modifable Set to true if the returned variable will used as left-value
      */
@@ -103,7 +103,7 @@ public:
     static Variable constRef(const Variant& value);
 
     /**
-     * @brief Construct a \link Variable variable\endlink referencing the null constant (HMScript's NULL)
+     * @brief Construct a \link Variable variable\endlink referencing the null constant (HMDL's NULL)
      */
     static Variable nullConstant();
 

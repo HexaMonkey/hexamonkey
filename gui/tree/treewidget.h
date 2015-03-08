@@ -39,7 +39,7 @@ class TreeItem;
  * for displaying and controlling the tree.
  *
  * The widget also contain a FilterWidget that allows to filter nodes based
- * on the evaluation of an HMScript expression on the corresponding \link
+ * on the evaluation of an HMDL expression on the corresponding \link
  * Object objects\endlink.
  */
 class TreeWidget : public QWidget

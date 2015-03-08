@@ -33,7 +33,7 @@ class Variable;
 class LocalScope : public Scope
 {
 public:
-    LocalScope(const Ptr& contextScope = Ptr());
+    LocalScope(const Scope::Ptr& contextScope = Ptr());
     LocalScope(Scope* contextScope);
 
 protected:

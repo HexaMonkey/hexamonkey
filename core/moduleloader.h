@@ -56,7 +56,7 @@ public:
     void addModule(const std::string& key, Module* module);
 
     /**
-     * @brief Generate and add \link FromFileModule HMScript modules\endlink from directories
+     * @brief Generate and add \link FromFileModule HMDL modules\endlink from directories
      *
      * The key for the module are the name of the files (extension excluded)
      *
