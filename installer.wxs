@@ -2,8 +2,8 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
 
   <Product Name='HexaMonkey' Id='B2D4B8F2-AA5F-4b62-8FFD-59D523F7559A' UpgradeCode='13BEF67B-6BD2-4e5d-96C9-B3101E314C73'
-    Language='1033' Codepage='1252' Version='0.1.0' Manufacturer='HexaMonkey'>
-    <Package Id='*' Keywords='Installer' Description="Hexamonkey 0.1 Installer"
+    Language='1033' Codepage='1252' Version='1.0.1' Manufacturer='HexaMonkey'>
+    <Package Id='*' Keywords='Installer' Description="Hexamonkey 1.0.1 Installer"
       Comments='HexaMonkey' Manufacturer='HexaMonkey'
       InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 	  <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
