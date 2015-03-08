@@ -23,8 +23,8 @@
 #include "../mainwindow.h"
 
 
-HexFileWidget::HexFileWidget(MainWindow *parent)
-    : parent(parent)
+HexFileWidget::HexFileWidget(QWidget *parent)
+    : QWidget(parent)
 {
     //Data model
     model = new HexFileModel(this);

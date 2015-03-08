@@ -50,20 +50,17 @@
  * The hex widget also contains a \link HexFileSearchWidget search widget\endlink that
  * allows the search for strings.
  */
-class MainWindow;
-
 class HexFileWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    HexFileWidget(MainWindow *parent=0);
+    HexFileWidget(QWidget *parent=0);
 
     HexFileView *view;
     HexFileHeader *header;
     HexFileModel *model;
     HexFileSearchWidget *searchWidget;
-    MainWindow *parent;
 
     unsigned int hexWidth() const;
     unsigned int charWidth() const;
