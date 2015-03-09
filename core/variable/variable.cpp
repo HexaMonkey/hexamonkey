@@ -59,12 +59,32 @@ void Variable::setValue(const Variant &value)
 
 Variable Variable::field(const Variant &key, bool modifiable)
 {
-    return _implementation->doGetField(key, modifiable);
+    modifiable = modifiable && _tag == Tag::modifiable;
+    if (modifiable) {
+        return _implementation->doGetField(key, true);
+    } else {
+        Variable result = _implementation->doGetField(key, false);
+        result.setConstant();
+        return result;
+    }
 }
 
 void Variable::setField(const Variant &key, const Variable &variable)
 {
-    _implementation->doSetField(key, variable);
+    if (_tag == Tag::modifiable) {
+        _implementation->doSetField(key, variable);
+    } else {
+        Log::warning("Trying to set a field on a constant variable");
+    }
+}
+
+void Variable::removeField(const Variant &key)
+{
+    if (_tag == Tag::modifiable) {
+        _implementation->doRemoveField(key);
+    } else {
+        Log::warning("Trying to remove a field on a constant variable");
+    }
 }
 
 void Variable::setConstant()
@@ -100,6 +120,12 @@ Variable Variable::constRef(const Variant &value)
     return Variable(new ConstRefVariableImplementation(value), false);
 }
 
+Variable Variable::null()
+{
+    return Variable(new OwningVariableImplementation(nullVariant), true);
+}
+
+
 Variable Variable::nullConstant()
 {
     return Variable(new ConstRefVariableImplementation(nullVariant), false);
@@ -128,6 +154,11 @@ Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modif
 void VariableImplementation::doSetField(const Variant &/*key*/, const Variable &/*variable*/)
 {
     Log::warning("Trying to assign a field on a variable that doesn't support assignment");
+}
+
+void VariableImplementation::doRemoveField(const Variant &key)
+{
+    Log::warning("Trying to remove a field on a variable that doesn't support removal");
 }
 
 

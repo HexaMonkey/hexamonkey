@@ -22,6 +22,8 @@
 #include "core/parser.h"
 #include "core/log/logmanager.h"
 #include "core/modules/stream/streammodule.h"
+#include "core/variable/objectcontext.h"
+
 
 #define BUFFER_SIZE 1048576
 
@@ -410,6 +412,21 @@ bool Object::exploreSome(int hint)
 const std::vector<std::string> &Object::showcasedAttributes() const
 {
     return _showcasedAttributes;
+}
+
+ObjectContext *Object::context(bool createIfNeeded)
+{
+    if (_context == nullptr && createIfNeeded) {
+        _context = new ObjectContext(*this);
+        _contextVariable = Variable((VariableImplementation *) _context, true);
+    }
+
+    return _context;
+}
+
+const ObjectContext *Object::context() const
+{
+    return _context;
 }
 
 Variant *Object::attributeValue(const Variant &key)

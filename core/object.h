@@ -29,8 +29,10 @@
 #include "core/objecttype.h"
 #include "core/variant.h"
 #include "core/util/strutil.h"
+#include "core/variable/variable.h"
 
 class Parser;
+class ObjectContext;
 
 /** @brief Node of the tree structure associated with a \link File file\endlink
  *
@@ -55,6 +57,9 @@ class Object
         typedef container::reverse_iterator reverse_iterator;
         typedef container::const_reverse_iterator const_reverse_iterator;
 
+        typedef std::unordered_map<std::string, Variable> contextContainer;
+        typedef contextContainer::iterator contextIterator;
+        typedef contextContainer::const_iterator const_contextIterator;
 
         friend class Parsing;
         /**
@@ -175,6 +180,12 @@ class Object
         Variant& setAttributeValue(const Variant& key, const Variant& value);
         int maxAttributeNumber() const;
         const std::vector<std::string>& showcasedAttributes() const;
+
+        /**
+         * @brief Context
+         */
+        ObjectContext* context(bool createIfNeeded = false);
+        const ObjectContext* context() const;
 
         /**
          * @brief Context values
@@ -298,17 +309,24 @@ class Object
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::map<std::string, Object*> _lookUpTable;
 
-        std::unordered_map<Variant, Variant> _contextMap;
-
         std::unordered_map<Variant, Variant> _attributeMap;
         std::vector<std::string> _showcasedAttributes;
         int _maxAttributeNumber;
+
+        std::unordered_map<Variant, Variant> _contextMap;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;
 
         size_t _parsedCount;
         bool _parsingInProgress;
+
+        Variable _variable;
+
+        ObjectContext* _context;
+        Variable _contextVariable;
+
+        Variable _attributeVariable;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

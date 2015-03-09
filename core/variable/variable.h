@@ -73,6 +73,11 @@ public:
     void setField(const Variant& key, const Variable& variable);
 
     /**
+     * @brief Remove field by key
+     */
+    void removeField(const Variant& key);
+
+    /**
      * @brief Set the variable as constant which prevents modification of the value
      */
     void setConstant();
@@ -103,6 +108,11 @@ public:
     static Variable constRef(const Variant& value);
 
     /**
+     * @brief Construct a \link Variable variable\endlink owning a null value
+     */
+    static Variable null();
+
+    /**
      * @brief Construct a \link Variable variable\endlink referencing the null constant (HMDL's NULL)
      */
     static Variable nullConstant();
@@ -129,6 +139,7 @@ protected:
 
     virtual Variable doGetField(const Variant& key, bool modifiable);
     virtual void doSetField(const Variant& key, const Variable& variable);
+    virtual void doRemoveField(const Variant& key);
 };
 
 #endif // VARIABLE_H
