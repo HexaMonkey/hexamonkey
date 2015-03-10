@@ -11,14 +11,14 @@ class ObjectAttributes : public VariableImplementation
 public:
     ObjectAttributes();
 
-    Variant& pushNumbered();
+    Variant& addNumbered();
     Variant& getNumbered(size_t number);
     const Variant& getNumbered(size_t numbered) const;
     size_t numberedCount() const;
 
-    Variant& pushNamed(const std::string& name);
-    Variant& getNamed(const std::string& name);
-    const Variant& getNamed(const std::string &name) const;
+    Variant* addNamed(const std::string& name);
+    Variant* getNamed(const std::string& name);
+    const Variant* getNamed(const std::string &name) const;
     const std::vector<std::string>& fieldNames() const;
 
 protected:
@@ -28,8 +28,6 @@ private:
     std::unordered_map<std::string, Variant> _namedFields;
     std::vector<std::string> _fieldNames;
     std::vector<Variant> _numberedFields;
-
-    static Variant undefinedVariant;
 };
 
 #endif // OBJECTATTRIBUTES_H

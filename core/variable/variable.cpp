@@ -115,9 +115,27 @@ Variable Variable::ref(Variant &value, bool modifiable)
     return Variable(new RefVariableImplementation(value), modifiable);
 }
 
+Variable Variable::refIfNotNull(Variant *value, bool modifiable)
+{
+    if (value != nullptr) {
+        return Variable(new RefVariableImplementation(*value), modifiable);
+    } else {
+        return Variable();
+    }
+}
+
 Variable Variable::constRef(const Variant &value)
 {
     return Variable(new ConstRefVariableImplementation(value), false);
+}
+
+Variable Variable::constRefIfNotNull(const Variant *value)
+{
+    if (value != nullptr) {
+        return Variable(new ConstRefVariableImplementation(*value), false);
+    } else {
+        return Variable();
+    }
 }
 
 Variable Variable::null()

@@ -2,15 +2,13 @@
 
 #include "core/log/logmanager.h"
 
-Variant ObjectAttributes::undefinedVariant;
-
 ObjectAttributes::ObjectAttributes()
 {
 }
 
-Variant& ObjectAttributes::pushNumbered()
+Variant& ObjectAttributes::addNumbered()
 {
-    _numberedFields.push_back(Variant::null());
+    _numberedFields.push_back(Variant());
     return _numberedFields.back();
 }
 
@@ -30,36 +28,36 @@ size_t ObjectAttributes::numberedCount() const
 }
 
 
-Variant& ObjectAttributes::pushNamed(const std::string &name)
+Variant* ObjectAttributes::addNamed(const std::string &name)
 {
     _fieldNames.push_back(name);
     auto inserted = _namedFields.insert(std::make_pair(name, Variant::null()));
 
     if (inserted.second) {
-        return inserted.first->second;
+        return &inserted.first->second;
     } else {
         Log::error("Pushing existing attribute of existing name");
-        return undefinedVariant;
+        return nullptr;
     }
 }
 
-Variant &ObjectAttributes::getNamed(const std::string &name)
+Variant *ObjectAttributes::getNamed(const std::string &name)
 {
     auto it = _namedFields.find(name);
     if (it != _namedFields.end()) {
-        return it->second;
+        return &it->second;
     } else {
-        return undefinedVariant;
+        return nullptr;
     }
 }
 
-const Variant &ObjectAttributes::getNamed(const std::string &name) const
+const Variant *ObjectAttributes::getNamed(const std::string &name) const
 {
     const auto it = _namedFields.find(name);
     if (it != _namedFields.cend()) {
-        return it->second;
+        return &it->second;
     } else {
-        return undefinedVariant;
+        return nullptr;
     }
 }
 
@@ -72,7 +70,7 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
 {
     if (key.isValueless()) {
         if (modifiable) {
-            return Variable::ref(pushNumbered());
+            return Variable::ref(addNumbered());
         } else {
             if (_numberedFields.size() > 0) {
                 return Variable::constRef(_numberedFields.back());
@@ -82,13 +80,18 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
         }
     } else if (key.hasNumericalType()) {
         int64_t number = key.toInteger();
-        if (number < 0 || number > _numberedFields.size()) {
+        if (number >= 0) {
+            if (modifiable && number >= _numberedFields.size()) {
+                addNumbered();
+            }
+            if (number < _numberedFields.size()) {
+                return Variable::ref(_numberedFields[number]);
+            }
+        } else {
             if (modifiable) {
-                Log::error("Trying to assign a numbered attribute value outside of the bounds");
+                Log::error("Trying to assign a numbered attribute value with a negative value");
             }
             return Variable();
-        } else {
-            return Variable::ref(_numberedFields[number]);
         }
     } else if (key.type() == Variant::stringType) {
         const std::string& name = key.toString();
@@ -96,7 +99,7 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
         if (it != _namedFields.end()) {
             return Variable::ref(it->second, modifiable);
         } else if (modifiable){
-            return Variable::ref(pushNamed(name));
+            return Variable::refIfNotNull(addNamed(name));
         } else {
             return Variable();
         }

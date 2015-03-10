@@ -100,12 +100,22 @@ public:
     /**
      * @brief Construct a \link Variable variable\endlink referencing a value (modifiable or constant reference)
      */
-    static Variable ref(Variant& value, bool modifiable = true);
+    static Variable ref(Variant& value, bool modifiable = true); 
+
+    /**
+     * @brief Construct a \link Variable variable\endlink referencing a value if the pointer is not nullptr (modifiable or constant reference)
+     */
+    static Variable refIfNotNull(Variant* value, bool modifiable = true);
 
     /**
      * @brief Construct a \link Variable variable\endlink referencing a value (always constant reference)
      */
     static Variable constRef(const Variant& value);
+
+    /**
+     * @brief Construct a \link Variable variable\endlink referencing a value if the pointer is not nullptr (modifiable or constant reference)
+     */
+    static Variable constRefIfNotNull(const Variant* value);
 
     /**
      * @brief Construct a \link Variable variable\endlink owning a null value
