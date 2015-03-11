@@ -71,7 +71,8 @@ SOURCES += \
     ../core/variable/commonvariable.cpp \
     ../core/variable/localscopeimplementation.cpp \
     ../core/variable/objectcontext.cpp \
-    ../core/variable/objectattributes.cpp
+    ../core/variable/objectattributes.cpp \
+    ../core/variable/functionscopeimplementation.cpp \
 
 HEADERS  += \ 
     ../core/variant.h \
@@ -156,4 +157,5 @@ HEADERS  += \
     ../core/variable/commonvariable.h \
     ../core/variable/localscopeimplementation.h \
     ../core/variable/objectcontext.h \
-    ../core/variable/objectattributes.h
+    ../core/variable/objectattributes.h \
+    ../core/variable/functionscopeimplementation.h \
