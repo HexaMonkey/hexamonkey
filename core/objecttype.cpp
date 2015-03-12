@@ -46,6 +46,11 @@ const Variant& ObjectType::parameterValue(size_t index) const
     }
 }
 
+Variant &ObjectType::parameterValue(size_t index)
+{
+    return _parametersValue[index];
+}
+
 bool ObjectType::parameterSpecified(size_t index) const
 {
     return (index < _parametersValue.size()) && (!_parametersValue[index].isUndefined());
@@ -57,7 +62,7 @@ void ObjectType::setParameter(size_t index, const Variant &value)
         _parametersValue.push_back(undefinedVariant);
     }
 
-    _parametersValue.at(index).setValue(value);
+    _parametersValue[index].setValue(value);
 }
 
 const std::string &ObjectType::name() const

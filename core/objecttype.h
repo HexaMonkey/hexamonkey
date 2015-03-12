@@ -63,6 +63,7 @@ public:
      * Raise an exception if out of bound
      */
     const Variant& parameterValue(size_t index) const;
+    Variant& parameterValue(size_t index);
 
     /**
      * @brief Check if a parameter is non-null
@@ -143,6 +144,7 @@ public:
     ObjectType& operator=(ObjectType other);
 
 private:
+    friend class AbstractTypeScopeImplementation;
     friend class AbstractTypeScope;
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
