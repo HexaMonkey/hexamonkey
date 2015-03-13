@@ -95,3 +95,44 @@ Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool mo
         return Variable();
     }
 }
+
+
+TypeScopeImplementation::TypeScopeImplementation(ObjectType &type, bool modifiable)
+    : _type(modifiable? &type : nullptr),
+      _constType(type)
+{
+}
+
+TypeScopeImplementation::TypeScopeImplementation(const ObjectType &type)
+    : _type(nullptr),
+      _constType(type)
+{
+}
+
+ObjectType *TypeScopeImplementation::modifiableType()
+{
+    return _type;
+}
+
+const ObjectType &TypeScopeImplementation::constType()
+{
+    return _constType;
+}
+
+
+ParserTypeScopeImplementation::ParserTypeScopeImplementation(Parser &parser)
+    : _parser(parser)
+{
+}
+
+ObjectType *ParserTypeScopeImplementation::modifiableType()
+{
+    return _parser.modifiableType();
+}
+
+const ObjectType &ParserTypeScopeImplementation::constType()
+{
+    return _parser.constType();
+}
+
+

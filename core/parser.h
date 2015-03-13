@@ -83,14 +83,14 @@ public:
     Object &object();
     const Object &object() const;
 
-protected:
-    Parser(Object& object);
-
     /**
      * @brief Get the \link Object::type type\endlink of the \link Object object\endlink
      */
     ObjectType *modifiableType();
     const ObjectType& constType() const;
+
+protected:
+    Parser(Object& object);
 
     /**
      * @brief Get the number of bits between the current position in the \link File file\endlink and

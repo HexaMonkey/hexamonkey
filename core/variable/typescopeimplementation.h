@@ -20,4 +20,35 @@ protected:
     virtual const ObjectType& constType() = 0;
 };
 
+/**
+ * @brief Type scope implementation given a reference to a \link ObjectType type\endlink
+ */
+class TypeScopeImplementation : public AbstractTypeScopeImplementation
+{
+public:
+    TypeScopeImplementation(ObjectType& type, bool modifiable);
+    TypeScopeImplementation(const ObjectType& type);
+protected:
+    virtual ObjectType* modifiableType() override;
+    virtual const ObjectType& constType() override;
+private:
+    ObjectType* _type;
+    const ObjectType& _constType;
+};
+
+/**
+ * @brief Type scope implementation given a reference to a \link Parser parser\endlink
+ */
+class ParserTypeScopeImplementation : public AbstractTypeScopeImplementation
+{
+public:
+    ParserTypeScopeImplementation(Parser& parser);
+protected:
+    virtual ObjectType* modifiableType() override;
+    virtual const ObjectType& constType() override;
+private:
+    Parser& _parser;
+};
+
+
 #endif // TYPESCOPEIMPLEMENTATION_H
