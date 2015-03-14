@@ -18,6 +18,8 @@
 #ifndef SYNCBYTEFORMATDETECTOR_H
 #define SYNCBYTEFORMATDETECTOR_H
 
+#include <unordered_map>
+
 #include "core/file/file.h"
 #include "core/formatdetector/formatdetector.h"
 
@@ -45,7 +47,7 @@ public:
 protected:
     virtual std::string doGetFormat(File& file) const override;
 private:
-    std::map<std::string, std::pair<uint8_t, int> > _formats;
+    std::unordered_map<std::string, std::pair<uint8_t, int> > _formats;
 
     const int numberOfPeriods;
 };

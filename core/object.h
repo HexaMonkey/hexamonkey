@@ -307,7 +307,7 @@ class Object
 
         container _children;
         std::vector<std::unique_ptr<Object> > _ownedChildren;
-        std::map<std::string, Object*> _lookUpTable;
+        std::unordered_map<std::string, Object*> _lookUpTable;
 
         std::unordered_map<Variant, Variant> _attributeMap;
         std::vector<std::string> _showcasedAttributes;

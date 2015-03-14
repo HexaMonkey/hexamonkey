@@ -285,7 +285,7 @@ private:
 
     SpecificationMap _automaticSpecifications;
 
-    std::map<std::string, const ObjectTypeTemplate*> _templates;
+    std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
     std::list<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
 };
 

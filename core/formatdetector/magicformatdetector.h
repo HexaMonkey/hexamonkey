@@ -18,6 +18,8 @@
 #ifndef MAGICFORMATDETECTOR_H
 #define MAGICFORMATDETECTOR_H
 
+#include <unordered_map>
+
 #include "core/formatdetector/formatdetector.h"
 
 /*!
@@ -50,7 +52,7 @@ public:
 
 private:
     virtual std::string doGetFormat(File& file) const override;
-    std::map<std::string, std::string> _magicNumbers;
+    std::unordered_map<std::string, std::string> _magicNumbers;
 };
 
 #endif // MAGICFORMATDETECTOR_H

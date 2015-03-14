@@ -18,9 +18,11 @@
 #ifndef EXTENSIONFORMATDETECTOR_H
 #define EXTENSIONFORMATDETECTOR_H
 
+#include <unordered_map>
+
 #include "core/formatdetector/formatdetector.h"
 
-/*!
+/**
  * @brief \link FormatDetector Format detection\endlink implementation that uses the
  * extension of the file.
  */
@@ -33,7 +35,7 @@ public:
     void addExtension(const std::string& format, const std::string& extension);
 private:
     std::string doGetFormat(File& file) const override;
-    std::map<std::string, std::string> _extensions;
+    std::unordered_map<std::string, std::string> _extensions;
 };
 
 #endif // EXTENSIONFORMATDETECTOR_H

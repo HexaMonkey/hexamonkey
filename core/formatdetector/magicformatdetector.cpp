@@ -42,8 +42,7 @@ std::string MagicFormatDetector::doGetFormat(File &file) const
 {
     std::string bestFormat = "";
     unsigned int bestMagicLength = 0;
-    for(const auto& entry:_magicNumbers)
-    {
+    for(const auto& entry:_magicNumbers) {
         const std::string& format = entry.first;
         std::stringstream magicNumber(entry.second);
         file.seekg(0, std::ios_base::beg);
@@ -51,13 +50,10 @@ std::string MagicFormatDetector::doGetFormat(File &file) const
         if(std::all_of(std::istream_iterator<std::string>(magicNumber) , std::istream_iterator<std::string>(), [&](const std::string& token)
         {
 
-            if(token == "xx")
-            {
+            if(token == "xx") {
                 file.seekg(8, std::ios_base::cur);
                 return true;
-            }
-            else
-            {
+            } else {
 
                 uint8_t byte;
                 file.read(reinterpret_cast<char*>(&byte), 8);

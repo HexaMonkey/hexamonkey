@@ -80,9 +80,9 @@ private:
     std::unordered_map<std::string, Program> _functions;
     mutable FunctionDescriptorMap _functionDescriptors;
 
-    mutable std::map<std::string, int64_t> _fixedSizes;
-    mutable std::map<std::string, bool> _sizeDependency;
-    mutable std::map<std::string, Program::const_iterator> _headerEnd;
+    mutable std::unordered_map<std::string, int64_t> _fixedSizes;
+    mutable std::unordered_map<std::string, bool> _sizeDependency;
+    mutable std::unordered_map<std::string, Program::const_iterator> _headerEnd;
 
     Evaluator eval;
 

@@ -42,7 +42,7 @@
 #define A_CONTEXT 11
 #define A_GLOBAL 12
 
-const std::map<std::string, int> reserved = {
+const std::unordered_map<std::string, int> reserved = {
     {"@size",             A_SIZE},
     {"@value",            A_VALUE},
     {"@parent",           A_PARENT},

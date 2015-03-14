@@ -89,7 +89,7 @@ void ModuleLoader::setDirectories(const std::vector<std::string> &directories, c
 
 void ModuleLoader::refreshDirectories(const ProgramLoader &programLoader)
 {
-    std::map<std::string, std::string> selected;
+    std::unordered_map<std::string, std::string> selected;
 
     for(const std::string& directory : directories)
     {

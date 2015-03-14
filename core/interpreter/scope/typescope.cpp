@@ -25,7 +25,7 @@
 #define A_ELEMENT_COUNT 2
 #define A_NAME 3
 
-const std::map<std::string, int> reserved = {
+const std::unordered_map<std::string, int> reserved = {
     {"@count", A_COUNT},
     {"@elementType", A_ELEMENT_TYPE},
     {"@elementCount", A_ELEMENT_COUNT},

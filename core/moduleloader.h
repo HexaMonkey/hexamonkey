@@ -83,7 +83,7 @@ public:
     const Module& getModule(File &file) const;
 
 private:
-    std::map<std::string, std::shared_ptr<Module> > modules;
+    std::unordered_map<std::string, std::shared_ptr<Module> > modules;
 
     StandardFormatDetector formatDetector;
 

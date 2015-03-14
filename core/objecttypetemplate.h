@@ -20,7 +20,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "core/objecttype.h"
 #include "core/variant.h"
@@ -99,7 +99,7 @@ public:
 private:
     std::string                _name;
     std::vector<std::string>   _parametersNames;
-    std::map<std::string, int>      _parametersNumbers;
+    std::unordered_map<std::string, int> _parametersNumbers;
 
     ObjectTypeTemplate(const ObjectTypeTemplate&) = delete;
     ObjectTypeTemplate& operator=(const ObjectTypeTemplate&) = delete;

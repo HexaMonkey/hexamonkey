@@ -138,7 +138,7 @@ Object *Object::access(int64_t index, bool forceParse)
 
 Object* Object::lookUp(const std::string &name, bool forceParse)
 {
-    std::map<std::string, Object*>::iterator it = _lookUpTable.find(name);
+    auto it = _lookUpTable.find(name);
     if (it != _lookUpTable.end()) {
 
         return it->second;
