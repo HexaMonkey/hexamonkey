@@ -33,7 +33,7 @@
 class FunctionScope : public Scope
 {
 public:
-    void addParameter(const std::string& name, Variable variable);
+    void addParameter(const std::string& name, const Variable &variable);
 protected:
     virtual Variable doGet(const Variant& key, bool modifiable) override;
 

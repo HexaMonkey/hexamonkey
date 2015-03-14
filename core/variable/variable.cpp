@@ -48,7 +48,7 @@ Variant Variable::value() const
     return _implementation->doGetValue();
 }
 
-void Variable::setValue(const Variant &value)
+void Variable::setValue(const Variant &value) const
 {
     if (_tag == Tag::modifiable) {
         _implementation->doSetValue(value);
@@ -57,7 +57,7 @@ void Variable::setValue(const Variant &value)
     }
 }
 
-Variable Variable::field(const Variant &key, bool modifiable)
+Variable Variable::field(const Variant &key, bool modifiable) const
 {
     modifiable = modifiable && _tag == Tag::modifiable;
     if (modifiable) {
@@ -69,7 +69,7 @@ Variable Variable::field(const Variant &key, bool modifiable)
     }
 }
 
-void Variable::setField(const Variant &key, const Variable &variable)
+void Variable::setField(const Variant &key, const Variable &variable) const
 {
     if (_tag == Tag::modifiable) {
         _implementation->doSetField(key, variable);
@@ -78,7 +78,7 @@ void Variable::setField(const Variant &key, const Variable &variable)
     }
 }
 
-void Variable::removeField(const Variant &key)
+void Variable::removeField(const Variant &key) const
 {
     if (_tag == Tag::modifiable) {
         _implementation->doRemoveField(key);

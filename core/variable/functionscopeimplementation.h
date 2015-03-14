@@ -10,8 +10,8 @@
 class FunctionScopeImplementation : public VariableImplementation
 {
 public:
-    void addParameter(Variable variable);
-    void addNamedParameter(Variable variable, const std::string& name);
+    void addParameter(const Variable& variable);
+    void addNamedParameter(const Variable& variable, const std::string& name);
 
 protected:
     virtual Variable doGetField(const Variant &key, bool modifiable) override;

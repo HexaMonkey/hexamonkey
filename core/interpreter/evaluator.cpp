@@ -139,7 +139,7 @@ ObjectType Evaluator::type(const Program &program) const
     return type;
 }
 
-Variable Evaluator::unaryOperation(int op, Variable a) const
+Variable Evaluator::unaryOperation(int op, const Variable& a) const
 {
     switch(op)
     {
@@ -183,7 +183,7 @@ Variable Evaluator::unaryOperation(int op, Variable a) const
     return Variable();
 }
 
-Variable Evaluator::binaryOperation(int op, Variable a, Variable b) const
+Variable Evaluator::binaryOperation(int op, const Variable& a, const Variable& b) const
 {
     switch(op)
     {
@@ -291,7 +291,7 @@ Variable Evaluator::binaryOperation(int op, Variable a, Variable b) const
     return Variable();
 }
 
-Variable Evaluator::ternaryOperation(int op, Variable a, Variable b, Variable c) const
+Variable Evaluator::ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const
 {
     switch(op)
     {

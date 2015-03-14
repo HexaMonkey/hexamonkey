@@ -2,12 +2,12 @@
 
 #include "core/log/logmanager.h"
 
-void FunctionScopeImplementation::addParameter(Variable variable)
+void FunctionScopeImplementation::addParameter(const Variable& variable)
 {
     _fields.push_back(variable);
 }
 
-void FunctionScopeImplementation::addNamedParameter(Variable variable, const std::string &name)
+void FunctionScopeImplementation::addNamedParameter(const Variable& variable, const std::string &name)
 {
     _namedFields[name] = variable;
     addParameter(variable);

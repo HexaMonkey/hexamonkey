@@ -35,9 +35,9 @@ public:
      */
     ObjectType type(const Program& program) const;
 private:
-    Variable unaryOperation(int op, Variable a) const;
-    Variable binaryOperation(int op, Variable a, Variable b) const;
-    Variable ternaryOperation(int op, Variable a, Variable b, Variable c) const;
+    Variable unaryOperation(int op, const Variable& a) const;
+    Variable binaryOperation(int op, const Variable& a, const Variable& b) const;
+    Variable ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const;
     Variable function(const Program& program) const;
     Variable variable(const Program& program, bool modifiable) const;
 

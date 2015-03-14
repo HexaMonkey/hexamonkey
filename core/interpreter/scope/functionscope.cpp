@@ -18,7 +18,7 @@
 #include "core/variant.h"
 #include "core/interpreter/scope/functionscope.h"
 
-void FunctionScope::addParameter(const std::string &name, Variable variable)
+void FunctionScope::addParameter(const std::string &name, const Variable& variable)
 {
     parameterIndex[name] = parameters.size();
     parameters.push_back(variable);

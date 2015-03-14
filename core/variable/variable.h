@@ -53,7 +53,7 @@ public:
     /**
      * @brief Set the value of the \link Variable variable\endlink
      */
-    void setValue(const Variant &value);
+    void setValue(const Variant &value) const;
 
     /**
      * @brief (Not yet in use) Get the value of the \link Variable variable\endlink
@@ -65,17 +65,17 @@ public:
      * @param key
      * @param modifable Set to true if the returned variable will used as left-value
      */
-    Variable field(const Variant& key, bool modifable = false);
+    Variable field(const Variant& key, bool modifable = false) const;
 
     /**
      * @brief Set field by key
      */
-    void setField(const Variant& key, const Variable& variable);
+    void setField(const Variant& key, const Variable& variable) const;
 
     /**
      * @brief Remove field by key
      */
-    void removeField(const Variant& key);
+    void removeField(const Variant& key) const;
 
     /**
      * @brief Set the variable as constant which prevents modification of the value
