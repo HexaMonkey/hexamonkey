@@ -18,6 +18,8 @@
 #include "core/objecttype.h"
 #include "core/objecttypetemplate.h"
 
+#include "core/log/logmanager.h"
+
 Variant undefinedVariant;
 Variant nullVariant = Variant::null();
 
@@ -27,8 +29,7 @@ ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
 
 ObjectType::ObjectType(const ObjectTypeTemplate& _typeTemplate)
     : _typeTemplate(&_typeTemplate),
-      _parametersValue(_typeTemplate.numberOfParameters()),
-      _name(_typeTemplate.name())
+      _parametersValue(_typeTemplate.numberOfParameters())
 {
 }
 
@@ -67,7 +68,11 @@ void ObjectType::setParameter(size_t index, const Variant &value)
 
 const std::string &ObjectType::name() const
 {
-    return _name.toString();
+    if (_name.isValueless()) {
+        return typeTemplate().name();
+    } else {
+        return _name.toString();
+    }
 }
 
 void ObjectType::setName(const std::string &name)
@@ -110,6 +115,41 @@ bool ObjectType::extendsDirectly(const ObjectType& other) const
         }
     }
     return true;
+}
+
+bool ObjectType::hasElementType() const
+{
+    return !_elementType.isValueless();
+}
+
+const ObjectType &ObjectType::elementType() const
+{
+    return _elementType.toObjectType();
+}
+
+void ObjectType::setElementType(const ObjectType &type)
+{
+    _elementType.setValue(type);
+}
+
+bool ObjectType::hasElementCount() const
+{
+    return !_elementCount.isValueless();
+}
+
+
+size_t ObjectType::elementCount() const
+{
+    return _elementCount.toUnsignedInteger();
+}
+
+void ObjectType::setElementCount(long long count)
+{
+    if (count >= 0) {
+        _elementCount.setValue(count);
+    } else {
+        Log::error("Trying to set negative value for element count of type ", *this);
+    }
 }
 
 bool ObjectType::isNull() const
@@ -166,9 +206,9 @@ bool operator< (const ObjectType& a, const ObjectType& b)
 
 std::ostream& ObjectType::display(std::ostream& out) const
 {
-    if (!elementType().isValueless()) {
+    if (hasElementType()) {
         out << elementType() << "[";
-        if (!elementCount().isValueless()) {
+        if (hasElementCount()) {
             out << elementCount();
         }
         out << "]";
@@ -204,26 +244,6 @@ int ObjectType::numberOfDisplayableParameters() const
         n--;
     }
     return n;
-}
-
-const Variant &ObjectType::elementType() const
-{
-    return _elementType;
-}
-
-void ObjectType::setElementType(const ObjectType &type)
-{
-    _elementType.setValue(type);
-}
-
-const Variant &ObjectType::elementCount() const
-{
-    return _elementCount;
-}
-
-void ObjectType::setElementCount(long long count)
-{
-    _elementCount.setValue(count);
 }
 
 std::ostream& operator<<(std::ostream& out, const ObjectType& type)

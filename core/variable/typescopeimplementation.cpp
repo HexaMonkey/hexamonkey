@@ -17,6 +17,108 @@ const std::map<std::string, int> reserved = {
     {"@name", A_NAME}
 };
 
+class TypeNameVariableImplementation : public VariableImplementation
+{
+public:
+    TypeNameVariableImplementation(ObjectType& type) : _type(type) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.type() == Variant::stringType) {
+            _type.setName(value.toString());
+        } else {
+            Log::warning("Trying to set an invalid value ", value, " as name for type ", _type);
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant(_type.name());
+    }
+private:
+    ObjectType& _type;
+};
+
+class ConstTypeNameVariableImplementation : public VariableImplementation
+{
+public:
+    ConstTypeNameVariableImplementation(const ObjectType& type) : _type(type) {}
+
+protected:
+    virtual Variant doGetValue() override {
+        return Variant(_type.name());
+    }
+private:
+    const ObjectType& _type;
+};
+
+class TypeElementTypeVariableImplementation : public VariableImplementation
+{
+public:
+    TypeElementTypeVariableImplementation(ObjectType& type) : _type(type) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _type.setElementCount(value.toInteger());
+        } else {
+            Log::warning("Trying to set an invalid value ", value, " as element count for type ", _type);
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant(_type.elementCount());
+    }
+private:
+    ObjectType& _type;
+};
+
+class ConstTypeElementTypeVariableImplementation : public VariableImplementation
+{
+public:
+    ConstTypeElementTypeVariableImplementation(const ObjectType& type) : _type(type) {}
+
+protected:
+    virtual Variant doGetValue() override {
+        return Variant(_type.elementType());
+    }
+private:
+    const ObjectType& _type;
+};
+
+class TypeElementCountVariableImplementation : public VariableImplementation
+{
+public:
+    TypeElementCountVariableImplementation(ObjectType& type) : _type(type) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _type.setElementType(value.toObjectType());
+        } else {
+            Log::warning("Trying to set an invalid value ", value, " as element type for type ", _type);
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant(_type.elementType());
+    }
+private:
+    ObjectType& _type;
+};
+
+class ConstTypeElementCountVariableImplementation : public VariableImplementation
+{
+public:
+    ConstTypeElementCountVariableImplementation(const ObjectType& type) : _type(type) {}
+
+protected:
+    virtual Variant doGetValue() override {
+        return Variant(_type.elementCount());
+    }
+private:
+    const ObjectType& _type;
+};
+
 Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool modifiable)
 {
     ObjectType* mType = modifiable ? modifiableType() : nullptr;
@@ -54,16 +156,25 @@ Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool mo
                 return Variable::copy(numberOfParameters, false);
 
             case A_ELEMENT_TYPE:
-                // TODO
-                return Variable();
+                if (mType != nullptr) {
+                    return Variable(new TypeElementTypeVariableImplementation(*mType), true);
+                } else {
+                    return Variable(new ConstTypeElementTypeVariableImplementation(cType), false);
+                }
 
             case A_ELEMENT_COUNT:
-                // TODO
-                return Variable();
+                if (mType != nullptr) {
+                    return Variable(new TypeElementCountVariableImplementation(*mType), true);
+                } else {
+                    return Variable(new ConstTypeElementCountVariableImplementation(cType), false);
+                }
 
             case A_NAME:
-                // TODO
-                return Variable();
+                if (mType != nullptr) {
+                    return Variable(new TypeNameVariableImplementation(*mType), true);
+                } else {
+                    return Variable(new ConstTypeNameVariableImplementation(cType), false);
+                }
             }
 
             return Variable();
@@ -96,7 +207,6 @@ Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool mo
     }
 }
 
-
 TypeScopeImplementation::TypeScopeImplementation(ObjectType &type, bool modifiable)
     : _type(modifiable? &type : nullptr),
       _constType(type)
@@ -119,7 +229,6 @@ const ObjectType &TypeScopeImplementation::constType()
     return _constType;
 }
 
-
 ParserTypeScopeImplementation::ParserTypeScopeImplementation(Parser &parser)
     : _parser(parser)
 {
@@ -134,5 +243,3 @@ const ObjectType &ParserTypeScopeImplementation::constType()
 {
     return _parser.constType();
 }
-
-

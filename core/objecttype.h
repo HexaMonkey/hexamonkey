@@ -117,7 +117,8 @@ public:
      * @brief Used to know if the object should be displayed as an Array/Tuple
      * and what type to display if so.
      */
-    const Variant &elementType() const;
+    bool hasElementType() const;
+    const ObjectType &elementType() const;
     void setElementType(const ObjectType& type);
 
     /**
@@ -125,7 +126,8 @@ public:
      * @link elementType elementType \endlink is also not NULL) and what value is to be displayed
      * for count if so.
      */
-    const Variant &elementCount() const;
+    bool hasElementCount() const;
+    size_t elementCount() const;
     void setElementCount(long long count);
 
 
