@@ -73,7 +73,8 @@ SOURCES += \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
     ../core/variable/functionscopeimplementation.cpp \
-    ../core/variable/typescopeimplementation.cpp
+    ../core/variable/typescopeimplementation.cpp \
+    ../core/variable/objectscopeimplementation.cpp
 
 HEADERS  += \ 
     ../core/variant.h\
@@ -160,4 +161,5 @@ HEADERS  += \
     ../core/variable/objectcontext.h \
     ../core/variable/objectattributes.h \
     ../core/variable/functionscopeimplementation.h \
-    ../core/variable/typescopeimplementation.h
+    ../core/variable/typescopeimplementation.h \
+    ../core/variable/objectscopeimplementation.h

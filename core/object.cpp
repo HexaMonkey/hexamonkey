@@ -23,6 +23,8 @@
 #include "core/log/logmanager.h"
 #include "core/modules/stream/streammodule.h"
 #include "core/variable/objectcontext.h"
+#include "core/variable/objectattributes.h"
+#include "core/variable/objectscopeimplementation.h"
 
 
 #define BUFFER_SIZE 1048576
@@ -231,6 +233,35 @@ void Object::dumpStreamToFile(const std::string &path)
     dumpStream(out);
 }
 
+const Variable &Object::variable()
+{
+    if (!_variable.isDefined()) {
+        _variable = Variable((VariableImplementation *) new ObjectScopeImplementation(*this), true);
+    }
+
+    return _variable;
+}
+
+const Variable &Object::contextVariable(bool createIfNeeded)
+{
+    if (_context == nullptr && createIfNeeded) {
+        _context = new ObjectContext(*this);
+        _contextVariable = Variable((VariableImplementation *) _context, true);
+    }
+
+    return _contextVariable;
+}
+
+const Variable &Object::attributesVariable(bool createIfNeeded)
+{
+    if (_attributes == nullptr && createIfNeeded) {
+        _attributes = new ObjectAttributes;
+        _attributesVariable = Variable((VariableImplementation *) _attributes, true);
+    }
+
+    return _attributesVariable;
+}
+
 void Object::seekBeginning()
 {
     _file.seekg(_beginningPos,std::ios::beg);
@@ -313,6 +344,21 @@ void Object::setLinkTo(std::streamoff linkTo)
 void Object::removeLinkTo()
 {
     _linkTo.setValue(Variant());
+}
+
+ObjectAttributes *Object::attributes(bool createIfNeeded)
+{
+    if (_attributes == nullptr && createIfNeeded) {
+        _attributes = new ObjectAttributes;
+        _attributesVariable = Variable((VariableImplementation *) _attributes, true);
+    }
+
+    return _attributes;
+}
+
+const ObjectAttributes *Object::attributes() const
+{
+    return _attributes;
 }
 
 void Object::parse()

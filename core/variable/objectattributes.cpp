@@ -2,10 +2,6 @@
 
 #include "core/log/logmanager.h"
 
-ObjectAttributes::ObjectAttributes()
-{
-}
-
 Variant& ObjectAttributes::addNumbered()
 {
     _numberedFields.push_back(Variant());

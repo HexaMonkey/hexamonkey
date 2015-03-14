@@ -9,8 +9,6 @@
 class ObjectAttributes : public VariableImplementation
 {
 public:
-    ObjectAttributes();
-
     Variant& addNumbered();
     Variant& getNumbered(size_t number);
     const Variant& getNumbered(size_t numbered) const;

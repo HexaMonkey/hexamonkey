@@ -33,6 +33,7 @@
 
 class Parser;
 class ObjectContext;
+class ObjectAttributes;
 
 /** @brief Node of the tree structure associated with a \link File file\endlink
  *
@@ -175,6 +176,8 @@ class Object
         /**
          * @brief Attributes values
          */
+        ObjectAttributes* attributes(bool createIfNeeded = false);
+        const ObjectAttributes* attributes() const;
         Variant* attributeValue(const Variant& key);
         const Variant* attributeValue(const Variant& key) const;
         Variant& setAttributeValue(const Variant& key, const Variant& value);
@@ -279,6 +282,10 @@ class Object
 
         void dumpStreamToFile(const std::string& path);
 
+        const Variable& variable();
+        const Variable& contextVariable(bool createIfNeeded = false);
+        const Variable& attributesVariable(bool createIfNeeded = false);
+
     private:
         friend class Module;
         friend class ContainerParser;
@@ -326,7 +333,8 @@ class Object
         ObjectContext* _context;
         Variable _contextVariable;
 
-        Variable _attributeVariable;
+        ObjectAttributes* _attributes;
+        Variable _attributesVariable;
 
         //Non copyable
         Object& operator =(const Object&) = delete;
