@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "core/variant.h"
+#include "core/variable/variablepath.h"
 
 class VariableImplementation;
 
@@ -56,16 +57,23 @@ public:
     void setValue(const Variant &value) const;
 
     /**
-     * @brief (Not yet in use) Get the value of the \link Variable variable\endlink
+     * @brief  Get the value of the \link Variable variable\endlink
      */
     Variant value() const;
 
     /**
-     * @brief (Not yet in use) Get field by key
+     * @brief Get field by key
      * @param key
      * @param modifable Set to true if the returned variable will used as left-value
      */
     Variable field(const Variant& key, bool modifable = false) const;
+
+    /**
+     * @brief Get field by path
+     * @param path
+     * @param modifable Set to true if the returned variable will used as left-value
+     */
+    Variable field(const VariablePath &path, bool modifable = false) const;
 
     /**
      * @brief Set field by key
@@ -73,9 +81,19 @@ public:
     void setField(const Variant& key, const Variable& variable) const;
 
     /**
+     * @brief Set field by path
+     */
+    void setField(const VariablePath &path, const Variable& variable) const;
+
+    /**
      * @brief Remove field by key
      */
-    void removeField(const Variant& key) const;
+    void removeField(const Variant &key) const;
+
+    /**
+     * @brief Remove field by path
+     */
+    void removeField(const VariablePath &path) const;
 
     /**
      * @brief Set the variable as constant which prevents modification of the value
@@ -130,8 +148,12 @@ public:
 private:
     enum class Tag {undefined = 0, constant = 1, modifiable = 2};
 
+    enum class Error {constModification};
+
     std::shared_ptr<VariableImplementation> _implementation;
     Tag _tag;
+
+
 };
 
 /**

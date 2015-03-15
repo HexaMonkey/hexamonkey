@@ -57,16 +57,37 @@ void Variable::setValue(const Variant &value) const
     }
 }
 
-Variable Variable::field(const Variant &key, bool modifiable) const
+Variable Variable::field(const Variant &key, bool modifable) const
 {
-    modifiable = modifiable && _tag == Tag::modifiable;
-    if (modifiable) {
-        return _implementation->doGetField(key, true);
-    } else {
-        Variable result = _implementation->doGetField(key, false);
+    modifable = modifable && (_tag == Tag::modifiable);
+
+    Variable result = _implementation->doGetField(key, modifable);
+
+    if (!modifable) {
         result.setConstant();
-        return result;
     }
+
+    return result;
+}
+
+Variable Variable::field(const VariablePath &path, bool modifiable) const
+{
+    auto implementation = &_implementation;
+    modifiable = modifiable && (_tag == Tag::modifiable);
+    Variable result = (*implementation)->doGetField(path[0], modifiable);
+
+    for (auto it = ++path.cbegin(); it != path.cend(); ++it) {
+        implementation = &result._implementation;
+        modifiable = modifiable && (result._tag == Tag::modifiable);
+
+        result = (*implementation)->doGetField(*it, modifiable);
+    }
+
+    if (!modifiable) {
+        result.setConstant();
+    }
+
+    return result;
 }
 
 void Variable::setField(const Variant &key, const Variable &variable) const
@@ -78,11 +99,61 @@ void Variable::setField(const Variant &key, const Variable &variable) const
     }
 }
 
+void Variable::setField(const VariablePath &path, const Variable &variable) const
+{
+    try {
+        auto implementation = &_implementation;
+        if (_tag != Tag::modifiable) {
+            throw Error::constModification;
+        }
+
+        auto it = path.cbegin();
+        for (auto end = --path.cend();it != end; ++it) {
+
+            Variable field = (*implementation)->doGetField(*it, true);
+            implementation = &(field._implementation);
+            if (field._tag != Tag::modifiable) {
+                throw Error::constModification;
+            }
+        }
+
+        (*implementation)->doSetField(*it, variable);
+
+    } catch (Error) {
+        Log::warning("Trying to set a field on a constant variable");
+    }
+}
+
 void Variable::removeField(const Variant &key) const
 {
     if (_tag == Tag::modifiable) {
         _implementation->doRemoveField(key);
     } else {
+        Log::warning("Trying to set a field on a constant variable");
+    }
+}
+
+void Variable::removeField(const VariablePath &path) const
+{
+    try {
+        auto implementation = &_implementation;
+        if (_tag != Tag::modifiable) {
+            throw Error::constModification;
+        }
+
+        auto it = path.cbegin();
+        for (auto end = --path.cend();it != end; ++it) {
+
+            Variable field = (*implementation)->doGetField(*it, true);
+            implementation = &(field._implementation);
+            if (field._tag != Tag::modifiable) {
+                throw Error::constModification;
+            }
+        }
+
+        (*implementation)->doRemoveField(*it);
+
+    } catch (Error) {
         Log::warning("Trying to remove a field on a constant variable");
     }
 }
