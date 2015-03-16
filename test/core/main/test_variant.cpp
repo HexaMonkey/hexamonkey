@@ -9,8 +9,8 @@
 void TestVariant::unknown()
 {
     Variant var;
-    QCOMPARE(var.isNull(), true);
-    QCOMPARE(var.type(), Variant::Type::unknown);
+    QCOMPARE(var.isValueless(), true);
+    QCOMPARE(var.type(), Variant::undefinedType);
     QCOMPARE(var.hasNumericalType(), false);
 
     QCOMPARE(var.toInteger(), 0LL);
@@ -21,19 +21,19 @@ void TestVariant::unknown()
     QCOMPARE(var.toBool(), false);
 
     var += 1; // invalid operation, the variable should stay unknown
-    QCOMPARE(var.isNull(), true);
+    QCOMPARE(var.isValueless(), true);
 
     Variant var2(3);
     var2.clear();
-    QCOMPARE(var2.isNull(), true);
-    QCOMPARE(var2.type(), Variant::Type::unknown);
+    QCOMPARE(var2.isValueless(), true);
+    QCOMPARE(var2.type(), Variant::undefinedType);
 }
 
 void TestVariant::boolean()
 {
     Variant var1(true);
     QCOMPARE(var1.isNull(), false);
-    QCOMPARE(var1.type(), Variant::Type::integer);
+    QCOMPARE(var1.type(), Variant::integerType);
     QCOMPARE(var1.toBool(), true);
     QCOMPARE(var1.hasNumericalType(), true);
 
@@ -43,13 +43,16 @@ void TestVariant::boolean()
     QCOMPARE(var1 && !var2, true);
 
     Variant nvar2(!var2);
-    QCOMPARE(nvar2.type(), Variant::Type::integer);
+    QCOMPARE(nvar2.type(), Variant::integerType);
+
+    Variant n(1000);
+    QCOMPARE(n.toBool(), true);
 }
 
 void TestVariant::integer()
 {
     Variant var(123);
-    QCOMPARE(var.type(), Variant::Type::integer);
+    QCOMPARE(var.type(), Variant::integerType);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124));
     QCOMPARE(var.toInteger(), 123LL);
@@ -112,7 +115,7 @@ void TestVariant::integer()
 void TestVariant::unsignedInteger()
 {
     Variant var(123ULL);
-    QCOMPARE(var.type(), Variant::Type::unsignedInteger);
+    QCOMPARE(var.type(), Variant::unsignedIntegerType);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124));
     QCOMPARE(var.toInteger(), 123LL);
@@ -175,7 +178,7 @@ void TestVariant::unsignedInteger()
 void TestVariant::floating()
 {
     Variant var(123.4);
-    QCOMPARE(var.type(), Variant::Type::floating);
+    QCOMPARE(var.type(), Variant::floatingType);
     QCOMPARE(var.hasNumericalType(), true);
     QCOMPARE(var+1, Variant(124.4));
     QCOMPARE(var.toInteger(), 123LL);
@@ -237,7 +240,7 @@ void TestVariant::floating()
 void TestVariant::string()
 {
     Variant var("hello world!");
-    QCOMPARE(var.type(), Variant::Type::string);
+    QCOMPARE(var.type(), Variant::stringType);
     QCOMPARE(var.hasNumericalType(), false);
 
     QCOMPARE(var+" test", Variant("hello world! test"));
@@ -263,7 +266,7 @@ void TestVariant::objectType()
 {
     ObjectType ot;
     Variant var(ot);
-    QCOMPARE(var.type(), Variant::Type::objectType);
+    QCOMPARE(var.type(), Variant::objectType);
     QCOMPARE(var.hasNumericalType(), false);
     QCOMPARE(var.toInteger(), 0LL);
 
@@ -280,7 +283,7 @@ void TestVariant::conversion()
     // setValue resets the Variant (including the type)
     Variant var(1ULL);
     var.setValue(3);
-    QCOMPARE(var.type(), Variant::Type::integer);
+    QCOMPARE(var.type(), Variant::integerType);
 
     QCOMPARE(Variant(12ULL), Variant(12LL));
     QCOMPARE(Variant(12LL), Variant(12ULL));
