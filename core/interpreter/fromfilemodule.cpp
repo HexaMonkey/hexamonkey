@@ -22,8 +22,9 @@
 #include "core/variable/variable.h"
 #include "core/interpreter/fromfileparser.h"
 #include "core/interpreter/blockexecution.h"
-#include "core/interpreter/scope/typescope.h"
-#include "core/interpreter/scope/localscope.h"
+#include "core/variable/functionscopeimplementation.h"
+#include "core/variable/localscopeimplementation.h"
+#include "core/variable/typescopeimplementation.h"
 #include "core/util/fileutil.h"
 #include "core/util/unused.h"
 
@@ -138,14 +139,14 @@ bool FromFileModule::doCanHandleFunction(const std::string &name) const
     return _functions.find(name) != _functions.end();
 }
 
-Variable FromFileModule::doExecuteFunction(const std::string &name, const ScopePtr &params, const Module &fromModule) const
+Variable FromFileModule::doExecuteFunction(const std::string &name, const Variable &params, const Module &fromModule) const
 {
     auto it = functionDescriptor(name);
 
     if(it == _functionDescriptors.end())
         return Variable();
 
-    LocalScope scope(params);
+    Variable scope(new LocalScopeImplementation(params), true);
 
     const Program& definition = std::get<3>(it->second);
     Evaluator eval(scope, fromModule);
@@ -277,8 +278,7 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            Program program = extension.node(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               TypeScope typeScope(type);
-               return Evaluator(typeScope, *this).type(program);
+               return Evaluator(Variable(new TypeScopeImplementation(type), false), *this).type(program);
            });
 
            std::cerr<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;

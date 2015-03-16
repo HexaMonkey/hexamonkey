@@ -64,6 +64,8 @@ extern int line_number;
 "..."           {return(ELLIPSIS_TOKEN);}
 "---"           {return(HEADER_TOKEN);}
 ".="            {return(SUBSCOPE_ASSIGN_TOKEN);}
+"!"             {return(NOT_TOKEN);}
+"~"             {return(BITWISE_NOT_TOKEN);}
 
 [;{}()\[\],&|+/\-*<>=.%#?:] {return *yytext;} 
 

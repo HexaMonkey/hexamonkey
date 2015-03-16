@@ -3,13 +3,11 @@
 
 class Module;
 class ContainerParser;
-class Scope;
 class Evaluator;
 
 #include <memory>
 
 #include "core/interpreter/program.h"
-#include "core/interpreter/scope/scopeptr.h"
 
 /**
  * @brief Controls the execution of a program block
@@ -29,7 +27,7 @@ public:
      */
     BlockExecution(Program block,
                    const Evaluator& evaluator,
-                   Scope& scope,
+                   const Variable &scope,
                    ContainerParser* parser = nullptr);
 
     /**
@@ -96,7 +94,7 @@ private:
 
     void handleDeclaration(const Program& declaration, size_t& parseQuota);
     void handleLocalDeclarations(const Program& declarations);
-    void handleSubscopeAssign(const Program& assign);
+    void handleFieldAssign(const Program& assign);
     void handleRemove(const Program& remove);
     void handleRightValue(const Program& rightValue);
     void handleCondition(const Program& condition);
@@ -109,8 +107,6 @@ private:
     bool loopCondition(const Program& loop);
     static bool hasDeclaration(const Program& instructions);
 
-    ScopePtr handleScope(const Program& scope);
-
     Program program;
     const Program::const_iterator begin;
     const Program::const_iterator end;
@@ -119,7 +115,7 @@ private:
     unsigned int lineRepeatCount;
 
     const Evaluator& eval;
-    Scope& scope;
+    Variable scope;
     ContainerParser* _parser;
 
     Variable _returnValue;

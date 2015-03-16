@@ -24,9 +24,7 @@
 #include "core/interpreter/program.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/blockexecution.h"
-#include "core/interpreter/scope/objectscope.h"
-#include "core/interpreter/scope/localscope.h"
-#include "core/interpreter/scope/compositescope.h"
+#include "core/variable/variable.h"
 
 /**
  * @brief Parser implementation using an HMDL class definition
@@ -46,17 +44,16 @@ private:
     virtual bool doParseSome(int hint) final;
     virtual void doParseTail() final;
 
+    Object& _object;
+
+    Variable _scope;
+
     Program::const_iterator _headerEnd;
 
     Evaluator _evaluator;
 
     BlockExecution _bodyExecution;
     BlockExecution _tailExecution;
-
-    Object& _object;
-
-    LocalScope _scope;
-
 };
 
 #endif // FROMFILEPARSER_H

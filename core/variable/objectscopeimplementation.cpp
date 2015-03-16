@@ -213,9 +213,7 @@ Variable ObjectScopeImplementation::doGetField(const Variant &key, bool modifiab
         }
 
     } else {
-
         return Variable();
-
     }
 }
 

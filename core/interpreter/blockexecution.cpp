@@ -9,9 +9,11 @@
 #include "core/interpreter/scope/scope.h"
 #include "core/util/unused.h"
 
+//#define EXECUTION_TRACE 1
+
 BlockExecution::BlockExecution(Program block,
                                const Evaluator &evaluator,
-                               Scope& scope,
+                               const Variable& scope,
                                ContainerParser *parser)
     : program(block),
       begin(block.begin()),
@@ -114,10 +116,6 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                     handleLocalDeclarations(line);
                     break;
 
-                case SUBSCOPE_ASSIGN:
-                    handleSubscopeAssign(line);
-                    break;
-
                 case REMOVE:
                     handleRemove(line);
                     break;
@@ -206,7 +204,9 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
         ObjectType type = eval.rightValue(declaration.node(0)).value().toObjectType();
         std::string name = declaration.node(1).payload().toString();
 #ifdef EXECUTION_TRACE
-        std::cerr<<"Declaration "<<type<<" "<<name<<std::endl;
+        std::stringstream S;
+        S<<"Declaration "<<type<<" "<<name;
+        std::cerr<<S.str()<<std::endl;
 #endif
         if (parser().addVariable(type, name) != nullptr) {
             --parseQuota;
@@ -218,41 +218,28 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 void BlockExecution::handleLocalDeclarations(const Program &declarations)
 {
     for (const Program& declaration : declarations) {
-#ifdef EXECUTION_TRACE
-        std::cerr<<"Local declaration "<<declaration.node(0).payload();
-#endif
 
-        if (declaration.size() >= 2)
-        {
-            scope.declare(declaration.node(0).payload(), eval.rightValue(declaration.node(1)).value());
-#ifdef EXECUTION_TRACE
-            std::cerr<<" = "<<variable.cvalue();
-#endif
+        Variable value;
+        if (declaration.size() >= 2) {
+            value = Variable::copy(eval.rightValue(declaration.node(1)).value());
         } else {
-            scope.declare(declaration.node(0).payload());
+            value = Variable::null();
         }
+
+        scope.setField(declaration.node(0).payload(), value);
+
 #ifdef EXECUTION_TRACE
-        std::cerr<<std::endl;
+        std::stringstream S;
+        S << "Local declaration "<<declaration.node(0).payload()<<" = "<<value.value();
+        std::cerr<<S.str()<<std::endl;
 #endif
-    }
-    ++current;
-}
-
-void BlockExecution::handleSubscopeAssign(const Program &assign)
-{
-    const int size = assign.size();
-
-    Scope::Ptr subscope = handleScope(assign.node(size - 1));
-    for (int i = size - 2; i >= 0; --i) {
-        VariablePath variablePath = eval.variablePath(assign.node(i));
-        scope.assignSubscope(variablePath, subscope);
     }
     ++current;
 }
 
 void BlockExecution::handleRemove(const Program &remove)
 {
-    scope.remove(eval.variablePath(remove.node(0)));
+    scope.removeField(eval.variablePath(remove.node(0)));
 
     ++current;
 }
@@ -265,7 +252,9 @@ void BlockExecution::handleRightValue(const Program &rightValue)
     eval.rightValue(rightValue);
 #endif
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Right value "<<value<<std::endl;
+    std::stringstream S;
+    S<<"Right value "<<value;
+    std::cerr<<S.str()<<std::endl;
 #endif
     ++current;
 }
@@ -278,14 +267,14 @@ void BlockExecution::handleCondition(const Program &condition)
     if(eval.rightValue(condition.node(0)).value().toBool())
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" then";
+        std::cerr<<" then"<<std::endl;
 #endif
         setSubBlock(condition.node(1), false);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" else";
+        std::cerr<<" else"<<std::endl;
 #endif
         setSubBlock(condition.node(2), false);
     }
@@ -302,14 +291,14 @@ void BlockExecution::handleLoop(const Program &loop)
     if(loopCondition(loop))
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" continue";
+        std::cerr<<" continue"<<std::endl;
 #endif
         setSubBlock(loop.node(1), true);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" done";
+        std::cerr<<" done"<<std::endl;
 #endif
         ++current;
     }
@@ -322,19 +311,19 @@ void BlockExecution::handleLoop(const Program &loop)
 void BlockExecution::handleDoLoop(const Program &loop)
 {
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Do Loop : repeat count "<<lineRepeatCount;
+    std::cerr<<"Do Loop : repeat count "<<lineRepeatCount<<std::endl;
 #endif
     if(lineRepeatCount <= 1 || loopCondition(loop))
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" continue";
+        std::cerr<<" continue"<<std::endl;
 #endif
         setSubBlock(loop.node(1), true);
     }
     else
     {
 #ifdef EXECUTION_TRACE
-        std::cerr<<" done";
+        std::cerr<<" done"<<std::endl;
 #endif
         ++current;
     }
@@ -361,7 +350,9 @@ bool BlockExecution::handleContinue()
 {
     if(_inLoop)
     {
+#ifdef EXECUTION_TRACE
         std::cerr<<"Continue"<<std::endl;
+#endif
         current = end;
         return true;
     }
@@ -374,7 +365,7 @@ void BlockExecution::handleReturn(const Program &line)
     const Program& rightValue = line.node(0);
     _returnValue = eval.rightValue(rightValue);
 #ifdef EXECUTION_TRACE
-    std::cerr<<"Return "<<_returnValue.cvalue()<<std::endl;
+    std::cerr<<"Return "<<_returnValue.value()<<std::endl;
 #endif
     current = end;
 }
@@ -416,14 +407,3 @@ bool BlockExecution::hasDeclaration(const Program &instructions)
     return false;
 }
 
-Scope::Ptr BlockExecution::handleScope(const Program & s)
-{
-    Program node = s.node(0);
-
-    switch (node.tag()) {
-        case VARIABLE:
-            return scope.getScope(eval.variablePath(node));
-    }
-
-    return Scope::Ptr();
-}

@@ -19,6 +19,7 @@
 
 #include "core/objecttypetemplate.h"
 #include "gui/tree/treeobjectitem.h"
+#include "core/variable/objectattributes.h"
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type);
 std::ostream& displayName(std::ostream& out, const std::string& name);
@@ -157,9 +158,7 @@ void TreeObjectItem::doLoad() const
             {
                 showcasePadding<<"&nbsp;&nbsp;";
             }
-        }
-        else
-        {
+        } else {
             displayDecl(S, object().type(), object().name());
         }
 
@@ -168,38 +167,42 @@ void TreeObjectItem::doLoad() const
             displayVariant(S, object().value());
         }
 
-        int attributeCount = object().maxAttributeNumber() + object().showcasedAttributes().size();
-        if (attributeCount > 0)
-        {
-            S << showcasePadding.str();
-            S << "&nbsp;&nbsp;(";
+        ObjectAttributes* attributes = object().attributes();
+        bool first = true;
+        std::stringstream showcaseContent;
+        if (attributes != nullptr) {
 
-            int i;
-            for (i = 0; i < object().maxAttributeNumber(); ++i) {
-                Variant* value = object().attributeValue(i);
-                if (value) {
-                    displayVariant(S, *value);
+            for (size_t i = 0; i < attributes->numberedCount(); ++i) {
+                if (!first) {
+                    showcaseContent << ",&nbsp;";
+                } else {
+                    first = false;
                 }
-                if (i < attributeCount - 1) {
-                    S << ",&nbsp;";
-                }
+
+                displayVariant(showcaseContent, attributes->getNumbered(i));
             }
 
-            for (int j = 0; i < attributeCount; ++i, ++j) {
-                const std::string& key = object().showcasedAttributes()[j];
-                Variant* value = object().attributeValue(key);
-                if (value) {
-                    displayName(S, key);
-                    S << " = ";
-                    displayVariant(S, *value);
-                }
-                if (i < attributeCount - 1) {
-                    S << ",&nbsp;";
+            for (const std::string& name : attributes->fieldNames()) {
+                if (name[0] != '_') {
+                    if (!first) {
+                        showcaseContent << ",&nbsp;";
+                    } else {
+                        first = false;
+                    }
+
+                    displayName(showcaseContent, name);
+                    showcaseContent << " = ";
+                    displayVariant(showcaseContent, *attributes->getNamed(name));
                 }
             }
-            S << ")";
         }
 
+        if (!first) {
+            S << showcasePadding.str();
+            S << "&nbsp;&nbsp;(";
+            S << showcaseContent.str();
+            S << ")";
+        }
 
         itemData()[0] = S.str().c_str();
     }

@@ -4,7 +4,6 @@
 #include "core/module.h"
 #include "core/variable/variable.h"
 #include "core/variable/variablepath.h"
-#include "core/interpreter/scope/scope.h"
 
 class Program;
 
@@ -15,9 +14,9 @@ class Evaluator
 {
 public:
     Evaluator();
-    Evaluator(Scope& scope);
+    Evaluator(const Variable& scope);
     Evaluator(const Module &module);
-    Evaluator(Scope& scope, const Module& module);
+    Evaluator(const Variable& scope, const Module& module);
 
     /**
      * @brief Evaluate a right value tagged \link Program program node\endlink
@@ -40,8 +39,9 @@ private:
     Variable ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const;
     Variable function(const Program& program) const;
     Variable variable(const Program& program, bool modifiable) const;
+    Variable assignField(const Program& path, const Program& rightValue) const;
 
-    Scope& scope;
+    const Variable& scope;
     const Module& module;
 };
 

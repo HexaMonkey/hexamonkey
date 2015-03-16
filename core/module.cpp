@@ -206,12 +206,16 @@ const Module *Module::handler(const ObjectType &type) const
 
 Object* Module::handle(const ObjectType& type, File& file, Object* parent, const Module& fromModule) const
 {
-    Object* object = new Object(file);
+    Object* object;
     if(parent != nullptr) {
+        object = new Object(file, parent->beginningPos()+parent->pos());
         object->_parent = parent;
         object->_rank = parent->numberOfChildren();
         parent->_lastChild = object;
+    } else {
+        object = new Object(file, 0);
     }
+
     addParsers(*object, type, fromModule);
     return object;
 }
@@ -282,7 +286,7 @@ const Module *Module::functionHandler(const std::string &name) const
     return nullptr;
 }
 
-Variable Module::executeFunction(const std::string &name, const ScopePtr &params) const
+Variable Module::executeFunction(const std::string &name, const Variable &params) const
 {
     return executeFunction(name, params, *this);
 }
@@ -330,7 +334,7 @@ bool Module::doCanHandleFunction(const std::string &/*name*/) const
     return false;
 }
 
-Variable Module::doExecuteFunction(const std::string &/*name*/, const ScopePtr &/*params*/, const Module &/*fromModule*/) const
+Variable Module::doExecuteFunction(const std::string &/*name*/, const Variable &/*params*/, const Module &/*fromModule*/) const
 {
     return Variable();
 }
@@ -345,12 +349,12 @@ const std::vector<bool> &Module::doGetFunctionParameterModifiables(const std::st
     return emptyParameterModifiables;
 }
 
-const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &name) const
+const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &/*name*/) const
 {
     return emptyParameterDefaults;
 }
 
-Variable Module::executeFunction(const std::string &name, const ScopePtr &params, const Module &fromModule) const
+Variable Module::executeFunction(const std::string &name, const Variable &params, const Module &fromModule) const
 {
     const Module* handlerModule = functionHandler(name);
     if(handlerModule == nullptr)

@@ -9,22 +9,14 @@ LocalScopeImplementation::LocalScopeImplementation(const Variable &context)
 
 Variable LocalScopeImplementation::doGetField(const Variant &key, bool modifiable)
 {
-    if (key.type() != Variant::stringType) {
-        if (modifiable) {
-            Log::error("Local scope only support string keys");
+    if (key.type() == Variant::stringType) {
+        auto it = _fields.find(key.toString());
+        if (it != _fields.end()) {
+            return it->second;
         }
-        return Variable();
     }
 
-    auto it = _fields.find(key.toString());
-    if (it != _fields.end()) {
-        return it->second;
-    } else {
-        if (modifiable) {
-            Log::error("Local scope fields must be declared with \"var\"");
-        }
-        return Variable();
-    }
+    return _context.field(key, modifiable);
 }
 
 void LocalScopeImplementation::doSetField(const Variant &key, const Variable &variable)

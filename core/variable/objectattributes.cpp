@@ -4,7 +4,7 @@
 
 Variant& ObjectAttributes::addNumbered()
 {
-    _numberedFields.push_back(Variant());
+    _numberedFields.push_back(Variant::null());
     return _numberedFields.back();
 }
 

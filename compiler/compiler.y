@@ -56,8 +56,8 @@
 %left RIGHT_TOKEN LEFT_TOKEN
 %left '+' '-'
 %left '*' '/' '%'
-%right '!'
-%right '~'
+%right NOT_TOKEN
+%right BITWISE_NOT_TOKEN
 %right OPP
 %right INC_TOKEN DEC_TOKEN
 %left SUF_INC SUF_DEC
@@ -283,7 +283,7 @@ statement:
 simple_statement:
     local_declarations 
    |declaration
-   |subscope_assignment
+   |field_assignment
    |remove
    |right_value
    |break
@@ -397,8 +397,8 @@ right_value:
     |right_value '*' right_value                 {handle_op(MUL_OP);}
     |right_value '/' right_value                 {handle_op(DIV_OP);}
     |right_value '%' right_value                 {handle_op(MOD_OP);}  
-    |'!' right_value                             {handle_op(NOT_OP);}
-    |'~' right_value                             {handle_op(BITWISE_NOT_OP);}
+    |NOT_TOKEN right_value                       {handle_op(NOT_OP);}
+    |BITWISE_NOT_TOKEN  right_value              {handle_op(BITWISE_NOT_OP);}
     |'-' %prec OPP right_value                   {handle_op(OPP_OP);}
     |INC_TOKEN right_value                       {handle_op(PRE_INC_OP);}
     |DEC_TOKEN right_value                       {handle_op(PRE_DEC_OP);}
@@ -408,7 +408,7 @@ right_value:
     |variable                                    {push_master(RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(RIGHT_VALUE, 1);}
     |function_identifier right_value_arguments   {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
-	|scope '.' function_identifier right_value_arguments   {push_master(METHOD_EVALUATION, 3);push_master(RIGHT_VALUE, 1);}
+	|variable SUBSCOPE_ASSIGN_TOKEN right_value {push_master(FIELD_ASSIGN, 2);push_master(RIGHT_VALUE, 1);}
     |'('right_value')'                          
 ;
 
@@ -450,17 +450,10 @@ variable:
    |variable '.' extended_identifier {push_master(VARIABLE, 2);}
    |variable '[' right_value ']' {push_master(VARIABLE, 2);}
    |variable '[' ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 2);}
-   
-scope:
-	variable {push_master(SCOPE, 1);}
-   |explicit_scope
 
-explicit_scope:
-	variable '.' {push_master(SCOPE, 1);}
-
-subscope_assignment:
-	variable SUBSCOPE_ASSIGN_TOKEN scope {push_master(SUBSCOPE_ASSIGN, 2);}
-   |variable SUBSCOPE_ASSIGN_TOKEN subscope_assignment {push_master(SUBSCOPE_ASSIGN, 2);}
+field_assignment:
+	
+   |variable SUBSCOPE_ASSIGN_TOKEN field_assignment {push_master(FIELD_ASSIGN, 2);}
 
 remove:
 	REMOVE_TOKEN variable {push_master(REMOVE, 1);}

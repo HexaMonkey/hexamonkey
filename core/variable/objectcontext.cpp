@@ -25,7 +25,7 @@ Variable ObjectContext::getField(const std::string &key) const
 
 Variable ObjectContext::getField(const std::string &key, bool modifiable)
 {
-    for (Object* object = &_object; object != nullptr; object->parent()) {
+    for (Object* object = &_object; object != nullptr; object = object->parent()) {
         ObjectContext* context = object->context();
         if (context != nullptr) {
             auto it = context->_fields.find(key);

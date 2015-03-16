@@ -32,7 +32,7 @@
 
 class Object;
 class Parser;
-class Scope;
+class Variable;
 
 /*!
  * @brief Factory for \link Object objects\endlink
@@ -168,7 +168,7 @@ public:
     /**
      * @brief Execute the function with the parameters given as a \link Scope scope\endlink
      */
-    Variable executeFunction(const std::string &name, const ScopePtr &params) const;
+    Variable executeFunction(const std::string &name, const Variable &params) const;
 
     /**
      * @brief Get the names of the parameters as a vector of strings
@@ -233,7 +233,7 @@ protected:
 
 
     virtual bool doCanHandleFunction(const std::string& name) const;
-    virtual Variable doExecuteFunction(const std::string& name, const ScopePtr &params, const Module &fromModule) const;
+    virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const;
     virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
     virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const;
     virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const;
@@ -275,7 +275,7 @@ private:
 
     Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
 
-    Variable executeFunction(const std::string& name, const ScopePtr &params, const Module& fromModule) const;
+    Variable executeFunction(const std::string& name, const Variable &params, const Module& fromModule) const;
 
     bool _loaded;
 

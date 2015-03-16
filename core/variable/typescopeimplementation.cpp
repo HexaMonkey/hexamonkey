@@ -58,15 +58,15 @@ public:
 
 protected:
     virtual void doSetValue(const Variant& value) override {
-        if (value.hasNumericalType()) {
-            _type.setElementCount(value.toInteger());
+        if (value.type() == Variant::objectType) {
+            _type.setElementType(value.toObjectType());
         } else {
-            Log::warning("Trying to set an invalid value ", value, " as element count for type ", _type);
+            Log::warning("Trying to set an invalid value ", value, " as element type for type ", _type);
         }
     }
 
     virtual Variant doGetValue() override {
-        return Variant(_type.elementCount());
+        return Variant(_type.elementType());
     }
 private:
     ObjectType& _type;
@@ -93,14 +93,14 @@ public:
 protected:
     virtual void doSetValue(const Variant& value) override {
         if (value.hasNumericalType()) {
-            _type.setElementType(value.toObjectType());
+            _type.setElementCount(value.toInteger());
         } else {
             Log::warning("Trying to set an invalid value ", value, " as element type for type ", _type);
         }
     }
 
     virtual Variant doGetValue() override {
-        return Variant(_type.elementType());
+        return Variant(_type.elementCount());
     }
 private:
     ObjectType& _type;

@@ -4,11 +4,11 @@
 #include "core/log/logmanager.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/program.h"
-#include "core/interpreter/scope/functionscope.h"
+#include "core/variable/functionscopeimplementation.h"
 #include "core/util/unused.h"
 
 const Variant emptyString("");
-Scope emptyScope;
+Variable emptyScope;
 const Module emptyModule;
 
 Evaluator::Evaluator()
@@ -18,7 +18,7 @@ Evaluator::Evaluator()
     UNUSED(hmcElemNames);
 }
 
-Evaluator::Evaluator(Scope &scope)
+Evaluator::Evaluator(const Variable &scope)
     : scope(scope),
       module(emptyModule)
 {
@@ -30,7 +30,7 @@ Evaluator::Evaluator(const Module &module)
 {
 }
 
-Evaluator::Evaluator(Scope &scope, const Module &module)
+Evaluator::Evaluator(const Variable& scope, const Module &module)
     : scope(scope),
       module(module)
 {
@@ -48,21 +48,34 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
             switch(operatorParameterCount[op])
             {
                 case 1:
-                    return unaryOperation  (op, rightValue(program[1], !(1&release)));
+                {
+                    const Variable value1 = rightValue(program[1], !(1&release));
+                    return unaryOperation(op, value1);
+                }
 
                 case 2:
-                    return binaryOperation (op, rightValue(program[1], !(1&release)),
-                                                rightValue(program[2], !(2&release)));
+                {
+                    const Variable value1 = rightValue(program[1], !(1&release));
+                    const Variable value2 = rightValue(program[2], !(2&release));
+                    return binaryOperation (op, value1, value2);
+                }
 
                 case 3:
-                    return ternaryOperation(op, rightValue(program[1], !(1&release)),
-                                                rightValue(program[2], !(2&release)),
-                                                rightValue(program[3], !(4&release)));
+                {
+                    const Variable value1 = rightValue(program[1], !(1&release));
+                    const Variable value2 = rightValue(program[2], !(2&release));
+                    const Variable value3 = rightValue(program[3], !(4&release));
+                    return ternaryOperation(op, value1, value2, value3);
+                }
+
                 default:
                     return Variable();
             }
 
         }
+
+        case FIELD_ASSIGN:
+            return assignField(first[0], first[1]);
 
         case FUNCTION_EVALUATION:
             return function(first);
@@ -151,7 +164,6 @@ Variable Evaluator::unaryOperation(int op, const Variable& a) const
 
         case OPP_OP:
             return Variable::copy(-a.value());;
-            break;
 
         case PRE_INC_OP:
             a.setValue(a.value()+1);
@@ -315,42 +327,50 @@ Variable Evaluator::function(const Program &program) const
     const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
     const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
 
-    FunctionScope& functionScope = *(new FunctionScope);
+    FunctionScopeImplementation* functionScope = new FunctionScopeImplementation;
     unsigned int size = parametersNames.size();
     size_t i = 0;
     for(Program argument:arguments)
     {
-        if(i>=size)
+        if(i>=size) {
             break;
+        }
 
         bool modifiable = parameterModifiables[i];
         Variable argumentVariable = rightValue(argument, modifiable);
-        const std::string& argName = parametersNames[i];
-        if(!modifiable)
-        {
+        if(!modifiable) {
             argumentVariable.setConstant();
         }
-        functionScope.addParameter(argName, argumentVariable);
+        functionScope->addNamedParameter(argumentVariable, parametersNames[i]);
 
         ++i;
     }
 
-    while(i < parametersDefaults.size())
+    while (i < parametersDefaults.size())
     {
-        functionScope.addParameter(parametersNames[i], Variable::constRef(parametersDefaults[i]));
+        functionScope->addNamedParameter(Variable::constRef(parametersDefaults[i]), parametersNames[i]);
         ++i;
     }
 
-    while(i < size)
+    while (i < size)
     {
-        functionScope.addParameter(parametersNames[i], Variable());
+        functionScope->addNamedParameter(Variable(), parametersNames[i]);
         ++i;
     }
 
-    return module.executeFunction(name, ScopePtr(&functionScope));
+    return module.executeFunction(name, Variable(functionScope, true));
 }
 
 Variable Evaluator::variable(const Program &program, bool modifiable) const
 {
-    return scope.get(variablePath(program), modifiable);
+    return scope.field(variablePath(program), modifiable);
+}
+
+Variable Evaluator::assignField(const Program &pathProgram, const Program &rightValueProgram) const
+{
+    Variable value = rightValue(rightValueProgram, true);
+
+    scope.setField(variablePath(pathProgram), value);
+
+    return value;
 }

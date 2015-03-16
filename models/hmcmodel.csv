@@ -48,5 +48,5 @@ codeInfo;master;1;
 lineNumber;integer;0;
 fileOffset;integer;0;
 scope;master;1;
-subscopeAssign;master;1;
+fieldAssign;master;1;
 remove;master;0;

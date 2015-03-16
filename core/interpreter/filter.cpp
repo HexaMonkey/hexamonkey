@@ -21,8 +21,7 @@
 #include "core/interpreter/filter.h"
 #include "core/interpreter/programloader.h"
 #include "core/variable/variable.h"
-#include "core/interpreter/scope/objectscope.h"
-#include "core/interpreter/scope/constscope.h"
+#include "core/variable/objectscopeimplementation.h"
 
 Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {
@@ -60,8 +59,9 @@ const std::string &Filter::expression()
 bool Filter::operator()(Object& object)
 {
     if(_expression != "") {
-        ConstScope objectScope(Scope::Ptr(new ObjectScope(object)));
-        return Evaluator(objectScope).rightValue(_program).value().toBool();
+        Variable objectVariable = object.variable();
+        objectVariable.setConstant();
+        return Evaluator(objectVariable).rightValue(_program).value().toBool();
     } else {
         return true;
     }

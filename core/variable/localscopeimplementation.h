@@ -6,7 +6,7 @@
 
 #include "core/variable/variable.h"
 
-class LocalScopeImplementation : VariableImplementation
+class LocalScopeImplementation : public VariableImplementation
 {
 public:
     LocalScopeImplementation(const Variable& context = Variable());

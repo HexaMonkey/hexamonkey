@@ -29,9 +29,9 @@
 
 #define BUFFER_SIZE 1048576
 
-Object::Object(File& file) :
+Object::Object(File& file, std::streampos beginningPos) :
     _file(file),
-    _beginningPos(_file.tellg()),
+    _beginningPos(beginningPos),
     _size(-1),
     _contentSize(0),
     _pos(0),
@@ -44,7 +44,9 @@ Object::Object(File& file) :
     _maxAttributeNumber(0),
     _expandOnAddition(false),
     _parsedCount(0),
-    _parsingInProgress(false)
+    _parsingInProgress(false),
+    _context(nullptr),
+    _attributes(nullptr)
 {
 }
 
@@ -244,9 +246,18 @@ const Variable &Object::variable()
 
 const Variable &Object::contextVariable(bool createIfNeeded)
 {
-    if (_context == nullptr && createIfNeeded) {
-        _context = new ObjectContext(*this);
-        _contextVariable = Variable((VariableImplementation *) _context, true);
+    if (_context == nullptr) {
+        if (createIfNeeded) {
+            _context = new ObjectContext(*this);
+            _contextVariable = Variable((VariableImplementation *) _context, true);
+            return _contextVariable;
+        } else {
+            for (Object* object = parent(); object; object = object->parent()) {
+                if (object->_context) {
+                    return object->_contextVariable;
+                }
+            }
+        }
     }
 
     return _contextVariable;
@@ -269,11 +280,13 @@ void Object::seekBeginning()
 
 void Object::seekEnd()
 {
+    std::streampos newPos;
     if(size() != -1) {
-        _file.seekg(_beginningPos+size(), std::ios::beg);
+        newPos = _beginningPos + size();
     } else {
-        _file.seekg(_beginningPos, std::ios::beg);
+        newPos = _beginningPos;
     }
+    _file.seekg(_beginningPos, std::ios::beg);
 }
 
 void Object::seekObjectEnd()
@@ -293,17 +306,17 @@ void Object::setPos(std::streamoff pos)
             if (pos <= size()) {
                 _pos = pos;
             } else {
-                Log::warning("Trying to set a position outside of the bounds of the object");
+                Log::warning("Trying to set a position ", pos," outside of the bounds of the object");
             }
         } else {
             if (_beginningPos + pos <= file().size()) {
                 _pos = pos;
             } else {
-                Log::warning("Trying to set a position outside of the bounds of the file");
+                Log::warning("Trying to set a position ", _beginningPos + pos," outside of the bounds of the file");
             }
         }
     } else {
-        Log::warning("Trying to set a negative value as position");
+        Log::warning("Trying to set a negative value ", pos, " as position");
     }
 }
 

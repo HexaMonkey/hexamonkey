@@ -290,7 +290,7 @@ class Object
         friend class Module;
         friend class ContainerParser;
 
-        Object(File& file);
+        Object(File& file, std::streampos beginningPos);
 
         void parse();
         void parseBody();
