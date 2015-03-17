@@ -27,8 +27,6 @@
 #include "core/interpreter/programloader.h"
 #include "core/variable/variable.h"
 #include "core/variable/variablepath.h"
-#include "core/interpreter/scope/scope.h"
-#include "core/interpreter/scope/functionscope.h"
 #include "core/util/unused.h"
 #include "core/util/osutil.h"
 #include "core/util/fileutil.h"

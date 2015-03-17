@@ -30,15 +30,6 @@ SOURCES += \
     ../core/interpreter/filter.cpp \
     ../core/interpreter/evaluator.cpp \
     ../core/interpreter/blockexecution.cpp \
-    ../core/interpreter/scope/typescope.cpp \
-    ../core/interpreter/scope/scope.cpp \
-    ../core/interpreter/scope/objectscope.cpp \
-    ../core/interpreter/scope/localscope.cpp \
-    ../core/interpreter/scope/functionscope.cpp \
-    ../core/interpreter/scope/compositescope.cpp \
-    ../core/interpreter/scope/attributescope.cpp \
-    ../core/interpreter/scope/contextscope.cpp \
-    ../core/interpreter/scope/constscope.cpp \
     ../core/log/logger.cpp \
     ../core/log/logmanager.cpp \
     ../core/modules/default/tupleparser.cpp \
@@ -106,16 +97,6 @@ HEADERS  += \
     ../core/interpreter/filter.h \
     ../core/interpreter/evaluator.h \
     ../core/interpreter/blockexecution.h \
-    ../core/interpreter/scope/typescope.h \
-    ../core/interpreter/scope/scope.h \
-    ../core/interpreter/scope/objectscope.h \
-    ../core/interpreter/scope/localscope.h \
-    ../core/interpreter/scope/functionscope.h \
-    ../core/interpreter/scope/compositescope.h \
-    ../core/interpreter/scope/attributescope.h \
-    ../core/interpreter/scope/contextscope.h \
-    ../core/interpreter/scope/scopeptr.h \
-    ../core/interpreter/scope/constscope.h \
     ../core/log/logger.h \
     ../core/log/logmanager.h \
     ../core/modules/default/dataparser.h \

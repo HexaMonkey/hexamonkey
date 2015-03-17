@@ -6,7 +6,6 @@
 #include "core/interpreter/blockexecution.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/programloader.h"
-#include "core/interpreter/scope/scope.h"
 #include "core/util/unused.h"
 
 //#define EXECUTION_TRACE 1
