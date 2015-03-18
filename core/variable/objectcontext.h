@@ -12,8 +12,8 @@ class ObjectContext : public VariableImplementation
 public:
     ObjectContext(Object& object);
 
-    Variable getField(const std::string& key) const;
-    Variable getField(const std::string& key, bool modifiable);
+    Variable field(const std::string& key) const;
+    Variable field(const std::string& key, bool modifiable);
     void     setField(const std::string& key, const Variable &variable);
     void     removeField(const std::string& key);
 

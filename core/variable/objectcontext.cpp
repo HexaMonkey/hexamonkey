@@ -8,7 +8,7 @@ ObjectContext::ObjectContext(Object &object)
 {
 }
 
-Variable ObjectContext::getField(const std::string &key) const
+Variable ObjectContext::field(const std::string &key) const
 {
     for (const Object* object = &_object; object != nullptr; object->parent()) {
         const ObjectContext* context = object->context();
@@ -23,7 +23,7 @@ Variable ObjectContext::getField(const std::string &key) const
     return Variable();
 }
 
-Variable ObjectContext::getField(const std::string &key, bool modifiable)
+Variable ObjectContext::field(const std::string &key, bool modifiable)
 {
     for (Object* object = &_object; object != nullptr; object = object->parent()) {
         ObjectContext* context = object->context();
@@ -61,7 +61,7 @@ Variable ObjectContext::doGetField(const Variant &key, bool modifiable)
         return Variable();
     }
 
-    return getField(key.toString(), modifiable);
+    return field(key.toString(), modifiable);
 }
 
 void ObjectContext::doSetField(const Variant &key, const Variable &variable)

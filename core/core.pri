@@ -65,7 +65,9 @@ SOURCES += \
     ../core/variable/objectattributes.cpp \
     ../core/variable/functionscope.cpp \
     ../core/variable/typescope.cpp \
-    ../core/variable/objectscope.cpp
+    ../core/variable/objectscope.cpp \
+    ../core/variable/arrayscope.cpp \
+    ../core/variable/mapscope.cpp
 
 HEADERS  += \ 
     ../core/variant.h\
@@ -143,4 +145,6 @@ HEADERS  += \
     ../core/variable/objectattributes.h \
     ../core/variable/functionscope.h \
     ../core/variable/typescope.h \
-    ../core/variable/objectscope.h
+    ../core/variable/objectscope.h \
+    ../core/variable/arrayscope.h \
+    ../core/variable/mapscope.h

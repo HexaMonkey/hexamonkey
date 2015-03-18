@@ -77,10 +77,12 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
     } else if (key.hasNumericalType()) {
         int64_t number = key.toInteger();
         if (number >= 0) {
-            while (modifiable && number >= _numberedFields.size()) {
-                addNumbered();
-            }
-            if (number < _numberedFields.size()) {
+            if (modifiable) {
+                while (number >= _numberedFields.size()) {
+                    addNumbered();
+                }
+                return Variable::ref(_numberedFields[number]);
+            } else if (number < _numberedFields.size()) {
                 return Variable::ref(_numberedFields[number]);
             } else {
                 return Variable();
