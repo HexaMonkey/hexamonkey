@@ -1,13 +1,13 @@
-#include "localscopeimplementation.h"
+#include "localscope.h"
 
 #include "core/log/logmanager.h"
 
-LocalScopeImplementation::LocalScopeImplementation(const Variable &context)
+LocalScope::LocalScope(const Variable &context)
     : _context(context)
 {
 }
 
-Variable LocalScopeImplementation::doGetField(const Variant &key, bool modifiable)
+Variable LocalScope::doGetField(const Variant &key, bool modifiable)
 {
     if (key.type() == Variant::stringType) {
         auto it = _fields.find(key.toString());
@@ -19,7 +19,7 @@ Variable LocalScopeImplementation::doGetField(const Variant &key, bool modifiabl
     return _context.field(key, modifiable);
 }
 
-void LocalScopeImplementation::doSetField(const Variant &key, const Variable &variable)
+void LocalScope::doSetField(const Variant &key, const Variable &variable)
 {
     if (key.type() != Variant::stringType) {
         Log::error("Local scope only support string keys");
@@ -29,7 +29,7 @@ void LocalScopeImplementation::doSetField(const Variant &key, const Variable &va
     _fields[key.toString()] = variable;
 }
 
-void LocalScopeImplementation::doRemoveField(const Variant &key)
+void LocalScope::doRemoveField(const Variant &key)
 {
     if (key.type() != Variant::stringType) {
         Log::error("Local scope only support string keys");

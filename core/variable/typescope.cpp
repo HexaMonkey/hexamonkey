@@ -3,7 +3,7 @@
 #include "core/parser.h"
 #include "core/log/logmanager.h"
 
-#include "core/variable/typescopeimplementation.h"
+#include "core/variable/typescope.h"
 
 #define A_COUNT 0
 #define A_ELEMENT_TYPE 1
@@ -119,7 +119,7 @@ private:
     const ObjectType& _type;
 };
 
-Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool modifiable)
+Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable)
 {
     ObjectType* mType = modifiable ? modifiableType() : nullptr;
     const ObjectType& cType = constType();
@@ -198,48 +198,48 @@ Variable AbstractTypeScopeImplementation::doGetField(const Variant &key, bool mo
 
     if (parameterIndex != -1) {
         if(mType) {
-            return Variable::ref(mType->_parametersValue[parameterIndex]);
+            return Variable::ref(mType->parameterValue(parameterIndex));
         } else {
-            return Variable::constRef(cType._parametersValue[parameterIndex]);
+            return Variable::constRef(cType.parameterValue(parameterIndex));
         }
     } else {
         return Variable();
     }
 }
 
-TypeScopeImplementation::TypeScopeImplementation(ObjectType &type, bool modifiable)
+TypeScope::TypeScope(ObjectType &type, bool modifiable)
     : _type(modifiable? &type : nullptr),
       _constType(type)
 {
 }
 
-TypeScopeImplementation::TypeScopeImplementation(const ObjectType &type)
+TypeScope::TypeScope(const ObjectType &type)
     : _type(nullptr),
       _constType(type)
 {
 }
 
-ObjectType *TypeScopeImplementation::modifiableType()
+ObjectType *TypeScope::modifiableType()
 {
     return _type;
 }
 
-const ObjectType &TypeScopeImplementation::constType()
+const ObjectType &TypeScope::constType()
 {
     return _constType;
 }
 
-ParserTypeScopeImplementation::ParserTypeScopeImplementation(Parser &parser)
+ParserTypeScope::ParserTypeScope(Parser &parser)
     : _parser(parser)
 {
 }
 
-ObjectType *ParserTypeScopeImplementation::modifiableType()
+ObjectType *ParserTypeScope::modifiableType()
 {
     return _parser.modifiableType();
 }
 
-const ObjectType &ParserTypeScopeImplementation::constType()
+const ObjectType &ParserTypeScope::constType()
 {
     return _parser.constType();
 }

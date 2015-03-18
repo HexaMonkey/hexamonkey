@@ -60,12 +60,12 @@ SOURCES += \
     ../core/util/bitutil.cpp \
     ../core/util/osutil.cpp \
     ../core/variable/commonvariable.cpp \
-    ../core/variable/localscopeimplementation.cpp \
+    ../core/variable/localscope.cpp \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
-    ../core/variable/functionscopeimplementation.cpp \
-    ../core/variable/typescopeimplementation.cpp \
-    ../core/variable/objectscopeimplementation.cpp
+    ../core/variable/functionscope.cpp \
+    ../core/variable/typescope.cpp \
+    ../core/variable/objectscope.cpp
 
 HEADERS  += \ 
     ../core/variant.h\
@@ -138,9 +138,9 @@ HEADERS  += \
     ../core/util/rapidxml/rapidxml.hpp \
     ../compiler/model.h \
     ../core/variable/commonvariable.h \
-    ../core/variable/localscopeimplementation.h \
+    ../core/variable/localscope.h \
     ../core/variable/objectcontext.h \
     ../core/variable/objectattributes.h \
-    ../core/variable/functionscopeimplementation.h \
-    ../core/variable/typescopeimplementation.h \
-    ../core/variable/objectscopeimplementation.h
+    ../core/variable/functionscope.h \
+    ../core/variable/typescope.h \
+    ../core/variable/objectscope.h

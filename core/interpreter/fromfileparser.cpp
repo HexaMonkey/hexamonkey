@@ -19,20 +19,20 @@
 #include "core/objecttypetemplate.h"
 #include "core/interpreter/fromfileparser.h"
 #include "core/interpreter/programloader.h"
-#include "core/variable/localscopeimplementation.h"
-#include "core/variable/typescopeimplementation.h"
+#include "core/variable/localscope.h"
+#include "core/variable/typescope.h"
 #include "core/util/unused.h"
 
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd)
     : ContainerParser(object, module),
       _object(object),
-      _scope(new LocalScopeImplementation(object.variable()), true),
+      _scope(new LocalScope(object.variable()), true),
       _headerEnd(headerEnd),
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
       _tailExecution(classDefinition.node(1), _evaluator, _scope, this)
 {
-    _scope.setField("@args", Variable(new ParserTypeScopeImplementation(*this), true));
+    _scope.setField("@args", Variable(new ParserTypeScope(*this), true));
     UNUSED(hmcElemNames);
 
     auto bodyBlock = classDefinition.node(0);

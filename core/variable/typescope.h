@@ -11,7 +11,7 @@ class ObjectType;
  *
  * The arguments can either be access by their index or name.
  */
-class AbstractTypeScopeImplementation : public VariableImplementation
+class AbstractTypeScope : public VariableImplementation
 {
 protected:
     virtual Variable doGetField(const Variant &key, bool modifiable) override;
@@ -23,11 +23,11 @@ protected:
 /**
  * @brief Type scope implementation given a reference to a \link ObjectType type\endlink
  */
-class TypeScopeImplementation : public AbstractTypeScopeImplementation
+class TypeScope : public AbstractTypeScope
 {
 public:
-    TypeScopeImplementation(ObjectType& type, bool modifiable);
-    TypeScopeImplementation(const ObjectType& type);
+    TypeScope(ObjectType& type, bool modifiable);
+    TypeScope(const ObjectType& type);
 protected:
     virtual ObjectType* modifiableType() override;
     virtual const ObjectType& constType() override;
@@ -39,10 +39,10 @@ private:
 /**
  * @brief Type scope implementation given a reference to a \link Parser parser\endlink
  */
-class ParserTypeScopeImplementation : public AbstractTypeScopeImplementation
+class ParserTypeScope : public AbstractTypeScope
 {
 public:
-    ParserTypeScopeImplementation(Parser& parser);
+    ParserTypeScope(Parser& parser);
 protected:
     virtual ObjectType* modifiableType() override;
     virtual const ObjectType& constType() override;

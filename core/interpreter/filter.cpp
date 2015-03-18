@@ -21,7 +21,7 @@
 #include "core/interpreter/filter.h"
 #include "core/interpreter/programloader.h"
 #include "core/variable/variable.h"
-#include "core/variable/objectscopeimplementation.h"
+#include "core/variable/objectscope.h"
 
 Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {

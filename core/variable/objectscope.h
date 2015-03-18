@@ -5,10 +5,10 @@
 
 class Object;
 
-class ObjectScopeImplementation : public VariableImplementation
+class ObjectScope : public VariableImplementation
 {
 public:
-    ObjectScopeImplementation(Object& object);
+    ObjectScope(Object& object);
 
     Variable doGetField(const Variant &key, bool modifiable);
 

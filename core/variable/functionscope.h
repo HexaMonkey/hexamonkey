@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-class FunctionScopeImplementation : public VariableImplementation
+class FunctionScope : public VariableImplementation
 {
 public:
     void addParameter(const Variable& variable);

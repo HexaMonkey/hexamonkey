@@ -24,7 +24,7 @@
 #include "core/modules/stream/streammodule.h"
 #include "core/variable/objectcontext.h"
 #include "core/variable/objectattributes.h"
-#include "core/variable/objectscopeimplementation.h"
+#include "core/variable/objectscope.h"
 
 
 #define BUFFER_SIZE 1048576
@@ -238,7 +238,7 @@ void Object::dumpStreamToFile(const std::string &path)
 const Variable &Object::variable()
 {
     if (!_variable.isDefined()) {
-        _variable = Variable((VariableImplementation *) new ObjectScopeImplementation(*this), true);
+        _variable = Variable((VariableImplementation *) new ObjectScope(*this), true);
     }
 
     return _variable;

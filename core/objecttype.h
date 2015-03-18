@@ -146,8 +146,6 @@ public:
     ObjectType& operator=(ObjectType other);
 
 private:
-    friend class AbstractTypeScopeImplementation;
-    friend class AbstractTypeScope;
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
     Variant _name;

@@ -4,7 +4,7 @@
 #include "core/log/logmanager.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/program.h"
-#include "core/variable/functionscopeimplementation.h"
+#include "core/variable/functionscope.h"
 #include "core/util/unused.h"
 
 const Variant emptyString("");
@@ -327,7 +327,7 @@ Variable Evaluator::function(const Program &program) const
     const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
     const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
 
-    FunctionScopeImplementation* functionScope = new FunctionScopeImplementation;
+    FunctionScope* functionScope = new FunctionScope;
     unsigned int size = parametersNames.size();
     size_t i = 0;
     for(Program argument:arguments)

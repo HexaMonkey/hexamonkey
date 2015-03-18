@@ -6,10 +6,10 @@
 
 #include "core/variable/variable.h"
 
-class LocalScopeImplementation : public VariableImplementation
+class LocalScope : public VariableImplementation
 {
 public:
-    LocalScopeImplementation(const Variable& context = Variable());
+    LocalScope(const Variable& context = Variable());
 
 protected:
     virtual Variable doGetField(const Variant &key, bool modifiable) override;

@@ -1,4 +1,4 @@
-#include "objectscopeimplementation.h"
+#include "objectscope.h"
 
 #include "core/log/logmanager.h"
 
@@ -100,12 +100,12 @@ private:
 };
 
 
-ObjectScopeImplementation::ObjectScopeImplementation(Object &object)
+ObjectScope::ObjectScope(Object &object)
     : _object(object)
 {
 }
 
-Variable ObjectScopeImplementation::doGetField(const Variant &key, bool modifiable)
+Variable ObjectScope::doGetField(const Variant &key, bool modifiable)
 {
     if (key.isValueless()) {
 
@@ -217,12 +217,12 @@ Variable ObjectScopeImplementation::doGetField(const Variant &key, bool modifiab
     }
 }
 
-void ObjectScopeImplementation::doSetValue(const Variant &value)
+void ObjectScope::doSetValue(const Variant &value)
 {
     _object.setValue(value);
 }
 
-Variant ObjectScopeImplementation::doGetValue()
+Variant ObjectScope::doGetValue()
 {
     return _object.value();
 }

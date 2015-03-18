@@ -1,19 +1,19 @@
-#include "functionscopeimplementation.h"
+#include "core/variable/functionscope.h"
 
 #include "core/log/logmanager.h"
 
-void FunctionScopeImplementation::addParameter(const Variable& variable)
+void FunctionScope::addParameter(const Variable& variable)
 {
     _fields.push_back(variable);
 }
 
-void FunctionScopeImplementation::addNamedParameter(const Variable& variable, const std::string &name)
+void FunctionScope::addNamedParameter(const Variable& variable, const std::string &name)
 {
     _namedFields[name] = variable;
     addParameter(variable);
 }
 
-Variable FunctionScopeImplementation::doGetField(const Variant &key, bool modifiable)
+Variable FunctionScope::doGetField(const Variant &key, bool modifiable)
 {
     if (key.hasNumericalType()) {
         int64_t number = key.toInteger();
