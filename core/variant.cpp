@@ -39,7 +39,8 @@ Variant Variant::null()
     return variant;
 }
 
-Variant::Variant(const Variant& other) : _type(other._type)
+Variant::Variant(const Variant& other)
+    : _type(other._type)
 {
     switch(_type & superTypeMask)
     {
@@ -48,16 +49,30 @@ Variant::Variant(const Variant& other) : _type(other._type)
             break;
 
         case stringType:
-            _data.s = new std::string(*other._data.s);
+            _data.s = other._data.s;
+            if (this != &other) {
+                ++_data.s->second;
+            }
+
             break;
 
         case objectType:
-            _data.t = new ObjectType(*other._data.t);
+            _data.t = other._data.t;
+            if (this != &other) {
+                ++_data.t->second;
+            }
             break;
 
         default:
             break;
     }
+}
+
+Variant::Variant(Variant&& other)
+    : _data(other._data),
+      _type(other._type)
+{
+    other._type = undefinedType;
 }
 
 Variant::Variant(bool l) : _type(integerType)
@@ -117,17 +132,17 @@ Variant::Variant(double f) : _type(floatingType)
 
 Variant::Variant(const std::string& s) : _type(stringType)
 {
-    _data.s = new std::string(s);
+    _data.s = new std::pair<std::string, int>(s, 1);
 }
 
 Variant::Variant(const char* s) : _type(stringType)
 {
-    _data.s = new std::string(s);
+    _data.s = new std::pair<std::string, int>(s, 1);
 }
 
 Variant::Variant(const ObjectType& t) : _type(objectType)
 {
-    _data.t = new ObjectType(t);
+    _data.t = new std::pair<ObjectType, int>(t, 1);
 }
 
 Variant::~Variant()
@@ -234,21 +249,21 @@ void Variant::setValue(const std::string& s)
 {
     clear();
     _type = stringType;
-    _data.s = new std::string(s);
+    _data.s = new std::pair<std::string, int>(s, 1);
 }
 
 void Variant::setValue(const char* s)
 {
     clear();
     _type = stringType;
-    _data.s = new std::string(s);
+    _data.s = new std::pair<std::string, int>(s, 1);
 }
 
 void Variant::setValue(const ObjectType& t)
 {
     clear();
     _type = objectType;
-    _data.t = new ObjectType(t);
+    _data.t = new std::pair<ObjectType, int>(t, 1);
 }
 
 void Variant::clear()
@@ -256,11 +271,17 @@ void Variant::clear()
     switch(_type & superTypeMask)
     {
         case stringType:
-            delete _data.s;
+            if (!--_data.s->second) {
+                delete _data.s;
+            }
             break;
+
         case objectType:
-            delete _data.t;
+            if (!--_data.t->second) {
+                delete _data.t;
+            }
             break;
+
         default:
             break;
     }
@@ -382,7 +403,7 @@ double Variant::toDouble() const
 const std::string& Variant::toString() const
 {
     if((_type & typeMask) == stringType) {
-        return *_data.s;
+        return _data.s->first;
     } else {
         return emptyString;
     }
@@ -391,15 +412,10 @@ const std::string& Variant::toString() const
 const ObjectType& Variant::toObjectType() const
 {
     if((_type & typeMask) == objectType) {
-        return *_data.t;
+        return _data.t->first;
     } else {
         return emptyType;
     }
-}
-
-ObjectType& Variant::toObjectType()
-{
-    return *_data.t;
 }
 
 bool Variant::toBool() const
@@ -413,9 +429,9 @@ bool Variant::toBool() const
         case floatingType:
             return _data.f != 0.;
         case stringType:
-            return !_data.s->empty();
+            return !_data.s->first.empty();
         case objectType:
-            return !_data.t->isNull();
+            return !_data.t->first.isNull();
         default:
             return false;
 
@@ -531,11 +547,11 @@ std::ostream& Variant::display(std::ostream& out, bool setFlags) const
                 break;
 
             case stringType:
-                out<<*_data.s;
+                out<<_data.s->first;
                 break;
 
             case objectType:
-                out<<*_data.t;
+                out<<_data.t->first;
                 break;
 
             case nullType:
@@ -576,10 +592,10 @@ bool operator==(const Variant& a, const Variant& b)
                 }
 
             case Variant::stringType:
-                return *a._data.s == *b._data.s;
+                return a._data.s->first == b._data.s->first;
 
             case Variant::objectType:
-                return *a._data.t == *b._data.t;
+                return a._data.t->first == b._data.t->first;
 
             case Variant::valuelessType:
                 return (a._type & Variant::typeMask) == (b._type & Variant::typeMask);
@@ -618,10 +634,10 @@ bool operator< (const Variant& a, const Variant& b)
                 }
 
             case Variant::stringType:
-                return *a._data.s < *b._data.s;
+                return a._data.s->first < b._data.s->first;
 
             case Variant::objectType:
-                return *a._data.t < *b._data.t;
+                return a._data.t->first < b._data.t->first;
         }
         return false;
     } else {
@@ -652,10 +668,10 @@ bool operator<=(const Variant& a, const Variant& b)
                 }
 
             case Variant::stringType:
-                return *a._data.s <= *b._data.s;
+                return a._data.s->first <= b._data.s->first;
 
             case Variant::objectType:
-                return *a._data.t <= *b._data.t;
+                return a._data.t->first <= b._data.t->first;
         }
         return true;
     } else {

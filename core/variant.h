@@ -93,6 +93,7 @@ public:
     static Variant null();
 
     Variant(const Variant& other);
+    Variant(Variant&& other);
 
     Variant(bool l);
     Variant(char l);
@@ -149,7 +150,6 @@ public:
     double             toDouble()          const;
     const std::string& toString()          const;
     const ObjectType&  toObjectType()      const;
-    ObjectType&        toObjectType()           ;
     bool               toBool()            const;
 
     Type type() const;
@@ -196,8 +196,8 @@ private:
         long long l;
         unsigned long long ul;
         double f;
-        std::string* s;
-        ObjectType* t;
+        std::pair<std::string, int>* s;
+        std::pair<ObjectType, int>* t;
     } Data;
 
     Data    _data;
