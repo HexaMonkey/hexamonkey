@@ -420,8 +420,8 @@ array_items:
    |right_value ',' array_items {push_master(ARRAY_SCOPE, 2);}
 
 map_key:
-    IDENT           {push_string(STRING_CONSTANT, $1); push_master(RIGHT_VALUE, 1);}
-   |string_constant {push_master(RIGHT_VALUE, 1);}
+    IDENT           {push_string(STRING_CONSTANT, $1);
+   |string_constant
 ;
 	
 map_item:

@@ -40,6 +40,8 @@ private:
     Variable function(const Program& program) const;
     Variable variable(const Program& program, bool modifiable) const;
     Variable assignField(const Program& path, const Program& rightValue) const;
+    Variable arrayScope(const Program& program) const;
+    Variable mapScope(const Program& program) const;
 
     const Variable& scope;
     const Module& module;

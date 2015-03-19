@@ -6,6 +6,8 @@
 #include "core/interpreter/program.h"
 #include "core/variable/functionscope.h"
 #include "core/util/unused.h"
+#include "core/variable/arrayscope.h"
+#include "core/variable/mapscope.h"
 
 const Variant emptyString("");
 Variable emptyScope;
@@ -100,6 +102,12 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
 
         case TYPE:
             return Variable::copy(type(first));
+
+        case ARRAY_SCOPE:
+            return arrayScope(first);
+
+        case MAP_SCOPE:
+            return mapScope(first);
     }
     return Variable();
 }
@@ -373,4 +381,24 @@ Variable Evaluator::assignField(const Program &pathProgram, const Program &right
     scope.setField(variablePath(pathProgram), value);
 
     return value;
+}
+
+Variable Evaluator::arrayScope(const Program &program) const
+{
+    ArrayScope* arrayScope = new ArrayScope;
+    for (const Program& item : program) {
+        arrayScope->addField(rightValue(item));
+    }
+
+    return Variable(arrayScope, true);
+}
+
+Variable Evaluator::mapScope(const Program &program) const
+{
+    MapScope* mapScope = new MapScope;
+    for (const Program& item : program) {
+        mapScope->setField(item[0].payload().toString(), rightValue(item[1]));
+    }
+
+    return Variable(mapScope, true);
 }
