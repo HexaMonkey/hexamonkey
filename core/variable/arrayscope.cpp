@@ -2,6 +2,14 @@
 
 #include "core/log/logmanager.h"
 
+#include <unordered_map>
+
+#define A_COUNT 0
+
+const std::unordered_map<std::string, int> reserved = {
+    {"@count", A_COUNT}
+};
+
 void ArrayScope::addField(const Variable &variable)
 {
     _fields.push_back(variable);
@@ -48,13 +56,36 @@ Variable ArrayScope::doGetField(const Variant &key, bool modifiable)
             }
         } else {
             if (modifiable) {
-                Log::error("Trying to get an array item with a negative index");
+                Log::error("Trying to get an array item with a negative index ", index);
+            }
+            return Variable();
+        }
+    } else if (key.type() == Variant::stringType) {
+
+        const std::string& name = key.toString();
+        if (name[0] == '@') {
+            auto it = reserved.find(name);
+            if (it == reserved.end()) {
+                Log::error("Unknown reserved field", key);
+                return Variable();
+            } else {
+                switch (it->second) {
+                    case A_COUNT:
+                        return Variable::copy(_fields.size(), false);
+
+                    default:
+                        return Variable();
+                }
+            }
+        } else {
+            if (modifiable) {
+                Log::error("Invalid index ", key, " for array");
             }
             return Variable();
         }
     } else {
         if (modifiable) {
-            Log::error("Invalid index type for array");
+            Log::error("Invalid index ", key, " for array");
         }
         return Variable();
     }
