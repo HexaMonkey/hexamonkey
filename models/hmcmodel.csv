@@ -50,3 +50,6 @@ fileOffset;integer;0;
 scope;master;1;
 fieldAssign;master;1;
 remove;master;0;
+arrayScope;master;1;
+mapScope;master;1;
+mapItem;master;0;

@@ -408,9 +408,29 @@ right_value:
     |variable                                    {push_master(RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(RIGHT_VALUE, 1);}
     |function_identifier right_value_arguments   {push_master(FUNCTION_EVALUATION, 2);push_master(RIGHT_VALUE, 1);}
-	|variable SUBSCOPE_ASSIGN_TOKEN right_value {push_master(FIELD_ASSIGN, 2);push_master(RIGHT_VALUE, 1);}
+	|variable SUBSCOPE_ASSIGN_TOKEN right_value  {push_master(FIELD_ASSIGN, 2);push_master(RIGHT_VALUE, 1);}
+	|'[' array_items ']'                         {push_master(RIGHT_VALUE, 1);}
+	|'{' map_items '}'                           {push_master(RIGHT_VALUE, 1);}
     |'('right_value')'                          
 ;
+
+array_items:
+	/* empty */                 {push_master(ARRAY_SCOPE, 0);}
+   |right_value                 {push_master(ARRAY_SCOPE, 1);}
+   |right_value ',' array_items {push_master(ARRAY_SCOPE, 2);}
+
+map_key:
+    IDENT           {push_string(STRING_CONSTANT, $1); push_master(RIGHT_VALUE, 1);}
+   |string_constant {push_master(RIGHT_VALUE, 1);}
+;
+	
+map_item:
+	map_key ':' right_value {push_master(MAP_ITEM, 2);}
+	
+map_items:
+	/* empty */            {push_master(MAP_SCOPE, 0);}
+   |map_item               {push_master(MAP_SCOPE, 1);}
+   |map_item ',' map_items {push_master(MAP_SCOPE, 2);}
 
 constant_value:
     int_constant 
