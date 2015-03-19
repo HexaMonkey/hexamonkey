@@ -140,11 +140,6 @@ public:
      */
     static Variable null();
 
-    /**
-     * @brief Construct a \link Variable variable\endlink referencing the null constant (HMDL's NULL)
-     */
-    static Variable nullConstant();
-
 private:
     enum class Tag {undefined = 0, constant = 1, modifiable = 2};
 

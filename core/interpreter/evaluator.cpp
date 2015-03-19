@@ -84,16 +84,16 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
         case UINT_CONSTANT:
         case STRING_CONSTANT:
         case FLOAT_CONSTANT:
-            return Variable::constRef(first.payload());
+            return Variable::copy(first.payload());
 
         case NULL_CONSTANT:
-            return Variable::nullConstant();
+            return Variable::null();
 
         case UNDEFINED_CONSTANT:
             return Variable();
 
         case EMPTY_STRING_CONSTANT:
-            return Variable::constRef(emptyString);
+            return Variable::copy(emptyString);
 
         case VARIABLE:
             return variable(first, modifiable);

@@ -214,13 +214,6 @@ Variable Variable::null()
     return Variable(new OwningVariableImplementation(nullVariant), true);
 }
 
-
-Variable Variable::nullConstant()
-{
-    return Variable(new ConstRefVariableImplementation(nullVariant), false);
-}
-
-
 VariableImplementation::~VariableImplementation()
 {
 }
