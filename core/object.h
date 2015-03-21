@@ -178,24 +178,12 @@ class Object
          */
         ObjectAttributes* attributes(bool createIfNeeded = false);
         const ObjectAttributes* attributes() const;
-        Variant* attributeValue(const Variant& key);
-        const Variant* attributeValue(const Variant& key) const;
-        Variant& setAttributeValue(const Variant& key, const Variant& value);
-        int maxAttributeNumber() const;
-        const std::vector<std::string>& showcasedAttributes() const;
 
         /**
          * @brief Context
          */
         ObjectContext* context(bool createIfNeeded = false);
         const ObjectContext* context() const;
-
-        /**
-         * @brief Context values
-         */
-        Variant* contextValue(const Variant& key);
-        const Variant* contextValue(const Variant& key) const;
-        Variant& setContextValue(const Variant& key, const Variant& value);
 
         /**
          * @brief Standard representation for the object in an out stream
@@ -315,12 +303,6 @@ class Object
         container _children;
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::unordered_map<std::string, Object*> _lookUpTable;
-
-        std::unordered_map<Variant, Variant> _attributeMap;
-        std::vector<std::string> _showcasedAttributes;
-        int _maxAttributeNumber;
-
-        std::unordered_map<Variant, Variant> _contextMap;
 
         std::vector<std::unique_ptr<Parser> > _parsers;
         bool _expandOnAddition;

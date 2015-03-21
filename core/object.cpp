@@ -41,7 +41,6 @@ Object::Object(File& file, std::streampos beginningPos) :
     _name("*"),
     _value(Variant::null()),
     _children(0),
-    _maxAttributeNumber(0),
     _expandOnAddition(false),
     _parsedCount(0),
     _parsingInProgress(false),
@@ -217,8 +216,12 @@ void Object::dumpToFile(const std::string &path) const
 
 bool Object::hasStream() const
 {
-    const Variant* streamAttribute = attributeValue("_stream");
-    return streamAttribute && !(streamAttribute->isValueless());
+    if (attributes()) {
+        const Variant* streamAttribute = attributes()->getNamed("_stream");
+        return streamAttribute && !(streamAttribute->isValueless());
+    } else {
+        return false;
+    }
 }
 
 void Object::dumpStream(std::ostream &out)
@@ -468,11 +471,6 @@ bool Object::exploreSome(int hint)
     return true;
 }
 
-const std::vector<std::string> &Object::showcasedAttributes() const
-{
-    return _showcasedAttributes;
-}
-
 ObjectContext *Object::context(bool createIfNeeded)
 {
     if (_context == nullptr && createIfNeeded) {
@@ -486,95 +484,6 @@ ObjectContext *Object::context(bool createIfNeeded)
 const ObjectContext *Object::context() const
 {
     return _context;
-}
-
-Variant *Object::attributeValue(const Variant &key)
-{
-    Variant _key = key;
-    if (_key.type() == Variant::valuelessType && _maxAttributeNumber > 0) {
-        _key.setValue(_maxAttributeNumber - 1);
-    } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integerType);
-    }
-
-    auto it = _attributeMap.find(_key);
-    if (it != _attributeMap.end()) {
-        return &(it->second);
-    } else {
-        return nullptr;
-    }
-}
-
-const Variant *Object::attributeValue(const Variant &key) const
-{
-    Variant _key = key;
-    if (_key.type() == Variant::valuelessType && _maxAttributeNumber > 0) {
-        _key.setValue(_maxAttributeNumber - 1);
-    } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integerType);
-    }
-
-    const auto it = _attributeMap.find(_key);
-    if (it != _attributeMap.cend()) {
-        return &(it->second);
-    } else {
-        return nullptr;
-    }
-}
-
-Variant& Object::setAttributeValue(const Variant &key, const Variant &value)
-{
-    Variant _key = key;
-    // add to showcase list if conditions are met
-    if (_key.type() == Variant::stringType) {
-        const auto str = _key.toString();
-        if (str.size() > 0 && str[0] != '_' && attributeValue(_key) == nullptr) {
-            _showcasedAttributes.push_back(str);
-        }
-    } else if (_key.type() == Variant::valuelessType) {
-        _key.setValue(_maxAttributeNumber++);
-    } else if (_key.hasNumericalType()) {
-        _key.convertTo(Variant::integerType);
-        long long i = _key.toInteger();
-        if (i >= _maxAttributeNumber) {
-            _maxAttributeNumber = i + 1;
-        }
-    }
-    return _attributeMap[_key] = value;
-}
-
-int Object::maxAttributeNumber() const
-{
-    return _maxAttributeNumber;
-}
-
-Variant *Object::contextValue(const Variant &key)
-{
-    for (Object* object = this; object; object = object->_parent){
-        auto it = object->_contextMap.find(key);
-        if (it != object->_contextMap.end()) {
-            return &(it->second);
-        }
-    }
-
-    return nullptr;
-}
-
-const Variant *Object::contextValue(const Variant &key) const
-{
-    for (const Object* object = this; object; object = object->_parent){
-        const auto it = object->_contextMap.find(key);
-        if (it != object->_contextMap.cend()) {
-            return &(it->second);
-        }
-    }
-
-    return nullptr;
-}
-
-Variant &Object::setContextValue(const Variant &key, const Variant &value)
-{
-    return _contextMap[key] = value;
 }
 
 const ObjectType &Object::type() const

@@ -4,17 +4,21 @@
 #include "core/file/psifragmentedfile.h"
 #include "core/file/esfragmentedfile.h"
 #include "core/modules/stream/parentpidparser.h"
+#include "core/variable/objectattributes.h"
 
 FragmentedFile* StreamModule::getFragmentedFile(Object& object)
 {
-    const Variant *streamTypeAttribute = object.attributeValue("_stream_type");
+    const ObjectAttributes* attributes = object.attributes();
+    if (attributes) {
+        const Variant *streamTypeAttribute = attributes->getNamed("_stream_type");
 
-    if (streamTypeAttribute) {
-        const std::string& streamType = streamTypeAttribute->toString();
-        if (!streamType.compare("psi")) {
-            return new PsiFragmentedFile(&object);
-        } else if (!streamType.compare("es")) {
-            return new EsFragmentedFile(&object);
+        if (streamTypeAttribute) {
+            const std::string& streamType = streamTypeAttribute->toString();
+            if (!streamType.compare("psi")) {
+                return new PsiFragmentedFile(&object);
+            } else if (!streamType.compare("es")) {
+                return new EsFragmentedFile(&object);
+            }
         }
     }
     return nullptr;
@@ -22,14 +26,17 @@ FragmentedFile* StreamModule::getFragmentedFile(Object& object)
 
 std::string StreamModule::getFragmentedModule(Object& object)
 {
-    const Variant *streamTypeAttribute = object.attributeValue("_stream_type");
+    const ObjectAttributes* attributes = object.attributes();
+    if (attributes) {
+        const Variant *streamTypeAttribute = attributes->getNamed("_stream_type");
 
-    if (streamTypeAttribute) {
-        const std::string& streamType = streamTypeAttribute->toString();
-        if (!streamType.compare("psi")) {
-            return "psi_table";
-        } else if (!streamType.compare("es")) {
-            return "pes";
+        if (streamTypeAttribute) {
+            const std::string& streamType = streamTypeAttribute->toString();
+            if (!streamType.compare("psi")) {
+                return "psi_table";
+            } else if (!streamType.compare("es")) {
+                return "pes";
+            }
         }
     }
     return "";
