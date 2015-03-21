@@ -36,14 +36,14 @@ class GUID
 	uint(16, 16) *;
 	uint(16, 16) *;
 	BYTE *[8];
-	@value = %uppercase(%str([0], 16, 8)) + "-"
-	       + %uppercase(%str([1], 16, 4)) + "-"
-		   + %uppercase(%str([2], 16, 4)) + "-";
+	@value = %uppercase(%str(self[0], 16, 8)) + "-"
+	       + %uppercase(%str(self[1], 16, 4)) + "-"
+		   + %uppercase(%str(self[2], 16, 4)) + "-";
 	for(var i = 0; i < 8; ++i)
 	{
 		if(i==2)
 			@value += "-";
-		@value += %uppercase(%str([3][i], 16, 2));
+		@value += %uppercase(%str(self[3][i], 16, 2));
 	}
 }
 

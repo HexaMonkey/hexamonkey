@@ -38,7 +38,7 @@ Evaluator::Evaluator(const Variable& scope, const Module &module)
 {
 }
 
-Variable Evaluator::rightValue(const Program &program, int modifiable) const
+Variable Evaluator::rightValue(const Program &program, int modifiable, int createIfNeeded) const
 {
     Program first = program.node(0);
     switch(first.tag())
@@ -51,22 +51,28 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
             {
                 case 1:
                 {
-                    const Variable value1 = rightValue(program[1], !(1&release));
+                    const bool create1 = !(1&release);
+                    const Variable value1 = rightValue(program[1], create1, create1);
                     return unaryOperation(op, value1);
                 }
 
                 case 2:
                 {
-                    const Variable value1 = rightValue(program[1], !(1&release));
-                    const Variable value2 = rightValue(program[2], !(2&release));
+                    const bool create1 = !(1&release);
+                    const bool create2 = !(2&release);
+                    const Variable value1 = rightValue(program[1], create1, create1);
+                    const Variable value2 = rightValue(program[2], create2, create2);
                     return binaryOperation (op, value1, value2);
                 }
 
                 case 3:
                 {
-                    const Variable value1 = rightValue(program[1], !(1&release));
-                    const Variable value2 = rightValue(program[2], !(2&release));
-                    const Variable value3 = rightValue(program[3], !(4&release));
+                    const bool create1 = !(1&release);
+                    const bool create2 = !(2&release);
+                    const bool create3 = !(4&release);
+                    const Variable value1 = rightValue(program[1], create1, create1);
+                    const Variable value2 = rightValue(program[2], create2, create2);
+                    const Variable value3 = rightValue(program[3], create3, create3);
                     return ternaryOperation(op, value1, value2, value3);
                 }
 
@@ -98,7 +104,7 @@ Variable Evaluator::rightValue(const Program &program, int modifiable) const
             return Variable::copy(emptyString);
 
         case VARIABLE:
-            return variable(first, modifiable);
+            return variable(first, modifiable, createIfNeeded);
 
         case TYPE:
             return Variable::copy(type(first));
@@ -369,9 +375,9 @@ Variable Evaluator::function(const Program &program) const
     return module.executeFunction(name, Variable(functionScope, true));
 }
 
-Variable Evaluator::variable(const Program &program, bool modifiable) const
+Variable Evaluator::variable(const Program &program, bool modifiable, bool createIfNeeded) const
 {
-    return scope.field(variablePath(program), modifiable);
+    return scope.field(variablePath(program), modifiable, createIfNeeded);
 }
 
 Variable Evaluator::assignField(const Program &pathProgram, const Program &rightValueProgram) const
@@ -397,7 +403,7 @@ Variable Evaluator::mapScope(const Program &program) const
 {
     MapScope* mapScope = new MapScope;
     for (const Program& item : program) {
-        mapScope->setField(item[0].payload().toString(), rightValue(item[1]));
+        mapScope->setField(item[0].payload().toString(), rightValue(item[1], true));
     }
 
     return Variable(mapScope, true);

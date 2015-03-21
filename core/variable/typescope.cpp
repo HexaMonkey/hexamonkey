@@ -119,7 +119,7 @@ private:
     const ObjectType& _type;
 };
 
-Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable)
+Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
     ObjectType* mType = modifiable ? modifiableType() : nullptr;
     const ObjectType& cType = constType();
@@ -130,7 +130,7 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable)
     if (key.hasNumericalType()) {
         parameterIndex = key.toInteger();
         if (parameterIndex < 0 || parameterIndex >= numberOfParameters) {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Trying to assign a value to an out of bounds parameter");
             }
 
@@ -182,7 +182,7 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable)
             parameterIndex = cType.typeTemplate().parameterNumber(str);
 
             if (parameterIndex == -1) {
-                if (modifiable) {
+                if (createIfNeeded) {
                     Log::error("Trying to modify an unknown named parameter ", str, " for type ", cType);
                 }
                 return Variable();
@@ -190,7 +190,7 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable)
 
         }
     } else {
-        if (modifiable) {
+        if (createIfNeeded) {
             Log::error("Trying to modify an invalid parameter ", key, " for type ", cType);
         }
         return Variable();

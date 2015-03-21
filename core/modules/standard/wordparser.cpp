@@ -91,28 +91,23 @@ WideStringParser::WideStringParser(Object &object, int numberOfChars, bool bigEn
 void WideStringParser::doParseHead()
 {
     object().setSize(numberOfChars * 16);
-    std::string word('?', numberOfChars);
+    std::string word(numberOfChars, '?');
 
     for(int i = 0; i < numberOfChars; ++i)
     {
         uint16_t ch = 0;
-        if(bigEndian)
-        {
+        if(bigEndian) {
             object().file().read(reinterpret_cast<char*>(&ch)+1, 8);
             object().file().read(reinterpret_cast<char*>(&ch), 8);
-        }
-        else
-        {
+        } else {
             object().file().read(reinterpret_cast<char*>(&ch), 16);
         }
 
-        if(ch == 0)
-        {
+        if(ch == 0) {
             word.resize(i);
             break;
         }
-        if(ch < 0x80)
-        {
+        if(ch < 0x80) {
             word[i] = ch;
         }
     }

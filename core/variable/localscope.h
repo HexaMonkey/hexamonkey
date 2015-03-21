@@ -12,7 +12,7 @@ public:
     LocalScope(const Variable& context = Variable());
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable) override;
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
     virtual void doSetField(const Variant &key, const Variable &variable) override;
     virtual void doRemoveField(const Variant &key) override;
 

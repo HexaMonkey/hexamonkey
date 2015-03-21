@@ -23,7 +23,7 @@ Variable ObjectContext::field(const std::string &key) const
     return Variable();
 }
 
-Variable ObjectContext::field(const std::string &key, bool modifiable)
+Variable ObjectContext::field(const std::string &key, bool createIfNeeded)
 {
     for (Object* object = &_object; object != nullptr; object = object->parent()) {
         ObjectContext* context = object->context();
@@ -35,7 +35,7 @@ Variable ObjectContext::field(const std::string &key, bool modifiable)
         }
     }
 
-    if (modifiable) {
+    if (createIfNeeded) {
         return _fields[key] = Variable::null();
     } else {
         return Variable();
@@ -52,16 +52,16 @@ void ObjectContext::removeField(const std::string &key)
     _fields.erase(key);
 }
 
-Variable ObjectContext::doGetField(const Variant &key, bool modifiable)
+Variable ObjectContext::doGetField(const Variant &key, bool /*modifiable*/, bool createIfNeeded)
 {
     if (key.type() != Variant::stringType) {
-        if (modifiable) {
+        if (createIfNeeded) {
             Log::error("Context scope only support string keys");
         }
         return Variable();
     }
 
-    return field(key.toString(), modifiable);
+    return field(key.toString(), createIfNeeded);
 }
 
 void ObjectContext::doSetField(const Variant &key, const Variable &variable)

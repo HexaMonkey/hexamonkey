@@ -23,7 +23,7 @@ import microsoft
 class PEFile as File
 {
 	IMAGE_DOS_HEADER _dos_header;
-	IMAGE_DOS_SEGMENT(_dos_header.e_lfanew-(@pos>>3)) _dos_segment;
+	IMAGE_DOS_SEGMENT((_dos_header.e_lfanew<<3)-@pos) _dos_segment;
 	IMAGE_NT_HEADERS _nt_header;
 	IMAGE_SECTION_HEADER _section_headers[_nt_header.FileHeader.NumberOfSections];
 	IMAGE_SECTIONS _image_sections;
@@ -51,7 +51,7 @@ class IMAGE_DOS_HEADER {      // DOS .EXE header
     LONG   e_lfanew;                    // File address of new exe header
 }
 
-class IMAGE_DOS_SEGMENT(_size) extends Data(_size<<3) 
+class IMAGE_DOS_SEGMENT(_size) extends Data(_size) 
 
 class IMAGE_NT_HEADERS 
 {
@@ -73,7 +73,11 @@ class RVA extends DWORD(16)
 {
 	if (@value) {
 		var offset = @context.currentOffset;
-		@linkTo = 8*@value + (offset?offset:0);
+		if (offset) {
+			@linkTo = offset + 8*@value;
+		} else {
+			@linkTo = 8*@value;
+		}
 	}
 }
 
@@ -165,21 +169,24 @@ class IMAGE_SECTION_HEADER
     DWORD Characteristics;
 }
 
-class IMAGE_SECTION(name, _size, _virtualOffset) as Data(_size << 3)
+class IMAGE_SECTION(name, _size, _virtualOffset) extends Data(_size << 3)
 {
+
 	var minVirtualOffset = @args._virtualOffset;
 	var maxVirtualOffset = @args._virtualOffset + @args._size;
 	var currentOffset = @context.currentOffset = @beginningPos - 8*minVirtualOffset;
-	---
+
 	var count = @root._nt_header.OptionalHeader.NumberOfRvaAndSizes;
-	%log("count : "+count);
+
+	DataDirectory := @root._nt_header.OptionalHeader.DataDirectory;
+	
 	for (var i = 0; i < count; ++i) {
 		var directoryVirtualOffset = @root._nt_header.OptionalHeader.DataDirectory[i].VirtualAddress;
-		%log("Offset check "+i+" "+ minVirtualOffset + "<=" + directoryVirtualOffset + "<" + maxVirtualOffset);
+
 		if (minVirtualOffset <= directoryVirtualOffset && directoryVirtualOffset < maxVirtualOffset) {
 			@pos = 8*(directoryVirtualOffset - minVirtualOffset);
-			%log(""+@pos+" -> "+(@root._nt_header.OptionalHeader.DataDirectory[i].Size << 3));
-			IMAGE_DIRECTORY_ENTRY(i, @root._nt_header.OptionalHeader.DataDirectory[i].Size << 3) _;
+
+			IMAGE_DIRECTORY_ENTRY(i, DataDirectory[i].Size << 3) _;
 			@pos = 0;
 		}
 	}
@@ -189,13 +196,20 @@ class IMAGE_SECTIONS
 {
 	@args.@elementType = IMAGE_SECTION();
 	var n = @args.@elementCount = @parent._nt_header.FileHeader.NumberOfSections;
+	headers := @parent._section_headers;
 	for (var i = 0; i < n; ++i) {
-		var sectionOffset = @parent._section_headers[i].PointerToRawData;
-		var sectionSize   = @parent._section_headers[i].SizeOfRawData;
-		var sectionName   = @parent._section_headers[i].Name;
-		var sectionVirtualOffset   = @parent._section_headers[i].VirtualAddress;
-
-		@pos = (sectionOffset << 3) - @beginningPos;
+		header := headers[i];
+		
+		var sectionName          = header.Name;
+		var sectionOffset        = header.PointerToRawData;
+		if (sectionOffset) {
+			var sectionSize          = header.SizeOfRawData;
+			var sectionVirtualOffset = header.VirtualAddress;
+			@pos = (sectionOffset << 3) - @beginningPos;
+		} else {
+			var sectionSize          = 0;
+			var sectionVirtualOffset = 0;
+		}
 		IMAGE_SECTION(sectionName, sectionSize, sectionVirtualOffset) *;
 	}
 }
@@ -227,7 +241,6 @@ class IMAGE_DIRECTORY_ENTRY_EXPORT as IMAGE_DIRECTORY_ENTRY(0)
 		var minLink = NamesAddresses[0].@linkTo;
 		for (var i = 1; i < numberOfNames; ++i) {
 			var link = NamesAddresses[i].@linkTo;
-			%log(link);
 			if (link < minLink) {
 				link = minLink;
 			}
@@ -322,7 +335,11 @@ class IMAGE_THUNK_DATA32 extends DWORD(16)
 		@attr.Ordinal = @value & 0x7fffffff;
 	} else if (@value) {
 		var offset = @context.currentOffset;
-		@linkTo = 8*@value + (offset?offset:0);
+		if (offset) {
+			@linkTo = offset + 8*@value;
+		} else {
+			@linkTo = 8*@value;
+		}
 		@attr.AddressOfData = @value;
 	}
 }
@@ -333,10 +350,13 @@ class IMAGE_THUNK_DATA64 extends ULONGLONG(16)
 		@attr.Ordinal = @value & 0x7fffffffffffffff;
 	} else if (@value) {
 		var offset = @context.currentOffset;
-		@linkTo = 8*@value + (offset?offset:0);
+		if (offset) {
+			@linkTo = offset + 8*@value;
+		} else {
+			@linkTo = 8*@value;
+		}
 		@attr.AddressOfData = @value;
 	}
-	@value = NULL;
 }
 
 class IMAGE_THUNK_DATAS
@@ -352,7 +372,7 @@ class IMAGE_THUNK_DATAS
 	do {
 		(elementType) #;
 		++n;
-	} while ([] != 0)
+	} while (self[] != 0)
 	@args.@elementCount = n;
 }
 
@@ -363,7 +383,7 @@ class IMAGE_IMPORT_DESCRIPTORS
 	do {
 		IMAGE_IMPORT_DESCRIPTOR #;
 		++n;
-	} while ([].OriginalFirstThunk != 0)
+	} while (self[].OriginalFirstThunk != 0 || self[].FirstThunk != 0)
 	@args.@elementCount = n;
 }
 
@@ -403,6 +423,168 @@ class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)
 //*********************************************************
 
 class IMAGE_DIRECTORY_ENTRY_RESOURCE as IMAGE_DIRECTORY_ENTRY(2)
+{
+	@context.resourceRVAOffset = @beginningPos;
+	currentResource := {
+		"type" : "directory",
+		"address" : @beginningPos-0,
+		"level" : 0
+	};
+	for (; currentResource != undefined; currentResource := currentResource.next) {
+		@context.currentResource := currentResource;
+		
+		if (currentResource.nameRVA) {
+			@pos = currentResource.nameRVA - @beginningPos;
+			IMAGE_RESOURCE_NAME resourceName;
+			currentResource.name = self[];
+		}
+		@pos = currentResource.address - @beginningPos;
+		if (currentResource.type == "directory") {
+			IMAGE_RESOURCE_DIRECTORY directory;
+		} else {
+			IMAGE_RESOURCE_DATA_ENTRY leaf;
+			@pos = self[].OffsetToData.@linkTo - @beginningPos;
+			Data(self[].Size << 3) leafData;
+			
+		}
+	}
+}
+
+class IMAGE_RESOURCE_NAME
+{
+	WORD count;
+	WString(count) entryName;
+	@value = entryName;
+}
+
+class IMAGE_RESOURCE_DIRECTORY
+{
+	resource := @context.currentResource;
+	level := @attr.level = resource.level;
+	if (resource.name != undefined) {
+		@attr.name = resource.name;
+	} else if (resource.integerId != undefined) {
+		var id = @attr.id = resource.integerId;
+		if (level == 1) {
+			if (@global.resourceIds == undefined) {
+				@global.resourceIds := [
+					undefined,
+					"cursor", //1
+					"bitmap", //2
+					"icon", //3
+					"menu", //4
+					"dialog", //5
+					"string table", //6
+					"font directory", //7
+					"font", //8
+					"accelerators", //9
+					"unformatted resource data", //10
+					"message table", //11
+					"group cursor", //12
+					undefined, //13
+					"group icon", //14
+					undefined,
+					"version information", //16
+					"dlginclude", //17
+					undefined,
+					"plug and play resource", //19
+					"VXD", //20
+					"animated cursor", //21
+					"animated icon", //22
+					"HTML", //23
+					"side-by-side assembly manifest" //24
+				];
+			}
+			var type = @global.resourceIds[id];
+			if (type != undefined) {
+				@attr.type = type;
+			}
+		}
+	}
+	
+	DWORD Characteristics;
+	DWORD TimeDateStamp;
+	WORD  MajorVersion;
+	WORD  MinorVersion;
+	WORD  NumberOfNamedEntries;
+	WORD  NumberOfIdEntries;
+	
+	IMAGE_RESOURCE_DIRECTORY_ENTRY(0) NamedEntries[NumberOfNamedEntries];
+	IMAGE_RESOURCE_DIRECTORY_ENTRY(1) IdEntries[NumberOfIdEntries];
+	
+	nextResource := resource.next;
+	
+	for (var i = 0; i < NumberOfNamedEntries; ++i) {
+		entry := NamedEntries[i];
+		var linkTo = entry.@linkTo;
+		if (linkTo) {
+			resource := resource.next := {
+				"type" : entry.@attr.type,
+				"nameRVA" : entry.NameRVA.@linkTo,
+				"address" : linkTo,
+				"level" : level + 1,
+				"from" : @beginningPos
+			};
+		}
+	}
+	
+	for (var j = 0; j < NumberOfIdEntries; ++j) {
+		entry := IdEntries[j];
+		var linkTo = entry.@linkTo;
+		if (linkTo) {
+			resource := resource.next := {
+				"type" : entry.@attr.type,
+				"integerId" : entry.IntegerID,
+				"address" : linkTo,
+				"level" : level + 1,
+				"from" : @beginningPos
+			};
+		}
+	}
+
+	resource.next := nextResource;
+}
+
+class IMAGE_RESOURCE_DATA_ENTRY {
+    resource := @context.currentResource;
+	level := @attr.level = resource.level;
+	RVA     OffsetToData;
+    ULONG   Size;
+    ULONG   CodePage;
+    ULONG   Reserved;
+}
+
+class IMAGE_RESOURCE_DATA
+{
+	resource := @context.currentResource;
+	level := @attr.level = resource.level;
+	@size = resource.integerId << 3;
+}
+
+class IMAGE_RESOURCE_DIRECTORY_ENTRY(_withId)
+{
+	if (@args._withId) {
+		DWORD IntegerID;
+	} else {
+		ResourceRVA NameRVA;
+	}
+	
+	ResourceRVA _;
+	@linkTo = self[].@linkTo;
+	@attr.type = self[].@attr.type;
+}
+
+class ResourceRVA extends DWORD(16)
+{
+	if (@value & 0x80000000) {
+		@value &= 0x7fffffff;
+		@attr.type = "directory";
+	} else if (@value) {
+		@attr.type = "leaf";
+	}
+
+	@linkTo = @context.resourceRVAOffset + 8*@value;
+}
 
 //*********************************************************
 // Exception
@@ -423,7 +605,7 @@ class IMAGE_DIRECTORY_ENTRY_BASERELOC as IMAGE_DIRECTORY_ENTRY(5)
 {
 	do {
 		IMAGE_BASE_RELOCATION #;
-    } while ([].VirtualAddress)
+    } while (self[].VirtualAddress)
 }
 
 class IMAGE_BASE_RELOCATION
@@ -494,10 +676,3 @@ class IMAGE_DIRECTORY_ENTRY_DELAY as IMAGE_DIRECTORY_ENTRY(13)
 //********************************************************
 
 class IMAGE_DIRECTORY_ENTRY_COM as IMAGE_DIRECTORY_ENTRY(14)
-
-
-
-
-
-
-

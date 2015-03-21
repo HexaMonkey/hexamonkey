@@ -7,7 +7,7 @@ LocalScope::LocalScope(const Variable &context)
 {
 }
 
-Variable LocalScope::doGetField(const Variant &key, bool modifiable)
+Variable LocalScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
     if (key.type() == Variant::stringType) {
         auto it = _fields.find(key.toString());
@@ -16,7 +16,7 @@ Variable LocalScope::doGetField(const Variant &key, bool modifiable)
         }
     }
 
-    return _context.field(key, modifiable);
+    return _context.field(key, modifiable, createIfNeeded);
 }
 
 void LocalScope::doSetField(const Variant &key, const Variable &variable)

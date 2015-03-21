@@ -33,7 +33,7 @@ class TsFile as File
 class transport_packet
 {
 	sync_byte *;
-	@size = [sync_byte()].@size+8*187;
+	@size = self[sync_byte()].@size+8*187;
 
     bslbf(1) transport_error_indicator;
     bslbf(1) payload_unit_start_indicator;
@@ -48,7 +48,7 @@ class transport_packet
     if(adaptation_field_control & 0b10)
 	{
 		adaptation_field *;
-		size_left -= [adaptation_field()].@size;
+		size_left -= self[adaptation_field()].@size;
 	}
 	if(adaptation_field_control & 0b01)
 	{

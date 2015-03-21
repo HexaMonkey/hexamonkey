@@ -66,14 +66,14 @@ public:
      * @param key
      * @param modifable Set to true if the returned variable will used as left-value
      */
-    Variable field(const Variant& key, bool modifable = false) const;
+    Variable field(const Variant& key, bool modifiable = false, bool createIfNeeded = false) const;
 
     /**
      * @brief Get field by path
      * @param path
      * @param modifable Set to true if the returned variable will used as left-value
      */
-    Variable field(const VariablePath &path, bool modifable = false) const;
+    Variable field(const VariablePath &path, bool modifable = false, bool createIfNeeded = false) const;
 
     /**
      * @brief Set field by key
@@ -164,7 +164,7 @@ protected:
     virtual Variant doGetValue();
     virtual void doSetValue(const Variant& value);
 
-    virtual Variable doGetField(const Variant& key, bool modifiable);
+    virtual Variable doGetField(const Variant& key, bool modifiable, bool createIfNeeded);
     virtual void doSetField(const Variant& key, const Variable& variable);
     virtual void doRemoveField(const Variant& key);
 };

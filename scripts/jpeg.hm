@@ -23,7 +23,7 @@ class JpegFile as File
 {
 	while(1) {
 		MarkerSegment *;
-		if([].marker == 0xffda) {
+		if(self[].marker == 0xffda) {
 			break;
 		} 
 	}

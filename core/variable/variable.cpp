@@ -57,30 +57,30 @@ void Variable::setValue(const Variant &value) const
     }
 }
 
-Variable Variable::field(const Variant &key, bool modifable) const
+Variable Variable::field(const Variant &key, bool modifiable, bool createIfNeeded) const
 {
-    modifable = modifable && (_tag == Tag::modifiable);
+    modifiable = modifiable && (_tag == Tag::modifiable);
 
-    Variable result = _implementation->doGetField(key, modifable);
+    Variable result = _implementation->doGetField(key, modifiable, modifiable && createIfNeeded);
 
-    if (!modifable) {
+    if (!modifiable) {
         result.setConstant();
     }
 
     return result;
 }
 
-Variable Variable::field(const VariablePath &path, bool modifiable) const
+Variable Variable::field(const VariablePath &path, bool modifiable, bool createIfNeeded) const
 {
     auto implementation = &_implementation;
     modifiable = modifiable && (_tag == Tag::modifiable);
-    Variable result = (*implementation)->doGetField(path[0], modifiable);
+    Variable result = (*implementation)->doGetField(path[0], modifiable, modifiable && createIfNeeded);
 
     for (auto it = ++path.cbegin(); it != path.cend(); ++it) {
         implementation = &result._implementation;
         modifiable = modifiable && (result._tag == Tag::modifiable);
 
-        result = (*implementation)->doGetField(*it, modifiable);
+        result = (*implementation)->doGetField(*it, modifiable, modifiable && createIfNeeded);
     }
 
     if (!modifiable) {
@@ -110,7 +110,7 @@ void Variable::setField(const VariablePath &path, const Variable &variable) cons
         auto it = path.cbegin();
         for (auto end = --path.cend();it != end; ++it) {
 
-            Variable field = (*implementation)->doGetField(*it, true);
+            Variable field = (*implementation)->doGetField(*it, true, true);
             implementation = &(field._implementation);
             if (field._tag != Tag::modifiable) {
                 throw Error::constModification;
@@ -144,7 +144,7 @@ void Variable::removeField(const VariablePath &path) const
         auto it = path.cbegin();
         for (auto end = --path.cend();it != end; ++it) {
 
-            Variable field = (*implementation)->doGetField(*it, true);
+            Variable field = (*implementation)->doGetField(*it, true, true);
             implementation = &(field._implementation);
             if (field._tag != Tag::modifiable) {
                 throw Error::constModification;
@@ -228,7 +228,7 @@ void VariableImplementation::doSetValue(const Variant &/*value*/)
     Log::warning("Trying to assign a value to a variable that doesn't support assignment");
 }
 
-Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modifiable*/)
+Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modifiable*/, bool /*createIfNeeded*/)
 {
     return Variable();
 }

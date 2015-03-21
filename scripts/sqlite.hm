@@ -9,11 +9,11 @@ import bestd
 class SQLiteFile as File
 {
     BTreePage *;
-    var contains_ptrmap = [].db_header.LargestRootBTreePageNumber != 0;
-    var page_size = [].db_header.DatabasePageSize;
+    var contains_ptrmap = self[].db_header.LargestRootBTreePageNumber != 0;
+    var page_size = self[].db_header.DatabasePageSize;
     var j = page_size / 5;
     var page_count = 2;
-    var next_freelist_trunk_page = [].db_header.FirstFreelistTrunkPageNumber;
+    var next_freelist_trunk_page = self[].db_header.FirstFreelistTrunkPageNumber;
     while(1) {
         if(contains_ptrmap && page_count % (j+1) == 2 ) {
             PtrMapPage *;
@@ -119,14 +119,14 @@ class Varint {
     for(i=1;i<10;i++) {
         uint(8) *;
         if(i < 9) {
-            if([] > 127) {
-                @value = (@value << 7) + []-128;
+            if(self[] > 127) {
+                @value = (@value << 7) + self[] - 128;
             } else {
-                @value = (@value << 7) + [];
+                @value = (@value << 7) + self[];
                 break;
             }
         } else { // if it is the 9-th byte
-            @value = (@value << 8) + []; // to verify
+            @value = (@value << 8) + self[]; // to verify
         }
     }
 }

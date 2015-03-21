@@ -9,11 +9,11 @@ class MapScope : public VariableImplementation
 {
 public:
     Variable field(const std::string& key) const;
-    Variable field(const std::string& key, bool modifiable);
+    Variable field(const std::string& key, bool createIfNeeded);
     void setField(const std::string& key, const Variable& variable);
 
 protected:
-    Variable doGetField(const Variant &key, bool modifiable);
+    Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded);
     void doSetField(const Variant &key, const Variable &variable);
 
 private:

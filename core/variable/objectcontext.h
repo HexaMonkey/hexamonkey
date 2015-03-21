@@ -13,12 +13,12 @@ public:
     ObjectContext(Object& object);
 
     Variable field(const std::string& key) const;
-    Variable field(const std::string& key, bool modifiable);
+    Variable field(const std::string& key, bool createIfNeeded);
     void     setField(const std::string& key, const Variable &variable);
     void     removeField(const std::string& key);
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable) override;
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
     virtual void doSetField(const Variant &key, const Variable &variable) override;
     virtual void doRemoveField(const Variant &key) override;
 

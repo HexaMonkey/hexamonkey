@@ -20,7 +20,7 @@ public:
     const std::vector<std::string>& fieldNames() const;
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable) override;
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
 
 private:
     std::unordered_map<std::string, Variant> _namedFields;

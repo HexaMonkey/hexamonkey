@@ -34,7 +34,7 @@
     double             f;
 }
 
-%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN
+%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN SELF_TOKEN
 %right IF_TOKEN ELSE_TOKEN
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN REMOVE_TOKEN
@@ -418,14 +418,9 @@ array_items:
 	/* empty */                 {push_master(ARRAY_SCOPE, 0);}
    |right_value                 {push_master(ARRAY_SCOPE, 1);}
    |right_value ',' array_items {push_master(ARRAY_SCOPE, 2);}
-
-map_key:
-    IDENT           {push_string(STRING_CONSTANT, $1);
-   |string_constant
-;
 	
 map_item:
-	map_key ':' right_value {push_master(MAP_ITEM, 2);}
+	string_constant ':' right_value {push_master(MAP_ITEM, 2);}
 	
 map_items:
 	/* empty */            {push_master(MAP_SCOPE, 0);}
@@ -465,8 +460,8 @@ empty_string_constant:
 
 variable:
     extended_identifier {push_master(VARIABLE, 1);}
-   |'['  ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 1);}
-   |'[' right_value ']' {push_master(VARIABLE, 1);}
+   |SELF_TOKEN '['  ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 1);}
+   |SELF_TOKEN '[' right_value ']' {push_master(VARIABLE, 1);}
    |variable '.' extended_identifier {push_master(VARIABLE, 2);}
    |variable '[' right_value ']' {push_master(VARIABLE, 2);}
    |variable '[' ']' {push_integer(NULL_CONSTANT, 0); push_master(RIGHT_VALUE, 1); push_master(VARIABLE, 2);}
@@ -492,7 +487,10 @@ while_token:
 	WHILE_TOKEN {push_line();}
 	
 for_loop:
-    for_token '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,3);}
+	for_token '(' ';' right_value ';'  ')' execution_block {push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
+   |for_token '(' simple_statement ';' right_value ';'  ')' execution_block {push_master(LOOP,2); push_master(EXECUTION_BLOCK,3);}
+   |for_token '(' ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,2);}
+   |for_token '(' simple_statement ';' right_value ';' simple_statement ')'{stash(0);} execution_block {unstash(0); push_master(EXECUTION_BLOCK,2); push_master(LOOP,2); push_master(EXECUTION_BLOCK,3);}
 
 for_token:
 	FOR_TOKEN {push_line();}

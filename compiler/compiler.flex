@@ -97,6 +97,7 @@ extern int line_number;
 "null"      {return NULL_TOKEN;}
 "undefined" {return UNDEFINED_TOKEN;}
 "delete"    {return REMOVE_TOKEN;}
+"self"      {return SELF_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}
 "addMagicNumber"    {return ADD_MAGIC_NUMBER_TOKEN;}

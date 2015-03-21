@@ -14,7 +14,7 @@ public:
     size_t fieldCount() const;
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable);
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded);
     virtual void doSetField(const Variant &key, const Variable &variable);
 
 private:

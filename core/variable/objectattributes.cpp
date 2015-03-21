@@ -62,10 +62,10 @@ const std::vector<std::string> &ObjectAttributes::fieldNames() const
     return _fieldNames;
 }
 
-Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
+Variable ObjectAttributes::doGetField(const Variant &key, bool /*modifiable*/, bool createIfNeeded)
 {
     if (key.isValueless()) {
-        if (modifiable) {
+        if (createIfNeeded) {
             return Variable::ref(addNumbered());
         } else {
             if (_numberedFields.size() > 0) {
@@ -77,7 +77,7 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
     } else if (key.hasNumericalType()) {
         int64_t number = key.toInteger();
         if (number >= 0) {
-            if (modifiable) {
+            if (createIfNeeded) {
                 while (number >= _numberedFields.size()) {
                     addNumbered();
                 }
@@ -88,7 +88,7 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
                 return Variable();
             }
         } else {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Trying to assign a numbered attribute value with a negative value");
             }
             return Variable();
@@ -97,14 +97,14 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool modifiable)
         const std::string& name = key.toString();
         auto it = _namedFields.find(name);
         if (it != _namedFields.end()) {
-            return Variable::ref(it->second, modifiable);
-        } else if (modifiable){
+            return Variable::ref(it->second);
+        } else if (createIfNeeded){
             return Variable::refIfNotNull(addNamed(name));
         } else {
             return Variable();
         }
     } else {
-        if (modifiable) {
+        if (createIfNeeded) {
             Log::error("Trying to assign an attribute with an invalid key type");
         }
         return Variable();

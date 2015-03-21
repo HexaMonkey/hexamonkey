@@ -24,7 +24,7 @@ class ZipFile as File
 {
 	while(1) {
 		Chunk *;
-		var signature = [].signature;
+		var signature = self[].signature;
 		if(signature != 0x4034b50
 		&& signature != 0x8064b50
 		&& signature != 0x2014b50

@@ -13,14 +13,14 @@ void FunctionScope::addNamedParameter(const Variable& variable, const std::strin
     addParameter(variable);
 }
 
-Variable FunctionScope::doGetField(const Variant &key, bool modifiable)
+Variable FunctionScope::doGetField(const Variant &key, bool /*modifiable*/, bool createIfNeeded)
 {
     if (key.hasNumericalType()) {
         int64_t number = key.toInteger();
         if (number >= 0 || number < _fields.size()) {
             return _fields[number];
         } else {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Trying to assign a numbered parameter value outside of the bounds");
             }
             return Variable();
@@ -31,13 +31,13 @@ Variable FunctionScope::doGetField(const Variant &key, bool modifiable)
         if (it != _namedFields.end()) {
             return it->second;
         } else {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Trying to assign a numbered attribute value outside of the bounds");
             }
             return Variable();
         }
     } else {
-        if (modifiable) {
+        if (createIfNeeded) {
             Log::error("Trying to assign an attribute with an invalid key type");
         }
         return Variable();

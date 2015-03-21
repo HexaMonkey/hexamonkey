@@ -30,10 +30,10 @@ size_t ArrayScope::fieldCount() const
     return _fields.size();
 }
 
-Variable ArrayScope::doGetField(const Variant &key, bool modifiable)
+Variable ArrayScope::doGetField(const Variant &key, bool /*modifiable*/, bool createIfNeeded)
 {
     if (key.isValueless()) {
-        if (modifiable) {
+        if (createIfNeeded) {
             addField(Variable::null());
             return _fields.back();
         } else if (_fields.size() > 0) {
@@ -44,7 +44,7 @@ Variable ArrayScope::doGetField(const Variant &key, bool modifiable)
     } else if (key.hasNumericalType()) {
         const int64_t index = key.toInteger();
         if (index >= 0) {
-            if (modifiable) {
+            if (createIfNeeded) {
                 while (index >= _fields.size()) {
                     addField(Variable::null());
                 }
@@ -55,7 +55,7 @@ Variable ArrayScope::doGetField(const Variant &key, bool modifiable)
                 return Variable();
             }
         } else {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Trying to get an array item with a negative index ", index);
             }
             return Variable();
@@ -78,13 +78,13 @@ Variable ArrayScope::doGetField(const Variant &key, bool modifiable)
                 }
             }
         } else {
-            if (modifiable) {
+            if (createIfNeeded) {
                 Log::error("Invalid index ", key, " for array");
             }
             return Variable();
         }
     } else {
-        if (modifiable) {
+        if (createIfNeeded) {
             Log::error("Invalid index ", key, " for array");
         }
         return Variable();

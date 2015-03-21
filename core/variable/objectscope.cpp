@@ -105,7 +105,7 @@ ObjectScope::ObjectScope(Object &object)
 {
 }
 
-Variable ObjectScope::doGetField(const Variant &key, bool modifiable)
+Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
     if (key.isValueless()) {
 
@@ -133,10 +133,10 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable)
 
                 switch (it->second) {
                     case A_SIZE:
-                        return Variable(new ObjectSizeVariableImplementation(_object), modifiable);
+                        return Variable(new ObjectSizeVariableImplementation(_object), true);
 
                     case A_VALUE:
-                        return Variable::ref(_object.value(), modifiable);
+                        return Variable::ref(_object.value());
 
                     case A_PARENT:
                     {
@@ -156,7 +156,7 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable)
                         return Variable::copy(_object.rank());
 
                     case A_POS:
-                        return Variable(new ObjectPosVariableImplementation(_object), modifiable);
+                        return Variable(new ObjectPosVariableImplementation(_object), true);
 
                     case A_REM:
                         return Variable::copy(_object.size() - _object.pos());
@@ -169,16 +169,16 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable)
                         return Variable::copy((long long) _object.beginningPos());
 
                     case A_LINK_TO:
-                        return Variable(new ObjectLinkToVariableImplementation(_object), modifiable);
+                        return Variable(new ObjectLinkToVariableImplementation(_object), true);
 
                     case A_ATTR:
-                        return _object.attributesVariable(modifiable);
+                        return _object.attributesVariable(createIfNeeded);
 
                     case A_CONTEXT:
-                        return _object.contextVariable(modifiable);
+                        return _object.contextVariable(createIfNeeded);
 
                     case A_GLOBAL:
-                        return _object.root().contextVariable(modifiable);
+                        return _object.root().contextVariable(createIfNeeded);
 
                     default:
                         return Variable();

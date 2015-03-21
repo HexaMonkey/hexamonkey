@@ -14,7 +14,7 @@ public:
     void addNamedParameter(const Variable& variable, const std::string& name);
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable) override;
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
 
 private:
     std::vector<Variable> _fields;
