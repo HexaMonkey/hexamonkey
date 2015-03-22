@@ -71,24 +71,6 @@ public:
         hexadecimal = 0x30
     };
 
-    /// @cond HIDDEN_SYMBOL
-    class InvalidTypeConversionException: public std::exception
-    {
-      virtual const char* what() const throw()
-      {
-        return "Variant: invalid type conversion";
-      }
-    };
-
-    class InvalidOperationException: public std::exception
-    {
-      virtual const char* what() const throw()
-      {
-        return "Variant: invalid operation";
-      }
-    };
-    /// @endcond
-
     Variant();
     static Variant null();
 
@@ -192,6 +174,8 @@ public:
 
 
 private:
+    friend class std::hash<Variant>;
+
     typedef union{
         long long l;
         unsigned long long ul;
@@ -234,21 +218,5 @@ bool operator&&(const Variant& a, const Variant& b);
 bool operator||(const Variant& a, const Variant& b);
 
 std::ostream& operator<<(std::ostream& out, const Variant& variant);
-
-/** @cond */
-namespace std
-{
-    template<>
-    struct hash<Variant>
-    {
-        std::size_t operator()(Variant const& var) const
-        {
-            std::size_t const h1 ( std::hash<int>()(var.type()) );
-            std::size_t const h2 ( std::hash<std::string>()(var.toString()) );
-            return h1 ^ (h2 << 3);
-        }
-    };
-}
-/** @endcond */
 
 #endif // VARIANT_H
