@@ -403,7 +403,7 @@ Variable Evaluator::mapScope(const Program &program) const
 {
     MapScope* mapScope = new MapScope;
     for (const Program& item : program) {
-        mapScope->setField(item[0].payload().toString(), rightValue(item[1], true));
+        mapScope->setField(item[0].payload(), rightValue(item[1], true));
     }
 
     return Variable(mapScope, true);

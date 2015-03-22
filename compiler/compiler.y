@@ -420,7 +420,7 @@ array_items:
    |right_value ',' array_items {push_master(ARRAY_SCOPE, 2);}
 	
 map_item:
-	string_constant ':' right_value {push_master(MAP_ITEM, 2);}
+	constant_value ':' right_value {push_master(MAP_ITEM, 2);}
 	
 map_items:
 	/* empty */            {push_master(MAP_SCOPE, 0);}

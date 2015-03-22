@@ -147,4 +147,5 @@ HEADERS  += \
     ../core/variable/typescope.h \
     ../core/variable/objectscope.h \
     ../core/variable/arrayscope.h \
-    ../core/variable/mapscope.h
+    ../core/variable/mapscope.h \
+    ../core/varianthash.h
