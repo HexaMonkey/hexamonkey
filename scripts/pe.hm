@@ -457,7 +457,7 @@ class IMAGE_RESOURCE_NAME
 	@value = entryName;
 }
 
-class IMAGE_RESOURCE_DIRECTORY
+class IMAGE_RESOURCE_ENTRY
 {
 	resource := @context.currentResource;
 	level := @attr.level = resource.level;
@@ -466,42 +466,27 @@ class IMAGE_RESOURCE_DIRECTORY
 	} else if (resource.integerId != undefined) {
 		var id = @attr.id = resource.integerId;
 		if (level == 1) {
-			if (@global.resourceIds == undefined) {
-				@global.resourceIds := [
-					undefined,
-					"cursor", //1
-					"bitmap", //2
-					"icon", //3
-					"menu", //4
-					"dialog", //5
-					"string table", //6
-					"font directory", //7
-					"font", //8
-					"accelerators", //9
-					"unformatted resource data", //10
-					"message table", //11
-					"group cursor", //12
-					undefined, //13
-					"group icon", //14
-					undefined,
-					"version information", //16
-					"dlginclude", //17
-					undefined,
-					"plug and play resource", //19
-					"VXD", //20
-					"animated cursor", //21
-					"animated icon", //22
-					"HTML", //23
-					"side-by-side assembly manifest" //24
-				];
+			if (@global.resourceTypeArray == undefined) {
+				@global.resourceTypeArray := %createResourceTypeArray();
 			}
-			var type = @global.resourceIds[id];
+			var type = @global.resourceTypeArray[id];
 			if (type != undefined) {
 				@attr.type = type;
 			}
+		} else if (level == 3) {
+			if (@global.resourceLanguageMap == undefined) {
+				@global.resourceLanguageMap := %createResourceLanguageMap();
+			}
+			var language = @global.resourceLanguageMap[id];
+			if (language != undefined) {
+				@attr.language = language;
+			}
 		}
 	}
-	
+}
+
+class IMAGE_RESOURCE_DIRECTORY extends IMAGE_RESOURCE_ENTRY
+{
 	DWORD Characteristics;
 	DWORD TimeDateStamp;
 	WORD  MajorVersion;
@@ -512,6 +497,8 @@ class IMAGE_RESOURCE_DIRECTORY
 	IMAGE_RESOURCE_DIRECTORY_ENTRY(0) NamedEntries[NumberOfNamedEntries];
 	IMAGE_RESOURCE_DIRECTORY_ENTRY(1) IdEntries[NumberOfIdEntries];
 	
+	resource := @context.currentResource;
+	childLevel := resource.level + 1;
 	nextResource := resource.next;
 	
 	for (var i = 0; i < NumberOfNamedEntries; ++i) {
@@ -522,7 +509,7 @@ class IMAGE_RESOURCE_DIRECTORY
 				"type" : entry.@attr.type,
 				"nameRVA" : entry.NameRVA.@linkTo,
 				"address" : linkTo,
-				"level" : level + 1,
+				"level" : childLevel,
 				"from" : @beginningPos
 			};
 		}
@@ -536,7 +523,7 @@ class IMAGE_RESOURCE_DIRECTORY
 				"type" : entry.@attr.type,
 				"integerId" : entry.IntegerID,
 				"address" : linkTo,
-				"level" : level + 1,
+				"level" : childLevel,
 				"from" : @beginningPos
 			};
 		}
@@ -545,20 +532,11 @@ class IMAGE_RESOURCE_DIRECTORY
 	resource.next := nextResource;
 }
 
-class IMAGE_RESOURCE_DATA_ENTRY {
-    resource := @context.currentResource;
-	level := @attr.level = resource.level;
+class IMAGE_RESOURCE_DATA_ENTRY extends IMAGE_RESOURCE_ENTRY {
 	RVA     OffsetToData;
     ULONG   Size;
     ULONG   CodePage;
     ULONG   Reserved;
-}
-
-class IMAGE_RESOURCE_DATA
-{
-	resource := @context.currentResource;
-	level := @attr.level = resource.level;
-	@size = resource.integerId << 3;
 }
 
 class IMAGE_RESOURCE_DIRECTORY_ENTRY(_withId)
@@ -584,6 +562,265 @@ class ResourceRVA extends DWORD(16)
 	}
 
 	@linkTo = @context.resourceRVAOffset + 8*@value;
+}
+
+function createResourceTypeArray()
+{
+	return [
+		undefined,
+		"cursor", //1
+		"bitmap", //2
+		"icon", //3
+		"menu", //4
+		"dialog", //5
+		"string table", //6
+		"font directory", //7
+		"font", //8
+		"accelerators", //9
+		"unformatted resource data", //10
+		"message table", //11
+		"group cursor", //12
+		undefined, //13
+		"group icon", //14
+		undefined,
+		"version information", //16
+		"dlginclude", //17
+		undefined,
+		"plug and play resource", //19
+		"VXD", //20
+		"animated cursor", //21
+		"animated icon", //22
+		"HTML", //23
+		"side-by-side assembly manifest" //24
+	];
+}
+
+function createResourceLanguageMap()
+{
+	return {
+		0x0C00 : "Default custom locale language",
+		0x1400 : "Default custom MUI locale language",
+		0x007F : "Invariant locale language",
+		0x0000 : "Neutral locale language",
+		0x0800 : "System default locale language",
+		0x1000 : "Unspecified custom locale language",
+		0x0400 : "User default locale language",
+		0x0436 : "Afrikaans (za)",
+		0x041C : "Albanian (al)",
+		0x0484 : "Alsatian (fr)",
+		0x045E : "Amharic (et)",
+		0x1401 : "Arabic (dz)",
+		0x3C01 : "Arabic (bh)",
+		0x0C01 : "Arabic (eg)",
+		0x0801 : "Arabic (iq)",
+		0x2C01 : "Arabic (jo)",
+		0x3401 : "Arabic (kw)",
+		0x3001 : "Arabic (lb)",
+		0x1001 : "Arabic (ly)",
+		0x1801 : "Arabic (ma)",
+		0x2001 : "Arabic (om)",
+		0x4001 : "Arabic (qa)",
+		0x0401 : "Arabic (sa)",
+		0x2801 : "Arabic (sy)",
+		0x1C01 : "Arabic (tn)",
+		0x3801 : "Arabic (ae)",
+		0x2401 : "Arabic (ye)",
+		0x042B : "Armenian (am)",
+		0x044D : "Assamese (in)",
+		0x082C : "Azeri cyrillic (az)",
+		0x042C : "Azeri latin (az)",
+		0x0445 : "Bangla (in)",
+		0x046D : "Bashkir (ru)",
+		0x042D : "Basque (es)",
+		0x0423 : "Belarusian (by)",
+		0x781A : "Bosnian neutral (ba)",
+		0x201A : "Bosnian cyrillic (ba)",
+		0x141A : "Bosnian latin (ba)",
+		0x047E : "Breton (fr)",
+		0x0402 : "Bulgarian (bg)",
+		0x0492 : "Central Kurdish (ku)",
+		0x045C : "Cherokee (cher)",
+		0x0403 : "Catalan (es)",
+		0x0C04 : "Chinese (hk)",
+		0x1404 : "Chinese (mo)",
+		0x1004 : "Chinese (sg)",
+		0x0004 : "Chinese simplified (zh)",
+		0x7C04 : "Chinese traditional (zh)",
+		0x0483 : "Corsican (fr)",
+		0x001A : "Croatian neutral (ba)",
+		0x101A : "Croatian latin (ba)",
+		0x041A : "Croatian (ba)",
+		0x0405 : "Czech (cz)",
+		0x0406 : "Danish (dk)",
+		0x048C : "Dari (af)",
+		0x0465 : "Divehi (dv)",
+		0x0813 : "Dutch (be)",
+		0x0413 : "Dutch (nl)",
+		0x0C09 : "English (au)",
+		0x2809 : "English (bz)",
+		0x1009 : "English (ca)",
+		0x2409 : "English (029)",
+		0x4009 : "English (in)",
+		0x1809 : "English (ie)",
+		0x2009 : "English (jm)",
+		0x4409 : "English (my)",
+		0x1409 : "English (nz)",
+		0x3409 : "English (ph)",
+		0x4809 : "English (sg)",
+		0x1C09 : "English (za)",
+		0x2C09 : "English (tt)",
+		0x0809 : "English (gb)",
+		0x0409 : "English (us)",
+		0x3009 : "English (zw)",
+		0x0425 : "Estonian (ee)",
+		0x0438 : "Faroese (fo)",
+		0x0464 : "Filipino (ph)",
+		0x040B : "Finnish (fi)",
+		0x080C : "French (be)",
+		0x0C0C : "French (ca)",
+		0x040C : "French (fr)",
+		0x140C : "French (lu)",
+		0x180C : "French (mc)",
+		0x100C : "French (ch)",
+		0x0462 : "Frisian (nl)",
+		0x0456 : "Galician (es)",
+		0x0437 : "Georgian (ge)",
+		0x0C07 : "German (at)",
+		0x0407 : "German (de)",
+		0x1407 : "German (li)",
+		0x1007 : "German (lu)",
+		0x0807 : "German (ch)",
+		0x0408 : "Greek (gr)",
+		0x046F : "Greenlandic (gl)",
+		0x0447 : "Gujarati (in)",
+		0x0468 : "Hausa (ng)",
+		0x0475 : "Hawiian (us)",
+		0x040D : "Hebrew (il)",
+		0x0439 : "Hindi (in)",
+		0x040E : "Hungarian (hu)",
+		0x040F : "Icelandic (is)",
+		0x0470 : "Igbo (ng)",
+		0x0421 : "Indonesian (id)",
+		0x085D : "Inuktitut latin (ca)",
+		0x045D : "Inuktitut syllabics (ca)",
+		0x083C : "Irish (ie)",
+		0x0434 : "isiXhosa (za)",
+		0x0435 : "isiZulu (za)",
+		0x0410 : "Italian (it)",
+		0x0810 : "Italian (ch)",
+		0x0411 : "Japanese (jp)",
+		0x044B : "Kannada (in)",
+		0x043F : "Kazakh (kz)",
+		0x0453 : "Khmer (kh)",
+		0x0486 : "K'iche (gt)",
+		0x0487 : "Kinyarwanda (rw)",
+		0x0457 : "Konkani (in)",
+		0x0412 : "Korean (ko)",
+		0x0440 : "Kyrgyz (ky)",
+		0x0454 : "Lao (la)",
+		0x0426 : "Latvian (lv)",
+		0x0427 : "Lithuanian (lt)",
+		0x082E : "Lower Sorbian (de)",
+		0x046E : "Luxembourgish (lu)",
+		0x042F : "Macedonian (mk)",
+		0x083E : "Malay (bn)",
+		0x043E : "Malay (my)",
+		0x044C : "Malayalam (in)",
+		0x043A : "Maltese (in)",
+		0x0481 : "Maori (nl)",
+		0x047A : "Mapudungun (cl)",
+		0x044E : "Marathi (in)",
+		0x047C : "Mohawk (ca)",
+		0x0450 : "Mongolian cyrillic (mn)",
+		0x8050 : "Mongolian mong (mn)",
+		0x0461 : "Nepali (np)",
+		0x0414 : "Norwegian Bokm (no)",
+		0x0814 : "Norwegian Nyork (no)",
+		0x0482 : "Occitan (fr)",
+		0x0448 : "Oriya (in)",
+		0x0463 : "Pashto (af)",
+		0x0429 : "Persian (ir)",
+		0x0415 : "Polish (pl)",
+		0x0416 : "Portuguese (br)",
+		0x0816 : "Portuguese (pt)",
+		0x0867 : "Pular (sn)",
+		0x0446 : "Punjabi Gurmukhi script (in)",
+		0x0846 : "Punjabi Arabic script (in)",
+		0x046B : "Quechua (bo)",
+		0x086B : "Quechua (ec)",
+		0x0C6B : "Quechua (pe)",
+		0x0418 : "Romanian (ro)",
+		0x0417 : "Romansh (rm)",
+		0x0419 : "Russian (ru)",
+		0x0485 : "Sakha (ru)",
+		0x243B : "Sami Inari (fi)",
+		0x103B : "Sami Lule (no)",
+		0x143B : "Sami Lule (se)",
+		0x0C3B : "Sami Northern (fi)",
+		0x043B : "Sami Northern (no)",
+		0x083B : "Sami Northern (se)",
+		0x203B : "Sami Skolt (fi)",
+		0x183B : "Sami Southern (no)",
+		0x1C3B : "Sami Southern (se)",
+		0x044F : "Sanskrit (in)",
+		0x7C1A : "Serbian Cyrillic (ba)",
+		0x181A : "Serbian Latin (ba)",
+		0x0C1A : "Serbian Cyrillic (cs)",
+		0x081A : "Serbian Latin (cs)",
+		0x046C : "Sesotho sa Leboa (za)",
+		0x0832 : "Setwana/Tswana (bw)",
+		0x0432 : "Setwana/Tswana (za)",
+		0x0859 : "Sindhi (pk)",
+		0x045B : "Sinhala (lk)",
+		0x0424 : "Slovak (sk)",
+		0x2C0A : "Spanish (ar)",
+		0x400A : "Spanish (bo)",
+		0x340A : "Spanish (cl)",
+		0x240A : "Spanish (co)",
+		0x140A : "Spanish (cr)",
+		0x1C0A : "Spanish (do)",
+		0x300A : "Spanish (ec)",
+		0x440A : "Spanish (sv)",
+		0x100A : "Spanish (gt)",
+		0x480A : "Spanish (hn)",
+		0x080A : "Spanish (mx)",
+		0x4C0A : "Spanish (ni)",
+		0x180A : "Spanish (pa)",
+		0x3C0A : "Spanish (py)",
+		0x280A : "Spanish (pe)",
+		0x500A : "Spanish (pr)",
+		0x0C0A : "Spanish Modern Sort (es)",
+		0x040A : "Spanish Traditional Sort (es)",
+		0x540A : "Spanish (us)",
+		0x380A : "Spanish (uy)",
+		0x200A : "Spanish (ve)",
+		0x0441 : "Swahili (ke)",
+		0x081D : "Swedish (fi)",
+		0x041D : "Swedish (se)",
+		0x045A : "Syriac (sy)",
+		0x0428 : "Tajik (tg)",
+		0x085F : "Tamazight (dz)",
+		0x0449 : "Tamil (in)",
+		0x0849 : "Tamil (lk)",
+		0x0444 : "Tatar (ru)",
+		0x044A : "Telugu (in)",
+		0x041E : "Thai (th)",
+		0x0451 : "Tibetian (bo)",
+		0x0873 : "Tigrinya (er)",
+		0x0473 : "Tigrinya (et)",
+		0x041F : "Turkish (tr)",
+		0x0442 : "Turkmen (tk)",
+		0x0422 : "Ukrainian (uk)",
+		0x042E : "Upper Sorbian (de)",
+		0x0420 : "Urdu (pk)",
+		0x0843 : "Uzbek Cyrillic (uz)",
+		0x0443 : "Uzbek Latin (uz)",
+		0x0803 : "Valencian (es)",
+		0x042A : "Vietnamese (vn)",
+		0x0488 : "Wolof (sn)",
+		0x0478 : "Yi (ii)",
+		0x046A : "Yoruba (yo)"
+	};
 }
 
 //*********************************************************
