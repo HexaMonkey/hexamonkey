@@ -306,9 +306,10 @@ class IMAGE_IMPORT_NAMES extends Data(-1)
 class IMAGE_IMPORT_DATAS extends Data(-1)
 {
 	@args.@elementType = IMAGE_IMPORT_DATA();
-	var n = @args.@elementCount = @parent._descriptors.@numberOfChildren - 1;
+	descriptors := @parent._descriptors;
+	var n = @args.@elementCount = descriptors.@numberOfChildren - 1;
 	for (var i = 0; i < n; ++i) {
-		IMAGE_IMPORT_DATA(@parent._descriptors[i].OriginalFirstThunk.@linkTo) #;
+		IMAGE_IMPORT_DATA(descriptors[i].OriginalFirstThunk.@linkTo) #;
 		@pos = 0;
 	}
 }
@@ -568,30 +569,30 @@ function createResourceTypeArray()
 {
 	return [
 		undefined,
-		"cursor", //1
-		"bitmap", //2
-		"icon", //3
-		"menu", //4
-		"dialog", //5
-		"string table", //6
-		"font directory", //7
-		"font", //8
-		"accelerators", //9
-		"unformatted resource data", //10
-		"message table", //11
-		"group cursor", //12
+		"Cursor", //1
+		"Bitmap", //2
+		"Icon", //3
+		"Menu", //4
+		"Dialog", //5
+		"String table", //6
+		"Font directory", //7
+		"Font", //8
+		"Accelerators", //9
+		"Unformatted resource data", //10
+		"Message table", //11
+		"Group cursor", //12
 		undefined, //13
-		"group icon", //14
+		"Group icon", //14
 		undefined,
-		"version information", //16
-		"dlginclude", //17
+		"Version information", //16
+		"Dlginclude", //17
 		undefined,
-		"plug and play resource", //19
+		"Plug and play resource", //19
 		"VXD", //20
-		"animated cursor", //21
-		"animated icon", //22
+		"Animated cursor", //21
+		"Animated icon", //22
 		"HTML", //23
-		"side-by-side assembly manifest" //24
+		"Side-by-side assembly manifest" //24
 	];
 }
 
@@ -883,6 +884,29 @@ class IMAGE_DIRECTORY_ENTRY_EXCEPTION as IMAGE_DIRECTORY_ENTRY(8)
 //********************************************************
 
 class IMAGE_DIRECTORY_ENTRY_TLS as IMAGE_DIRECTORY_ENTRY(9)
+{
+	(@global.HDR64 ? IMAGE_TLS_DIRECTORY64() : IMAGE_TLS_DIRECTORY32()) _directory;
+}
+
+class IMAGE_TLS_DIRECTORY64 
+{
+    ULONGLONG   StartAddressOfRawData;
+    ULONGLONG   EndAddressOfRawData;
+    ULONGLONG   AddressOfIndex;
+    ULONGLONG   AddressOfCallBacks;
+    DWORD       SizeOfZeroFill;
+    DWORD       Characteristics;
+}
+ 
+class IMAGE_TLS_DIRECTORY32 
+{
+    DWORD   StartAddressOfRawData;
+    DWORD   EndAddressOfRawData;
+    DWORD   AddressOfIndex;
+    DWORD   AddressOfCallBacks;
+    DWORD   SizeOfZeroFill;
+    DWORD   Characteristics;
+}
 
 //********************************************************
 // Load configuration
@@ -901,6 +925,16 @@ class IMAGE_DIRECTORY_BOUND_IMPORT as IMAGE_DIRECTORY_ENTRY(11)
 //********************************************************
 
 class IMAGE_DIRECTORY_ENTRY_IAT as IMAGE_DIRECTORY_ENTRY(12)
+{
+	descriptors := @parent[IMAGE_DIRECTORY_ENTRY_IMPORT()]._descriptors;
+	if (descriptors != undefined) {
+		var n = descriptors.@numberOfChildren - 1;
+		for (var i = 0; i < n; ++i) {
+			IMAGE_IMPORT_DATA(descriptors[i].FirstThunk.@linkTo) #;
+			@pos = 0;
+		}
+	}
+}
 
 //********************************************************
 // Delay import descriptor
