@@ -21,11 +21,13 @@
 #include "gui/tree/treemodel.h"
 #include "gui/tree/treeitem.h"
 #include "gui/tree/treeobjectitem.h"
+#include "gui/tree/parsingqueue.h"
 
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, TreeView* view, QObject *parent) :
     QAbstractItemModel(parent),
     view(view),
-    programLoader(programLoader)
+    programLoader(programLoader),
+    parsingQueue(new ParsingQueue(this))
 {
     QList<QVariant> rootData;
     rootData << "Struct" << "Beginning position" << "Size";
@@ -154,12 +156,13 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
     Object& object = static_cast<TreeObjectItem*>(parent.internalPointer())->object();
 
-    int realCount = realRowCount(parent);
+    int count = realRowCount(parent);
 
-    if(realCount == 0 && (!object.parsed() || object.numberOfChildren()))
-        return 1;
-    else
-        return realCount;
+    if (count == 0 && (!object.parsed() || object.numberOfChildren())) {
+        count = 1;
+    }
+
+    return count;
 }
 
 QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
@@ -246,7 +249,7 @@ int TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, uns
     unsigned int count = 0;
     unsigned int tries = maxTries;
 
-    while(count<minCount && (!item.object().parsed() || !item.synchronised()) && tries>0)
+    while (count < minCount && (!item.object().parsed() || !item.synchronised()) && tries>0)
     {
         if(!objectData.parsed())
         {
