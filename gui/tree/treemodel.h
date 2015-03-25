@@ -71,7 +71,7 @@ public:
 
     void removeItem(QModelIndex index);
 
-    int populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
+    void populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
 
     QString rootPath();
     QString path(QModelIndex index) const;

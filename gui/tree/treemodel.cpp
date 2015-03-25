@@ -32,6 +32,8 @@ TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader
     QList<QVariant> rootData;
     rootData << "Struct" << "Beginning position" << "Size";
     rootItem = TreeItem::RootItem(rootData, this);
+
+    connect(parsingQueue, SIGNAL(finished(QModelIndex)), this, SLOT(updateChildren(QModelIndex)));
 }
 
 TreeItem &TreeModel::item(const QModelIndex &index) const
@@ -241,25 +243,18 @@ void TreeModel::requestExpansion(const QModelIndex &i)
     }
 }
 
-int TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries)
+void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries)
 {
     TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
     Object& objectData = item.object();
 
-    unsigned int count = 0;
-    unsigned int tries = maxTries;
-
-    while (count < minCount && (!item.object().parsed() || !item.synchronised()) && tries>0)
-    {
-        if(!objectData.parsed())
-        {
-            objectData.exploreSome(nominalCount);
+    if (item.object().parsed()) {
+        if (!item.synchronised()) {
+            updateChildren(index);
         }
-        count += updateChildren(index);
-        --tries;
+    } else {
+        parsingQueue->addObjectParsing(objectData, index, nominalCount, minCount, maxTries);
     }
-
-    return count;
 }
 
 void TreeModel::updateCurrent(const QModelIndex &index)

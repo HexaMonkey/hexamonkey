@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QQueue>
+#include <QModelIndex>
 
 class ParsingThread;
 class Object;
@@ -12,11 +13,20 @@ class ParsingQueue : public QObject
     Q_OBJECT
 public:
     explicit ParsingQueue(QObject* parent);
-    
-    ParsingThread* addObjectParsing(Object& object, const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
+
+    void addObjectParsing(Object& object, const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
+
+public slots:
+    void onThreadFinished();
+
+signals:
+    void finished(QModelIndex);
 
 private:
-    QQueue<ParsingQueue*> _queue;
+    void onQueueUpdated();
+
+    QQueue<ParsingThread*> _threadQueue;
+    ParsingThread* _currentThread;
 };
 
 #endif // PARSINGQUEUE_H

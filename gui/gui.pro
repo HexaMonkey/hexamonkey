@@ -53,7 +53,8 @@ SOURCES += \
     hex/hexfiledelegate.cpp \
     log/logwidget.cpp \
     qtprogramloader.cpp \
-    tree/parsingqueue.cpp
+    tree/parsingqueue.cpp \
+    tree/parsingthread.cpp
 
 
 HEADERS  += \ 
@@ -74,7 +75,8 @@ HEADERS  += \
     hex/hexfiledelegate.h \
     log/logwidget.h \
     qtprogramloader.h \
-    tree/parsingqueue.h
+    tree/parsingqueue.h \
+    tree/parsingthread.h
 
 RESOURCES += \
     ressources.qrc
