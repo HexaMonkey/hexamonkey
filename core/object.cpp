@@ -603,13 +603,21 @@ std::ostream& Object::display(std::ostream& out, std::string prefix) const
     out << prefix << type() << " " << name();
     if(!value().isValueless())
         out << " = " << value();
+
+    return out;
+}
+
+std::ostream &Object::displayTree(std::ostream &out, std::string prefix) const
+{
+    out << prefix;
+    display(out);
     out<<std::endl;
 
     if(numberOfChildren() < 20)
     {
         for(Object::const_iterator it = begin(); it != end(); ++it)
         {
-            (*it)->display(out, prefix+"    ");
+            (*it)->displayTree(out, prefix+"    ");
         }
     }
     return out;

@@ -191,6 +191,11 @@ class Object
         std::ostream& display(std::ostream& out, std::string prefix = "") const;
 
         /**
+         * @brief Standard representation for the object in an out stream
+         */
+        std::ostream& displayTree(std::ostream& out, std::string prefix = "") const;
+
+        /**
          * @brief Pointer to the object parent returns nullptr if the object is top level
          */
         Object* parent();

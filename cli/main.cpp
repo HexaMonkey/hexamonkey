@@ -19,6 +19,7 @@
 #include "core/log/logmanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/moduleloader.h"
+#include "core/object.h"
 #include "core/interpreter/programloader.h"
 #include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/default/defaulttypes.h"
@@ -266,7 +267,7 @@ int main(int argc, char *argv[])
                 break;
 
             case subtree:
-                std::cout << *(objs[0]) << std::endl;
+                objs[0]->displayTree(std::cout);
                 break;
 
             case numberOfChildren:
