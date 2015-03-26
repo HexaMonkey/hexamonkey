@@ -33,7 +33,8 @@ TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader
     rootData << "Struct" << "Beginning position" << "Size";
     rootItem = TreeItem::RootItem(rootData, this);
 
-    connect(parsingQueue, SIGNAL(finished(QModelIndex)), this, SLOT(updateChildren(QModelIndex)));
+    connect(parsingQueue, SIGNAL(started(QModelIndex)), this, SLOT(onParsingStarted(QModelIndex)));
+    connect(parsingQueue, SIGNAL(finished(QModelIndex)), this, SLOT(onParsingFinished(QModelIndex)));
 }
 
 TreeItem &TreeModel::item(const QModelIndex &index) const
@@ -178,31 +179,43 @@ QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
 
 
 
-int TreeModel::updateChildren(const QModelIndex& index)
+void TreeModel::updateChildren(const QModelIndex& index)
 {
     TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+    item.setSynchronising(false);
     int count = 0;
     int first = realRowCount(index);
-    for(Object::iterator it = item.nextChild(); it != item.end(); ++it)
-    {
+
+    for (Object::iterator it = item.nextChild(); it != item.end(); ++it) {
+
         Object* object = *it;
-        if(object != nullptr)
-        {
-            if(item.filterObject(*object))
-            {
+        if (object != nullptr) {
+            if (item.filterObject(*object)) {
                 addObject(*object, index);
                 count++;
             }
         }
         item.advanceLastChild();
     }
+
     beginInsertRows(index, first, first+count);
     endInsertRows();
-    if(count)
-    {
+
+    if (count) {
         emit dataChanged(index.child(0,0), index.child(count-1,columnCount(index)-1));
     }
-    return count;
+}
+
+void TreeModel::onParsingStarted(const QModelIndex &index)
+{
+    emit parsingStarted(index);
+}
+
+void TreeModel::onParsingFinished(const QModelIndex &index)
+{
+    updateChildren(index);
+
+    emit parsingFinished(index);
 }
 
 void TreeModel::deleteChildren(const QModelIndex &index)
@@ -216,8 +229,6 @@ void TreeModel::deleteChildren(const QModelIndex &index)
         item.removeChildren();
         item.setLastChildIndex(0);
     }
-
-
 }
 
 void TreeModel::updateFilter(QString expression)
@@ -253,27 +264,28 @@ void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, un
             updateChildren(index);
         }
     } else {
-        parsingQueue->addObjectParsing(objectData, index, nominalCount, minCount, maxTries);
+        if (!item.synchronising()) {
+            item.setSynchronising(true);
+            parsingQueue->addObjectParsing(objectData, index, nominalCount, minCount, maxTries);
+        }
     }
 }
 
 void TreeModel::updateCurrent(const QModelIndex &index)
 {
     current = index;
-    if(current.isValid())
-    {
+    if(current.isValid()) {
         TreeItem& currentItem = *static_cast<TreeItem*>(current.internalPointer());
         filterChanged(QString(static_cast<TreeObjectItem&>(currentItem).filterExpression().c_str()));
-        if(current.parent().isValid())
-        {
+        if(current.parent().isValid()) {
             TreeItem* parentItem = static_cast<TreeItem*>(current.parent().internalPointer());
 
-            if(!parentItem->synchronised())
-            {
+            if(!parentItem->synchronised()) {
                 int row = currentItem.row();
                 int totalRowCount = realRowCount(current.parent());
-                if(row>=3*totalRowCount/4)
-                    populate(current.parent(), totalRowCount, totalRowCount/minPopulationRatio, populationTries);
+                if(row>=totalRowCount-defaultPopulation/minPopulationRatio) {
+                    populate(current.parent(), defaultPopulation, defaultPopulation/minPopulationRatio, populationTries);
+                }
             }
         }
     }

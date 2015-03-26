@@ -19,7 +19,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFileDialog>
-#include <iostream>
+#include <QStatusBar>
 
 #include "gui/tree/treewidget.h"
 #include "gui/mainwindow.h"
@@ -41,11 +41,13 @@ TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
     setColumnsWidths();
 
     filterWidget = new FilterWidget(this);
+    statusBar = new QStatusBar(this);
 
     //Layout
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(view, 0, 0, 1, 1);
     layout->addWidget(filterWidget, 1, 0, 1, 1);
+    layout->addWidget(statusBar, 2, 0, 1, 1);
     layout->setContentsMargins(0,0,0,0);
     setLayout(layout);
 
@@ -54,6 +56,9 @@ TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
 
     connect(view, SIGNAL(selected(QModelIndex)), this, SLOT(updatePath(QModelIndex)));
     connect(view, SIGNAL(selected(QModelIndex)), this, SLOT(updatePosition(QModelIndex)));
+
+    connect(model, SIGNAL(parsingStarted(QModelIndex)), this, SLOT(onParsingStarted(QModelIndex)));
+    connect(model, SIGNAL(parsingFinished(QModelIndex)), this, SLOT(onParsingFinished(QModelIndex)));
 
     connect(model, SIGNAL(filterChanged(QString)), filterWidget, SLOT(changeText(QString)));
     connect(filterWidget, SIGNAL(textChanged(QString)), model, SLOT(updateFilter(QString)));
@@ -117,6 +122,20 @@ void TreeWidget::displayMenu(const QPoint &pos)
 void TreeWidget::updateByFilePosition(qint64 position)
 {
     model->updateByFilePosition(position);
+}
+
+void TreeWidget::onParsingStarted(const QModelIndex &index)
+{
+    TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+
+    std::stringstream S;
+    S<<"Parsing children for "<< item.object();
+    statusBar->showMessage(QString::fromStdString(S.str()));
+}
+
+void TreeWidget::onParsingFinished(const QModelIndex &/*index*/)
+{
+    statusBar->clearMessage();
 }
 
 void TreeWidget::dragEnterEvent(QDragEnterEvent* event)

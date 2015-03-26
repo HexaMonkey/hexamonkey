@@ -19,15 +19,15 @@ void ParsingQueue::onThreadFinished()
     emit finished(_currentThread->index());
     delete _currentThread;
     _currentThread = nullptr;
-    _threadQueue.dequeue();
     onQueueUpdated();
 }
 
 void ParsingQueue::onQueueUpdated()
 {
     if (!_currentThread && !_threadQueue.empty()) {
-        _currentThread = _threadQueue.back();
+        _currentThread = _threadQueue.dequeue();
         connect(_currentThread, SIGNAL(finished()), this, SLOT(onThreadFinished()));
         _currentThread->start();
+        emit started(_currentThread->index());
     }
 }

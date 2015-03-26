@@ -25,19 +25,19 @@ public:
 
 namespace Log {
     template <typename T, typename ...P>
-    void info(T t, P ...p)
+    void info(const T& t, const P& ...p)
     {
         LogManager::getInstance()->log(concat(t, p...), LogLevel::Info);
     }
 
     template <typename T, typename ...P>
-    void warning(T t, P ...p)
+    void warning(const T& t, const P& ...p)
     {
         LogManager::getInstance()->log(concat(t, p...), LogLevel::Warning);
     }
 
     template <typename T, typename ...P>
-    void error(T t, P ...p)
+    void error(const T& t, const P& ...p)
     {
         LogManager::getInstance()->log(concat(t, p...), LogLevel::Error);
     }

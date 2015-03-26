@@ -29,6 +29,8 @@
 
 class ProgramLoader;
 class TreeItem;
+class QStatusBar;
+
 
 /**
  * @brief Widget controlling the parsing and display of files into
@@ -70,6 +72,8 @@ public slots:
     void setCurrentIndex(QModelIndex index);
     void displayMenu(const QPoint &pos);
     void updateByFilePosition(qint64 position);
+    void onParsingStarted(const QModelIndex& index);
+    void onParsingFinished(const QModelIndex& index);
 
 private:
     virtual void dropEvent(QDropEvent *event) final;
@@ -81,6 +85,7 @@ private:
     TreeModel* model;
     HTMLDelegate* delegate;
     FilterWidget* filterWidget;
+    QStatusBar* statusBar;
 
     QString path;
     quint64 position;

@@ -85,9 +85,13 @@ public slots:
     void updateCurrent(const QModelIndex &index);
     void deleteChildren(const QModelIndex &index);
     void updateFilter(QString expression);
-    int updateChildren(const QModelIndex &index);
+    void updateChildren(const QModelIndex &index);
+    void onParsingStarted(const QModelIndex &index);
+    void onParsingFinished(const QModelIndex &index);
 
 signals:
+    void parsingStarted(QModelIndex);
+    void parsingFinished(QModelIndex);
     void filterChanged(QString);
     void invalidFilter();
     void work();
@@ -96,7 +100,7 @@ signals:
 private:
     QModelIndex findItemChildByFilePosition(const TreeItem& treeItem, qint64 position);
 
-    static const int defaultPopulation   = 128;
+    static const int defaultPopulation   = 64;
     static const int minPopulationRatio  = 2;
     static const int populationTries     = 32;
     QModelIndex addObject(Object &object, const QModelIndex &parent);

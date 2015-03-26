@@ -127,7 +127,7 @@ void output(std::ostream& stream, const T& t,const P&... p)
 
 /** @brief Concatenate random values using stringstream */
 template <typename T, typename ...P>
-std::string concat(T t, P ...p)
+std::string concat(const T& t, const P& ...p)
 {
     std::stringstream s;
     output(s, t, p...);

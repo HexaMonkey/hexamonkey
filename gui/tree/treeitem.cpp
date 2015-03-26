@@ -124,6 +124,16 @@ bool TreeItem::synchronised()
     return true;
 }
 
+bool TreeItem::synchronising() const
+{
+    return _synchronising;
+}
+
+void TreeItem::setSynchronising(bool value)
+{
+    _synchronising = value;
+}
+
 QList<QVariant> &TreeItem::itemData() const
 {
     return _itemData;
@@ -137,12 +147,12 @@ void TreeItem::onChildrenRemoved()
 {
 }
 
-
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent, QObject *owner)
        :QObject(owner),
         _parentItem(parent),
         _itemData(data),
-        _loaded(false)
+        _loaded(false),
+        _synchronising(false)
 {
     if(parent != nullptr)
         parent->appendChild(this);

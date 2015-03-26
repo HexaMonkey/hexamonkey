@@ -20,6 +20,7 @@ public slots:
     void onThreadFinished();
 
 signals:
+    void started(QModelIndex);
     void finished(QModelIndex);
 
 private:

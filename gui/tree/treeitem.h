@@ -53,11 +53,14 @@ public:
 
     void load() const;
     virtual bool synchronised();
+    bool synchronising() const;
+    void setSynchronising(bool value);
 
     virtual QVariant clipboardValue() const;
     virtual bool hasStream() const;
     virtual bool hasLinkTo() const;
     virtual qint64 linkTo() const;
+
 
 protected:
     TreeItem(const QList<QVariant> &data, TreeItem *parent);
@@ -65,6 +68,8 @@ protected:
     virtual void doLoad() const;
 
     virtual void onChildrenRemoved();
+
+
 
 signals:
     bool childrenRemoved();
@@ -77,6 +82,7 @@ private:
     TreeItem* _parentItem;
     mutable QList<QVariant> _itemData;
     mutable bool _loaded;
+    bool _synchronising;
 };
 
 #endif // TREEITEM_H

@@ -1,7 +1,11 @@
+#include <sstream>
+
 #include "gui/tree/parsingthread.h"
 #include "gui/tree/parsingqueue.h"
 
 #include "core/object.h"
+
+#include "core/log/logmanager.h"
 
 ParsingThread::ParsingThread(ParsingQueue *parent,
                              Object &object,
