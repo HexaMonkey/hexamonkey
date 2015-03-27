@@ -9,13 +9,11 @@
 
 ParsingThread::ParsingThread(ParsingQueue *parent,
                              Object &object,
-                             const QModelIndex &index,
                              unsigned int nominalCount,
                              unsigned int minCount,
                              unsigned int maxTries)
     : QThread(parent),
       _object(object),
-      _index(index),
       _nominalCount(nominalCount),
       _minCount(minCount),
       _maxTries(maxTries)
@@ -31,9 +29,4 @@ void ParsingThread::run()
          ++tries) {
         _object.exploreSome(_nominalCount);
     }
-}
-
-const QModelIndex &ParsingThread::index() const
-{
-    return _index;
 }

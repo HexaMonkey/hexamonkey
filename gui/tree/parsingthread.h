@@ -15,7 +15,6 @@ public:
 
     explicit ParsingThread(ParsingQueue *parent,
                            Object& object,
-                           const QModelIndex &index,
                            unsigned int nominalCount,
                            unsigned int minCount,
                            unsigned int maxTries);
@@ -25,7 +24,6 @@ public:
 private:
     Object& _object;
 
-    QModelIndex _index;
     unsigned int _nominalCount;
     unsigned int _minCount;
     unsigned int _maxTries;

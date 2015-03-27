@@ -33,8 +33,8 @@ TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader
     rootData << "Struct" << "Beginning position" << "Size";
     rootItem = TreeItem::RootItem(rootData, this);
 
-    connect(parsingQueue, SIGNAL(started(QModelIndex)), this, SLOT(onParsingStarted(QModelIndex)));
-    connect(parsingQueue, SIGNAL(finished(QModelIndex)), this, SLOT(onParsingFinished(QModelIndex)));
+    connect(parsingQueue, SIGNAL(started(int)), this, SLOT(onParsingStarted(int)));
+    connect(parsingQueue, SIGNAL(finished(int)), this, SLOT(onParsingFinished(int)));
 }
 
 TreeItem &TreeModel::item(const QModelIndex &index) const
@@ -206,16 +206,24 @@ void TreeModel::updateChildren(const QModelIndex& index)
     }
 }
 
-void TreeModel::onParsingStarted(const QModelIndex &index)
+void TreeModel::onParsingStarted(int i)
 {
-    emit parsingStarted(index);
+    QModelIndex index = parsingIds.value(i);
+
+    if (index.isValid()) {
+        emit parsingStarted(index);
+    }
 }
 
-void TreeModel::onParsingFinished(const QModelIndex &index)
+void TreeModel::onParsingFinished(int i)
 {
-    updateChildren(index);
+    QModelIndex index = parsingIds.take(i);
 
-    emit parsingFinished(index);
+    if (index.isValid()) {
+        updateChildren(index);
+
+        emit parsingFinished(index);
+    }
 }
 
 void TreeModel::deleteChildren(const QModelIndex &index)
@@ -266,7 +274,9 @@ void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, un
     } else {
         if (!item.synchronising()) {
             item.setSynchronising(true);
-            parsingQueue->addObjectParsing(objectData, index, nominalCount, minCount, maxTries);
+            parsingQueue->addObjectParsing(objectData, nominalCount, minCount, maxTries, [this, &index] (int id) {
+                parsingIds.insert(id, index);
+            });
         }
     }
 }

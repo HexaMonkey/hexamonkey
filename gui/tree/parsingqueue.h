@@ -5,7 +5,9 @@
 #include <QQueue>
 #include <QModelIndex>
 
-class ParsingThread;
+#include <functional>
+
+class QThread;
 class Object;
 
 class ParsingQueue : public QObject
@@ -14,20 +16,23 @@ class ParsingQueue : public QObject
 public:
     explicit ParsingQueue(QObject* parent);
 
-    void addObjectParsing(Object& object, const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries);
+    void addObjectParsing(Object& object, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries, const std::function<void(int)>& registerId);
 
 public slots:
     void onThreadFinished();
 
 signals:
-    void started(QModelIndex);
-    void finished(QModelIndex);
+    void started(int);
+    void finished(int);
 
 private:
+    void addThread(QThread* thread, const std::function<void (int)> &registerId);
     void onQueueUpdated();
 
-    QQueue<ParsingThread*> _threadQueue;
-    ParsingThread* _currentThread;
+    QQueue<std::pair<int, QThread*> > _threadQueue;
+    QThread* _currentThread;
+    int _currentId;
+    int _freeId;
 };
 
 #endif // PARSINGQUEUE_H

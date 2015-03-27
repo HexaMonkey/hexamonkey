@@ -86,8 +86,8 @@ public slots:
     void deleteChildren(const QModelIndex &index);
     void updateFilter(QString expression);
     void updateChildren(const QModelIndex &index);
-    void onParsingStarted(const QModelIndex &index);
-    void onParsingFinished(const QModelIndex &index);
+    void onParsingStarted(int i);
+    void onParsingFinished(int i);
 
 signals:
     void parsingStarted(QModelIndex);
@@ -109,6 +109,8 @@ private:
     QModelIndex current;
     const ProgramLoader& programLoader;
     ParsingQueue* parsingQueue;
+
+    QMap<int, QModelIndex> parsingIds;
 };
 
 #endif // TREEMODEL_H
