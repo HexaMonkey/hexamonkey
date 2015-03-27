@@ -30,7 +30,7 @@
 
 class TreeItem;
 class ProgramLoader;
-class ParsingQueue;
+class ThreadQueue;
 
 /**
  * @brief Model managing the data structure of the tree
@@ -108,7 +108,7 @@ private:
     TreeItem *rootItem;
     QModelIndex current;
     const ProgramLoader& programLoader;
-    ParsingQueue* parsingQueue;
+    ThreadQueue* threadQueue;
 
     QMap<int, QModelIndex> parsingIds;
 };

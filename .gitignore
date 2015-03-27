@@ -104,8 +104,8 @@ scripts/*.hmc
 !gui/*.svg
 !gui/tree/*.cpp
 !gui/tree/*.h
-!gui/mt/*.cpp
-!gui/mt/*.h
+!gui/thread/*.cpp
+!gui/thread/*.h
 !gui/log
 !gui/log/*.h
 !gui/log/*.cpp

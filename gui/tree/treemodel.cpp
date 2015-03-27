@@ -21,20 +21,20 @@
 #include "gui/tree/treemodel.h"
 #include "gui/tree/treeitem.h"
 #include "gui/tree/treeobjectitem.h"
-#include "gui/tree/parsingqueue.h"
+#include "gui/thread/threadqueue.h"
 
 TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader, TreeView* view, QObject *parent) :
     QAbstractItemModel(parent),
     view(view),
     programLoader(programLoader),
-    parsingQueue(new ParsingQueue(this))
+    threadQueue(new ThreadQueue(this))
 {
     QList<QVariant> rootData;
     rootData << "Struct" << "Beginning position" << "Size";
     rootItem = TreeItem::RootItem(rootData, this);
 
-    connect(parsingQueue, SIGNAL(started(int)), this, SLOT(onParsingStarted(int)));
-    connect(parsingQueue, SIGNAL(finished(int)), this, SLOT(onParsingFinished(int)));
+    connect(threadQueue, SIGNAL(started(int)), this, SLOT(onParsingStarted(int)));
+    connect(threadQueue, SIGNAL(finished(int)), this, SLOT(onParsingFinished(int)));
 }
 
 TreeItem &TreeModel::item(const QModelIndex &index) const
@@ -265,7 +265,7 @@ void TreeModel::requestExpansion(const QModelIndex &i)
 void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries)
 {
     TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
-    Object& objectData = item.object();
+    Object& object = item.object();
 
     if (item.object().parsed()) {
         if (!item.synchronised()) {
@@ -274,7 +274,15 @@ void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, un
     } else {
         if (!item.synchronising()) {
             item.setSynchronising(true);
-            parsingQueue->addObjectParsing(objectData, nominalCount, minCount, maxTries, [this, &index] (int id) {
+            threadQueue->add([&object, nominalCount, minCount, maxTries] {
+                int minNumberOfChildren = object.numberOfChildren() + minCount;
+
+                for (unsigned int tries = 0;
+                     object.numberOfChildren() < minNumberOfChildren && !object.parsed() && tries < maxTries;
+                     ++tries) {
+                     object.exploreSome(nominalCount);
+                }
+            }, [this, &index] (int id) {
                 parsingIds.insert(id, index);
             });
         }
@@ -323,8 +331,7 @@ quint64 TreeModel::size(QModelIndex index) const
 void TreeModel::updateByFilePosition(quint64 pos)
 {
     QModelIndex rootIndex = current;
-    while(rootIndex.parent().column() != -1)
-    {
+    while (rootIndex.parent().column() != -1) {
         rootIndex = rootIndex.parent();
     }
     pos = 8*pos;

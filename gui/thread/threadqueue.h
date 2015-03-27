@@ -10,13 +10,14 @@
 class QThread;
 class Object;
 
-class ParsingQueue : public QObject
+class ThreadQueue : public QObject
 {
     Q_OBJECT
 public:
-    explicit ParsingQueue(QObject* parent);
+    explicit ThreadQueue(QObject* parent);
 
-    void addObjectParsing(Object& object, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries, const std::function<void(int)>& registerId);
+    void add(QThread* thread, const std::function<void (int)> &registerId);
+    void add(std::function<void ()> functionToRun, const std::function<void (int)> &registerId);
 
 public slots:
     void onThreadFinished();
@@ -26,7 +27,7 @@ signals:
     void finished(int);
 
 private:
-    void addThread(QThread* thread, const std::function<void (int)> &registerId);
+
     void onQueueUpdated();
 
     QQueue<std::pair<int, QThread*> > _threadQueue;

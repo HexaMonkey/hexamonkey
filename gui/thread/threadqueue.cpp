@@ -1,8 +1,10 @@
-#include "gui/tree/parsingthread.h"
-#include "gui/tree/parsingqueue.h"
+#include "gui/thread/threadqueue.h"
+#include "gui/thread/functionthread.h"
+
+#include <QThread>
 
 
-ParsingQueue::ParsingQueue(QObject *parent)
+ThreadQueue::ThreadQueue(QObject *parent)
     :QObject(parent),
      _currentThread(nullptr),
      _currentId(0),
@@ -10,12 +12,7 @@ ParsingQueue::ParsingQueue(QObject *parent)
 {
 }
 
-void ParsingQueue::addObjectParsing(Object& object, unsigned int nominalCount, unsigned int minCount, unsigned int maxTries, const std::function<void(int)>& registerId)
-{
-    addThread(new ParsingThread(this, object, nominalCount, minCount, maxTries), registerId);
-}
-
-void ParsingQueue::onThreadFinished()
+void ThreadQueue::onThreadFinished()
 {
     emit finished(_currentId);
     delete _currentThread;
@@ -24,7 +21,7 @@ void ParsingQueue::onThreadFinished()
     onQueueUpdated();
 }
 
-void ParsingQueue::onQueueUpdated()
+void ThreadQueue::onQueueUpdated()
 {
     if (!_currentThread && !_threadQueue.empty()) {
         std::pair<int, QThread*> item = _threadQueue.dequeue();
@@ -37,9 +34,14 @@ void ParsingQueue::onQueueUpdated()
 }
 
 
-void ParsingQueue::addThread(QThread *thread, const std::function<void(int)> &registerId)
+void ThreadQueue::add(QThread *thread, const std::function<void(int)> &registerId)
 {
     _threadQueue.enqueue(std::make_pair(_freeId, thread));
     registerId(_freeId++);
     onQueueUpdated();
+}
+
+void ThreadQueue::add(std::function<void ()> functionToRun, const std::function<void (int)> &registerId)
+{
+    add(new FunctionThread(this, functionToRun), registerId);
 }
