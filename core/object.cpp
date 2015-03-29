@@ -302,6 +302,11 @@ std::streamoff Object::pos() const
     return _pos;
 }
 
+bool Object::includesPos(std::streamoff pos) const
+{
+    return _beginningPos <= pos && pos < _beginningPos + _size;
+}
+
 void Object::setPos(std::streamoff pos)
 {
     if (pos >= 0) {

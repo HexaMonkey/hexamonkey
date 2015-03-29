@@ -99,7 +99,7 @@ class Object
          *  the \link beginningPos beginning position\endlink of the \link file() file\endlink.
          */
         std::streamoff pos() const;
-
+        bool includesPos(std::streamoff pos) const;
         void setPos(std::streamoff pos);
 
         /** @brief Move the \link file() file\endlink current position to the \link beginningPos()

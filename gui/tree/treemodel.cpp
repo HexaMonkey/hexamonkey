@@ -67,6 +67,17 @@ QModelIndex TreeModel::addFile(File* file, const Module& module)
     return itemIndex;
 }
 
+QModelIndex TreeModel::currentFileIndex() const
+{
+    QModelIndex fileIndex = current;
+
+    while (fileIndex.parent().column() != -1) {
+        fileIndex = fileIndex.parent();
+    }
+
+    return fileIndex;
+}
+
 bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
     TreeItem &parentItem = item(parent);
@@ -182,7 +193,6 @@ QModelIndex TreeModel::addObject(Object& object, const QModelIndex &parent)
 void TreeModel::updateChildren(const QModelIndex& index)
 {
     TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
-    item.setSynchronising(false);
     int count = 0;
     int first = realRowCount(index);
 
@@ -220,6 +230,9 @@ void TreeModel::onParsingFinished(int i)
     QModelIndex index = parsingIds.take(i);
 
     if (index.isValid()) {
+        TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+
+        item.setSynchronising(false);
         updateChildren(index);
 
         emit parsingFinished(index);
@@ -298,10 +311,10 @@ void TreeModel::updateCurrent(const QModelIndex &index)
         if(current.parent().isValid()) {
             TreeItem* parentItem = static_cast<TreeItem*>(current.parent().internalPointer());
 
-            if(!parentItem->synchronised()) {
+            if (!parentItem->synchronised()) {
                 int row = currentItem.row();
                 int totalRowCount = realRowCount(current.parent());
-                if(row>=totalRowCount-defaultPopulation/minPopulationRatio) {
+                if (row>=totalRowCount-defaultPopulation/minPopulationRatio) {
                     populate(current.parent(), defaultPopulation, defaultPopulation/minPopulationRatio, populationTries);
                 }
             }
@@ -330,12 +343,10 @@ quint64 TreeModel::size(QModelIndex index) const
 // this function develops the tree for a given position in the file.
 void TreeModel::updateByFilePosition(quint64 pos)
 {
-    QModelIndex rootIndex = current;
-    while (rootIndex.parent().column() != -1) {
-        rootIndex = rootIndex.parent();
-    }
+    QModelIndex fileIndex = currentFileIndex();
+
     pos = 8*pos;
-    QModelIndex temporaryMiningIndex = index(rootIndex.row(),0);
+    QModelIndex temporaryMiningIndex = index(fileIndex.row(),0);
     TreeItem* temporaryItem = &item(temporaryMiningIndex);
     requestExpansion(temporaryMiningIndex);
     view->setExpanded(temporaryMiningIndex,true);
@@ -367,6 +378,45 @@ void TreeModel::updateByFilePosition(quint64 pos)
         }
     }
     view->setCurrentIndex(temporaryMiningIndex);
+}
+
+int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 pos, std::function<void (const QList<size_t>&)> resultCallback)
+{
+    Object* object = &static_cast<TreeObjectItem*>(index.internalPointer())->object();
+    pos = 8*pos;
+
+    if (object->includesPos(pos)) {
+        QList<size_t> result;
+        bool success = false;
+
+        while (true) {
+            if (object->parsed() && object->numberOfChildren() == 0) {
+                success = true;
+                break;
+            } else {
+                const Object::iterator begin = object->begin();
+                const Object::iterator end = object->end();
+                Object::iterator childIt = std::find_if(begin, end, [pos](const Object* child)->bool {
+                    return child->includesPos(pos);
+                });
+                if (childIt != end) {
+                    result.append(std::distance(begin, childIt));
+                    object = *childIt;
+                } else if (object->parsed()) {
+                    success = true;
+                    break;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (success) {
+            resultCallback(result);
+        }
+    }
+
+    return 0;
 }
 
 QString TreeModel::rootPath(){

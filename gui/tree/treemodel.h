@@ -67,6 +67,7 @@ public:
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const final;
 
     QModelIndex addFile(File* file, const Module &module);
+    QModelIndex currentFileIndex() const;
     virtual bool removeRows(int position, int rows, const QModelIndex &parent) override;
 
     void removeItem(QModelIndex index);
@@ -79,13 +80,14 @@ public:
     quint64 size    (QModelIndex index) const;
 
     void updateByFilePosition(quint64 pos);
+    int findItemChildByFilePosition(const QModelIndex& index, qint64 pos, std::function<void(const QList<size_t> &)> resultCallback);
 
 public slots:
     void requestExpansion(const QModelIndex &index);
     void updateCurrent(const QModelIndex &index);
     void deleteChildren(const QModelIndex &index);
     void updateFilter(QString expression);
-    void updateChildren(const QModelIndex &index);
+    void updateChildren(const QModelIndex &index); 
     void onParsingStarted(int i);
     void onParsingFinished(int i);
 
@@ -98,8 +100,6 @@ signals:
 
 
 private:
-    QModelIndex findItemChildByFilePosition(const TreeItem& treeItem, qint64 position);
-
     static const int defaultPopulation   = 64;
     static const int minPopulationRatio  = 2;
     static const int populationTries     = 32;

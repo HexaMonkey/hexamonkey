@@ -121,7 +121,19 @@ void TreeWidget::displayMenu(const QPoint &pos)
 
 void TreeWidget::updateByFilePosition(qint64 position)
 {
-    model->updateByFilePosition(position);
+    QModelIndex fileIndex = model->currentFileIndex();
+
+    model->findItemChildByFilePosition(fileIndex, position, [this, fileIndex](const QList<size_t>& result){
+        QModelIndex index = fileIndex;
+        model->updateChildren(index);
+        view->expand(index);
+        for (size_t i : result) {
+            index = index.child(i, 0);
+            model->updateChildren(index);
+            view->expand(index);
+        }
+        setCurrentIndex(index);
+    });
 }
 
 void TreeWidget::onParsingStarted(const QModelIndex &index)
