@@ -33,8 +33,8 @@ TreeModel::TreeModel(const QString &/*data*/, const ProgramLoader &programLoader
     rootData << "Struct" << "Beginning position" << "Size";
     rootItem = TreeItem::RootItem(rootData, this);
 
-    connect(threadQueue, SIGNAL(started(int)), this, SLOT(onParsingStarted(int)));
-    connect(threadQueue, SIGNAL(finished(int)), this, SLOT(onParsingFinished(int)));
+    connect(threadQueue, SIGNAL(started(int)), this, SLOT(onThreadStarted(int)));
+    connect(threadQueue, SIGNAL(finished(int)), this, SLOT(onThreadFinished(int)));
 }
 
 TreeItem &TreeModel::item(const QModelIndex &index) const
@@ -216,26 +216,32 @@ void TreeModel::updateChildren(const QModelIndex& index)
     }
 }
 
-void TreeModel::onParsingStarted(int i)
+void TreeModel::onThreadStarted(int i)
 {
-    QModelIndex index = parsingIds.value(i);
+    auto parsingIt = parsingIds.find(i);
+    if (parsingIt != parsingIds.end()) {
+        QModelIndex index = *parsingIt;
 
-    if (index.isValid()) {
-        emit parsingStarted(index);
+        if (index.isValid()) {
+            emit parsingStarted(index);
+        }
     }
 }
 
-void TreeModel::onParsingFinished(int i)
+void TreeModel::onThreadFinished(int i)
 {
-    QModelIndex index = parsingIds.take(i);
+    auto parsingIt = parsingIds.find(i);
+    if (parsingIt != parsingIds.end()) {
+        QModelIndex index = parsingIds.take(i);
 
-    if (index.isValid()) {
-        TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+        if (index.isValid()) {
+            TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
 
-        item.setSynchronising(false);
-        updateChildren(index);
+            item.setSynchronising(false);
+            updateChildren(index);
 
-        emit parsingFinished(index);
+            emit parsingFinished(index);
+        }
     }
 }
 

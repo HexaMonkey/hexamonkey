@@ -88,8 +88,8 @@ public slots:
     void deleteChildren(const QModelIndex &index);
     void updateFilter(QString expression);
     void updateChildren(const QModelIndex &index); 
-    void onParsingStarted(int i);
-    void onParsingFinished(int i);
+    void onThreadStarted(int i);
+    void onThreadFinished(int i);
 
 signals:
     void parsingStarted(QModelIndex);
