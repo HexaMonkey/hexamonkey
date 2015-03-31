@@ -230,36 +230,3 @@ void MainWindow::updateRecentFileActions()
 
     separatorAct->setVisible(numRecentFiles > 0);
 }
-
-#if 0
-void MainWindow::setupDetectors()
-{
-    //Magic Number Detector
-    magicDetector.addMagicNumber("mp4", "00 00 00 xx 66 74 79 70");
-    magicDetector.addMagicNumber("ebml", "1a 45 df a3");
-    magicDetector.addMagicNumber("mkv", "1a 45 df a3 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx 6d 61 74 72 6f 73 6b 61");
-    magicDetector.addMagicNumber("hmc", "1a 45 df a3 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx 68 65 78 61 6d 6f 6e 6b 65 79");
-    magicDetector.addMagicNumber("avi", "52 49 46 46 xx xx xx xx 41 56 49 20 4c 49 53 54");
-    magicDetector.addMagicNumber("asf", "30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C");
-
-
-    compositeDetector.addDetector(magicDetector);
-
-    //Syncbyt Detector
-    syncbyteDetector.addFormat("ts", 0x47, 188);
-
-    compositeDetector.addDetector(syncbyteDetector);
-
-    //Extension Detector
-    extensionDetector.addExtension("mp4", "mp4");
-    extensionDetector.addExtension("mp4", "mov");
-    extensionDetector.addExtension("mp4", "m4a");
-    extensionDetector.addExtension("mkv", "mkv");
-    extensionDetector.addExtension("ts",  "ts");
-    extensionDetector.addExtension("hmc", "hmc");
-    extensionDetector.addExtension("avi", "avi");
-    extensionDetector.addExtension("asf", "asf");
-
-    compositeDetector.addDetector(extensionDetector);
-}
-#endif
