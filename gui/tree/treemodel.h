@@ -23,6 +23,9 @@
 #include <QVariant>
 #include <QMap>
 
+#include <functional>
+#include <utility>
+
 #include "core/object.h"
 #include "core/modules/hmc/hmcmodule.h"
 #include "gui/tree/treefileitem.h"
@@ -111,6 +114,7 @@ private:
     ThreadQueue* threadQueue;
 
     QMap<int, QModelIndex> parsingIds;
+    QMap<int, std::tuple<QModelIndex, qint64, std::function<void (const QList<size_t>&)> > > exploringIds;
 };
 
 #endif // TREEMODEL_H

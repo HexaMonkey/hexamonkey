@@ -243,6 +243,13 @@ void TreeModel::onThreadFinished(int i)
             emit parsingFinished(index);
         }
     }
+
+    auto exploringIt = exploringIds.find(i);
+    if (exploringIt != exploringIds.end()) {
+        auto item = exploringIds.take(i);
+
+        findItemChildByFilePosition(std::get<0>(item), std::get<1>(item), std::get<2>(item));
+    }
 }
 
 void TreeModel::deleteChildren(const QModelIndex &index)
@@ -386,32 +393,39 @@ void TreeModel::updateByFilePosition(quint64 pos)
     view->setCurrentIndex(temporaryMiningIndex);
 }
 
-int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 pos, std::function<void (const QList<size_t>&)> resultCallback)
+int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 bytePos, std::function<void (const QList<size_t>&)> resultCallback)
 {
     Object* object = &static_cast<TreeObjectItem*>(index.internalPointer())->object();
-    pos = 8*pos;
 
-    if (object->includesPos(pos)) {
+    qint64 bitPos = 8*bytePos;
+
+    if (object->includesPos(bitPos)) {
+        Object* currentObject = object;
         QList<size_t> result;
         bool success = false;
 
         while (true) {
-            if (object->parsed() && object->numberOfChildren() == 0) {
+            if (currentObject->parsed() && currentObject->numberOfChildren() == 0) {
                 success = true;
                 break;
             } else {
-                const Object::iterator begin = object->begin();
-                const Object::iterator end = object->end();
-                Object::iterator childIt = std::find_if(begin, end, [pos](const Object* child)->bool {
-                    return child->includesPos(pos);
-                });
-                if (childIt != end) {
-                    result.append(std::distance(begin, childIt));
-                    object = *childIt;
-                } else if (object->parsed()) {
-                    success = true;
-                    break;
-                } else {
+                bool found = false;
+                for (int i = 0; true; ++i) {
+                    Object* child = currentObject->access(i);
+                    if (child == nullptr) {
+                        break;
+                    } else if (child->includesPos(bitPos)) {
+                        currentObject = child;
+                        found = true;
+                        result.append(i);
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    if (currentObject->parsed()) {
+                        success = true;
+                    }
                     break;
                 }
             }
@@ -419,6 +433,34 @@ int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 pos,
 
         if (success) {
             resultCallback(result);
+        } else {
+            threadQueue->add([object, bitPos] {
+                Object* currentObject = object;
+                while (true) {
+                    if (currentObject->parsed() && currentObject->numberOfChildren() == 0) {
+                        break;
+                    } else {
+                        bool found = false;
+                        for (int i = 0; true; ++i) {
+                            Object* child = currentObject->access(i, true);
+                            if (child == nullptr) {
+                                break;
+                            } else if (child->includesPos(bitPos)) {
+                                currentObject = child;
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            break;
+                        }
+                    }
+                }
+            }, [this, &index, &bytePos, &resultCallback] (int id) {
+                exploringIds.insert(id, std::make_tuple(index, bytePos, resultCallback));
+            });
+
         }
     }
 
