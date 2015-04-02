@@ -74,6 +74,8 @@ public slots:
     void updateByFilePosition(qint64 position);
     void onParsingStarted(const QModelIndex& index);
     void onParsingFinished(const QModelIndex& index);
+    void onExploringStarted(const QModelIndex& index, qint64 pos);
+    void onExploringFinished(const QModelIndex& index, qint64 pos);
 
 private:
     virtual void dropEvent(QDropEvent *event) final;

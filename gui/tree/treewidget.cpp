@@ -59,6 +59,8 @@ TreeWidget::TreeWidget(const ProgramLoader& programLoader, QWidget *parent) :
 
     connect(model, SIGNAL(parsingStarted(QModelIndex)), this, SLOT(onParsingStarted(QModelIndex)));
     connect(model, SIGNAL(parsingFinished(QModelIndex)), this, SLOT(onParsingFinished(QModelIndex)));
+    connect(model, SIGNAL(exploringStarted(QModelIndex, qint64)), this, SLOT(onExploringStarted(QModelIndex, qint64)));
+    connect(model, SIGNAL(exploringFinished(QModelIndex, qint64)), this, SLOT(onExploringFinished(QModelIndex, qint64)));
 
     connect(model, SIGNAL(filterChanged(QString)), filterWidget, SLOT(changeText(QString)));
     connect(filterWidget, SIGNAL(textChanged(QString)), model, SLOT(updateFilter(QString)));
@@ -146,6 +148,20 @@ void TreeWidget::onParsingStarted(const QModelIndex &index)
 }
 
 void TreeWidget::onParsingFinished(const QModelIndex &/*index*/)
+{
+    statusBar->clearMessage();
+}
+
+void TreeWidget::onExploringStarted(const QModelIndex &index, qint64 pos)
+{
+    TreeObjectItem& item = *static_cast<TreeObjectItem*>(index.internalPointer());
+
+    std::stringstream S;
+    S<<"Searching for position "<<pos<<" in "<< item.object();
+    statusBar->showMessage(QString::fromStdString(S.str()));
+}
+
+void TreeWidget::onExploringFinished(const QModelIndex &/*index*/, qint64 /*pos*/)
 {
     statusBar->clearMessage();
 }

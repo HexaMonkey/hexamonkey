@@ -97,6 +97,8 @@ public slots:
 signals:
     void parsingStarted(QModelIndex);
     void parsingFinished(QModelIndex);
+    void exploringStarted(QModelIndex, qint64);
+    void exploringFinished(QModelIndex, qint64);
     void filterChanged(QString);
     void invalidFilter();
     void work();

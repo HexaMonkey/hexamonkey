@@ -226,6 +226,13 @@ void TreeModel::onThreadStarted(int i)
             emit parsingStarted(index);
         }
     }
+
+    auto exploringIt = exploringIds.find(i);
+    if (exploringIt != exploringIds.end()) {
+        auto item = *exploringIt;
+
+        emit exploringStarted(std::get<0>(item), std::get<1>(item));
+    }
 }
 
 void TreeModel::onThreadFinished(int i)
@@ -249,6 +256,8 @@ void TreeModel::onThreadFinished(int i)
         auto item = exploringIds.take(i);
 
         findItemChildByFilePosition(std::get<0>(item), std::get<1>(item), std::get<2>(item));
+
+        emit exploringFinished(std::get<0>(item), std::get<1>(item));
     }
 }
 
