@@ -518,7 +518,7 @@ int main(int argc, char *argv[])
         // make sure it is valid:
         if (!file) 
         {
-            fprintf(stderr,"Can't open file %s",argv[1]);
+            fprintf(stderr,"Can't open file %s\n",argv[1]);
             return EXIT_FAILURE;
         }
         // set flex to read from it instead of defaulting to STDIN:
@@ -543,6 +543,11 @@ int main(int argc, char *argv[])
             printf("output: %s\n", "output.hmc");
         }
         
+        if (!output)
+        {
+            fprintf(stderr,"Can't open output file\n");
+            return EXIT_FAILURE;
+        }
 
         int i;
         for(i = 0; i < headerSize; ++i)
@@ -573,7 +578,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fprintf(stderr,"No input specified");
+        fprintf(stderr,"No input specified\n");
         return EXIT_FAILURE;
     }
 }
