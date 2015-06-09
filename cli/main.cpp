@@ -33,6 +33,9 @@
 #if defined(PLATFORM_WIN32)
     #include <windef.h>
     #include <winbase.h>
+#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
+    #include <sys/stat.h>
+    #include <sys/types.h>
 #endif
 
 enum DisplayType {
@@ -198,6 +201,16 @@ int main(int argc, char *argv[])
 #elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
     std::string installDir = "/usr/local/share/hexamonkey/";
     std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
+
+    int mkdir_res = mkdir(userDir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+    struct stat userDirStat;
+    // Check either that the user directory was created or that it already existed
+    if(mkdir_res && !(stat(userDir.c_str(), &userDirStat) == 0 && S_ISDIR(userDirStat.st_mode)))
+    {
+        std::cerr << "Failed to create user directory: " << userDir << std::endl;
+        return 0;
+    }
+
     std::vector<std::string> modelsDirs = {installDir, "../models/"};
     std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
     std::vector<std::string> compilerDirs = {installDir, "../compiler/"};
