@@ -15,7 +15,6 @@ private slots:
     void string();
     void objectType();
     void conversion();
-    void unordered_map();
 };
 
 #endif // TEST_VARIANT
