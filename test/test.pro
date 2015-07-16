@@ -1,5 +1,29 @@
+unix {
+	! include( ../common_link.pri ) {
+		error( "Could not find the common_link.pri file!" )
+	}
+	DEPENDPATH += ..
+}
 
-TEMPLATE = subdirs
+win32 {
+	! include(../core/core.pri) {
+		error( "Could not find the core.pri file!" )
+	}
+}
 
-SUBDIRS = \
-    core
+QT += testlib widgets
+TARGET = run_test
+CONFIG += testcase c++11
+TEMPLATE = app
+target.CONFIG += no_default_install
+
+HEADERS += \
+	test_variant.h \
+	test_formatdetector.h \
+	test_util.h
+
+SOURCES += \
+	main.cpp \
+    test_variant.cpp \
+	test_formatdetector.cpp \
+	test_util.cpp

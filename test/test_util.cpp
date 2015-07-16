@@ -84,14 +84,14 @@ void TestUtil::testBitUtil_popCount()
 
 void TestUtil::testFileUtil_fileExists()
 {
-    QCOMPARE(fileExists("../../resources/fake_zip.zip"), true);
-    QCOMPARE(fileExists("../../resources/some_imaginary_file"), false);
+    QCOMPARE(fileExists("resources/fake_zip.zip"), true);
+    QCOMPARE(fileExists("resources/some_imaginary_file"), false);
 }
 
 void TestUtil::testFileUtil_getFile()
 {
-    QCOMPARE(getFile({"../../resources/"}, "fake_zip.zip"),
-                                std::string("../../resources/fake_zip.zip"));
+    QCOMPARE(getFile({"resources/"}, "fake_zip.zip"),
+                                std::string("resources/fake_zip.zip"));
 }
 
 void TestUtil::testFileUtil_getDirContent()
@@ -100,7 +100,7 @@ void TestUtil::testFileUtil_getDirContent()
     getDirContent("some/imaginary/dir", content);
     QCOMPARE(content.size(), std::vector<std::string>::size_type(0));
     content.clear();
-    getDirContent("../../../models/", content);
+    getDirContent("../models/", content);
 
     // Keep this list up to date.
     QCOMPARE(find(content.begin(), content.end(), "hmcmodel.csv")
@@ -152,8 +152,8 @@ void TestUtil::testStrUtil_fromHex()
 
 void TestUtil::testStrUtil_formatDate()
 {
-    QCOMPARE(formatDate(0), std::string("31-12-1969 00:00:00 GMT"));
-    QCOMPARE(formatDate(1385306654), std::string("23-11-2013 15:24:14 GMT"));
+    QCOMPARE(formatDate(0), std::string("01-01-1970 00:00:00 GMT"));
+    QCOMPARE(formatDate(1385306654), std::string("24-11-2013 15:24:14 GMT"));
 }
 
 void TestUtil::testStrUtil_formatDuration()
@@ -216,5 +216,3 @@ void TestUtil::testIterationWrapper()
     QCOMPARE(*(++str_it), std::string("a"));
     QCOMPARE(++str_it, reverse(strings).end());
 }
-
-QTEST_APPLESS_MAIN(TestUtil)

@@ -20,25 +20,10 @@
 
 std::string formatDate(unsigned long secsFrom1970)
 {
-    #ifdef PLATFORM_LINUX
-    struct tm MacTime = {0,0,0,0,0,0,0,0,0,0,0};
-    #else
-    struct tm MacTime = {0,0,0,0,0,0,0,0,0};
-    #endif
+    time_t CTime = secsFrom1970;
 
-    time_t CTime;
-
-    /* Create unnormalized struct tm*/
-    MacTime.tm_sec = secsFrom1970;
-    MacTime.tm_year = 70;
-
-    /* Convert to time_t */
-    CTime = mktime(&MacTime);
-
-    struct tm * timeinfo;
+    struct tm * timeinfo = gmtime (&CTime);
     char buffer [80];
-
-    timeinfo = localtime ( &CTime );
 
     strftime (buffer,80,"%d-%m-%Y %H:%M:%S GMT",timeinfo);
     return std::string(buffer);
