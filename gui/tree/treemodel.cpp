@@ -362,46 +362,6 @@ quint64 TreeModel::size(QModelIndex index) const
     return object.size();
 }
 
-// this function develops the tree for a given position in the file.
-void TreeModel::updateByFilePosition(quint64 pos)
-{
-    QModelIndex fileIndex = currentFileIndex();
-
-    pos = 8*pos;
-    QModelIndex temporaryMiningIndex = index(fileIndex.row(),0);
-    TreeItem* temporaryItem = &item(temporaryMiningIndex);
-    requestExpansion(temporaryMiningIndex);
-    view->setExpanded(temporaryMiningIndex,true);
-    while (temporaryItem->hasChildren())
-    {
-        bool found = false;
-        int childCount = temporaryItem->childCount();
-        for (int i = 0; i < childCount; i++)
-        {
-            QModelIndex child = temporaryMiningIndex.child(i,0);
-            if (pos < position(child)+size(child))
-            {
-                found = true;
-                temporaryMiningIndex = child;
-                break;
-            }
-        }
-        requestExpansion(temporaryMiningIndex);
-        view->setExpanded(temporaryMiningIndex,true);
-        temporaryItem = &item(temporaryMiningIndex);
-
-        if (!found && !temporaryItem->synchronised()) {
-            const int response = QMessageBox::question(nullptr,
-                                                       "Not enough items parsed",
-                                                       QString("Not enough items have been parsed (currently %1) to reach position.\n Do you want to parse more?").arg(childCount));
-            if (response != QMessageBox::Yes) {
-                return;
-            }
-        }
-    }
-    view->setCurrentIndex(temporaryMiningIndex);
-}
-
 int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 bytePos, std::function<void (const QList<size_t>&)> resultCallback)
 {
     Object* object = &static_cast<TreeObjectItem*>(index.internalPointer())->object();

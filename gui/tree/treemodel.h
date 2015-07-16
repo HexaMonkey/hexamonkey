@@ -82,7 +82,6 @@ public:
     quint64 position(QModelIndex index) const;
     quint64 size    (QModelIndex index) const;
 
-    void updateByFilePosition(quint64 pos);
     int findItemChildByFilePosition(const QModelIndex& index, qint64 pos, std::function<void(const QList<size_t> &)> resultCallback);
 
 public slots:
