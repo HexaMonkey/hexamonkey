@@ -20,10 +20,12 @@ target.CONFIG += no_default_install
 HEADERS += \
 	test_variant.h \
 	test_formatdetector.h \
-	test_util.h
+	test_util.h \
+        test_parser.h
 
 SOURCES += \
 	main.cpp \
-    test_variant.cpp \
+        test_variant.cpp \
 	test_formatdetector.cpp \
-	test_util.cpp
+	test_util.cpp \
+        test_parser.cpp
