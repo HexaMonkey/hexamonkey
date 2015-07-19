@@ -154,3 +154,6 @@ test/moc_*.cpp
 !test/resources/*
 !test/resources/util
 !test/resources/util/*
+!test/resources/parser
+!test/resources/parser/*
+test/resources/parser/*.new.txt

@@ -5,6 +5,7 @@
 #include "test_variant.h"
 #include "test_formatdetector.h"
 #include "test_util.h"
+#include "test_parser.h"
 
 #include "core/util/strutil.h"
 
@@ -13,8 +14,9 @@ int main(int argc, char** argv)
     TestVariant testVariant;
     TestFormatDetector testFormatDetector;
     TestUtil testUtil;
+    TestParser testParser;
 
-    std::vector<QObject*> testList = {&testVariant, &testFormatDetector, &testUtil};
+    std::vector<QObject*> testList = {&testVariant, &testFormatDetector, &testUtil, &testParser};
 
     int errorCount = 0;
     for (QObject* test : testList) {

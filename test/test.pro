@@ -21,11 +21,15 @@ HEADERS += \
 	test_variant.h \
 	test_formatdetector.h \
 	test_util.h \
-        test_parser.h
+        test_parser.h \
+        ../gui/qtmodulesetup.h \
+        ../gui/qtprogramloader.h
 
 SOURCES += \
 	main.cpp \
         test_variant.cpp \
 	test_formatdetector.cpp \
 	test_util.cpp \
-        test_parser.cpp
+        test_parser.cpp \
+        ../gui/qtmodulesetup.cpp \
+        ../gui/qtprogramloader.cpp
