@@ -187,7 +187,6 @@ void TreeWidget::dragLeaveEvent(QDragLeaveEvent* event)
 void TreeWidget::dropEvent(QDropEvent *event)
 {
     QWidget::dropEvent(event);
-    std::cerr<<"eventDrop"<<std::endl;
     emit eventDropped(event);
 }
 

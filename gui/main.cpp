@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     QtModuleSetup moduleSetup;
     moduleSetup.setup();
 
-
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("HexaMonkey");
     QCoreApplication::setApplicationName("HexaMonkey");
