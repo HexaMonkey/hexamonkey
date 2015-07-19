@@ -37,5 +37,6 @@ std::string getFile(const std::vector<std::string>& directories, const std::stri
  */
 void getDirContent(const std::string& path, std::vector<std::string>& content);
 
+bool fileCompare(const std::string& path1, const std::string& path2);
 
 #endif // FILEUTIL_H

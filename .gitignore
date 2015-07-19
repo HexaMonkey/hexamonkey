@@ -150,4 +150,7 @@ gui/qrc_*.cpp
 !test/*.cpp
 !test/*.h
 test/moc_*.cpp
-!test/ressources/*
+!test/resources
+!test/resources/*
+!test/resources/util
+!test/resources/util/*

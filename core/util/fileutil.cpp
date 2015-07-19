@@ -21,6 +21,8 @@
 #include <fstream>
 #include <dirent.h>
 
+#include <iostream>
+
 
 bool fileExists(const std::string& path)
 {
@@ -58,4 +60,28 @@ void getDirContent(const std::string& path, std::vector<std::string>& content)
         }
         closedir(dir);
     }
+}
+
+
+bool fileCompare(const std::string &path1, const std::string &path2)
+{
+    std::ifstream file1;
+    std::ifstream file2;
+
+    file1.open(path1);
+    file2.open(path2);
+
+    while (!file1.eof() && !file2.eof()) {
+        std::string string1;
+        std::string string2;
+
+        std::getline(file1, string1);
+        std::getline(file2, string2);
+
+        if (string1 != string2) {
+            return false;
+        }
+    }
+
+    return file1.eof() == file2.eof();
 }

@@ -14,6 +14,7 @@ private slots:
     void testFileUtil_fileExists();
     void testFileUtil_getFile();
     void testFileUtil_getDirContent();
+    void testFileUtil_fileCompare();
     void testStrUtil_strTo();
     void testStrUtil_toStr();
     void testStrUtil_toHex();

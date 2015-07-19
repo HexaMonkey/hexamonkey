@@ -114,6 +114,14 @@ void TestUtil::testFileUtil_getDirContent()
              true);
 }
 
+void TestUtil::testFileUtil_fileCompare()
+{
+    QVERIFY( fileCompare("resources/util/file_compare.orig.txt", "resources/util/file_compare.same.txt"));
+    QVERIFY(!fileCompare("resources/util/file_compare.orig.txt", "resources/util/file_compare.different.txt"));
+    QVERIFY(!fileCompare("resources/util/file_compare.orig.txt", "resources/util/file_compare.longer.txt"));
+    QVERIFY(!fileCompare("resources/util/file_compare.orig.txt", "resources/util/file_compare.shorter.txt"));
+}
+
 void TestUtil::testStrUtil_strTo()
 {
     QCOMPARE(strTo<int>(std::string("10.0")), int(10));
