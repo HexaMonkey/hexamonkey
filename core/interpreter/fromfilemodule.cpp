@@ -28,6 +28,8 @@
 #include "core/util/fileutil.h"
 #include "core/util/unused.h"
 
+//#define LOAD_TRACE 1
+
 const VariablePath sizeDescriptor = {"@size"};
 const std::vector<VariablePath> headerOnlyVars = {
     sizeDescriptor,
@@ -113,7 +115,9 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     if(sizeDependency(name))
     {
+#ifdef LOAD_TRACE
         std::cerr<<type.typeTemplate().name()<<" unknown size"<<std::endl;
+#endif
         _fixedSizes[type.typeTemplate().name()] = -1;
         return -1;
     }
@@ -123,13 +127,17 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
         int64_t size = guessSize(definition);
         if(size>0)
         {
+#ifdef LOAD_TRACE
             std::cerr<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
+#endif
             _fixedSizes[type.typeTemplate().name()] = size;
             return size;
         }
     }
-
+#ifdef LOAD_TRACE
     std::cerr<<type.typeTemplate().name()<<" father's size"<<std::endl;
+#endif
+
     _fixedSizes[type.typeTemplate().name()] = 0;
     return 0;
 }
@@ -221,8 +229,9 @@ void FromFileModule::loadImports(Program &imports, std::vector<std::string> &for
 
 void FromFileModule::nameScan(Program& declarations)
 {
+#ifdef LOAD_TRACE
     std::cerr<<"Load templates :"<<std::endl;
-
+#endif
 
     for(Program declaration : declarations)
     {
@@ -236,8 +245,9 @@ void FromFileModule::nameScan(Program& declarations)
                 parameters.push_back(arg.payload().toString());
             }
             const ObjectTypeTemplate& temp = newTemplate(name, parameters);
+#ifdef LOAD_TRACE
             std::cerr<<"    "<<temp<<std::endl;
-
+#endif
             Program classDefinition = declaration.node(1);
             _definitions[name] = classDefinition;
         }
@@ -247,13 +257,16 @@ void FromFileModule::nameScan(Program& declarations)
             _functions[name] = declaration;
         }
     }
-
+#ifdef LOAD_TRACE
     std::cerr<<std::endl;
+#endif
 }
 
 void FromFileModule::loadExtensions(Program &classDeclarations)
 {
+#ifdef LOAD_TRACE
     std::cerr<<"Load extensions :"<<std::endl;
+#endif
 
     for(Program classDeclaration : classDeclarations)
     {
@@ -280,17 +293,21 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            {
                return Evaluator(Variable(new TypeScope(type), false), *this).type(program);
            });
-
+#ifdef LOAD_TRACE
            std::cerr<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;
+#endif
         }
     }
-
+#ifdef LOAD_TRACE
     std::cerr<<std::endl;
+#endif
 }
 
 void FromFileModule::loadSpecifications(Program &classDeclarations)
 {
+#ifdef LOAD_TRACE
     std::cerr<<"Load specifications :"<<std::endl;
+#endif
 
     for(Program classDeclaration : classDeclarations)
     {
@@ -301,7 +318,9 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             {
                 ObjectType parent(eval.type(type));
                 setSpecification(parent, child);
-                std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
+#ifdef LOAD_TRACE
+        std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
+#endif
             }
         }
         else if(classDeclaration.tag() == HMC_FORWARD)
@@ -309,11 +328,14 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             ObjectType parent(eval.type(classDeclaration.node(0)));
             ObjectType child(eval.type(classDeclaration.node(1)));
             setSpecification(parent, child);
-            std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
+#ifdef LOAD_TRACE
+        std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
+#endif
         }
     }
-
+#ifdef LOAD_TRACE
     std::cerr<<std::endl;
+#endif
 }
 
 bool FromFileModule::sizeDependency(const std::string &name) const
