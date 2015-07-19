@@ -503,11 +503,13 @@ std::ostream& Variant::display(std::ostream& out, bool setFlags) const
         } else {
             ul = _data.ul;
         }
+
         out << "0b";
         bool displayedOne = false;
         for (int i = 0; i < 64; ++ i) {
             if (ul & 0x8000000000000000) {
                 out << "1";
+                displayedOne = true;
             } else if (displayedOne) {
                 out << "0";
             }

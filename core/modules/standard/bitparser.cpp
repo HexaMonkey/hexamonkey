@@ -34,13 +34,14 @@ void BitParser::doParseHead()
     object().setSize(size);
 
     std::bitset<64> flag;
-    char bit;
+    unsigned char bit;
     for(unsigned int i = 0; i < size; i+=1)
     {
-        object().file().read(&bit, 1);
+        object().file().read(reinterpret_cast<char*>(&bit), 1);
         flag <<= 1;
         flag |= bit;
     }
+
     Variant value(flag.to_ullong());
     value.setDisplayType(Variant::binary);
     object().setValue(value);

@@ -66,15 +66,17 @@ void RealFile::read(char* s, int64_t count )
         int64_t bitCount = (count + _bitPosition);
         int64_t byteCount = (bitCount&7)? bitCount/8 + 1 : bitCount/8;
         int8_t shift = byteCount*8 - bitCount;
+        uint8_t mask = lsbMask(8-_bitPosition);
 
-        char buffer[byteCount];
-        _file.read(buffer,byteCount);
+        uint8_t buffer[byteCount];
+        _file.read(reinterpret_cast<char*>(buffer),byteCount);
 
         //Delete first bits
-        buffer[0] &= lsbMask(8-_bitPosition);
+        buffer[0] &= mask;
 
         //Shift bits
         buffer[byteCount-1] >>= shift;
+
         for(int i = byteCount-2; i>=0; i--)
         {
             buffer[i+1] |= buffer[i] << (8-shift) ;
