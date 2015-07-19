@@ -21,7 +21,7 @@ public:
 private:
     std::unique_ptr<ProgramLoader> _programLoader;
     ModuleLoader _moduleLoader;
-    std::vector<std::string> _logoDirs;
+    std::string _logoPath;
 };
 
 #endif // MODULESETUP_H

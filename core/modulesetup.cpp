@@ -20,6 +20,11 @@
 
 void ModuleSetup::setup()
 {
+    std::vector<std::string> logoDirs;
+    std::vector<std::string> modelsDirs;
+    std::vector<std::string> scriptsDirs;
+    std::vector<std::string> compilerDirs;
+
 #if defined(PLATFORM_WIN32)
     char buffer[MAX_PATH];
     GetModuleFileNameA(NULL, buffer, MAX_PATH);
@@ -29,10 +34,10 @@ void ModuleSetup::setup()
 
     std::string userDir = installDir+"scripts\\";
 
-    std::vector<std::string> modelsDirs = {installDir, "..\\models\\"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
-    std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
-    _logoDirs = {installDir, "..\\logo\\"};
+    modelsDirs = {installDir, "..\\models\\"};
+    scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
+    compilerDirs = {installDir, "..\\compiler\\"};
+    logoDirs = {installDir, "..\\logo\\"};
 
 #elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
     /* XXX: use autotools ? */
@@ -41,14 +46,16 @@ void ModuleSetup::setup()
     std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
     mkdir(userDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-    std::vector<std::string> modelsDirs = {installDir, "../models/"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
-    std::vector<std::string> compilerDirs = {"/usr/bin/", "../compiler/"};
-    _logoDirs = {installDir, "../logo/"};
+    modelsDirs = {installDir, "../models/"};
+    scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
+    compilerDirs = {"/usr/bin/", "../compiler/"};
+    logoDirs = {installDir, "../logo/"};
 
 #else
     std::cerr<<"Error: unsuported operating system"<<std::endl;
 #endif
+
+    _logoPath = getFile(logoDirs, "logo.svg");
 
     _moduleLoader.addModule("bestd", new StandardModule(true));
     _moduleLoader.addModule("lestd", new StandardModule(false));
@@ -88,5 +95,5 @@ const ProgramLoader &ModuleSetup::programLoader() const
 
 const std::string &ModuleSetup::logoPath() const
 {
-    return getFile(_logoDirs, "logo.svg");
+    return _logoPath;
 }
