@@ -43,7 +43,7 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
     Program first = program.node(0);
     switch(first.tag())
     {
-        case OPERATOR:
+        case HMC_OPERATOR:
         {
             const int op = first.payload().toInteger();
             const int release = operatorParameterRelease[op];
@@ -82,37 +82,37 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
         }
 
-        case FIELD_ASSIGN:
+        case HMC_FIELD_ASSIGN:
             return assignField(first[0], first[1]);
 
-        case FUNCTION_EVALUATION:
+        case HMC_FUNCTION_EVALUATION:
             return function(first);
 
-        case INT_CONSTANT:
-        case UINT_CONSTANT:
-        case STRING_CONSTANT:
-        case FLOAT_CONSTANT:
+        case HMC_INT_CONSTANT:
+        case HMC_UINT_CONSTANT:
+        case HMC_STRING_CONSTANT:
+        case HMC_FLOAT_CONSTANT:
             return Variable::copy(first.payload());
 
-        case NULL_CONSTANT:
+        case HMC_NULL_CONSTANT:
             return Variable::null();
 
-        case UNDEFINED_CONSTANT:
+        case HMC_UNDEFINED_CONSTANT:
             return Variable();
 
-        case EMPTY_STRING_CONSTANT:
+        case HMC_EMPTY_STRING_CONSTANT:
             return Variable::copy(emptyString);
 
-        case VARIABLE:
+        case HMC_VARIABLE:
             return variable(first, modifiable, createIfNeeded);
 
-        case TYPE:
+        case HMC_TYPE:
             return Variable::copy(type(first));
 
-        case ARRAY_SCOPE:
+        case HMC_ARRAY_SCOPE:
             return arrayScope(first);
 
-        case MAP_SCOPE:
+        case HMC_MAP_SCOPE:
             return mapScope(first);
     }
     return Variable();
@@ -125,15 +125,15 @@ VariablePath Evaluator::variablePath(const Program &program) const
     {
         switch(elem.tag())
         {
-            case IDENTIFIER:
+            case HMC_IDENTIFIER:
                 path.push_back(elem.payload());
                 break;
 
-            case RIGHT_VALUE:
+            case HMC_RIGHT_VALUE:
                 path.push_back(rightValue(elem).value());
                 break;
 
-            case TYPE:
+            case HMC_TYPE:
                 path.push_back(type(elem));
                 break;
 
@@ -158,7 +158,7 @@ ObjectType Evaluator::type(const Program &program) const
     Program arguments = program.node(1);
     for(int i = 0; i < arguments.size(); ++i)
     {
-        if(arguments.node(i).tag() == RIGHT_VALUE)
+        if(arguments.node(i).tag() == HMC_RIGHT_VALUE)
         {
             type.setParameter(i, rightValue(arguments.node(i)).value());
         }
@@ -170,24 +170,24 @@ Variable Evaluator::unaryOperation(int op, const Variable& a) const
 {
     switch(op)
     {
-        case NOT_OP:
+        case HMC_NOT_OP:
             return Variable::copy(!a.value());
 
-        case BITWISE_NOT_OP:
+        case HMC_BITWISE_NOT_OP:
             return Variable::copy(~a.value());
 
-        case OPP_OP:
+        case HMC_OPP_OP:
             return Variable::copy(-a.value());;
 
-        case PRE_INC_OP:
+        case HMC_PRE_INC_OP:
             a.setValue(a.value()+1);
             return a;
 
-        case PRE_DEC_OP:
+        case HMC_PRE_DEC_OP:
             a.setValue(a.value()-1);
             return a;
 
-        case SUF_INC_OP:
+        case HMC_SUF_INC_OP:
         {
             const Variant& value = a.value();
             Variable aCopy = Variable::copy(value);
@@ -195,7 +195,7 @@ Variable Evaluator::unaryOperation(int op, const Variable& a) const
             return aCopy;
         }
 
-        case SUF_DEC_OP:
+        case HMC_SUF_DEC_OP:
         {
             const Variant& value = a.value();
             Variable aCopy = Variable::copy(value);
@@ -213,102 +213,102 @@ Variable Evaluator::binaryOperation(int op, const Variable& a, const Variable& b
 {
     switch(op)
     {
-        case ASSIGN_OP:
+        case HMC_ASSIGN_OP:
             a.setValue(b.value());
             return a;
 
-        case RIGHT_ASSIGN_OP:
+        case HMC_RIGHT_ASSIGN_OP:
             a.setValue(a.value() >> b.value());
             return a;
 
-        case LEFT_ASSIGN_OP:
+        case HMC_LEFT_ASSIGN_OP:
             a.setValue(a.value() << b.value());
             return a;
 
-        case ADD_ASSIGN_OP:
+        case HMC_ADD_ASSIGN_OP:
             a.setValue(a.value() + b.value());
             return a;
 
-        case SUB_ASSIGN_OP:
+        case HMC_SUB_ASSIGN_OP:
             a.setValue(a.value() - b.value());
             return a;
 
-        case MUL_ASSIGN_OP:
+        case HMC_MUL_ASSIGN_OP:
             a.setValue(a.value() * b.value());
             return a;
 
-        case DIV_ASSIGN_OP:
+        case HMC_DIV_ASSIGN_OP:
             a.setValue(a.value() / b.value());
             return a;
 
-        case MOD_ASSIGN_OP:
+        case HMC_MOD_ASSIGN_OP:
             a.setValue(a.value() % b.value());
             return a;
 
-        case AND_ASSIGN_OP:
+        case HMC_AND_ASSIGN_OP:
             a.setValue(a.value() & b.value());
             return a;
 
-        case XOR_ASSIGN_OP:
+        case HMC_XOR_ASSIGN_OP:
             a.setValue(a.value() ^ b.value());
             return a;
 
-        case OR_ASSIGN_OP:
+        case HMC_OR_ASSIGN_OP:
             a.setValue(a.value() | b.value());
             return a;
 
-        case OR_OP:
+        case HMC_OR_OP:
             return Variable::copy(a.value() || b.value());
 
-        case AND_OP:
+        case HMC_AND_OP:
             return Variable::copy(a.value() && b.value());
 
-        case BITWISE_OR_OP:
+        case HMC_BITWISE_OR_OP:
             return Variable::copy(a.value() | b.value());
 
-        case BITWISE_XOR_OP:
+        case HMC_BITWISE_XOR_OP:
             return Variable::copy(a.value() ^ b.value());
 
-        case BITWISE_AND_OP:
+        case HMC_BITWISE_AND_OP:
             return Variable::copy(a.value() & b.value());
 
-        case EQ_OP:
+        case HMC_EQ_OP:
             return Variable::copy(a.value() == b.value());
 
-        case NE_OP:
+        case HMC_NE_OP:
             return Variable::copy(a.value() != b.value());
 
-        case GE_OP:
+        case HMC_GE_OP:
             return Variable::copy(a.value() >= b.value());
 
-        case GT_OP:
+        case HMC_GT_OP:
             return Variable::copy(a.value() > b.value());
 
-        case LE_OP:
+        case HMC_LE_OP:
             return Variable::copy(a.value() <= b.value());
 
-        case LT_OP:
+        case HMC_LT_OP:
             return Variable::copy(a.value() < b.value());
 
-        case RIGHT_OP:
+        case HMC_RIGHT_OP:
             return Variable::copy(a.value() >> b.value());
 
-        case LEFT_OP:
+        case HMC_LEFT_OP:
             return Variable::copy(a.value() << b.value());
 
-        case ADD_OP:
+        case HMC_ADD_OP:
             return Variable::copy(a.value() + b.value());
 
-        case SUB_OP:
+        case HMC_SUB_OP:
             return Variable::copy(a.value() - b.value());
 
-        case MUL_OP:
+        case HMC_MUL_OP:
             return Variable::copy(a.value() * b.value());
 
-        case DIV_OP:
+        case HMC_DIV_OP:
             return Variable::copy(a.value() / b.value());
 
-        case MOD_OP:
+        case HMC_MOD_OP:
             return Variable::copy(a.value() % b.value());
 
         default:
@@ -321,7 +321,7 @@ Variable Evaluator::ternaryOperation(int op, const Variable& a, const Variable& 
 {
     switch(op)
     {
-        case TERNARY_OP:
+        case HMC_TERNARY_OP:
             if(a.value().toBool())
                 return Variable::copy(b.value());
             else

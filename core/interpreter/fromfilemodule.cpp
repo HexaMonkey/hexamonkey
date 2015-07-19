@@ -193,15 +193,15 @@ void FromFileModule::loadFormatDetections(Program &formatDetections, StandardFor
     {
         switch(formatDetection.node(0).payload().toInteger())
         {
-            case ADD_MAGIC_NUMBER_OP:
+            case HMC_ADD_MAGIC_NUMBER_OP:
                 formatAdder.addMagicNumber(formatDetection.node(1).payload().toString());
                 break;
 
-            case ADD_EXTENSION_OP:
+            case HMC_ADD_EXTENSION_OP:
                 formatAdder.addExtension(formatDetection.node(1).payload().toString());
                 break;
 
-            case ADD_SYNCBYTE_OP:
+            case HMC_ADD_SYNCBYTE_OP:
                 formatAdder.addSyncbyte(formatDetection.node(1).payload().toInteger(), formatDetection.node(2).payload().toInteger());
                 break;
 
@@ -226,7 +226,7 @@ void FromFileModule::nameScan(Program& declarations)
 
     for(Program declaration : declarations)
     {
-        if(declaration.tag() == CLASS_DECLARATION)
+        if(declaration.tag() == HMC_CLASS_DECLARATION)
         {
             Program typeTemplate = declaration.node(0).node(0);
             const std::string& name = typeTemplate.node(0).payload().toString();
@@ -241,7 +241,7 @@ void FromFileModule::nameScan(Program& declarations)
             Program classDefinition = declaration.node(1);
             _definitions[name] = classDefinition;
         }
-        else if(declaration.tag() == FUNCTION_DECLARATION)
+        else if(declaration.tag() == HMC_FUNCTION_DECLARATION)
         {
             const std::string& name = declaration.node(0).payload().toString();
             _functions[name] = declaration;
@@ -257,7 +257,7 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
 
     for(Program classDeclaration : classDeclarations)
     {
-        if(classDeclaration.tag() == CLASS_DECLARATION)
+        if(classDeclaration.tag() == HMC_CLASS_DECLARATION)
         {
             Program classInfo = classDeclaration.node(0);
             const std::string& name = classInfo.node(0).node(0).payload().toString();
@@ -294,7 +294,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
 
     for(Program classDeclaration : classDeclarations)
     {
-        if(classDeclaration.tag() == CLASS_DECLARATION)
+        if(classDeclaration.tag() == HMC_CLASS_DECLARATION)
         {
             ObjectType child = getTemplate(classDeclaration.node(0).node(0).node(0).payload().toString())();
             for(Program type : classDeclaration.node(0).node(2))
@@ -304,7 +304,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
                 std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
             }
         }
-        else if(classDeclaration.tag() == FORWARD)
+        else if(classDeclaration.tag() == HMC_FORWARD)
         {
             ObjectType parent(eval.type(classDeclaration.node(0)));
             ObjectType child(eval.type(classDeclaration.node(1)));
@@ -344,11 +344,11 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
     {
         switch(line.tag())
         {
-        case EXECUTION_BLOCK:
+        case HMC_EXECUTION_BLOCK:
             guessSize(line);
             break;
 
-        case DECLARATION:
+        case HMC_DECLARATION:
             {
                 if(!variableDependencies(line.node(0),false).empty())
                     return -1;
@@ -365,13 +365,13 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
                 break;
             }
 
-        case LOOP:
-        case DO_LOOP:
+        case HMC_LOOP:
+        case HMC_DO_LOOP:
             if(guessSize(line.node(1)) != 0)
                 return -1;
             break;
 
-        case CONDITIONAL_STATEMENT:
+        case HMC_CONDITIONAL_STATEMENT:
             {
                 int64_t size1 = guessSize(line.node(1));
                 if(size1 == -1)
@@ -383,8 +383,8 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
                 break;
             }
 
-        case RIGHT_VALUE:
-        case LOCAL_DECLARATION:
+        case HMC_RIGHT_VALUE:
+        case HMC_LOCAL_DECLARATION:
             break;
 
         default:
@@ -405,7 +405,7 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     for (Program::const_iterator headerEnd = bodyBlock.begin(); headerEnd != bodyBlock.end(); ++headerEnd) {
         const Program& line = *headerEnd;
         //Check header mark
-        if (line.tag() == HEADER_MARK) {
+        if (line.tag() == HMC_HEADER_MARK) {
             return ++headerEnd;
         }
     }
@@ -438,7 +438,7 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
         }
 
         //Check showcased declarations
-        if(line.tag() == DECLARATION && line.node(2).payload().toInteger()) {
+        if(line.tag() == HMC_DECLARATION && line.node(2).payload().toInteger()) {
             break;
         }
     }
@@ -494,26 +494,26 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
 {
     switch(instructions.tag())
     {
-        case EXECUTION_BLOCK:
-        case CONDITIONAL_STATEMENT:
-        case LOOP:
-        case DO_LOOP:
+        case HMC_EXECUTION_BLOCK:
+        case HMC_CONDITIONAL_STATEMENT:
+        case HMC_LOOP:
+        case HMC_DO_LOOP:
             for(Program elem : instructions) {
                 buildDependencies(elem, modificationOnly, descriptors);
             }
             break;
 
-        case TYPE:
+        case HMC_TYPE:
             for(Program arg : instructions.node(1)) {
                 buildDependencies(arg, modificationOnly, descriptors);
             }
             break;
 
-        case DECLARATION:
+        case HMC_DECLARATION:
             buildDependencies(instructions.node(0), modificationOnly, descriptors);
             break;
 
-        case LOCAL_DECLARATIONS:
+        case HMC_LOCAL_DECLARATIONS:
             for (const Program& localDeclaration : instructions) {
                 if(localDeclaration.size()>=2) {
                     buildDependencies(localDeclaration.node(1), modificationOnly, descriptors);
@@ -521,20 +521,20 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
             }
             break;
 
-        case RIGHT_VALUE:
-            if(instructions.node(0).tag() == OPERATOR) {
+        case HMC_RIGHT_VALUE:
+            if(instructions.node(0).tag() == HMC_OPERATOR) {
                 int op = instructions.node(0).payload().toInteger();
                 for(int i = 0; i < operatorParameterCount[op]; ++i) {
                     buildDependencies(instructions.node(1+i), modificationOnly, descriptors, areVariablesModified || !((1<<i)&operatorParameterRelease[op]));
                 }
-            } else if(instructions.node(0).tag() == VARIABLE) {
+            } else if(instructions.node(0).tag() == HMC_VARIABLE) {
                 buildDependencies(instructions.node(0), modificationOnly, descriptors, areVariablesModified);
-            } else if(instructions.node(0).tag() == TYPE) {
+            } else if(instructions.node(0).tag() == HMC_TYPE) {
                 buildDependencies(instructions.node(0), modificationOnly, descriptors);
             }
             break;
 
-        case VARIABLE:
+        case HMC_VARIABLE:
             if (!modificationOnly || areVariablesModified) {
                 descriptors.insert(Evaluator().variablePath(instructions));
             }

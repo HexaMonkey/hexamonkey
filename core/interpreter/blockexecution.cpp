@@ -73,8 +73,8 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
                     switch(line.tag())
                     {
 
-                        case LOOP:
-                        case DO_LOOP:
+                        case HMC_LOOP:
+                        case HMC_DO_LOOP:
                             if(_subBlockExitCode == ExitCode::Broken)
                             {
                                 ++current;
@@ -107,43 +107,43 @@ BlockExecution::ExitCode BlockExecution::execute(Program::const_iterator breakpo
             ++lineRepeatCount;
             switch(line.tag())
             {
-                case DECLARATION:
+                case HMC_DECLARATION:
                     handleDeclaration(line, parseQuota);
                     break;
 
-                case LOCAL_DECLARATIONS:
+                case HMC_LOCAL_DECLARATIONS:
                     handleLocalDeclarations(line);
                     break;
 
-                case REMOVE:
+                case HMC_REMOVE:
                     handleRemove(line);
                     break;
 
-                case RIGHT_VALUE:
+                case HMC_RIGHT_VALUE:
                     handleRightValue(line);
                     break;
 
-                case CONDITIONAL_STATEMENT:
+                case HMC_CONDITIONAL_STATEMENT:
                     handleCondition(line);
                     break;
 
-                case LOOP:
+                case HMC_LOOP:
                     handleLoop(line);
                     break;
 
-                case DO_LOOP:
+                case HMC_DO_LOOP:
                     handleDoLoop(line);
                     break;
 
-                case BREAK:
+                case HMC_BREAK:
                 if(handleBreak())
                     return ExitCode::Broken;
 
-                case CONTINUE:
+                case HMC_CONTINUE:
                 if(handleContinue())
                     return ExitCode::Continued;
 
-                case RETURN:
+                case HMC_RETURN:
                     handleReturn(line);
                     return ExitCode::Returned;
 
@@ -383,18 +383,18 @@ bool BlockExecution::hasDeclaration(const Program &instructions)
     {
         switch(program.tag())
         {
-            case DECLARATION:
+            case HMC_DECLARATION:
                 return true;
 
-            case CONDITIONAL_STATEMENT:
+            case HMC_CONDITIONAL_STATEMENT:
                 if(hasDeclaration(program.node(1)))
                     return true;
                 if(hasDeclaration(program.node(2)))
                     return true;
                 break;
 
-            case LOOP:
-            case DO_LOOP:
+            case HMC_LOOP:
+            case HMC_DO_LOOP:
                 if(hasDeclaration(program.node(1)))
                     return true;
                 break;

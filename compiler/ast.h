@@ -77,7 +77,7 @@ ast* prepend_node(ast* parent, uint32_t id)
 	return node;
 }
 
-ast root = {ROOT_ID, 0, -1, NULL, NULL, NULL};
+ast root = {HMC_ROOT_ID, 0, -1, NULL, NULL, NULL};
 ast* current_node = &root;
 int line_number=1;
 
@@ -179,9 +179,9 @@ void push_string(int32_t id, char* s);
 
 void write_node(FILE* file, ast* node)
 {
-	push_integer(LINE_NUMBER, node->line_number);
-	push_integer(FILE_OFFSET, ftell(file));
-	push_master(CODE_INFO, 2);
+	push_integer(HMC_LINE_NUMBER, node->line_number);
+	push_integer(HMC_FILE_OFFSET, ftell(file));
+	push_master(HMC_CODE_INFO, 2);
 	
 	write_ebml_int(file, node->id);
 	write_ebml_int(file, node->size);
@@ -192,7 +192,7 @@ void write_node(FILE* file, ast* node)
 #endif
 	switch(hmcElemTypes[node->id])
 	{
-		case MASTER:
+		case HMC_MASTER:
 #ifdef WRITE_DEBUG
 			++indentation;
 			printf("\n");
@@ -207,28 +207,28 @@ void write_node(FILE* file, ast* node)
 #endif
 			break;
 			
-		case INTEGER:
+		case HMC_INTEGER:
 #ifdef WRITE_DEBUG
 			printf("%d", node->first_child.i);
 #endif
 			write_int(file, node->first_child.i, node->size);
 			break;
 			
-		case UINTEGER:
+		case HMC_UINTEGER:
 #ifdef WRITE_DEBUG
 			printf("%d", node->first_child.u);
 #endif
 			write_uint(file, node->first_child.u, node->size);
 			break;
 			
-		case STRING:
+		case HMC_STRING:
 #ifdef WRITE_DEBUG
 			printf("%s", node->first_child.s);
 #endif
 			write_string(file, node->first_child.s, node->size);
 			break;
 			
-		case FLOAT:
+		case HMC_FLOAT:
 #ifdef WRITE_DEBUG
 			printf("%f", node->first_child.f);
 #endif
@@ -315,7 +315,7 @@ void pop()
 	current_stack = popped->st;
 
 	int should_insert =  (popped->id != -1) //not line
-				   && !(hmcElemTypes[popped->id] == MASTER && hmcElemAssoc[popped->id] && current_node->id == popped->id);//not associative
+				   && !(hmcElemTypes[popped->id] == HMC_MASTER && hmcElemAssoc[popped->id] && current_node->id == popped->id);//not associative
 
 	if(should_insert) 
 	{
@@ -333,19 +333,19 @@ void pop()
 	{
 		switch(hmcElemTypes[popped->id])
 		{
-			case INTEGER:
+			case HMC_INTEGER:
 				set_integer(popped->content.i);
 				break;
 
-			case UINTEGER:
+			case HMC_UINTEGER:
 				set_uinteger(popped->content.u);
 				break;
 
-			case STRING:
+			case HMC_STRING:
 				set_string(popped->content.s);
 				break;
 
-			case FLOAT:
+			case HMC_FLOAT:
 				set_float(popped->content.f);
 				break;
 		}
@@ -451,14 +451,14 @@ void handle_op(int id)
 		stash(0);
 	}
 	
-	push_integer(OPERATOR, id);
+	push_integer(HMC_OPERATOR, id);
 	
 	for(i = 0; i < parameterCount; ++i)
 	{
 		unstash(0);
 	}
 	
-	push_master(RIGHT_VALUE, parameterCount+1);
+	push_master(HMC_RIGHT_VALUE, parameterCount+1);
 }
 
 #ifdef STACK_DEBUG

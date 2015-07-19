@@ -9,7 +9,7 @@
 
 const std::string modelFileName = "../models/hmcmodel.csv";
 const std::string opFileName = "../models/hmcoperators.csv";
-
+const std::string macroPrefix = "HMC_";
 int main()
 {
 	
@@ -25,17 +25,17 @@ int main()
 	headerFile<<"\\*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/"<<std::endl;
 	headerFile<<std::endl;
 	
-	headerFile<<"#define MASTER   0"<<std::endl;
-	headerFile<<"#define INTEGER  1"<<std::endl;
-	headerFile<<"#define UINTEGER 2"<<std::endl;
-	headerFile<<"#define STRING   3"<<std::endl;
-	headerFile<<"#define FLOAT    4"<<std::endl;
+	headerFile<<"#define HMC_MASTER   0"<<std::endl;
+	headerFile<<"#define HMC_INTEGER  1"<<std::endl;
+	headerFile<<"#define HMC_UINTEGER 2"<<std::endl;
+	headerFile<<"#define HMC_STRING   3"<<std::endl;
+	headerFile<<"#define HMC_FLOAT    4"<<std::endl;
     headerFile<<std::endl;
 	
-	headerFile<<"#define INT_TYPE    0"<<std::endl;
-	headerFile<<"#define UINT_TYPE   1"<<std::endl;
-	headerFile<<"#define STRING_TYPE 2"<<std::endl;
-	headerFile<<"#define FLOAT_TYPE  3"<<std::endl;
+	headerFile<<"#define HMC_INT_TYPE    0"<<std::endl;
+	headerFile<<"#define HMC_UINT_TYPE   1"<<std::endl;
+	headerFile<<"#define HMC_STRING_TYPE 2"<<std::endl;
+	headerFile<<"#define HMC_FLOAT_TYPE  3"<<std::endl;
     headerFile<<std::endl;
 	
 	std::vector<std::string> names;
@@ -53,15 +53,17 @@ int main()
 		std::string macroName = defineStyle(name);
 		
         std::string type  = modelLine[1];
+		
 		std::transform(type.begin(), type.end(),type.begin(), ::toupper);
 		
-		headerFile<<"#define "<<macroName<<" "<<i<<std::endl;
+		
+		headerFile<<"#define "<<macroPrefix<<macroName<<" "<<i<<std::endl;
 		names.push_back(name);
-		types.push_back(type);
+		types.push_back(macroPrefix+type);
 		assoc.push_back(modelLine[2] == "1");
 		
 		if(name == "root")
-			headerFile<<"#define ROOT_ID "<<i<<std::endl; 
+			headerFile<<"#define "<<macroPrefix<<"ROOT_ID "<<i<<std::endl; 
     }
 	headerFile<<std::endl;
 
@@ -78,7 +80,7 @@ int main()
 		if(opLine.size()<3)
 			break;
 				
-		headerFile<<"#define "<<defineStyle(opLine[0])<<"_OP "<<i<<std::endl;
+		headerFile<<"#define "<<macroPrefix<<defineStyle(opLine[0])<<"_OP "<<i<<std::endl;
 		parameterCounts.push_back(strTo<int>(opLine[1]));
 		parameterReleases.push_back(strTo<int>(opLine[2]));
     }
@@ -105,7 +107,7 @@ int main()
 	headerFile<<"};"<<std::endl;
 	
 	headerFile<<"const int hmcElemAssoc[] = {";
-	for(unsigned int i =0; ; ++i)
+	for(unsigned int i = 0; ; ++i)
 	{
 		headerFile<<assoc[i];
 		if(i >= assoc.size() - 1)
@@ -115,7 +117,7 @@ int main()
 	headerFile<<"};"<<std::endl;
 	
 	headerFile<<"const int operatorParameterCount[] = {";
-	for(unsigned int i =0; ; ++i)
+	for(unsigned int i = 0; ; ++i)
 	{
 		headerFile<<parameterCounts[i];
 		if(i >= parameterCounts.size() - 1)
@@ -125,7 +127,7 @@ int main()
 	headerFile<<"};"<<std::endl;
 	
 	headerFile<<"const int operatorParameterRelease[] = {";
-	for(unsigned int i =0; ; ++i)
+	for(unsigned int i = 0; ; ++i)
 	{
 		headerFile<<parameterReleases[i];
 		if(i >= parameterReleases.size() - 1)
