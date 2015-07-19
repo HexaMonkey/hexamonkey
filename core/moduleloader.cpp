@@ -62,7 +62,7 @@ const Module &ModuleLoader::getModule(const std::string &key) const
             {
                 module.import(getModule(""));
             }
-            std::cerr<<"[ModuleLoader::getModule] Load module : <"<<key<<">"<<std::endl;
+            Log::info("Load module : <", key, ">");
             module.load();
         }
         return module;

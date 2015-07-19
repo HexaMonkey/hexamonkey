@@ -19,6 +19,8 @@
 
 #include "core/modules/standard/bitparser.h"
 
+#include "core/log/logmanager.h"
+
 BitParser::BitParser(Object &object, int64_t size)
     : SimpleParser(object),
       size(size)
@@ -29,7 +31,7 @@ void BitParser::doParseHead()
 {
     if(size>64)
     {
-        std::cerr<<"Warning size to large for bitset"<<std::endl;
+        Log::warning("Size to large for bitset");
     }
     object().setSize(size);
 

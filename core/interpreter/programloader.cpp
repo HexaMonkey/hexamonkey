@@ -32,6 +32,8 @@
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
 
+#include "core/log/logmanager.h"
+
 ProgramLoader::ProgramLoader(const HmcModule &module, const std::vector<std::string> &compilerDirs, const std::string userDir)
     : _module(module),
 #ifdef PLATFORM_WIN32
@@ -94,8 +96,7 @@ Program ProgramLoader::fromHM(const std::string &path, int mode) const
 
     const std::vector<std::string> arguments = {path, outputPath};
 
-    std::cerr<<"Program "<<compiler<<std::endl;
-    std::cerr<<"Arguments "<<path<<" "<<outputPath<<std::endl;
+    Log::info("Executing", compiler, " ", path, " ", outputPath);
 
     bool success = executeCommand(compiler, arguments);
 
@@ -143,16 +144,16 @@ Program ProgramLoader::fromFile(const std::string &path) const
             long long hmLastModified  = lastModified(hmPath);
             if(hmLastModified != -1 && hmLastModified != -1 && hmLastModified < hmcLastModified)
             {
-                std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
+                Log::info("Load existing description file : ", hmcPath);
                 return fromHMC(hmcPath);
             }
         }
-        std::cerr<<"Compile description file : "<<hmPath<<std::endl;
+        Log::info("Compile description file : ", hmPath);
         return fromHM(hmPath, ProgramLoader::file);
     }
     else if(fileExists(hmcPath))
     {
-        std::cerr<<"Load existing description file : "<<hmcPath<<std::endl;
+        Log::info("Load existing description file : ", hmcPath);
         return fromHMC(hmcPath);
     }
     else
