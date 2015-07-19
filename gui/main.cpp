@@ -19,65 +19,27 @@
 #include <QApplication>
 #include <QIcon>
 
+#include "qtmodulesetup.h"
+
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     std::cout<<std::endl;
+
+    QtModuleSetup moduleSetup;
+    moduleSetup.setup();
+
+
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("HexaMonkey");
     QCoreApplication::setApplicationName("HexaMonkey");
+    QIcon icon(moduleSetup.logoPath().c_str());
 
-
-
-#if defined(PLATFORM_WIN32)
-    char buffer[MAX_PATH];
-    GetModuleFileNameA(NULL, buffer, MAX_PATH);
-    std::string installDir = std::string(buffer);
-    std::string::size_type pos = installDir.find_last_of( "\\/" );
-    installDir = installDir.substr( 0, pos)+"\\";
-
-    std::string userDir = installDir+"scripts\\";
-
-    std::vector<std::string> modelsDirs = {installDir, "..\\models\\"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
-    std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
-    std::vector<std::string> logoDirs = {installDir, "..\\logo\\"};
-
-#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
-    /* XXX: use autotools ? */
-
-    std::string installDir = "/usr/share/hexamonkey/";
-    std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
-    QDir::root().mkdir(QString(userDir.c_str()));
-
-    std::vector<std::string> modelsDirs = {installDir, "../models/"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
-    std::vector<std::string> compilerDirs = {"/usr/bin/", "../compiler/"};
-    std::vector<std::string> logoDirs = {installDir, "../logo/"};
-
-#else
-    std::cerr<<"Error: unsuported operating system"<<std::endl;
-    return 0;
-#endif
-
-    ModuleLoader moduleLoader;
-
-    moduleLoader.addModule("bestd", new StandardModule(true));
-    moduleLoader.addModule("lestd", new StandardModule(false));
-    moduleLoader.addModule("ebml",  new EbmlModule);
-    moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
-    moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
-    moduleLoader.addModule("stream",new StreamModule());
-
-    QtProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
-
-    moduleLoader.setDirectories(scriptsDirs, static_cast<const ProgramLoader&>(programLoader));
-
-    MainWindow window(moduleLoader, static_cast<const ProgramLoader&>(programLoader));
+    MainWindow window(moduleSetup.moduleLoader(), moduleSetup.programLoader());
 
     window.setWindowTitle("HexaMonkey");
-    QIcon icon(getFile(logoDirs, "logo.svg").c_str());
+
     window.setWindowIcon(icon);
     window.showMaximized();
 

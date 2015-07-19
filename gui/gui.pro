@@ -54,7 +54,8 @@ SOURCES += \
     log/logwidget.cpp \
     qtprogramloader.cpp \
     thread/threadqueue.cpp \
-    thread/functionthread.cpp
+    thread/functionthread.cpp \
+    qtmodulesetup.cpp
 
 
 HEADERS  += \ 
@@ -76,7 +77,8 @@ HEADERS  += \
     log/logwidget.h \
     qtprogramloader.h \
     thread/threadqueue.h \
-    thread/functionthread.h
+    thread/functionthread.h \
+    qtmodulesetup.h
 
 RESOURCES += \
     ressources.qrc

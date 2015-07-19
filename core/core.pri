@@ -67,7 +67,8 @@ SOURCES += \
     ../core/variable/typescope.cpp \
     ../core/variable/objectscope.cpp \
     ../core/variable/arrayscope.cpp \
-    ../core/variable/mapscope.cpp
+    ../core/variable/mapscope.cpp \
+    ../core/modulesetup.cpp
 
 HEADERS  += \ 
     ../core/variant.h\
@@ -148,4 +149,5 @@ HEADERS  += \
     ../core/variable/objectscope.h \
     ../core/variable/arrayscope.h \
     ../core/variable/mapscope.h \
-    ../core/varianthash.h
+    ../core/varianthash.h \
+    ../core/modulesetup.h
