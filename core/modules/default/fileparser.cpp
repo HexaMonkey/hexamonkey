@@ -18,6 +18,7 @@
 #include "core/object.h"
 #include "core/modules/default/fileparser.h"
 
+#include "core/variable/objectattributes.h"
 FileParser::FileParser(Object &object) : SimpleParser(object)
 {
 }
@@ -26,6 +27,5 @@ void FileParser::doParseHead()
 {
     int64_t size = object().file().size();
     object().setSize(size);
-
-    object().setValue(object().file().path());
+    object().attributes(true)->addNamed("path")->setValue(object().file().path());
 }
