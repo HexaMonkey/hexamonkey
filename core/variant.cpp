@@ -571,6 +571,43 @@ std::ostream& Variant::display(std::ostream& out, bool setFlags) const
     return out;
 }
 
+std::ostream& Variant::simpleDisplay(std::ostream& out) const
+{
+	uint8_t type = (_type & typeMask);
+	switch (type)
+	{
+		case integerType:
+			out<<_data.l;
+			break;
+
+		case unsignedIntegerType:
+			out<<_data.ul;
+			break;
+
+		case floatingType:
+			out<<_data.f;
+			break;
+
+		case stringType:
+            out<<"\""<<_data.s->first<<"\"";
+			break;
+
+		case objectType:
+            _data.t->first.simpleDisplay(out);
+			break;
+
+		case nullType:
+			out<<"null";
+			break;
+
+		default:
+			out<<"undefined";
+		break;
+	}
+	
+	return out;
+}
+
 bool operator==(const Variant& a, const Variant& b)
 {
     uint8_t aSuperType = a._type & Variant::superTypeMask;

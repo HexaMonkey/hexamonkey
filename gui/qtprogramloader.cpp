@@ -22,13 +22,7 @@ bool QtProgramLoader::executeCommand(const std::string &program, const std::vect
 
     process.start(QString(program.c_str()), argumentList);
     process.waitForFinished();
-    std::string output =  QString(process.readAllStandardOutput()).toStdString();
     std::string error  = QString(process.readAllStandardError()).toStdString();
-
-    if(!output.empty())
-    {
-        std::cerr<<"Program output : "<<output<<std::endl;
-    }
 
     if(!error.empty())
     {

@@ -137,6 +137,13 @@ public:
      * Same effect as <<
      */
     std::ostream& display(std::ostream& out) const;
+	
+	/**
+	 * @brief Output a simple representation of the \link ObjectType type\endlink into a stream
+	 *
+	 * This is use for non regression tests and should stay as stable as possible
+	 */
+	std::ostream& simpleDisplay(std::ostream& out) const; 
 
     int numberOfParameters() const;
 

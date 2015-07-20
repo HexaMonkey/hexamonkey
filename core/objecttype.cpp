@@ -231,6 +231,26 @@ std::ostream& ObjectType::display(std::ostream& out) const
     return out;
 }
 
+std::ostream& ObjectType::simpleDisplay(std::ostream& out) const
+{
+	out << name();
+	const int n = numberOfDisplayableParameters();
+	if(n>0)
+	{
+		out<<"(";
+		for(int i = 0; i < n; ++i)
+		{
+			parameterValue(i).simpleDisplay(out);
+
+			if(i < n-1)
+				out<<", ";
+		}
+		out<<")";
+	}
+    
+    return out;
+}
+
 int ObjectType::numberOfParameters() const
 {
     return _parametersValue.size();
