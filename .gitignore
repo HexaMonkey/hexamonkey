@@ -89,11 +89,6 @@ scripts/*.hmc
 
 #GUI in qt 
 !gui
-!gui/hex
-!gui/hex/*.cpp
-!gui/hex/*.h
-!gui/mt
-!gui/tree
 !gui/gui.pro
 !gui/*.qrc
 !gui/*.cpp
@@ -102,8 +97,13 @@ scripts/*.hmc
 !gui/*.rc
 !gui/*.ico
 !gui/*.svg
+!gui/hex
+!gui/hex/*.cpp
+!gui/hex/*.h
+!gui/tree
 !gui/tree/*.cpp
 !gui/tree/*.h
+!gui/thread
 !gui/thread/*.cpp
 !gui/thread/*.h
 !gui/log
