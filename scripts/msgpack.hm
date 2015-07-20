@@ -10,270 +10,168 @@ import bestd
 
 class MsgPackFile as File
 {
-	while(1) MsgPackType *; // The input file may contain concatenated msg pack objects
+	while(1) MsgPackObject *; // The input file may contain concatenated msg pack objects
 }
 
-class MsgPackType(type)
+class MsgPackObject(byteId)
 {
     uint(8, 16) first_byte;
-    if(first_byte == 0xc0) {
-        @args.type = "nil";
-    } else if (first_byte == 0xc2 || first_byte == 0xc3) {
-        @args.type = "bool";
-    } else if ((first_byte & 0b10000000) == 0) {
-        @args.type = "positive_fixnum";
-    } else if ((first_byte & 0b11100000) == 0b11100000) {
-        @args.type = "negative_fixnum";
-    } else if (first_byte == 0xcc) {
-        @args.type = "uint_8";
-    } else if (first_byte == 0xcd) {
-        @args.type = "uint_16";
-    } else if (first_byte == 0xce) {
-        @args.type = "uint_32";
-    } else if (first_byte == 0xcf) {
-        @args.type = "uint_64";
-    } else if (first_byte == 0xd0) {
-        @args.type = "int_8";
-    } else if (first_byte == 0xd1) {
-        @args.type = "int_16";
-    } else if (first_byte == 0xd2) {
-        @args.type = "int_32";
-    } else if (first_byte == 0xd3) {
-        @args.type = "int_64";
-    } else if (first_byte == 0xca) {
-        @args.type = "float_32";
-    } else if (first_byte == 0xcb) {
-        @args.type = "float_64";
-    } else if ((first_byte & 0b11100000) == 0b10100000) {
-        @args.type = "fixstr";
-    } else if (first_byte == 0xd9) {
-        @args.type = "str_8";
-    } else if (first_byte == 0xda) {
-        @args.type = "str_16";
-    } else if (first_byte == 0xdb) {
-        @args.type = "str_32";
-    } else if (first_byte == 0xc4) {
-        @args.type = "bin_8";
-    } else if (first_byte == 0xc5) {
-        @args.type = "bin_16";
-    } else if (first_byte == 0xc6) {
-        @args.type = "bin_32";
-    } else if ((first_byte & 0b11110000) == 0b10010000) {
-        @args.type = "fixarray";
-    } else if (first_byte == 0xdc) {
-        @args.type = "array_16";
-    } else if (first_byte == 0xdd) {
-        @args.type = "array_32";
-    } else if ((first_byte & 0b11110000) == 0b10000000) {
-        @args.type = "fixmap";
-    } else if (first_byte == 0xde) {
-        @args.type = "map_16";
-    } else if (first_byte == 0xdf) {
-        @args.type = "map_32";
-    } else if (first_byte == 0xd4) {
-        @args.type = "fixext_1";
-    } else if (first_byte == 0xd5) {
-        @args.type = "fixext_2";
-    } else if (first_byte == 0xd6) {
-        @args.type = "fixext_4";
-    } else if (first_byte == 0xd7) {
-        @args.type = "fixext_8";
-    } else if (first_byte == 0xd8) {
-        @args.type = "fixext_16";
-    } else if (first_byte == 0xc7) {
-        @args.type = "ext_8";
-    } else if (first_byte == 0xc8) {
-        @args.type = "ext_16";
-    } else if (first_byte == 0xc9) {
-        @args.type = "ext_32";
-    } else {
-        @value = "Unknown MsgPack type";
-    }
+	
+	if ((first_byte & 0b10000000) == 0b00000000) { // 0x00-0x7f 
+		@args.byteId = 0x00;
+	} else if ((first_byte & 0b11110000) == 0b10000000) { // 0x80-0x8f
+		@args.byteId = 0x80;
+	} else if ((first_byte & 0b11110000) == 0b10010000) { // 0x90-0x9f
+		@args.byteId = 0x90;
+	} else if ((first_byte & 0b11100000) == 0b10100000) { // 0xa0-0xbf
+		@args.byteId = 0xa0;
+	} else if ((first_byte & 0b11100000) == 0b11100000) { // 0xe0-0xff 
+		@args.byteId = 0xe0;
+	} else {
+		@args.byteId = first_byte;
+	}
 }
 
-class MsgPackNil as MsgPackType("nil") {
-    @value = "nil";
+// Nil
+class MsgPackNil as MsgPackObject(0xc0) {
+    @value = null;
 }
 
-class MsgPackBool as MsgPackType("bool") {
-    if(first_byte == 0xc2) {
-        @value = "false";
-    } else if (first_byte == 0xc3) {
-        @value = "true";
-    }
+// Bool family
+class MsgPackBool(_value) extends MsgPackObject
+{
+	@value = @args._value;
 }
 
-class MsgPackUInt7b as MsgPackType("positive_fixnum") {
-    @value = %str(first_byte & 0b01111111, 10, 1);
+forward MsgPackObject(0xc2) to MsgPackBool(0)
+forward MsgPackObject(0xc3) to MsgPackBool(1)
+
+// Integer family
+class MsgPackPositiveFixNum as MsgPackObject(0x00) {
+    @value = first_byte & 0b01111111;
 }
 
-class MsgPackInt5b as MsgPackType("negative_fixnum") {
+class MsgPackNegativeFixNum as MsgPackObject(0xe0) {
     @value = -32 + (first_byte & 0b00011111);
 }
 
-class MsgPackUInt8b as MsgPackType("uint_8") {
-    uint(8, 10) value;
+class MsgPackUInt(size) extends MsgPackObject {
+	uint(size) value;
+	@value = value;
+}
+
+forward MsgPackObject(0xcc) to MsgPackUInt(8)
+forward MsgPackObject(0xcd) to MsgPackUInt(16)
+forward MsgPackObject(0xce) to MsgPackUInt(32)
+forward MsgPackObject(0xcf) to MsgPackUInt(64)
+
+class MsgPackInt(size) extends MsgPackObject {
+	uint(size) value;
+	@value = value;
+}
+
+forward MsgPackObject(0xd0) to MsgPackInt(8)
+forward MsgPackObject(0xd1) to MsgPackInt(16)
+forward MsgPackObject(0xd2) to MsgPackInt(32)
+forward MsgPackObject(0xd3) to MsgPackInt(64)
+
+// Float
+class MsgPackFloat(size) extends MsgPackObject {
+	if (@args.size == 32) {
+		float value;
+	} else {
+		double value;
+	}
     @value = value;
 }
 
-class MsgPackUInt16b as MsgPackType("uint_16") {
-    uint(16, 10) value;
-    @value = value;
-}
+forward MsgPackObject(0xca) to MsgPackFloat(32)
+forward MsgPackObject(0xcb) to MsgPackFloat(64)
 
-class MsgPackUInt32b as MsgPackType("uint_32") {
-    uint(32, 10) value;
-    @value = value;
-}
-
-class MsgPackUInt64b as MsgPackType("uint_64") {
-    uint(64, 10) value;
-    @value = value;
-}
-
-class MsgPackInt8b as MsgPackType("int_8") {
-    int(8, 10) value;
-    @value = value;
-}
-
-class MsgPackInt16b as MsgPackType("int_16") {
-    int(16, 10) value;
-    @value = value;
-}
-
-class MsgPackInt32b as MsgPackType("int_32") {
-    int(32, 10) value;
-    @value = value;
-}
-
-class MsgPackInt64b as MsgPackType("int_64") {
-    int(64, 10) value;
-    @value = value;
-}
-
-class MsgPackFloat32b as MsgPackType("float_32") {
-    float value;
-    @value = %float(value);
-}
-
-class MsgPackFloat64b as MsgPackType("float_64") {
-    double value;
-    @value = value;
-}
-
-class MsgPackFixStr as MsgPackType("fixstr") {
-    String(first_byte & 0b00011111) string;
-    @value = string;
-}
-
-class MsgPackStr8 as MsgPackType("str_8") {
-    uint(8, 10) length;
-    String(length) string;
-    @value = string;
-}
-
-class MsgPackStr16 as MsgPackType("str_16") {
-    uint(16, 10) length;
-    String(length) string;
-    @value = string;
-}
-
-class MsgPackStr32 as MsgPackType("str_32") {
-    uint(32, 10) length;
-    String(length) string;
-    @value = string;
-}
-
-class MsgPackBin8 as MsgPackType("bin_8") {
-    uint(8, 10) length;
-    Data(length) bin;
-}
-
-class MsgPackBin16 as MsgPackType("bin_16") {
-    uint(16, 10) length;
-    Data(length) bin;
-}
-
-class MsgPackBin32 as MsgPackType("bin_32") {
-    uint(32, 10) length;
-    Data(length) bin;
-}
-
-class MsgPackFixArray as MsgPackType("fixarray") {
+// String family
+class MsgPackFixStr as MsgPackObject(0xa0) {
     var length = first_byte & 0b00001111;
-    @value = "array of " + %str(length, 10, 1) + " objects";
-    MsgPackType tuple[length];
+    String(length) string;
+    @value = string;
 }
 
-class MsgPackArray16 as MsgPackType("array_16") {
-    uint(16, 10) length;
-    @value = "array of " + %str(length, 10, 1) + " objects";
-    MsgPackType tuple[length];
+class MsgPackStr(length_size) extends MsgPackObject {
+    uint(@args.length_size) length;
+    String(length) string;
+    @value = string;
 }
 
-class MsgPackArray32 as MsgPackType("array_32") {
-    uint(32, 10) length;
-    @value = "array of " + %str(length, 10, 1) + " objects";
-    MsgPackType tuple[length];
+forward MsgPackObject(0xd9) to MsgPackStr(16)
+forward MsgPackObject(0xda) to MsgPackStr(32)
+forward MsgPackObject(0xdb) to MsgPackStr(64)
+
+// Binary data family
+class MsgPackBin(length_size) extends MsgPackObject {
+    uint(@args.length_size) length;
+    Data(8*length) bin;
 }
 
+forward MsgPackObject(0xc4) to MsgPackBin(8)
+forward MsgPackObject(0xc5) to MsgPackBin(16)
+forward MsgPackObject(0xc6) to MsgPackBin(32)
+
+// Array family
+class MsgPackFixArray as MsgPackObject("fixarray") {
+    var length = first_byte & 0b00001111;
+    @attr.length = length;
+    MsgPackObject tuple[length];
+}
+
+class MsgPackArray(length_size) extends MsgPackObject {
+    uint(@args.length_size, 10) length;
+	@attr.length = length;
+    MsgPackObject tuple[length];
+}
+
+forward MsgPackObject(0xdc) to MsgPackArray(16)
+forward MsgPackObject(0xdd) to MsgPackArray(16)
+
+// Map family
 class MsgPackMapEntry {
-    MsgPackType key;
-    MsgPackType val;
+    MsgPackObject key;
+    MsgPackObject value;
 }
 
-class MsgPackFixMap as MsgPackType("fixmap") {
+class MsgPackFixMap as MsgPackObject(0x80) {
     var length = first_byte & 0b00001111;
-    @value = "map with " + %str(length, 10, 1) + " entries";
+	@attr.length = length;
     MsgPackMapEntry map[length];
 }
 
-class MsgPackMap16 as MsgPackType("map_16") {
-    uint(16, 10) length;
-    @value = "map with " + %str(length, 10, 1) + " entries";
+class MsgPackMap(length_size) extends MsgPackObject {
+    uint(length_size, 10) length;
+	@attr.length = length;
     MsgPackMapEntry map[length];
 }
 
-class MsgPackMap32 as MsgPackType("map_32") {
-    uint(32, 10) length;
-    @value = "map with " + %str(length, 10, 1) + " entries";
-    MsgPackMapEntry map[length];
-}
+forward MsgPackObject(0xde) to MsgPackMap(16)
+forward MsgPackObject(0xdf) to MsgPackMap(32)
 
-class MsgPackFixExt(fixext_size) {
+// Extension family
+class MsgPackExt(length_size) extends MsgPackObject {
+	uint(length_size) length;
     int(8, 10) ext_type;
-    Data(@args.fixext_size) ext_data;
-    @value = "fixext" + " of ext type " + ext_type;
+	@attr.type = ext_type;
+    Data(8*length) ext_data;
 }
 
-class MsgPackFixExt1  extends MsgPackFixExt(1)  as MsgPackType("fixext_1") ;
+forward MsgPackObject(0xc7) to MsgPackExt(8)
+forward MsgPackObject(0xc8) to MsgPackExt(16)
+forward MsgPackObject(0xc9) to MsgPackExt(32)
 
-class MsgPackFixExt2  extends MsgPackFixExt(2)  as MsgPackType("fixext_2") ;
-
-class MsgPackFixExt4  extends MsgPackFixExt(4)  as MsgPackType("fixext_4") ;
-
-class MsgPackFixExt8  extends MsgPackFixExt(8)  as MsgPackType("fixext_8") ;
-
-class MsgPackFixExt16 extends MsgPackFixExt(16) as MsgPackType("fixext_16") ;
-
-class MsgPackExt8 as MsgPackType("ext_8") {
-    int(8, 10) ext_type;
-    uint(8, 10) length;
-    Data(length) ext_data;
-    @value = "ext type(" + ext_type + ") size(" + length + ")";
+class MsgPackFixExt(fixext_size) extends MsgPackObject {
+    int(8) ext_type;
+	@attr.type = ext_type;
+    Data(8*@args.fixext_size) ext_data;
 }
 
-class MsgPackExt16 as MsgPackType("ext_16") {
-    int(8, 10) ext_type;
-    uint(16, 10) length;
-    Data(length) ext_data;
-    @value = "ext type(" + ext_type + ") size(" + length + ")";
-}
-
-class MsgPackExt32 as MsgPackType("ext_32") {
-    int(8, 10) ext_type;
-    uint(32, 10) length;
-    Data(length) ext_data;
-    @value = "ext type(" + ext_type + ") size(" + length + ")";
-}
-
+forward MsgPackObject(0xd4) to MsgPackFixExt(1)
+forward MsgPackObject(0xd5) to MsgPackFixExt(2)
+forward MsgPackObject(0xd6) to MsgPackFixExt(4)
+forward MsgPackObject(0xd7) to MsgPackFixExt(8)
+forward MsgPackObject(0xd8) to MsgPackFixExt(16)
