@@ -169,10 +169,13 @@ public:
     bool operator!() const;
 
     void setDisplayType(Display display);
+    void setDisplayBase(int base);
+
     std::ostream& display(std::ostream& out, bool setFlags = true) const;
 	
 	/// Stable simple display that should not change (used for tests)
 	std::ostream& simpleDisplay(std::ostream& out) const;
+
 
 
 

@@ -125,45 +125,57 @@ bool DefaultModule::doLoad()
     });
 
     addFunction("int",
-                {"value"},
-                {false},
-                {},
+                {"value", "base"},
+                {false, false},
+                {Variant(), 10},
                 []functionLambda
     {
         const Variant& value = scope.field(0).value();
+        int base = (int) scope.field(1).value().toInteger();
         if(value.canConvertTo(Variant::integerType))
         {
-            return Variable::copy(value.toInteger());
+            Variant newValue = value.toInteger();
+            newValue.setDisplayBase(base);
+            return Variable::copy(newValue);
         }
         else if(value.canConvertTo(Variant::stringType))
         {
             std::stringstream S;
             S<<value.toString();
             int64_t i;
-            if(!(S>>i).fail())
-                return Variable::copy(i);
+            if(!(S>>i).fail()) {
+                Variant newValue = i;
+                newValue.setDisplayBase(base);
+                return Variable::copy(newValue);
+            }
         }
         return Variable();
     });
 
     addFunction("float",
-                {"value"},
+                {"value", "base"},
                 {false},
-                {},
+                {Variant(), 10},
                 []functionLambda
     {
         const Variant& value = scope.field(0).value();
+        int base = (int) scope.field(1).value().toInteger();
         if(value.canConvertTo(Variant::floatingType))
         {
-            return Variable::copy(value.toDouble());
+            Variant newValue = value.toDouble();
+            newValue.setDisplayBase(base);
+            return Variable::copy(newValue);
         }
         else if(value.canConvertTo(Variant::stringType))
         {
             std::stringstream S;
             S<<value.toString();
             double d;
-            if(!(S>>d).fail())
-                return Variable::copy(d);
+            if(!(S>>d).fail()) {
+                Variant newValue = d;
+                newValue.setDisplayBase(base);
+                return Variable::copy(newValue);
+            }
         }
         return Variable();
     });

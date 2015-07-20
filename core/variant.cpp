@@ -491,6 +491,34 @@ void Variant::setDisplayType(Variant::Display display)
     _type = (_type & ~displayMask) | display;
 }
 
+void Variant::setDisplayBase(int base)
+{
+    Variant::Display display;
+    switch(base) {
+        case 2:
+            display = Variant::binary;
+            break;
+
+        case 8:
+            display = Variant::octal;
+            break;
+
+        case 10:
+            display = Variant::decimal;
+            break;
+
+        case 16:
+            display = Variant::hexadecimal;
+            break;
+
+        default:
+            Log::error("Unrecognized display base ", base);
+            display = Variant::decimal;
+
+    }
+    setDisplayType(display);
+}
+
 std::ostream& Variant::display(std::ostream& out, bool setFlags) const
 {
     uint8_t displayType = (_type & displayMask);
