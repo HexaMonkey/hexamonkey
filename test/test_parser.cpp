@@ -14,6 +14,11 @@ void TestParser::test_asf()
     QVERIFY(checkFile("resources/parser/test_asf.asf", 3, 30));
 }
 
+void TestParser::test_messagepack()
+{
+    QVERIFY(checkFile("resources/parser/test_msgpack.msgpack"));
+}
+
 bool TestParser::checkFile(const std::string &path, int depth, int width)
 {
     RealFile file;
@@ -55,11 +60,26 @@ void TestParser::writeObject(Object &object, const std::string &path, int depth,
 
 void TestParser::writeObjectRecursive(Object &object, std::ofstream &file, int currentDepth, int remainingDepth, int width)
 {
-    for (int i = currentDepth; i > 0; --i) {
-        file << "    ";
+    const std::string firstRow = concat(object.beginningPos(),"x",object.size());
+    file << firstRow;
+
+    for (int i = 4*currentDepth + 13 - firstRow.size(); i > 0; --i) {
+        file << " ";
     }
 
-    file << object.type() << " " << object.name() << " = " << object.value() << "  @" << object.beginningPos() << "x" << object.size() << std::endl;
+    object.type().simpleDisplay(file) << " ";
+
+    const std::string& objectName = object.name();
+    if (!objectName.empty() && ((objectName[0] >= 'a' && objectName[0] <= 'z') || (objectName[0] >= 'A' && objectName[0] <= 'Z'))) {
+        file << objectName << " ";
+    }
+
+    if (!object.value().isValueless()) {
+        file << "= ";
+        object.value().simpleDisplay(file);
+    }
+
+    file << std::endl;
 
     if (width != -1) {
         while (!object.parsed() && object.numberOfChildren() < width) {

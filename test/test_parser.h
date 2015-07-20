@@ -16,6 +16,7 @@ public:
 
 private slots:
     void test_asf();
+    void test_messagepack();
 
 private:
     bool checkFile(const std::string& path, int depth = -1, int width = -1);
