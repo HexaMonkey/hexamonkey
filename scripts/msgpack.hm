@@ -48,7 +48,7 @@ forward MsgPackObject(0xc3) to MsgPackBool(1)
 
 // Integer family
 class MsgPackPositiveFixNum as MsgPackObject(0x00) {
-    @value = first_byte & 0b01111111;
+    @value = %int(first_byte & 0b01111111, 10);
 }
 
 class MsgPackNegativeFixNum as MsgPackObject(0xe0) {
@@ -90,7 +90,7 @@ forward MsgPackObject(0xcb) to MsgPackFloat(64)
 
 // String family
 class MsgPackFixStr as MsgPackObject(0xa0) {
-    var length = first_byte & 0b00001111;
+    var length = %int(first_byte & 0b00001111, 10);
     String(length) string;
     @value = string;
 }
@@ -116,8 +116,8 @@ forward MsgPackObject(0xc5) to MsgPackBin(16)
 forward MsgPackObject(0xc6) to MsgPackBin(32)
 
 // Array family
-class MsgPackFixArray as MsgPackObject("fixarray") {
-    var length = first_byte & 0b00001111;
+class MsgPackFixArray as MsgPackObject(0x90) {
+    var length = %int(first_byte & 0b00001111);
     @attr.length = length;
     MsgPackObject tuple[length];
 }
@@ -138,7 +138,7 @@ class MsgPackMapEntry {
 }
 
 class MsgPackFixMap as MsgPackObject(0x80) {
-    var length = first_byte & 0b00001111;
+    var length = %int(first_byte & 0b00001111, 10);
 	@attr.length = length;
     MsgPackMapEntry map[length];
 }
