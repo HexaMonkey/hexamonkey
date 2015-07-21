@@ -32,6 +32,7 @@ SOURCES += \
     ../core/interpreter/blockexecution.cpp \
     ../core/log/logger.cpp \
     ../core/log/logmanager.cpp \
+    ../core/modules/default/elementarycontainerparser.cpp \
     ../core/modules/default/tupleparser.cpp \
     ../core/modules/default/fileparser.cpp \
     ../core/modules/default/defaultmodule.cpp \
@@ -102,6 +103,7 @@ HEADERS  += \
     ../core/interpreter/blockexecution.h \
     ../core/log/logger.h \
     ../core/log/logmanager.h \
+    ../core/modules/default/elementarycontainerparser.h \
     ../core/modules/default/dataparser.h \
     ../core/modules/default/tupleparser.h \
     ../core/modules/default/fileparser.h \
@@ -151,3 +153,4 @@ HEADERS  += \
     ../core/variable/mapscope.h \
     ../core/varianthash.h \
     ../core/modulesetup.h
+

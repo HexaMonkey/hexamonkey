@@ -18,18 +18,19 @@
 #include "core/module.h"
 #include "core/modules/default/tupleparser.h"
 
-TupleParser::TupleParser(Object &object, const Module &module, const ObjectType &elementType, int64_t count)
-    :  ContainerParser(object, module), elementType(elementType), count(count)
+TupleParser::TupleParser(Object &object, const Module &module, const ObjectType &elementType, int64_t count, const std::string& namePattern)
+    :  ElementaryContainerParser(object, module, elementType, namePattern), count(count)
 {
 }
 
 void TupleParser::doParseHead()
 {
+    ElementaryContainerParser::doParseHead();
+
     ObjectType& type = *modifiableType();
-    type.setElementType(elementType);
     type.setElementCount(count);
 
-    int64_t t = module().getFixedSize(elementType);
+    int64_t t = getElemFixedSize();
     if(t > 0)
     {
         object().setSize(count*t);
@@ -39,8 +40,8 @@ void TupleParser::doParseHead()
         int64_t s = 0;
         for(int64_t i = 0; i < count; ++i)
         {
-            Object* child = addVariable(elementType);
-            child ->setName("#");
+            Object* child = addElem();
+
             s+=child->size();
         }
         object().setSize(s);
@@ -51,8 +52,7 @@ void TupleParser::doParse()
 {
     while(availableSize())
     {
-        Object* object = addVariable(elementType);
-        object->setName("#");
+        addElem();
     }
 }
 
@@ -60,10 +60,13 @@ bool TupleParser::doParseSome(int hint)
 {
     for(int count = 0; count < hint; ++count)
     {
-        if(availableSize()<=0)
+        if(availableSize()<=0) {
             return true;
-        Object* object = addVariable(elementType);
-        object->setName("#");
+        }
+
+        addElem();
     }
     return false;
 }
+
+
