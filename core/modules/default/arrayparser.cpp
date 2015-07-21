@@ -19,15 +19,14 @@
 #include "core/module.h"
 #include "core/object.h"
 
-ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size)
-    :ContainerParser(object, module), elementType(elementType), size(size)
+ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size, const std::string &namePattern)
+    :ElementaryContainerParser(object, module, elementType, namePattern), size(size)
 {
     object.setToExpandOnAddition();
 }
 
 void ArrayParser::doParseHead()
 {
-    modifiableType()->setElementType(elementType);
     if (size != -1) {
         object().setSize(size);
     }
@@ -37,8 +36,7 @@ void ArrayParser::doParse()
 {
     while(availableSize())
     {
-        Object* object = addVariable(elementType);
-        object->setName("#");
+        addElem();
     }
 }
 
@@ -48,8 +46,8 @@ bool ArrayParser::doParseSome(int hint)
     {
         if(availableSize()<=0)
             return true;
-        Object* object = addVariable(elementType);
-        object->setName("#");
+
+        addElem();
     }
     return false;
 }

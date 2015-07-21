@@ -18,12 +18,12 @@
 #ifndef TUPLEPARSER_H
 #define TUPLEPARSER_H
 
-#include "core/containerparser.h"
+#include "core/modules/default/elementarycontainerparser.h"
 
-class TupleParser : public ContainerParser
+class TupleParser : public ElementaryContainerParser
 {
 public:
-    TupleParser(Object& object, const Module& module, const ObjectType& elementType, int64_t count);
+    TupleParser(Object& object, const Module& module, const ObjectType& elementType, int64_t count, const std::string &namePattern);
 
 protected:
     void doParseHead();
@@ -31,7 +31,6 @@ protected:
     bool doParseSome(int hint);
 
 private:
-    ObjectType elementType;
     int64_t count;
 };
 

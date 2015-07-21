@@ -56,7 +56,7 @@ class MsgPackNegativeFixNum as MsgPackObject(0xe0) {
 }
 
 class MsgPackUInt(size) extends MsgPackObject {
-	uint(size) value;
+	uint(@args.size) value;
 	@value = value;
 }
 
@@ -66,7 +66,7 @@ forward MsgPackObject(0xce) to MsgPackUInt(32)
 forward MsgPackObject(0xcf) to MsgPackUInt(64)
 
 class MsgPackInt(size) extends MsgPackObject {
-	uint(size) value;
+	int(@args.size) value;
 	@value = value;
 }
 
@@ -101,9 +101,9 @@ class MsgPackStr(length_size) extends MsgPackObject {
     @value = string;
 }
 
-forward MsgPackObject(0xd9) to MsgPackStr(16)
-forward MsgPackObject(0xda) to MsgPackStr(32)
-forward MsgPackObject(0xdb) to MsgPackStr(64)
+forward MsgPackObject(0xd9) to MsgPackStr(8)
+forward MsgPackObject(0xda) to MsgPackStr(16)
+forward MsgPackObject(0xdb) to MsgPackStr(32)
 
 // Binary data family
 class MsgPackBin(length_size) extends MsgPackObject {
@@ -119,22 +119,26 @@ forward MsgPackObject(0xc6) to MsgPackBin(32)
 class MsgPackFixArray as MsgPackObject(0x90) {
     var length = %int(first_byte & 0b00001111);
     @attr.length = length;
-    MsgPackObject tuple[length];
+    Tuple(MsgPackObject(), length, "item%") array; // don't use standard display to show each item type
 }
 
 class MsgPackArray(length_size) extends MsgPackObject {
     uint(@args.length_size, 10) length;
 	@attr.length = length;
-    MsgPackObject tuple[length];
+    Tuple(MsgPackObject(), length, "item%") array; // don't use standard display to show each item type
 }
 
 forward MsgPackObject(0xdc) to MsgPackArray(16)
-forward MsgPackObject(0xdd) to MsgPackArray(16)
+forward MsgPackObject(0xdd) to MsgPackArray(32)
 
 // Map family
 class MsgPackMapEntry {
     MsgPackObject key;
     MsgPackObject value;
+	@attr.key = key;
+	if (value != null) {
+		@attr.value = value;
+	}
 }
 
 class MsgPackFixMap as MsgPackObject(0x80) {
@@ -144,7 +148,7 @@ class MsgPackFixMap as MsgPackObject(0x80) {
 }
 
 class MsgPackMap(length_size) extends MsgPackObject {
-    uint(length_size, 10) length;
+    uint(@args.length_size) length;
 	@attr.length = length;
     MsgPackMapEntry map[length];
 }
@@ -153,21 +157,10 @@ forward MsgPackObject(0xde) to MsgPackMap(16)
 forward MsgPackObject(0xdf) to MsgPackMap(32)
 
 // Extension family
-class MsgPackExt(length_size) extends MsgPackObject {
-	uint(length_size) length;
-    int(8, 10) ext_type;
-	@attr.type = ext_type;
-    Data(8*length) ext_data;
-}
-
-forward MsgPackObject(0xc7) to MsgPackExt(8)
-forward MsgPackObject(0xc8) to MsgPackExt(16)
-forward MsgPackObject(0xc9) to MsgPackExt(32)
-
 class MsgPackFixExt(fixext_size) extends MsgPackObject {
-    int(8) ext_type;
-	@attr.type = ext_type;
-    Data(8*@args.fixext_size) ext_data;
+    int(8) type;
+	@attr.type = type;
+    Data(8*@args.fixext_size) data;
 }
 
 forward MsgPackObject(0xd4) to MsgPackFixExt(1)
@@ -175,3 +168,14 @@ forward MsgPackObject(0xd5) to MsgPackFixExt(2)
 forward MsgPackObject(0xd6) to MsgPackFixExt(4)
 forward MsgPackObject(0xd7) to MsgPackFixExt(8)
 forward MsgPackObject(0xd8) to MsgPackFixExt(16)
+
+class MsgPackExt(length_size) extends MsgPackObject {
+	uint(@args.length_size) length;
+    int(8) type;
+	@attr.type = type;
+    Data(8*length) data;
+}
+
+forward MsgPackObject(0xc7) to MsgPackExt(8)
+forward MsgPackObject(0xc8) to MsgPackExt(16)
+forward MsgPackObject(0xc9) to MsgPackExt(32)

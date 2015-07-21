@@ -192,6 +192,44 @@ void TestUtil::testStrUtil_defineStyle()
              std::string("THIS_SHOULD_WORK_JUST_FINE"));
 }
 
+void TestUtil::testStrUtil_splitByChar()
+{
+    {
+        const std::vector<std::string> test = splitByChar("#aa#bbb##c#", '#');
+        const std::vector<std::string> result = {"", "aa", "bbb", "", "c", ""};
+        QCOMPARE(test, result);
+    }
+
+    {
+        const std::vector<std::string> test = splitByChar("aabbbc", 'e');
+        const std::vector<std::string> result = {"aabbbc"};
+        QCOMPARE(test, result);
+    }
+
+    {
+        const std::vector<std::string> result = {""};
+        QCOMPARE(splitByChar("", 'a'), result);
+    }
+}
+
+void TestUtil::testStrUtil_join()
+{
+    {
+        const std::vector<std::string> input = {"", "aa", "bbb", "", "c", ""};
+
+        const std::string test1 = join(input);
+        const std::string test2 = join(input, "#");
+        const std::string test3 = join(input, "dig");
+
+        QCOMPARE(test1, std::string("aabbbc"));
+        QCOMPARE(test2, std::string("#aa#bbb##c#"));
+        QCOMPARE(test3, std::string("digaadigbbbdigdigcdig"));
+    }
+
+    QCOMPARE(join(std::vector<std::string>()), std::string());
+    QCOMPARE(join(std::vector<std::string>(), "dig"), std::string());
+}
+
 void TestUtil::testOptOwnPtr()
 {
     // since no operation is done on T, using an int

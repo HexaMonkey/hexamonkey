@@ -38,10 +38,14 @@ bool DefaultModule::doLoad()
     {
         if(type.parameterSpecified(0))
         {
-            if(type.parameterSpecified(1))
-                return new ArrayParser(object, module, type.parameterValue(0).toObjectType(), type.parameterValue(1).toInteger());
-            else
-                return new ArrayParser(object, module, type.parameterValue(0).toObjectType(), -1);
+            const ObjectType& elemType = type.parameterValue(0).toObjectType();
+            const int64_t size =
+                      type.parameterSpecified(1) ? type.parameterValue(1).toInteger() : -1LL;
+
+            const std::string& namePattern =
+                      type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
+
+            return new ArrayParser(object, module, elemType, size, namePattern);
         }
         return nullptr;
     });
@@ -59,9 +63,13 @@ bool DefaultModule::doLoad()
     addTemplate(tuple);
     addParser("Tuple", []parserLambda
     {
-        if(type.parameterSpecified(0)  && type.parameterSpecified(1))
+        if(type.parameterSpecified(0) && type.parameterSpecified(1))
         {
-            return new TupleParser(object, module, type.parameterValue(0).toObjectType(), type.parameterValue(1).toInteger());
+            const ObjectType& elemType = type.parameterValue(0).toObjectType();
+            const int64_t elemCount = type.parameterValue(1).toInteger();
+            const std::string& namePattern =
+                       type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
+            return new TupleParser(object, module, elemType, elemCount, namePattern);
         }
         return nullptr;
     });

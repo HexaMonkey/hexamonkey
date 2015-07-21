@@ -26,6 +26,7 @@
 #include <iomanip>
 #include <bitset>
 #include <stdint.h>
+#include <vector>
 
 /**
  * @brief Convert a string into another type using standard stream conversion
@@ -111,6 +112,9 @@ std::string sizeDisplay(int64_t bitCount);
  */
 std::string defineStyle(const std::string& name);
 
+
+std::vector<std::string> splitByChar(const std::string &string, char delim);
+std::string join(const std::vector<std::string>& input, const std::string& glue = "");
 
 #ifndef NO_VARIADIC
 void output(std::ostream& stream);

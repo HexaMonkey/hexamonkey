@@ -18,23 +18,21 @@
 #ifndef ARRAYPARSER_H
 #define ARRAYPARSER_H
 
-#include "core/containerparser.h"
+#include "core/modules/default/elementarycontainerparser.h"
 
 /*!
  * @brief The ArrayParser class
  */
-class ArrayParser : public ContainerParser
+class ArrayParser : public ElementaryContainerParser
 {
 public:
-    ArrayParser(Object& object, const Module& module, const ObjectType& elementType, int64_t size);
-
+    ArrayParser(Object& object, const Module& module, const ObjectType& elementType, int64_t size, const std::string &namePattern);
 protected:
     void doParseHead();
     void doParse();
     bool doParseSome(int hint);
 
 private:
-    ObjectType elementType;
     int64_t size;
 };
 
