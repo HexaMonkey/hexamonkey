@@ -25,6 +25,8 @@ private slots:
     void testStrUtil_extension();
     void testStrUtil_sizeDisplay();
     void testStrUtil_defineStyle();
+    void testStrUtil_splitByChar();
+    void testStrUtil_join();
     void testOptOwnPtr();
     void testIterationWrapper();
 };

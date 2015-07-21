@@ -149,3 +149,32 @@ std::string defineStyle(const std::string& name)
 void output(std::ostream& /*stream*/)
 {
 }
+
+
+std::vector<std::string> splitByChar(const std::string& string, char delim)
+{
+    std::vector<std::string> output;
+    std::stringstream  stream;
+    stream<<string<<std::string(1, delim);
+    for (std::string elem; std::getline(stream,elem,delim); ) {
+        output.push_back(elem);
+    }
+
+    return output;
+}
+
+std::string join(const std::vector<std::string>& input, const std::string& glue)
+{
+    std::stringstream result;
+    bool first = true;
+    for (const std::string& elem : input) {
+        if (first) {
+            first = false;
+        } else {
+            result << glue;
+        }
+        result << elem;
+    }
+
+    return result.str();
+}
