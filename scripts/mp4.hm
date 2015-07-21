@@ -143,6 +143,27 @@ forward Box("hint") to TrackReferenceTypeBox
 forward Box("cdsc") to TrackReferenceTypeBox
 forward Box("hind") to TrackReferenceTypeBox
 
+class InitialObjectDescriptorBox extends FullBox as Box("iods")
+{
+	uint(8)  MP4_IOD_Tag;
+	uint(8,16) type[3];
+	uint(8)  length;
+	uint(16) objectDescriptorID;
+	uint(8)  odProfileLevel;
+	uint(8)  sceneProfileLevel;
+	uint(8)  audioProfileLevel;
+	uint(8)  videoProfileLevel;
+	uint(8)  graphicsProfileLevel;
+	InitialObjectDescriptorEntry entries[];
+}
+
+class InitialObjectDescriptorEntry
+{
+	int(8) ES_ID_IncTag;
+	int(8) length;
+	int(32) trackId;
+}
+
 class TrackReferenceTypeBox extends Box
 {
 	uint(32) track_Ids[];
@@ -260,6 +281,14 @@ class CleanApertureBox as Box("clap")
 	
 	uint(32) vertOffN;
 	uint(32) vertOffD;
+}
+
+class ColorParameterAtomsBox as Box("colr")
+{
+	string(4) colorParameterType;
+	uint(16) primariesIndex;
+	uint(16) transferFunctionIndex;
+	uint(16) matrixIndex;
 }
 
 class VisualSampleEntry extends SampleEntry
