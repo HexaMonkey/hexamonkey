@@ -1,0 +1,645 @@
+0x3069048    Mp4File 
+0x224            FileTypeBox 
+0x32                 uint(32) size = 28
+32x32                string(4) type = "ftyp"
+64x32                string(4) major_brand = "mp42"
+96x32                uint(32) minor_version = 0
+128x96               Array(string(4)) compatible_brands 
+128x32                   string(4) = "mp42"
+160x32                   string(4) = "isom"
+192x32                   string(4) = "avc1"
+224x1056         FreeSpaceBox 
+224x32               uint(32) size = 132
+256x32               string(4) type = "free"
+288x992              Data junk 
+1280x3039040     MediaDataBox 
+1280x32              uint(32) size = 379880
+1312x32              string(4) type = "mdat"
+1344x3038976         Data data 
+3040320x27672    MovieBox 
+3040320x32           uint(32) size = 3459
+3040352x32           string(4) type = "moov"
+3040384x864          MovieHeaderBox 
+3040384x32               uint(32) size = 108
+3040416x32               string(4) type = "mvhd"
+3040448x8                uint(8) version = 0
+3040456x24               bit(24) flags = 0
+3040480x32               date(32) creation_time = 3351965351
+3040512x32               date(32) modification_time = 3351965352
+3040544x32               uint(32) timescale = 90000
+3040576x32               duration(32, 90000) duration = 501120
+3040608x32               fixedPoint(16, 16) rate = 1
+3040640x16               fixedPoint(8, 8) volume = 1
+3040656x16               uint(16) reserved = 0
+3040672x64               Tuple(uint(32), 2) reserved 
+3040672x32                   uint(32) = 0
+3040704x32                   uint(32) = 0
+3040736x288              Tuple(fixedPoint(16, 16), 9) matrix 
+3040736x32                   fixedPoint(16, 16) = 1
+3040768x32                   fixedPoint(16, 16) = 0
+3040800x32                   fixedPoint(16, 16) = 0
+3040832x32                   fixedPoint(16, 16) = 0
+3040864x32                   fixedPoint(16, 16) = 1
+3040896x32                   fixedPoint(16, 16) = 0
+3040928x32                   fixedPoint(16, 16) = 0
+3040960x32                   fixedPoint(16, 16) = 0
+3040992x32                   fixedPoint(16, 16) = 16384
+3041024x192              Tuple(uint(32), 6) pre_defined 
+3041024x32                   uint(32) = 0
+3041056x32                   uint(32) = 0
+3041088x32                   uint(32) = 0
+3041120x32                   uint(32) = 0
+3041152x32                   uint(32) = 0
+3041184x32                   uint(32) = 0
+3041216x32               uint(32) next_track_ID = 3
+3041248x192          InitialObjectDescriptorBox 
+3041248x32               uint(32) size = 24
+3041280x32               string(4) type = "iods"
+3041312x8                uint(8) version = 0
+3041320x24               bit(24) flags = 0
+3041344x8                uint(8) MP4_IOD_Tag = 16
+3041352x24               Tuple(uint(8), 3) type 
+3041352x8                    uint(8) = 128
+3041360x8                    uint(8) = 128
+3041368x8                    uint(8) = 128
+3041376x8                uint(8) length = 7
+3041384x16               uint(16) objectDescriptorID = 79
+3041400x8                uint(8) odProfileLevel = 255
+3041408x8                uint(8) sceneProfileLevel = 255
+3041416x8                uint(8) audioProfileLevel = 15
+3041424x8                uint(8) videoProfileLevel = 127
+3041432x8                uint(8) graphicsProfileLevel = 255
+3041440x0                Array(InitialObjectDescriptorEntry) entries 
+3041440x12368        TrackBox 
+3041440x32               uint(32) size = 1546
+3041472x32               string(4) type = "trak"
+3041504x736              TrackHeaderBox 
+3041504x32                   uint(32) size = 92
+3041536x32                   string(4) type = "tkhd"
+3041568x8                    uint(8) version = 0
+3041576x24                   bit(24) flags = 1
+3041600x32                   date(32) creation_time = 3351965351
+3041632x32                   date(32) modification_time = 3351965352
+3041664x32                   uint(32) track_ID = 1
+3041696x32                   uint(32) reserved = 0
+3041728x32                   duration(32, 90000) duration = 498000
+3041760x64                   Tuple(uint(32), 2) reserved 
+3041760x32                       uint(32) = 0
+3041792x32                       uint(32) = 0
+3041824x16                   int(16) layer = 0
+3041840x16                   int(16) alternate_group = 0
+3041856x16                   fixedPoint(8, 8) volume = 0
+3041872x16                   uint(16) reserved = 0
+3041888x288                  Tuple(fixedPoint(16, 16), 9) matrix 
+3041888x32                       fixedPoint(16, 16) = 1
+3041920x32                       fixedPoint(16, 16) = 0
+3041952x32                       fixedPoint(16, 16) = 0
+3041984x32                       fixedPoint(16, 16) = 0
+3042016x32                       fixedPoint(16, 16) = 1
+3042048x32                       fixedPoint(16, 16) = 0
+3042080x32                       fixedPoint(16, 16) = 0
+3042112x32                       fixedPoint(16, 16) = 0
+3042144x32                       fixedPoint(16, 16) = 16384
+3042176x32                   fixedPoint(16, 16) width = 560
+3042208x32                   fixedPoint(16, 16) height = 320
+3042240x11568            MediaBox 
+3042240x32                   uint(32) size = 1446
+3042272x32                   string(4) type = "mdia"
+3042304x256                  MediaHeaderBox 
+3042304x32                       uint(32) size = 32
+3042336x32                       string(4) type = "mdhd"
+3042368x8                        uint(8) version = 0
+3042376x24                       bit(24) flags = 0
+3042400x32                       date(32) creation_time = 3351965351
+3042432x32                       date(32) modification_time = 3351965352
+3042464x32                       uint(32) timescale = 90000
+3042496x32                       duration(32, 90000) duration = 498000
+3042528x16                       language language = 21956
+3042544x16                       uint(16) pre_defined = 0
+3042560x264                  HandlerBox 
+3042560x32                       uint(32) size = 33
+3042592x32                       string(4) type = "hdlr"
+3042624x8                        uint(8) version = 0
+3042632x24                       bit(24) flags = 0
+3042656x32                       uint(32) pre_defined = 0
+3042688x32                       string(4) handler_type = "vide"
+3042720x96                       Tuple(uint(32), 3) reserved 
+3042720x32                           uint(32) = 0
+3042752x32                           uint(32) = 0
+3042784x32                           uint(32) = 0
+3042816x8                        string name = ""
+3042824x10984                MediaInformationBox 
+3042824x32                       uint(32) size = 1373
+3042856x32                       string(4) type = "minf"
+3042888x160                      VideoMediaHeaderBox 
+3042888x32                           uint(32) size = 20
+3042920x32                           string(4) type = "vmhd"
+3042952x8                            uint(8) version = 0
+3042960x24                           bit(24) flags = 1
+3042984x16                           uint(16) graphicsmode = 0
+3043000x48                           Tuple(uint(16), 3) opcolor 
+3043000x16                               uint(16) = 0
+3043016x16                               uint(16) = 0
+3043032x16                               uint(16) = 0
+3043048x288                      DataInformationBox 
+3043048x32                           uint(32) size = 36
+3043080x32                           string(4) type = "dinf"
+3043112x224                          DataReferenceBox 
+3043112x32                               uint(32) size = 28
+3043144x32                               string(4) type = "dref"
+3043176x8                                uint(8) version = 0
+3043184x24                               bit(24) flags = 0
+3043208x32                               uint(32) entry_count = 1
+3043240x96                               DataEntryUrlBox 
+3043240x32                                   uint(32) size = 12
+3043272x32                                   string(4) type = "url "
+3043304x8                                    uint(8) version = 0
+3043312x24                                   bit(24) flags = 1
+3043336x10472                    SampleTableBox 
+3043336x32                           uint(32) size = 1309
+3043368x32                           string(4) type = "stbl"
+3043400x1368                         SampleDescriptionBox 
+3043400x32                               uint(32) size = 171
+3043432x32                               string(4) type = "stsd"
+3043464x8                                uint(8) version = 0
+3043472x24                               bit(24) flags = 0
+3043496x32                               uint(32) entry_count = 1
+3043528x1240                             VisualSampleEntry 
+3043528x32                                   uint(32) size = 155
+3043560x32                                   string(4) type = "avc1"
+3043592x48                                   Tuple(uint(8), 6) reserved 
+3043592x8                                        uint(8) = 0
+3043600x8                                        uint(8) = 0
+3043608x8                                        uint(8) = 0
+3043616x8                                        uint(8) = 0
+3043624x8                                        uint(8) = 0
+3043632x8                                        uint(8) = 0
+3043640x16                                   uint(16) data_reference_index = 1
+3043656x16                                   uint(16) pre_defined = 0
+3043672x16                                   uint(16) reserved = 0
+3043688x96                                   Tuple(uint(32), 3) pre_defined 
+3043688x32                                       uint(32) = 0
+3043720x32                                       uint(32) = 0
+3043752x32                                       uint(32) = 0
+3043784x16                                   uint(16) width = 560
+3043800x16                                   uint(16) height = 320
+3043816x32                                   fixedPoint(16, 16) horizresolution = 72
+3043848x32                                   fixedPoint(16, 16) vertresolution = 72
+3043880x32                                   uint(32) reserved = 0
+3043912x16                                   uint(16) frame_count = 1
+3043928x256                                  string(32) reserved = "JVT/AVC Coding"
+3044184x16                                   uint(16) depth = 24
+3044200x16                                   int(16) pre_defined = -1
+3044216x408                                  AVCConfigurationBox 
+3044216x32                                       uint(32) size = 51
+3044248x32                                       string(4) type = "avcC"
+3044280x8                                        uint(8) configurationVersion = 1
+3044288x8                                        uint(8) AVCProfileIndication = 66
+3044296x8                                        uint(8) profile_compatibility = 192
+3044304x8                                        uint(8) AVCLevelIndication = 30
+3044312x6                                        bit(6) reserved = 63
+3044318x2                                        uint(2) lengthSizeMinusOne = 3
+3044320x3                                        bit(3) reserved = 7
+3044323x5                                        uint(5) numOfSequenceParameterSets = 1
+3044328x232                                      Tuple(AVCSequence, 1) sequences 
+3044328x232                                          AVCSequence 
+3044328x16                                               uint(16) sequenceParameterSetLength = 27
+3044344x216                                              Data sequenceParameterSetNALUnit 
+3044560x8                                        uint(8) numOfPictureParameterSets = 1
+3044568x56                                       Tuple(AVCPicture, 1) pictures 
+3044568x56                                           AVCPicture 
+3044568x16                                               uint(16) pictureParameterSetLength = 5
+3044584x40                                               Data pictureParameterSetNALUnit 
+3044624x144                                  ColorParameterAtomsBox 
+3044624x32                                       uint(32) size = 18
+3044656x32                                       string(4) type = "colr"
+3044688x32                                       string(4) colorParameterType = "nclc"
+3044720x16                                       uint(16) primariesIndex = 1
+3044736x16                                       uint(16) transferFunctionIndex = 1
+3044752x16                                       uint(16) matrixIndex = 1
+3044768x192                          TimeToSampleBox 
+3044768x32                               uint(32) size = 24
+3044800x32                               string(4) type = "stts"
+3044832x8                                uint(8) version = 0
+3044840x24                               bit(24) flags = 0
+3044864x32                               uint(32) entry_count = 1
+3044896x64                               Tuple(TimeToSampleEntry, 1) entries 
+3044896x64                                   TimeToSampleEntry 
+3044896x32                                       uint(32) sample_count = 166
+3044928x32                                       uint(32) sample_delta = 3000
+3044960x5472                         SampleSizeBox 
+3044960x32                               uint(32) size = 684
+3044992x32                               string(4) type = "stsz"
+3045024x8                                uint(8) version = 0
+3045032x24                               bit(24) flags = 0
+3045056x32                               uint(32) sample_size = 0
+3045088x32                               uint(32) sample_count = 166
+3045120x5312                             Tuple(uint(32), 166) entry_sizes 
+3045120x32                                   uint(32) = 22055
+3045152x32                                   uint(32) = 2848
+3045184x32                                   uint(32) = 1468
+3045216x32                                   uint(32) = 1506
+3045248x32                                   uint(32) = 1473
+3045280x32                                   uint(32) = 1079
+3045312x32                                   uint(32) = 1031
+3045344x32                                   uint(32) = 950
+3045376x32                                   uint(32) = 1605
+3045408x32                                   uint(32) = 883
+3045440x32                                   uint(32) = 1298
+3045472x32                                   uint(32) = 806
+3045504x32                                   uint(32) = 745
+3045536x32                                   uint(32) = 891
+3045568x32                                   uint(32) = 842
+3045600x32                                   uint(32) = 875
+3045632x32                                   uint(32) = 694
+3045664x32                                   uint(32) = 844
+3045696x32                                   uint(32) = 634
+3045728x32                                   uint(32) = 711
+3050432x320                          SampleToChunkBox 
+3050432x32                               uint(32) size = 40
+3050464x32                               string(4) type = "stsc"
+3050496x8                                uint(8) version = 0
+3050504x24                               bit(24) flags = 0
+3050528x32                               uint(32) entry_count = 2
+3050560x192                              Tuple(SampleToChunkEntry, 2) entries 
+3050560x96                                   SampleToChunkEntry 
+3050560x32                                       uint(32) first_chunk = 1
+3050592x32                                       uint(32) sample_per_chunk = 4
+3050624x32                                       uint(32) sample_description_index = 1
+3050656x96                                   SampleToChunkEntry 
+3050656x32                                       uint(32) first_chunk = 42
+3050688x32                                       uint(32) sample_per_chunk = 2
+3050720x32                                       uint(32) sample_description_index = 1
+3050752x1472                         ChunkOffsetBox 
+3050752x32                               uint(32) size = 184
+3050784x32                               string(4) type = "stco"
+3050816x8                                uint(8) version = 0
+3050824x24                               bit(24) flags = 0
+3050848x32                               uint(32) entry_count = 42
+3050880x1344                             Tuple(uint(32), 42) chunk_offsets 
+3050880x32                                   uint(32) = 168
+3050912x32                                   uint(32) = 29670
+3050944x32                                   uint(32) = 35828
+3050976x32                                   uint(32) = 41992
+3051008x32                                   uint(32) = 46948
+3051040x32                                   uint(32) = 51365
+3051072x32                                   uint(32) = 55256
+3051104x32                                   uint(32) = 58533
+3051136x32                                   uint(32) = 60511
+3051168x32                                   uint(32) = 63583
+3051200x32                                   uint(32) = 66625
+3051232x32                                   uint(32) = 73667
+3051264x32                                   uint(32) = 86405
+3051296x32                                   uint(32) = 99454
+3051328x32                                   uint(32) = 117926
+3051360x32                                   uint(32) = 132032
+3051392x32                                   uint(32) = 146514
+3051424x32                                   uint(32) = 157301
+3051456x32                                   uint(32) = 166428
+3051488x32                                   uint(32) = 177318
+3052224x160                          SyncSampleBox 
+3052224x32                               uint(32) size = 20
+3052256x32                               string(4) type = "stss"
+3052288x8                                uint(8) version = 0
+3052296x24                               bit(24) flags = 0
+3052320x32                               uint(32) entry_count = 1
+3052352x32                               Tuple(uint(32), 1) sample_numbers 
+3052352x32                                   uint(32) = 1
+3052384x1424                         SampleDependencyTypeBox 
+3052384x32                               uint(32) size = 178
+3052416x32                               string(4) type = "sdtp"
+3052448x8                                uint(8) version = 0
+3052456x24                               bit(24) flags = 0
+3052480x1328                             Array(SampleDependencyTypeEntry) entries 
+3052480x8                                    SampleDependencyTypeEntry 
+3052480x2                                        uint(2) reserved = 0
+3052482x2                                        uint(2) sample_depends_on = 0
+3052484x2                                        uint(2) sample_is_depended_on = 1
+3052486x2                                        uint(2) sample_has_redundancy = 0
+3052488x8                                    SampleDependencyTypeEntry 
+3052488x2                                        uint(2) reserved = 1
+3052490x2                                        uint(2) sample_depends_on = 0
+3052492x2                                        uint(2) sample_is_depended_on = 1
+3052494x2                                        uint(2) sample_has_redundancy = 0
+3052496x8                                    SampleDependencyTypeEntry 
+3052496x2                                        uint(2) reserved = 1
+3052498x2                                        uint(2) sample_depends_on = 0
+3052500x2                                        uint(2) sample_is_depended_on = 1
+3052502x2                                        uint(2) sample_has_redundancy = 0
+3052504x8                                    SampleDependencyTypeEntry 
+3052504x2                                        uint(2) reserved = 1
+3052506x2                                        uint(2) sample_depends_on = 0
+3052508x2                                        uint(2) sample_is_depended_on = 1
+3052510x2                                        uint(2) sample_has_redundancy = 0
+3052512x8                                    SampleDependencyTypeEntry 
+3052512x2                                        uint(2) reserved = 1
+3052514x2                                        uint(2) sample_depends_on = 0
+3052516x2                                        uint(2) sample_is_depended_on = 1
+3052518x2                                        uint(2) sample_has_redundancy = 0
+3052520x8                                    SampleDependencyTypeEntry 
+3052520x2                                        uint(2) reserved = 1
+3052522x2                                        uint(2) sample_depends_on = 0
+3052524x2                                        uint(2) sample_is_depended_on = 1
+3052526x2                                        uint(2) sample_has_redundancy = 0
+3052528x8                                    SampleDependencyTypeEntry 
+3052528x2                                        uint(2) reserved = 1
+3052530x2                                        uint(2) sample_depends_on = 0
+3052532x2                                        uint(2) sample_is_depended_on = 1
+3052534x2                                        uint(2) sample_has_redundancy = 0
+3052536x8                                    SampleDependencyTypeEntry 
+3052536x2                                        uint(2) reserved = 1
+3052538x2                                        uint(2) sample_depends_on = 0
+3052540x2                                        uint(2) sample_is_depended_on = 1
+3052542x2                                        uint(2) sample_has_redundancy = 0
+3052544x8                                    SampleDependencyTypeEntry 
+3052544x2                                        uint(2) reserved = 1
+3052546x2                                        uint(2) sample_depends_on = 0
+3052548x2                                        uint(2) sample_is_depended_on = 1
+3052550x2                                        uint(2) sample_has_redundancy = 0
+3052552x8                                    SampleDependencyTypeEntry 
+3052552x2                                        uint(2) reserved = 1
+3052554x2                                        uint(2) sample_depends_on = 0
+3052556x2                                        uint(2) sample_is_depended_on = 1
+3052558x2                                        uint(2) sample_has_redundancy = 0
+3052560x8                                    SampleDependencyTypeEntry 
+3052560x2                                        uint(2) reserved = 1
+3052562x2                                        uint(2) sample_depends_on = 0
+3052564x2                                        uint(2) sample_is_depended_on = 1
+3052566x2                                        uint(2) sample_has_redundancy = 0
+3052568x8                                    SampleDependencyTypeEntry 
+3052568x2                                        uint(2) reserved = 1
+3052570x2                                        uint(2) sample_depends_on = 0
+3052572x2                                        uint(2) sample_is_depended_on = 1
+3052574x2                                        uint(2) sample_has_redundancy = 0
+3052576x8                                    SampleDependencyTypeEntry 
+3052576x2                                        uint(2) reserved = 1
+3052578x2                                        uint(2) sample_depends_on = 0
+3052580x2                                        uint(2) sample_is_depended_on = 1
+3052582x2                                        uint(2) sample_has_redundancy = 0
+3052584x8                                    SampleDependencyTypeEntry 
+3052584x2                                        uint(2) reserved = 1
+3052586x2                                        uint(2) sample_depends_on = 0
+3052588x2                                        uint(2) sample_is_depended_on = 1
+3052590x2                                        uint(2) sample_has_redundancy = 0
+3052592x8                                    SampleDependencyTypeEntry 
+3052592x2                                        uint(2) reserved = 1
+3052594x2                                        uint(2) sample_depends_on = 0
+3052596x2                                        uint(2) sample_is_depended_on = 1
+3052598x2                                        uint(2) sample_has_redundancy = 0
+3052600x8                                    SampleDependencyTypeEntry 
+3052600x2                                        uint(2) reserved = 1
+3052602x2                                        uint(2) sample_depends_on = 0
+3052604x2                                        uint(2) sample_is_depended_on = 1
+3052606x2                                        uint(2) sample_has_redundancy = 0
+3052608x8                                    SampleDependencyTypeEntry 
+3052608x2                                        uint(2) reserved = 1
+3052610x2                                        uint(2) sample_depends_on = 0
+3052612x2                                        uint(2) sample_is_depended_on = 1
+3052614x2                                        uint(2) sample_has_redundancy = 0
+3052616x8                                    SampleDependencyTypeEntry 
+3052616x2                                        uint(2) reserved = 1
+3052618x2                                        uint(2) sample_depends_on = 0
+3052620x2                                        uint(2) sample_is_depended_on = 1
+3052622x2                                        uint(2) sample_has_redundancy = 0
+3052624x8                                    SampleDependencyTypeEntry 
+3052624x2                                        uint(2) reserved = 1
+3052626x2                                        uint(2) sample_depends_on = 0
+3052628x2                                        uint(2) sample_is_depended_on = 1
+3052630x2                                        uint(2) sample_has_redundancy = 0
+3052632x8                                    SampleDependencyTypeEntry 
+3052632x2                                        uint(2) reserved = 1
+3052634x2                                        uint(2) sample_depends_on = 0
+3052636x2                                        uint(2) sample_is_depended_on = 1
+3052638x2                                        uint(2) sample_has_redundancy = 0
+3053808x13296        TrackBox 
+3053808x32               uint(32) size = 1662
+3053840x32               string(4) type = "trak"
+3053872x736              TrackHeaderBox 
+3053872x32                   uint(32) size = 92
+3053904x32                   string(4) type = "tkhd"
+3053936x8                    uint(8) version = 0
+3053944x24                   bit(24) flags = 3
+3053968x32                   date(32) creation_time = 3351965351
+3054000x32                   date(32) modification_time = 3351965352
+3054032x32                   uint(32) track_ID = 2
+3054064x32                   uint(32) reserved = 0
+3054096x32                   duration(32, 90000) duration = 501120
+3054128x64                   Tuple(uint(32), 2) reserved 
+3054128x32                       uint(32) = 0
+3054160x32                       uint(32) = 0
+3054192x16                   int(16) layer = 0
+3054208x16                   int(16) alternate_group = 0
+3054224x16                   fixedPoint(8, 8) volume = 1
+3054240x16                   uint(16) reserved = 0
+3054256x288                  Tuple(fixedPoint(16, 16), 9) matrix 
+3054256x32                       fixedPoint(16, 16) = 1
+3054288x32                       fixedPoint(16, 16) = 0
+3054320x32                       fixedPoint(16, 16) = 0
+3054352x32                       fixedPoint(16, 16) = 0
+3054384x32                       fixedPoint(16, 16) = 1
+3054416x32                       fixedPoint(16, 16) = 0
+3054448x32                       fixedPoint(16, 16) = 0
+3054480x32                       fixedPoint(16, 16) = 0
+3054512x32                       fixedPoint(16, 16) = 16384
+3054544x32                   fixedPoint(16, 16) width = 0
+3054576x32                   fixedPoint(16, 16) height = 0
+3054608x12320            MediaBox 
+3054608x32                   uint(32) size = 1540
+3054640x32                   string(4) type = "mdia"
+3054672x256                  MediaHeaderBox 
+3054672x32                       uint(32) size = 32
+3054704x32                       string(4) type = "mdhd"
+3054736x8                        uint(8) version = 0
+3054744x24                       bit(24) flags = 0
+3054768x32                       date(32) creation_time = 3351965351
+3054800x32                       date(32) modification_time = 3351965352
+3054832x32                       uint(32) timescale = 48000
+3054864x32                       duration(32, 48000) duration = 267264
+3054896x16                       language language = 5575
+3054912x16                       uint(16) pre_defined = 0
+3054928x264                  HandlerBox 
+3054928x32                       uint(32) size = 33
+3054960x32                       string(4) type = "hdlr"
+3054992x8                        uint(8) version = 0
+3055000x24                       bit(24) flags = 0
+3055024x32                       uint(32) pre_defined = 0
+3055056x32                       string(4) handler_type = "soun"
+3055088x96                       Tuple(uint(32), 3) reserved 
+3055088x32                           uint(32) = 0
+3055120x32                           uint(32) = 0
+3055152x32                           uint(32) = 0
+3055184x8                        string name = ""
+3055192x11736                MediaInformationBox 
+3055192x32                       uint(32) size = 1467
+3055224x32                       string(4) type = "minf"
+3055256x128                      SoundMediaHeaderBox 
+3055256x32                           uint(32) size = 16
+3055288x32                           string(4) type = "smhd"
+3055320x8                            uint(8) version = 0
+3055328x24                           bit(24) flags = 0
+3055352x16                           fixedPoint(8, 8) balance = 0
+3055368x16                           uint(16) reserved = 0
+3055384x288                      DataInformationBox 
+3055384x32                           uint(32) size = 36
+3055416x32                           string(4) type = "dinf"
+3055448x224                          DataReferenceBox 
+3055448x32                               uint(32) size = 28
+3055480x32                               string(4) type = "dref"
+3055512x8                                uint(8) version = 0
+3055520x24                               bit(24) flags = 0
+3055544x32                               uint(32) entry_count = 1
+3055576x96                               DataEntryUrlBox 
+3055576x32                                   uint(32) size = 12
+3055608x32                                   string(4) type = "url "
+3055640x8                                    uint(8) version = 0
+3055648x24                                   bit(24) flags = 1
+3055672x11256                    SampleTableBox 
+3055672x32                           uint(32) size = 1407
+3055704x32                           string(4) type = "stbl"
+3055736x824                          SampleDescriptionBox 
+3055736x32                               uint(32) size = 103
+3055768x32                               string(4) type = "stsd"
+3055800x8                                uint(8) version = 0
+3055808x24                               bit(24) flags = 0
+3055832x32                               uint(32) entry_count = 1
+3055864x696                              AudioSampleEntry 
+3055864x32                                   uint(32) size = 87
+3055896x32                                   string(4) type = "mp4a"
+3055928x48                                   Tuple(uint(8), 6) reserved 
+3055928x8                                        uint(8) = 0
+3055936x8                                        uint(8) = 0
+3055944x8                                        uint(8) = 0
+3055952x8                                        uint(8) = 0
+3055960x8                                        uint(8) = 0
+3055968x8                                        uint(8) = 0
+3055976x16                                   uint(16) data_reference_index = 1
+3055992x64                                   Tuple(uint(32), 2) reserved 
+3055992x32                                       uint(32) = 0
+3056024x32                                       uint(32) = 0
+3056056x16                                   uint(16) channelcount = 1
+3056072x16                                   uint(16) samplesize = 16
+3056088x16                                   uint(16) pre_defined = 0
+3056104x16                                   uint(16) reserved = 0
+3056120x32                                   uint(32) samplerate = 3145728000
+3056560x192                          TimeToSampleBox 
+3056560x32                               uint(32) size = 24
+3056592x32                               string(4) type = "stts"
+3056624x8                                uint(8) version = 0
+3056632x24                               bit(24) flags = 0
+3056656x32                               uint(32) entry_count = 1
+3056688x64                               Tuple(TimeToSampleEntry, 1) entries 
+3056688x64                                   TimeToSampleEntry 
+3056688x32                                       uint(32) sample_count = 261
+3056720x32                                       uint(32) sample_delta = 1024
+3056752x8512                         SampleSizeBox 
+3056752x32                               uint(32) size = 1064
+3056784x32                               string(4) type = "stsz"
+3056816x8                                uint(8) version = 0
+3056824x24                               bit(24) flags = 0
+3056848x32                               uint(32) sample_size = 0
+3056880x32                               uint(32) sample_count = 261
+3056912x8352                             Tuple(uint(32), 261) entry_sizes 
+3056912x32                                   uint(32) = 247
+3056944x32                                   uint(32) = 219
+3056976x32                                   uint(32) = 225
+3057008x32                                   uint(32) = 229
+3057040x32                                   uint(32) = 233
+3057072x32                                   uint(32) = 232
+3057104x32                                   uint(32) = 240
+3057136x32                                   uint(32) = 241
+3057168x32                                   uint(32) = 239
+3057200x32                                   uint(32) = 216
+3057232x32                                   uint(32) = 230
+3057264x32                                   uint(32) = 231
+3057296x32                                   uint(32) = 233
+3057328x32                                   uint(32) = 235
+3057360x32                                   uint(32) = 234
+3057392x32                                   uint(32) = 232
+3057424x32                                   uint(32) = 225
+3057456x32                                   uint(32) = 231
+3057488x32                                   uint(32) = 215
+3057520x32                                   uint(32) = 218
+3065264x320                          SampleToChunkBox 
+3065264x32                               uint(32) size = 40
+3065296x32                               string(4) type = "stsc"
+3065328x8                                uint(8) version = 0
+3065336x24                               bit(24) flags = 0
+3065360x32                               uint(32) entry_count = 2
+3065392x192                              Tuple(SampleToChunkEntry, 2) entries 
+3065392x96                                   SampleToChunkEntry 
+3065392x32                                       uint(32) first_chunk = 1
+3065424x32                                       uint(32) sample_per_chunk = 7
+3065456x32                                       uint(32) sample_description_index = 1
+3065488x96                                   SampleToChunkEntry 
+3065488x32                                       uint(32) first_chunk = 38
+3065520x32                                       uint(32) sample_per_chunk = 2
+3065552x32                                       uint(32) sample_description_index = 1
+3065584x1344                         ChunkOffsetBox 
+3065584x32                               uint(32) size = 168
+3065616x32                               string(4) type = "stco"
+3065648x8                                uint(8) version = 0
+3065656x24                               bit(24) flags = 0
+3065680x32                               uint(32) entry_count = 38
+3065712x1216                             Tuple(uint(32), 38) chunk_offsets 
+3065712x32                                   uint(32) = 28045
+3065744x32                                   uint(32) = 34203
+3065776x32                                   uint(32) = 40420
+3065808x32                                   uint(32) = 45345
+3065840x32                                   uint(32) = 49831
+3065872x32                                   uint(32) = 53902
+3065904x32                                   uint(32) = 57230
+3065936x32                                   uint(32) = 62292
+3065968x32                                   uint(32) = 65256
+3066000x32                                   uint(32) = 72197
+3066032x32                                   uint(32) = 84679
+3066064x32                                   uint(32) = 97832
+3066096x32                                   uint(32) = 116129
+3066128x32                                   uint(32) = 130185
+3066160x32                                   uint(32) = 144732
+3066192x32                                   uint(32) = 164714
+3066224x32                                   uint(32) = 175714
+3066256x32                                   uint(32) = 188846
+3066288x32                                   uint(32) = 204141
+3066320x32                                   uint(32) = 219140
+3066928x176              UserDataBox 
+3066928x32                   uint(32) size = 22
+3066960x32                   string(4) type = "udta"
+3066992x112                  Box("name") 
+3066992x32                       uint(32) size = 14
+3067024x32                       string(4) type = "name"
+3067104x888          UserDataBox 
+3067104x32               uint(32) size = 111
+3067136x32               string(4) type = "udta"
+3067168x824              MetaBox 
+3067168x32                   uint(32) size = 103
+3067200x32                   string(4) type = "meta"
+3067232x8                    uint(8) version = 0
+3067240x24                   bit(24) flags = 0
+3067264x264                  HandlerBox 
+3067264x32                       uint(32) size = 33
+3067296x32                       string(4) type = "hdlr"
+3067328x8                        uint(8) version = 0
+3067336x24                       bit(24) flags = 0
+3067360x32                       uint(32) pre_defined = 0
+3067392x32                       string(4) handler_type = "mdir"
+3067424x96                       Tuple(uint(32), 3) reserved 
+3067424x32                           uint(32) = 0
+3067456x32                           uint(32) = 0
+3067488x32                           uint(32) = 0
+3067520x8                        string name = ""
+3067528x464                  ItunesDescriptionBox 
+3067528x32                       uint(32) size = 58
+3067560x32                       string(4) type = "ilst"
+3067592x400                      ItunesTagBox("ctoo") 
+3067592x32                           uint(32) size = 50
+3067624x32                           string(4) type = "©too"
+3067656x336                          ItunesDataBox("ctoo") data 
+3067656x32                               uint(32) size = 42
+3067688x32                               string(4) type = "data"
+3067720x32                               uint(32) data_type = 1
+3067752x32                               uint(32) reserved = 0
+3067784x208                              string(26) payload = "HandBrake 0.9.4 2009112300"
+3067992x1056     FreeSpaceBox 
+3067992x32           uint(32) size = 132
+3068024x32           string(4) type = "free"
+3068056x992          Data junk 

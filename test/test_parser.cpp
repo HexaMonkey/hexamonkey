@@ -19,6 +19,11 @@ void TestParser::test_messagepack()
     QVERIFY(checkFile("resources/parser/test_msgpack.msgpack"));
 }
 
+void TestParser::test_mp4()
+{
+    QVERIFY(checkFile("resources/parser/test_mp4.mp4", -1, 20));
+}
+
 bool TestParser::checkFile(const std::string &path, int depth, int width)
 {
     RealFile file;
