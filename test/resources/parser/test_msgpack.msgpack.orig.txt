@@ -1,71 +1,237 @@
-0x1184       MsgPackFile 
-0x8              MsgPackUInt7b = "63"
-0x8                  uint(8) first_byte = 63
-8x48             MsgPackFixStr = "title"
-8x8                  uint(8) first_byte = 165
-16x40                String(5) string = "title"
-56x120           MsgPackFixStr = "Example Schema"
-56x8                 uint(8) first_byte = 174
-64x112               String(14) string = "Example Schema"
-176x40           MsgPackFixStr = "type"
-176x8                uint(8) first_byte = 164
-184x32               String(4) string = "type"
-216x56           MsgPackFixStr = "object"
-216x8                uint(8) first_byte = 166
-224x48               String(6) string = "object"
-272x40           MsgPackFixStr = "flat"
-272x8                uint(8) first_byte = 164
-280x32               String(4) string = "flat"
-312x8            MsgPackBool = "true"
-312x8                uint(8) first_byte = 195
-320x88           MsgPackFixStr = "properties"
-320x8                uint(8) first_byte = 170
-328x80               String(10) string = "properties"
-408x8            MsgPackUInt7b = "63"
-408x8                uint(8) first_byte = 63
-416x80           MsgPackFixStr = "firstName"
-416x8                uint(8) first_byte = 169
-424x72               String(9) string = "firstName"
-496x104          MsgPackFixMap = "map with 1 entries"
-496x8                uint(8) first_byte = 129
-504x96               Tuple(MsgPackMapEntry, 1) map 
-504x96                   MsgPackMapEntry 
-504x40                       MsgPackFixStr key = "type"
-504x8                            uint(8) first_byte = 164
-512x32                           String(4) string = "type"
-544x56                       MsgPackFixStr val = "string"
-544x8                            uint(8) first_byte = 166
-552x48                           String(6) string = "string"
-600x72           MsgPackFixStr = "lastName"
-600x8                uint(8) first_byte = 168
-608x64               String(8) string = "lastName"
-672x104          MsgPackFixMap = "map with 1 entries"
-672x8                uint(8) first_byte = 129
-680x96               Tuple(MsgPackMapEntry, 1) map 
-680x96                   MsgPackMapEntry 
-680x40                       MsgPackFixStr key = "type"
-680x8                            uint(8) first_byte = 164
-688x32                           String(4) string = "type"
-720x56                       MsgPackFixStr val = "string"
-720x8                            uint(8) first_byte = 166
-728x48                           String(6) string = "string"
-776x32           MsgPackFixStr = "age"
-776x8                uint(8) first_byte = 163
-784x24               String(3) string = "age"
-808x8            MsgPackUInt7b = "63"
-808x8                uint(8) first_byte = 63
-816x96           MsgPackFixStr = "description"
-816x8                uint(8) first_byte = 171
-824x88               String(11) string = "description"
-912x104          MsgPackFixStr = "Age in years"
-912x8                uint(8) first_byte = 172
-920x96               String(12) string = "Age in years"
-1016x40          MsgPackFixStr = "type"
-1016x8               uint(8) first_byte = 164
-1024x32              String(4) string = "type"
-1056x64          MsgPackFixStr = "integer"
-1056x8               uint(8) first_byte = 167
-1064x56              String(7) string = "integer"
-1120x64          MsgPackFixStr = "minimum"
-1120x8               uint(8) first_byte = 167
-1128x56              String(7) string = "minimum"
+0x2376       MsgPackFile 
+0x2376           MsgPackArray(16) 
+0x8                  uint(8) first_byte = 220
+8x16                 uint(16) length = 36
+24x2352              Tuple(MsgPackObject, 36) array 
+24x8                     MsgPackNil item0 
+24x8                         uint(8) first_byte = 192
+32x8                     MsgPackBool item1 = 0
+32x8                         uint(8) first_byte = 194
+40x8                     MsgPackBool item2 = 1
+40x8                         uint(8) first_byte = 195
+48x8                     MsgPackPositiveFixNum item3 = 42
+48x8                         uint(8) first_byte = 42
+56x8                     MsgPackNegativeFixNum item4 = -5
+56x8                         uint(8) first_byte = 251
+64x16                    MsgPackUInt(8) item5 = 150
+64x8                         uint(8) first_byte = 204
+72x8                         uint(8) value = 150
+80x24                    MsgPackUInt(16) item6 = 33000
+80x8                         uint(8) first_byte = 205
+88x16                        uint(16) value = 33000
+104x40                   MsgPackUInt(32) item7 = 2000000
+104x8                        uint(8) first_byte = 206
+112x32                       uint(32) value = 2000000
+144x72                   MsgPackUInt(64) item8 = 2000000000000000
+144x8                        uint(8) first_byte = 207
+152x64                       uint(64) value = 2000000000000000
+216x16                   MsgPackInt(8) item9 = -60
+216x8                        uint(8) first_byte = 208
+224x8                        int(8) value = -60
+232x24                   MsgPackInt(16) item10 = -3000
+232x8                        uint(8) first_byte = 209
+240x16                       int(16) value = -3000
+256x40                   MsgPackInt(32) item11 = -200000
+256x8                        uint(8) first_byte = 210
+264x32                       int(32) value = -200000
+296x72                   MsgPackInt(64) item12 = -20000000000
+296x8                        uint(8) first_byte = 211
+304x64                       int(64) value = -20000000000
+368x40                   MsgPackFloat(32) item13 = 3.14159
+368x8                        uint(8) first_byte = 202
+376x32                       float value = 3.14159
+408x72                   MsgPackFloat(64) item14 = 3.14159
+408x8                        uint(8) first_byte = 203
+416x64                       double value = 3.14159
+480x104                  MsgPackFixStr item15 = "Hello world!"
+480x8                        uint(8) first_byte = 172
+488x96                       String(12) string = "Hello world!"
+584x112                  MsgPackStr(8) item16 = "Hello world!"
+584x8                        uint(8) first_byte = 217
+592x8                        uint(8) length = 12
+600x96                       String(12) string = "Hello world!"
+696x120                  MsgPackStr(16) item17 = "Hello world!"
+696x8                        uint(8) first_byte = 218
+704x16                       uint(16) length = 12
+720x96                       String(12) string = "Hello world!"
+816x136                  MsgPackStr(32) item18 = "Hello world!"
+816x8                        uint(8) first_byte = 219
+824x32                       uint(32) length = 12
+856x96                       String(12) string = "Hello world!"
+952x80                   MsgPackBin(8) item19 
+952x8                        uint(8) first_byte = 196
+960x8                        uint(8) length = 8
+968x64                       Data bin 
+1032x88                  MsgPackBin(16) item20 
+1032x8                       uint(8) first_byte = 197
+1040x16                      uint(16) length = 8
+1056x64                      Data bin 
+1120x104                 MsgPackBin(32) item21 
+1120x8                       uint(8) first_byte = 198
+1128x32                      uint(32) length = 8
+1160x64                      Data bin 
+1224x72                  MsgPackFixArray item22 
+1224x8                       uint(8) first_byte = 152
+1232x64                      Tuple(MsgPackObject, 8) array 
+1232x8                           MsgPackPositiveFixNum item0 = 1
+1232x8                               uint(8) first_byte = 1
+1240x8                           MsgPackPositiveFixNum item1 = 2
+1240x8                               uint(8) first_byte = 2
+1248x8                           MsgPackPositiveFixNum item2 = 3
+1248x8                               uint(8) first_byte = 3
+1256x8                           MsgPackPositiveFixNum item3 = 4
+1256x8                               uint(8) first_byte = 4
+1264x8                           MsgPackPositiveFixNum item4 = 5
+1264x8                               uint(8) first_byte = 5
+1272x8                           MsgPackPositiveFixNum item5 = 6
+1272x8                               uint(8) first_byte = 6
+1280x8                           MsgPackPositiveFixNum item6 = 7
+1280x8                               uint(8) first_byte = 7
+1288x8                           MsgPackNil item7 
+1288x8                               uint(8) first_byte = 192
+1296x88                  MsgPackArray(16) item23 
+1296x8                       uint(8) first_byte = 220
+1304x16                      uint(16) length = 8
+1320x64                      Tuple(MsgPackObject, 8) array 
+1320x8                           MsgPackPositiveFixNum item0 = 1
+1320x8                               uint(8) first_byte = 1
+1328x8                           MsgPackPositiveFixNum item1 = 2
+1328x8                               uint(8) first_byte = 2
+1336x8                           MsgPackPositiveFixNum item2 = 3
+1336x8                               uint(8) first_byte = 3
+1344x8                           MsgPackPositiveFixNum item3 = 4
+1344x8                               uint(8) first_byte = 4
+1352x8                           MsgPackPositiveFixNum item4 = 5
+1352x8                               uint(8) first_byte = 5
+1360x8                           MsgPackPositiveFixNum item5 = 6
+1360x8                               uint(8) first_byte = 6
+1368x8                           MsgPackPositiveFixNum item6 = 7
+1368x8                               uint(8) first_byte = 7
+1376x8                           MsgPackNil item7 
+1376x8                               uint(8) first_byte = 192
+1384x104                 MsgPackArray(32) item24 
+1384x8                       uint(8) first_byte = 221
+1392x32                      uint(32) length = 8
+1424x64                      Tuple(MsgPackObject, 8) array 
+1424x8                           MsgPackPositiveFixNum item0 = 1
+1424x8                               uint(8) first_byte = 1
+1432x8                           MsgPackPositiveFixNum item1 = 2
+1432x8                               uint(8) first_byte = 2
+1440x8                           MsgPackPositiveFixNum item2 = 3
+1440x8                               uint(8) first_byte = 3
+1448x8                           MsgPackPositiveFixNum item3 = 4
+1448x8                               uint(8) first_byte = 4
+1456x8                           MsgPackPositiveFixNum item4 = 5
+1456x8                               uint(8) first_byte = 5
+1464x8                           MsgPackPositiveFixNum item5 = 6
+1464x8                               uint(8) first_byte = 6
+1472x8                           MsgPackPositiveFixNum item6 = 7
+1472x8                               uint(8) first_byte = 7
+1480x8                           MsgPackNil item7 
+1480x8                               uint(8) first_byte = 192
+1488x72                  MsgPackFixMap item25 
+1488x8                       uint(8) first_byte = 132
+1496x64                      Tuple(MsgPackMapEntry, 4) map 
+1496x16                          MsgPackMapEntry 
+1496x8                               MsgPackPositiveFixNum key = 1
+1496x8                                   uint(8) first_byte = 1
+1504x8                               MsgPackPositiveFixNum value = 2
+1504x8                                   uint(8) first_byte = 2
+1512x16                          MsgPackMapEntry 
+1512x8                               MsgPackPositiveFixNum key = 3
+1512x8                                   uint(8) first_byte = 3
+1520x8                               MsgPackPositiveFixNum value = 4
+1520x8                                   uint(8) first_byte = 4
+1528x16                          MsgPackMapEntry 
+1528x8                               MsgPackPositiveFixNum key = 5
+1528x8                                   uint(8) first_byte = 5
+1536x8                               MsgPackPositiveFixNum value = 6
+1536x8                                   uint(8) first_byte = 6
+1544x16                          MsgPackMapEntry 
+1544x8                               MsgPackPositiveFixNum key = 7
+1544x8                                   uint(8) first_byte = 7
+1552x8                               MsgPackNil value 
+1552x8                                   uint(8) first_byte = 192
+1560x88                  MsgPackMap(16) item26 
+1560x8                       uint(8) first_byte = 222
+1568x16                      uint(16) length = 4
+1584x64                      Tuple(MsgPackMapEntry, 4) map 
+1584x16                          MsgPackMapEntry 
+1584x8                               MsgPackPositiveFixNum key = 1
+1584x8                                   uint(8) first_byte = 1
+1592x8                               MsgPackPositiveFixNum value = 2
+1592x8                                   uint(8) first_byte = 2
+1600x16                          MsgPackMapEntry 
+1600x8                               MsgPackPositiveFixNum key = 3
+1600x8                                   uint(8) first_byte = 3
+1608x8                               MsgPackPositiveFixNum value = 4
+1608x8                                   uint(8) first_byte = 4
+1616x16                          MsgPackMapEntry 
+1616x8                               MsgPackPositiveFixNum key = 5
+1616x8                                   uint(8) first_byte = 5
+1624x8                               MsgPackPositiveFixNum value = 6
+1624x8                                   uint(8) first_byte = 6
+1632x16                          MsgPackMapEntry 
+1632x8                               MsgPackPositiveFixNum key = 7
+1632x8                                   uint(8) first_byte = 7
+1640x8                               MsgPackNil value 
+1640x8                                   uint(8) first_byte = 192
+1648x104                 MsgPackMap(32) item27 
+1648x8                       uint(8) first_byte = 223
+1656x32                      uint(32) length = 4
+1688x64                      Tuple(MsgPackMapEntry, 4) map 
+1688x16                          MsgPackMapEntry 
+1688x8                               MsgPackPositiveFixNum key = 1
+1688x8                                   uint(8) first_byte = 1
+1696x8                               MsgPackPositiveFixNum value = 2
+1696x8                                   uint(8) first_byte = 2
+1704x16                          MsgPackMapEntry 
+1704x8                               MsgPackPositiveFixNum key = 3
+1704x8                                   uint(8) first_byte = 3
+1712x8                               MsgPackPositiveFixNum value = 4
+1712x8                                   uint(8) first_byte = 4
+1720x16                          MsgPackMapEntry 
+1720x8                               MsgPackPositiveFixNum key = 5
+1720x8                                   uint(8) first_byte = 5
+1728x8                               MsgPackPositiveFixNum value = 6
+1728x8                                   uint(8) first_byte = 6
+1736x16                          MsgPackMapEntry 
+1736x8                               MsgPackPositiveFixNum key = 7
+1736x8                                   uint(8) first_byte = 7
+1744x8                               MsgPackNil value 
+1744x8                                   uint(8) first_byte = 192
+1752x24                  MsgPackFixExt(1) item28 
+1752x8                       uint(8) first_byte = 212
+1760x8                       int(8) type = 42
+1768x8                       Data data 
+1776x32                  MsgPackFixExt(2) item29 
+1776x8                       uint(8) first_byte = 213
+1784x8                       int(8) type = 42
+1792x16                      Data data 
+1808x48                  MsgPackFixExt(4) item30 
+1808x8                       uint(8) first_byte = 214
+1816x8                       int(8) type = 42
+1824x32                      Data data 
+1856x80                  MsgPackFixExt(8) item31 
+1856x8                       uint(8) first_byte = 215
+1864x8                       int(8) type = 42
+1872x64                      Data data 
+1936x144                 MsgPackFixExt(16) item32 
+1936x8                       uint(8) first_byte = 216
+1944x8                       int(8) type = 42
+1952x128                     Data data 
+2080x88                  MsgPackExt(8) item33 
+2080x8                       uint(8) first_byte = 199
+2088x8                       uint(8) length = 8
+2096x8                       int(8) type = 42
+2104x64                      Data data 
+2168x96                  MsgPackExt(16) item34 
+2168x8                       uint(8) first_byte = 200
+2176x16                      uint(16) length = 8
+2192x8                       int(8) type = 42
+2200x64                      Data data 
+2264x112                 MsgPackExt(32) item35 
+2264x8                       uint(8) first_byte = 201
+2272x32                      uint(32) length = 8
+2304x8                       int(8) type = 42
+2312x64                      Data data 
