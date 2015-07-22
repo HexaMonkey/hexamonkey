@@ -167,7 +167,8 @@ std::string join(const std::vector<std::string>& input, const std::string& glue)
 {
     std::stringstream result;
     bool first = true;
-    for (const std::string& elem : input) {
+    for (std::vector<std::string>::const_iterator it = input.begin(); it != input.end(); ++it) {
+        const std::string& elem = *it;
         if (first) {
             first = false;
         } else {
