@@ -76,7 +76,7 @@ void ContainerParser::addChild(Object *child)
             }
 
             setParsed();
-            Log::error("Child", child->type(), " ", child->name(), " cannot be added: too big");
+            Log::error("Child ", child->type(), " ", child->name(), " cannot be added: too big");
         }
         object().setPos(newPos);
         object().seekObjectEnd();
