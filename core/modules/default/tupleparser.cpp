@@ -30,21 +30,25 @@ void TupleParser::doParseHead()
     ObjectType& type = *modifiableType();
     type.setElementCount(count);
 
-    int64_t t = getElemFixedSize();
-    if(t > 0)
-    {
-        object().setSize(count*t);
-    }
-    else
-    {
-        int64_t s = 0;
-        for(int64_t i = 0; i < count; ++i)
+    if (!count) {
+        setParsed();
+    } else {
+        int64_t t = getElemFixedSize();
+        if(t > 0)
         {
-            Object* child = addElem();
-
-            s+=child->size();
+            object().setSize(count*t);
         }
-        object().setSize(s);
+        else
+        {
+            int64_t s = 0;
+            for(int64_t i = 0; i < count; ++i)
+            {
+                Object* child = addElem();
+
+                s+=child->size();
+            }
+            object().setSize(s);
+        }
     }
 }
 
