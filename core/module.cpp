@@ -247,11 +247,11 @@ int64_t Module::getFixedSize(const ObjectType &type) const
     const Module* module = handler(type);
 
     if(module == nullptr)
-        return -1;
+        return HM_UNKNOWN_SIZE;
 
     int64_t size = module->doGetFixedSize(type, *this);
 
-    if(size == 0)
+    if(size == HM_PARENT_SIZE)
         return getFixedSize(getFather(type));
 
     return size;

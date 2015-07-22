@@ -54,7 +54,7 @@ bool DefaultModule::doLoad()
          if(type.parameterSpecified(1))
          {
              int64_t s = type.parameterValue(1).toInteger();
-             if(s>0)
+             if(s>=0)
                 return s;
          }
          return -1;
@@ -78,7 +78,7 @@ bool DefaultModule::doLoad()
          if(type.parameterSpecified(0) && type.parameterSpecified(1))
          {
              int64_t t = module.getFixedSize(type.parameterValue(0).toObjectType());
-             if(t>0)
+             if(t>=0)
                 return t*type.parameterValue(1).toInteger();
          }
          return -1;

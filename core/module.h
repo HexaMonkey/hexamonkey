@@ -18,6 +18,9 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#define HM_UNKNOWN_SIZE -1
+#define HM_PARENT_SIZE -2
+
 #include <list>
 #include <map>
 #include <set>

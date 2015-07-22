@@ -151,7 +151,7 @@ bool StandardModule::doLoad()
     {
          if(type.parameterSpecified(0) && type.parameterSpecified(1))
              return type.parameterValue(0).toInteger()+type.parameterValue(1).toInteger();
-         return -1;
+         return HM_UNKNOWN_SIZE;
     });
 
     addTemplate(string);
@@ -165,7 +165,7 @@ bool StandardModule::doLoad()
     {
          if(type.parameterSpecified(0))
              return 8*type.parameterValue(0).toInteger();
-         return -1;
+         return HM_UNKNOWN_SIZE;
     });
 
     addTemplate(wstring);
@@ -179,7 +179,7 @@ bool StandardModule::doLoad()
     {
          if(type.parameterSpecified(0))
              return 16*type.parameterValue(0).toInteger();
-         return -1;
+         return HM_UNKNOWN_SIZE;
     });
 
 

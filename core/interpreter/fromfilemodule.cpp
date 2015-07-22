@@ -108,7 +108,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     auto definitionIt = _definitions.find(name);
     if(definitionIt == _definitions.end())
     {
-        return -1;
+        return HM_UNKNOWN_SIZE;
     }
 
     Program definition = definitionIt->second;
@@ -118,14 +118,14 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 #ifdef LOAD_TRACE
         std::cerr<<type.typeTemplate().name()<<" unknown size"<<std::endl;
 #endif
-        _fixedSizes[type.typeTemplate().name()] = -1;
-        return -1;
+        _fixedSizes[type.typeTemplate().name()] = HM_UNKNOWN_SIZE;
+        return HM_UNKNOWN_SIZE;
     }
 
     if(module.getFather(type).isNull())
     {
         int64_t size = guessSize(definition);
-        if(size>0)
+        if(size>=0)
         {
 #ifdef LOAD_TRACE
             std::cerr<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
@@ -138,8 +138,8 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     std::cerr<<type.typeTemplate().name()<<" father's size"<<std::endl;
 #endif
 
-    _fixedSizes[type.typeTemplate().name()] = 0;
-    return 0;
+    _fixedSizes[type.typeTemplate().name()] = HM_PARENT_SIZE;
+    return HM_PARENT_SIZE;
 }
 
 bool FromFileModule::doCanHandleFunction(const std::string &name) const
@@ -358,9 +358,6 @@ bool FromFileModule::sizeDependency(const std::string &name) const
 
 int64_t FromFileModule::guessSize(const Program &instructions) const
 {
-    if(instructions.size() == 0)
-        return 0;
-
     int64_t size = 0;
     for(const Program& line : instructions)
     {
@@ -373,15 +370,15 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
         case HMC_DECLARATION:
             {
                 if(!variableDependencies(line.node(0),false).empty())
-                    return -1;
+                    return HM_UNKNOWN_SIZE;
 
                 ObjectType type = eval.rightValue(line.node(0)).value().toObjectType();
                 if(type.isNull())
-                    return -1;
+                    return HM_UNKNOWN_SIZE;
 
                 int64_t elemSize = getFixedSize(type);
                 if(elemSize == -1)
-                    return -1;
+                    return HM_UNKNOWN_SIZE;
 
                 size += elemSize;
                 break;
@@ -390,17 +387,17 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
         case HMC_LOOP:
         case HMC_DO_LOOP:
             if(guessSize(line.node(1)) != 0)
-                return -1;
+                return HM_UNKNOWN_SIZE;
             break;
 
         case HMC_CONDITIONAL_STATEMENT:
             {
                 int64_t size1 = guessSize(line.node(1));
                 if(size1 == -1)
-                    return -1;
+                    return HM_UNKNOWN_SIZE;
                 int64_t size2 = guessSize(line.node(2));
                 if(size2 == -1 ||size2 != size1)
-                    return -1;
+                    return HM_UNKNOWN_SIZE;
                 size += size1;
                 break;
             }
@@ -410,7 +407,7 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
             break;
 
         default:
-            return -1;
+            return HM_UNKNOWN_SIZE;
         }
     }
     return size;

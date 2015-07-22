@@ -47,12 +47,11 @@ void MapModule::setFixedSize(const std::string &name, int64_t fixedSize)
 
 void MapModule::setFixedSizeFromArg(const std::string &name, int arg)
 {
-    _sizes[name] = [arg]fixedSizeLambda
-        {
+    _sizes[name] = [arg]fixedSizeLambda {
              if(type.parameterSpecified(arg))
                  return type.parameterValue(arg).toInteger();
              return -1;
-};
+    };
 }
 
 void MapModule::addFunction(const std::string &name,
@@ -91,7 +90,7 @@ int64_t MapModule::doGetFixedSize(const ObjectType &type, const Module &module) 
     }
     else
     {
-        return -1;
+        return HM_UNKNOWN_SIZE;
     }
 }
 
