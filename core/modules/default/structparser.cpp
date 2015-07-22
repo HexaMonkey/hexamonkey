@@ -17,18 +17,20 @@ void StructParser::doParseHead()
     ObjectType& type = *modifiableType();
     const Variant& nameVariable = type.parameterValue(0);
     if (nameVariable.isValueless()) {
-        type.setName(nameVariable.toString());
-    } else {
         type.setName("{}");
+    } else {
+        type.setName(nameVariable.toString());
     }
 
     int64_t s = 0;
     for (unsigned int i = 0; i < _types.size(); ++i) {
         int64_t t = module().getFixedSize(_types[i]);
-        if (t > 0) {
+        std::cerr<<_types[i]<<":"<<t<<std::endl;
+        if (t >= 0) {
             s += t;
         } else {
             s = -1;
+            break;
         }
     }
 
@@ -41,6 +43,7 @@ void StructParser::doParseHead()
             s += object->size();
         }
         object().setSize(s);
+        _parsedInHead = true;
     }
 }
 
