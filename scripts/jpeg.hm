@@ -46,8 +46,6 @@ class MarkerSegment(symbol)
 		@args.symbol = "JPG";
 	} else if (0xffc0 <= marker && marker <= 0xffcf){
 		@args.symbol = "SOF";
-	} else if(marker == 0xffc4) {
-		@args.symbol = "DHT";
 	} else if(marker == 0xffcc) {
 		@args.symbol = "DAC";
 	} else if(0xffd0 <= marker && marker <= 0xffd7){
@@ -104,19 +102,19 @@ class StartOfFrame(info) as MarkerSegment("SOF")
 	FrameComponent *[numberOfImageComponentsInFrame];
 
 	if(marker == 0xffc0) {
-		@args.info = "Baseline DCT";
+		@attr.type = "Baseline DCT";
 	} else if(marker == 0xffc1 || marker == 0xffc9) {
-		@args.info = "Extended sequential DCT";
+		@attr.type = "Extended sequential DCT";
 	} else if(marker == 0xffc2 || marker == 0xffca) {
-		@args.info = "Progressive DCT";
+		@attr.type = "Progressive DCT";
 	} else if(marker == 0xffc3 || marker == 0xffcb) {
-		@args.info = "Lossless (sequential)";
+		@attr.type = "Lossless (sequential)";
 	} else if(marker == 0xffc5 || marker == 0xffcd) {
-		@args.info = "Differential sequential DCT";
+		@attr.type = "Differential sequential DCT";
 	} else if(marker == 0xffc6 || marker == 0xffce) {
-		@args.info = "Differential progressive DCT";
+		@attr.type = "Differential progressive DCT";
 	} else if(marker == 0xffc7 || marker == 0xffcf) {
-		@args.info = "Differential lossless (sequential)";
+		@attr.type = "Differential lossless (sequential)";
 	}
 }
 
@@ -154,27 +152,6 @@ class QuantizationTable as MarkerSegment("DQT")
 	QuantizationComponent table[];
 }
 
-// TODO: improve with anon classes
-class HuffmanValues(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, _d, _e, _f)
-{
-	uint(8) # [@args[0x0]];
-	uint(8) # [@args[0x1]];
-	uint(8) # [@args[0x2]];
-	uint(8) # [@args[0x3]];
-	uint(8) # [@args[0x4]];
-	uint(8) # [@args[0x5]];
-	uint(8) # [@args[0x6]];
-	uint(8) # [@args[0x7]];
-	uint(8) # [@args[0x8]];
-	uint(8) # [@args[0x9]];
-	uint(8) # [@args[0xA]];
-	uint(8) # [@args[0xB]];
-	uint(8) # [@args[0xC]];
-	uint(8) # [@args[0xD]];
-	uint(8) # [@args[0xE]];
-	uint(8) # [@args[0xF]];	
-}
-
 class HuffmanComponent
 {
 	uint(4) tableClass;
@@ -186,29 +163,34 @@ class HuffmanComponent
 		@size += 8*lengths[i];
 	}	
 	
-	HuffmanValues (
-		lengths[0x0],
-		lengths[0x1],
-		lengths[0x2],
-		lengths[0x3],
-		lengths[0x4],
-		lengths[0x5],
-		lengths[0x6],
-		lengths[0x7],
-		lengths[0x8],
-		lengths[0x9],
-		lengths[0xa],
-		lengths[0xb],
-		lengths[0xc],
-		lengths[0xd],
-		lengths[0xe],
-		lengths[0xf]
-	) *;
+	struct HuffmanValues {
+		uint(8) item0  [lengths[0x0]];
+		uint(8) item1  [lengths[0x1]];
+		uint(8) item2  [lengths[0x2]];
+		uint(8) item3  [lengths[0x3]];
+		uint(8) item4  [lengths[0x4]];
+		uint(8) item5  [lengths[0x5]];
+		uint(8) item6  [lengths[0x6]];
+		uint(8) item7  [lengths[0x7]];
+		uint(8) item8  [lengths[0x8]];
+		uint(8) item9  [lengths[0x9]];
+		uint(8) item10 [lengths[0xa]];
+		uint(8) item11 [lengths[0xb]];
+		uint(8) item12 [lengths[0xc]];
+		uint(8) item13 [lengths[0xd]];
+		uint(8) item14 [lengths[0xe]];
+		uint(8) item15 [lengths[0xf]];	
+	} *;
 }
 
 class HuffmanTable as MarkerSegment("DHT")
 {
 	HuffmanComponent table[];
+}
+
+class CommentSegment as MarkerSegment("COM")
+{
+	String(@rem/8) comment;
 }
 
 class ApplicationSegment(n, identifier) as MarkerSegment("APP")
@@ -225,7 +207,7 @@ class ApplicationSegment(n, identifier) as MarkerSegment("APP")
 
 class JFIFHeader as ApplicationSegment(0, "JFIF")
 {     
-	uint(13,16) version;         
+	uint(16,16) version;         
 	uint(8)     units;
 	uint(16)    horizontalDensity;
 	uint(16)    verticalDensity;
