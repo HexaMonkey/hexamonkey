@@ -1,0 +1,379 @@
+0x421688     JpegFile 
+0x16             StartOfImage 
+0x16                 uint(16) marker = 65496
+16x144           JFIFHeader 
+16x16                uint(16) marker = 65504
+32x16                uint(16) length = 16
+48x40                String identifier = "JFIF"
+88x16                uint(16) version = 257
+104x8                uint(8) units = 1
+112x16               uint(16) horizontalDensity = 72
+128x16               uint(16) verticalDensity = 72
+144x8                uint(8) thumbnailWidth = 0
+152x8                uint(8) thumbnailHeight = 0
+160x0                Tuple(Tuple(RGB, 0), 0) thumbnailData 
+160x168          CommentSegment 
+160x16               uint(16) marker = 65534
+176x16               uint(16) length = 19
+192x136              String(17) comment = "Created with GIMP"
+328x552          QuantizationTable 
+328x16               uint(16) marker = 65499
+344x16               uint(16) length = 67
+360x520              Array(QuantizationComponent) table 
+360x520                  QuantizationComponent 
+360x4                        uint(4) precision = 0
+364x4                        uint(4) destinationIdentifier = 0
+368x512                      Tuple(uint(8), 64) elements 
+368x8                            uint(8) = 5
+376x8                            uint(8) = 3
+384x8                            uint(8) = 4
+392x8                            uint(8) = 4
+400x8                            uint(8) = 4
+408x8                            uint(8) = 3
+416x8                            uint(8) = 5
+424x8                            uint(8) = 4
+432x8                            uint(8) = 4
+440x8                            uint(8) = 4
+448x8                            uint(8) = 5
+456x8                            uint(8) = 5
+464x8                            uint(8) = 5
+472x8                            uint(8) = 6
+480x8                            uint(8) = 7
+488x8                            uint(8) = 12
+496x8                            uint(8) = 8
+504x8                            uint(8) = 7
+512x8                            uint(8) = 7
+520x8                            uint(8) = 7
+880x552          QuantizationTable 
+880x16               uint(16) marker = 65499
+896x16               uint(16) length = 67
+912x520              Array(QuantizationComponent) table 
+912x520                  QuantizationComponent 
+912x4                        uint(4) precision = 0
+916x4                        uint(4) destinationIdentifier = 1
+920x512                      Tuple(uint(8), 64) elements 
+920x8                            uint(8) = 5
+928x8                            uint(8) = 5
+936x8                            uint(8) = 5
+944x8                            uint(8) = 7
+952x8                            uint(8) = 6
+960x8                            uint(8) = 7
+968x8                            uint(8) = 14
+976x8                            uint(8) = 8
+984x8                            uint(8) = 8
+992x8                            uint(8) = 14
+1000x8                           uint(8) = 30
+1008x8                           uint(8) = 20
+1016x8                           uint(8) = 17
+1024x8                           uint(8) = 20
+1032x8                           uint(8) = 30
+1040x8                           uint(8) = 30
+1048x8                           uint(8) = 30
+1056x8                           uint(8) = 30
+1064x8                           uint(8) = 30
+1072x8                           uint(8) = 30
+1432x152         StartOfFrame 
+1432x16              uint(16) marker = 65472
+1448x16              uint(16) length = 17
+1464x8               uint(8) samplePrecision = 8
+1472x16              uint(16) numberOfLines = 533
+1488x16              uint(16) numberOfSamplesPerLine = 800
+1504x8               uint(8) numberOfImageComponentsInFrame = 3
+1512x72              Tuple(FrameComponent, 3) 
+1512x24                  FrameComponent 
+1512x8                       uint(8) identifier = 1
+1520x4                       uint(4) horizontalSamplingFactor = 2
+1524x4                       uint(4) verticalSamplingFactor = 2
+1528x8                       uint(8) quantizationTableDestinationSelector = 0
+1536x24                  FrameComponent 
+1536x8                       uint(8) identifier = 2
+1544x4                       uint(4) horizontalSamplingFactor = 1
+1548x4                       uint(4) verticalSamplingFactor = 1
+1552x8                       uint(8) quantizationTableDestinationSelector = 1
+1560x24                  FrameComponent 
+1560x8                       uint(8) identifier = 3
+1568x4                       uint(4) horizontalSamplingFactor = 1
+1572x4                       uint(4) verticalSamplingFactor = 1
+1576x8                       uint(8) quantizationTableDestinationSelector = 1
+1584x240         HuffmanTable 
+1584x16              uint(16) marker = 65476
+1600x16              uint(16) length = 28
+1616x208             Array(HuffmanComponent) table 
+1616x208                 HuffmanComponent 
+1616x4                       uint(4) tableClass = 0
+1620x4                       uint(4) destinationIdentifier = 0
+1624x128                     Tuple(uint(8), 16) lengths 
+1624x8                           uint(8) = 0
+1632x8                           uint(8) = 2
+1640x8                           uint(8) = 3
+1648x8                           uint(8) = 1
+1656x8                           uint(8) = 1
+1664x8                           uint(8) = 1
+1672x8                           uint(8) = 1
+1680x8                           uint(8) = 0
+1688x8                           uint(8) = 0
+1696x8                           uint(8) = 0
+1704x8                           uint(8) = 0
+1712x8                           uint(8) = 0
+1720x8                           uint(8) = 0
+1728x8                           uint(8) = 0
+1736x8                           uint(8) = 0
+1744x8                           uint(8) = 0
+1752x72                      HuffmanValues 
+1752x0                           Tuple(uint(8), 0) item0 
+1752x16                          Tuple(uint(8), 2) item1 
+1752x8                               uint(8) = 4
+1760x8                               uint(8) = 5
+1768x24                          Tuple(uint(8), 3) item2 
+1768x8                               uint(8) = 2
+1776x8                               uint(8) = 3
+1784x8                               uint(8) = 6
+1792x8                           Tuple(uint(8), 1) item3 
+1792x8                               uint(8) = 0
+1800x8                           Tuple(uint(8), 1) item4 
+1800x8                               uint(8) = 1
+1808x8                           Tuple(uint(8), 1) item5 
+1808x8                               uint(8) = 7
+1816x8                           Tuple(uint(8), 1) item6 
+1816x8                               uint(8) = 8
+1824x0                           Tuple(uint(8), 0) item7 
+1824x0                           Tuple(uint(8), 0) item8 
+1824x0                           Tuple(uint(8), 0) item9 
+1824x0                           Tuple(uint(8), 0) item10 
+1824x0                           Tuple(uint(8), 0) item11 
+1824x0                           Tuple(uint(8), 0) item12 
+1824x0                           Tuple(uint(8), 0) item13 
+1824x0                           Tuple(uint(8), 0) item14 
+1824x0                           Tuple(uint(8), 0) item15 
+1824x608         HuffmanTable 
+1824x16              uint(16) marker = 65476
+1840x16              uint(16) length = 74
+1856x576             Array(HuffmanComponent) table 
+1856x576                 HuffmanComponent 
+1856x4                       uint(4) tableClass = 1
+1860x4                       uint(4) destinationIdentifier = 0
+1864x128                     Tuple(uint(8), 16) lengths 
+1864x8                           uint(8) = 0
+1872x8                           uint(8) = 1
+1880x8                           uint(8) = 3
+1888x8                           uint(8) = 2
+1896x8                           uint(8) = 4
+1904x8                           uint(8) = 2
+1912x8                           uint(8) = 6
+1920x8                           uint(8) = 6
+1928x8                           uint(8) = 7
+1936x8                           uint(8) = 6
+1944x8                           uint(8) = 4
+1952x8                           uint(8) = 5
+1960x8                           uint(8) = 4
+1968x8                           uint(8) = 3
+1976x8                           uint(8) = 1
+1984x8                           uint(8) = 1
+1992x440                     HuffmanValues 
+1992x0                           Tuple(uint(8), 0) item0 
+1992x8                           Tuple(uint(8), 1) item1 
+1992x8                               uint(8) = 2
+2000x24                          Tuple(uint(8), 3) item2 
+2000x8                               uint(8) = 0
+2008x8                               uint(8) = 3
+2016x8                               uint(8) = 4
+2024x16                          Tuple(uint(8), 2) item3 
+2024x8                               uint(8) = 18
+2032x8                               uint(8) = 34
+2040x32                          Tuple(uint(8), 4) item4 
+2040x8                               uint(8) = 1
+2048x8                               uint(8) = 5
+2056x8                               uint(8) = 19
+2064x8                               uint(8) = 50
+2072x16                          Tuple(uint(8), 2) item5 
+2072x8                               uint(8) = 66
+2080x8                               uint(8) = 82
+2088x48                          Tuple(uint(8), 6) item6 
+2088x8                               uint(8) = 6
+2096x8                               uint(8) = 17
+2104x8                               uint(8) = 20
+2112x8                               uint(8) = 35
+2120x8                               uint(8) = 51
+2128x8                               uint(8) = 98
+2136x48                          Tuple(uint(8), 6) item7 
+2136x8                               uint(8) = 33
+2144x8                               uint(8) = 49
+2152x8                               uint(8) = 65
+2160x8                               uint(8) = 97
+2168x8                               uint(8) = 114
+2176x8                               uint(8) = 130
+2184x56                          Tuple(uint(8), 7) item8 
+2184x8                               uint(8) = 21
+2192x8                               uint(8) = 36
+2200x8                               uint(8) = 67
+2208x8                               uint(8) = 83
+2216x8                               uint(8) = 113
+2224x8                               uint(8) = 146
+2232x8                               uint(8) = 162
+2240x48                          Tuple(uint(8), 6) item9 
+2240x8                               uint(8) = 81
+2248x8                               uint(8) = 99
+2256x8                               uint(8) = 178
+2264x8                               uint(8) = 194
+2272x8                               uint(8) = 210
+2280x8                               uint(8) = 240
+2288x32                          Tuple(uint(8), 4) item10 
+2288x8                               uint(8) = 7
+2296x8                               uint(8) = 52
+2304x8                               uint(8) = 129
+2312x8                               uint(8) = 226
+2320x40                          Tuple(uint(8), 5) item11 
+2320x8                               uint(8) = 37
+2328x8                               uint(8) = 115
+2336x8                               uint(8) = 145
+2344x8                               uint(8) = 161
+2352x8                               uint(8) = 193
+2360x32                          Tuple(uint(8), 4) item12 
+2360x8                               uint(8) = 22
+2368x8                               uint(8) = 53
+2376x8                               uint(8) = 131
+2384x8                               uint(8) = 242
+2392x24                          Tuple(uint(8), 3) item13 
+2392x8                               uint(8) = 68
+2400x8                               uint(8) = 84
+2408x8                               uint(8) = 147
+2416x8                           Tuple(uint(8), 1) item14 
+2416x8                               uint(8) = 132
+2424x8                           Tuple(uint(8), 1) item15 
+2424x8                               uint(8) = 179
+2432x224         HuffmanTable 
+2432x16              uint(16) marker = 65476
+2448x16              uint(16) length = 26
+2464x192             Array(HuffmanComponent) table 
+2464x192                 HuffmanComponent 
+2464x4                       uint(4) tableClass = 0
+2468x4                       uint(4) destinationIdentifier = 1
+2472x128                     Tuple(uint(8), 16) lengths 
+2472x8                           uint(8) = 0
+2480x8                           uint(8) = 3
+2488x8                           uint(8) = 1
+2496x8                           uint(8) = 1
+2504x8                           uint(8) = 1
+2512x8                           uint(8) = 1
+2520x8                           uint(8) = 0
+2528x8                           uint(8) = 0
+2536x8                           uint(8) = 0
+2544x8                           uint(8) = 0
+2552x8                           uint(8) = 0
+2560x8                           uint(8) = 0
+2568x8                           uint(8) = 0
+2576x8                           uint(8) = 0
+2584x8                           uint(8) = 0
+2592x8                           uint(8) = 0
+2600x56                      HuffmanValues 
+2600x0                           Tuple(uint(8), 0) item0 
+2600x24                          Tuple(uint(8), 3) item1 
+2600x8                               uint(8) = 1
+2608x8                               uint(8) = 2
+2616x8                               uint(8) = 3
+2624x8                           Tuple(uint(8), 1) item2 
+2624x8                               uint(8) = 0
+2632x8                           Tuple(uint(8), 1) item3 
+2632x8                               uint(8) = 4
+2640x8                           Tuple(uint(8), 1) item4 
+2640x8                               uint(8) = 5
+2648x8                           Tuple(uint(8), 1) item5 
+2648x8                               uint(8) = 6
+2656x0                           Tuple(uint(8), 0) item6 
+2656x0                           Tuple(uint(8), 0) item7 
+2656x0                           Tuple(uint(8), 0) item8 
+2656x0                           Tuple(uint(8), 0) item9 
+2656x0                           Tuple(uint(8), 0) item10 
+2656x0                           Tuple(uint(8), 0) item11 
+2656x0                           Tuple(uint(8), 0) item12 
+2656x0                           Tuple(uint(8), 0) item13 
+2656x0                           Tuple(uint(8), 0) item14 
+2656x0                           Tuple(uint(8), 0) item15 
+2656x352         HuffmanTable 
+2656x16              uint(16) marker = 65476
+2672x16              uint(16) length = 42
+2688x320             Array(HuffmanComponent) table 
+2688x320                 HuffmanComponent 
+2688x4                       uint(4) tableClass = 1
+2692x4                       uint(4) destinationIdentifier = 1
+2696x128                     Tuple(uint(8), 16) lengths 
+2696x8                           uint(8) = 0
+2704x8                           uint(8) = 2
+2712x8                           uint(8) = 2
+2720x8                           uint(8) = 2
+2728x8                           uint(8) = 3
+2736x8                           uint(8) = 0
+2744x8                           uint(8) = 2
+2752x8                           uint(8) = 2
+2760x8                           uint(8) = 2
+2768x8                           uint(8) = 1
+2776x8                           uint(8) = 4
+2784x8                           uint(8) = 3
+2792x8                           uint(8) = 0
+2800x8                           uint(8) = 0
+2808x8                           uint(8) = 0
+2816x8                           uint(8) = 0
+2824x184                     HuffmanValues 
+2824x0                           Tuple(uint(8), 0) item0 
+2824x16                          Tuple(uint(8), 2) item1 
+2824x8                               uint(8) = 0
+2832x8                               uint(8) = 1
+2840x16                          Tuple(uint(8), 2) item2 
+2840x8                               uint(8) = 2
+2848x8                               uint(8) = 17
+2856x16                          Tuple(uint(8), 2) item3 
+2856x8                               uint(8) = 33
+2864x8                               uint(8) = 49
+2872x24                          Tuple(uint(8), 3) item4 
+2872x8                               uint(8) = 3
+2880x8                               uint(8) = 18
+2888x8                               uint(8) = 65
+2896x0                           Tuple(uint(8), 0) item5 
+2896x16                          Tuple(uint(8), 2) item6 
+2896x8                               uint(8) = 4
+2904x8                               uint(8) = 81
+2912x16                          Tuple(uint(8), 2) item7 
+2912x8                               uint(8) = 19
+2920x8                               uint(8) = 34
+2928x16                          Tuple(uint(8), 2) item8 
+2928x8                               uint(8) = 50
+2936x8                               uint(8) = 97
+2944x8                           Tuple(uint(8), 1) item9 
+2944x8                               uint(8) = 113
+2952x32                          Tuple(uint(8), 4) item10 
+2952x8                               uint(8) = 5
+2960x8                               uint(8) = 35
+2968x8                               uint(8) = 66
+2976x8                               uint(8) = 82
+2984x24                          Tuple(uint(8), 3) item11 
+2984x8                               uint(8) = 98
+2992x8                               uint(8) = 129
+3000x8                               uint(8) = 209
+3008x0                           Tuple(uint(8), 0) item12 
+3008x0                           Tuple(uint(8), 0) item13 
+3008x0                           Tuple(uint(8), 0) item14 
+3008x0                           Tuple(uint(8), 0) item15 
+3008x112         StartOfScan 
+3008x16              uint(16) marker = 65498
+3024x16              uint(16) length = 12
+3040x8               uint(8) numberOfImageComponents = 3
+3048x48              Tuple(ScanComponent, 3) 
+3048x16                  ScanComponent 
+3048x8                       uint(8) selector = 1
+3056x4                       uint(4) DCEntropyCodingTableDestinationSelector = 0
+3060x4                       uint(4) ACEntropyCodingTableDestinationSelector = 0
+3064x16                  ScanComponent 
+3064x8                       uint(8) selector = 2
+3072x4                       uint(4) DCEntropyCodingTableDestinationSelector = 1
+3076x4                       uint(4) ACEntropyCodingTableDestinationSelector = 1
+3080x16                  ScanComponent 
+3080x8                       uint(8) selector = 3
+3088x4                       uint(4) DCEntropyCodingTableDestinationSelector = 1
+3092x4                       uint(4) ACEntropyCodingTableDestinationSelector = 1
+3096x8               uint(8) startOfSpectralSelection = 0
+3104x8               uint(8) endOfSpectralSelection = 63
+3112x4               uint(4) successiveApproximationBitPositionHigh = 0
+3116x4               uint(4) successiveApproximationBitPositionLow = 0
+3120x418552      Data 
+421672x16        EndOfImage 
+421672x16            uint(16) marker = 65497

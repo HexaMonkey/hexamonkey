@@ -14,6 +14,11 @@ void TestParser::test_asf()
     QVERIFY(checkFile("resources/parser/test_asf.asf", 3, 30));
 }
 
+void TestParser::test_jpg()
+{
+    QVERIFY(checkFile("resources/parser/test_jpg.jpg", -1, 20));
+}
+
 void TestParser::test_messagepack()
 {
     QVERIFY(checkFile("resources/parser/test_msgpack.msgpack"));

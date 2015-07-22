@@ -16,6 +16,7 @@ public:
 
 private slots:
     void test_asf();
+    void test_jpg();
     void test_messagepack();
     void test_mp4();
 
