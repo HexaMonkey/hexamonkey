@@ -9,7 +9,7 @@ ElementaryContainerParser::ElementaryContainerParser(Object &object, const Modul
 
     if (namePattern.empty()) {
         hasFixedName = true;
-        fixedName = namePattern;
+        fixedName = "#";
     } else {
         nameParts = splitByChar(namePattern, '%');
         if (nameParts.size() == 1) {
