@@ -238,9 +238,36 @@ struct_name:
 struct_type:
 	STRUCT_TOKEN {push_string(HMC_IDENTIFIER, "Struct");}
 
+struct_declaration:
+	type_access struct_name
+   |struct_declaration '['']' {
+                                stash(0);
+                                stash(0);
+                                push_string(HMC_IDENTIFIER, "Array");
+                                unstash(0);
+                                push_master(HMC_ARGUMENTS,1);
+                                push_master(HMC_TYPE,2);
+                                push_master(HMC_RIGHT_VALUE,1);
+                                unstash(0);
+						    }
+    
+   |struct_declaration '['right_value']' {
+                                stash(1);
+                                stash(0);
+                                stash(0);
+                                push_string(HMC_IDENTIFIER, "Tuple");
+                                unstash(0);
+                                unstash(1);
+                                push_master(HMC_ARGUMENTS,2);
+                                push_master(HMC_TYPE,2);
+                                push_master(HMC_RIGHT_VALUE,1);
+                                unstash(0);
+								}
+								
 struct_arguments:
 	/*empty*/
-   |struct_arguments type_access struct_name ';' {push_master(HMC_ARGUMENTS,3);}
+   |struct_arguments struct_declaration ';' {push_master(HMC_ARGUMENTS,3);}
+   
 	
 extension:
     /*empty*/ {push_master(HMC_EXTENSION,0);}
