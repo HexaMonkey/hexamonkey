@@ -18,8 +18,8 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
-    :_name(name), _parametersNames(parameterNames)
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, int elementTypeParameter, int elementCountParameter)
+    :_name(name), _parametersNames(parameterNames), _elementTypeParameter(elementTypeParameter), _elementCountParameter(elementCountParameter)
 
 {
     for(unsigned int i = 0; i < _parametersNames.size(); ++i)
@@ -71,6 +71,18 @@ bool ObjectTypeTemplate::isNull() const
 void ObjectTypeTemplate::addParameter(const std::string& parameterName)
 {
     _parametersNames.push_back(parameterName);
+}
+
+int ObjectTypeTemplate::elementTypeParameter() const
+{
+    if (_elementTypeParameter != -1)
+        return _elementTypeParameter;
+    return _elementTypeParameter;
+}
+
+int ObjectTypeTemplate::elementCountParameter() const
+{
+    return _elementCountParameter;
 }
 
 bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)

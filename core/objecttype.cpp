@@ -119,12 +119,12 @@ bool ObjectType::extendsDirectly(const ObjectType& other) const
 
 bool ObjectType::hasElementType() const
 {
-    return !_elementType.isValueless();
+    return !pElementType()->isValueless();
 }
 
 const ObjectType &ObjectType::elementType() const
 {
-    return _elementType.toObjectType();
+    return pElementType()->toObjectType();
 }
 
 void ObjectType::setElementType(const ObjectType &type)
@@ -134,13 +134,13 @@ void ObjectType::setElementType(const ObjectType &type)
 
 bool ObjectType::hasElementCount() const
 {
-    return !_elementCount.isValueless();
+    return !pElementCount()->isValueless();
 }
 
 
 size_t ObjectType::elementCount() const
 {
-    return _elementCount.toUnsignedInteger();
+    return pElementCount()->toUnsignedInteger();
 }
 
 void ObjectType::setElementCount(long long count)
@@ -171,6 +171,28 @@ ObjectType& ObjectType::operator =(ObjectType other)
 {
     swap(*this, other);
     return *this;
+}
+
+const Variant *ObjectType::pElementType() const
+{
+    const Variant* pElementType;
+    if (_typeTemplate && _typeTemplate->elementTypeParameter() != -1 && _typeTemplate->elementTypeParameter() < numberOfParameters()) {
+        pElementType = &parameterValue(_typeTemplate->elementTypeParameter());
+    } else {
+        pElementType = &_elementType;
+    }
+    return pElementType;
+}
+
+const Variant *ObjectType::pElementCount() const
+{
+    const Variant* pElementCount;
+    if (_typeTemplate && _typeTemplate->elementCountParameter() != -1 && _typeTemplate->elementCountParameter() < numberOfParameters()) {
+        pElementCount = &parameterValue(_typeTemplate->elementCountParameter());
+    } else {
+        pElementCount = &_elementCount;
+    }
+    return pElementCount;
 }
 
 bool operator==(const ObjectType& a, const ObjectType& b)

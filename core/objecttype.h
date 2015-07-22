@@ -153,6 +153,9 @@ public:
     ObjectType& operator=(ObjectType other);
 
 private:
+    const Variant* pElementType() const;
+    const Variant* pElementCount() const;
+
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
     Variant _name;

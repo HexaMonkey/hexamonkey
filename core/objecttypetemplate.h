@@ -34,7 +34,7 @@
 class ObjectTypeTemplate
 {
 public:
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames);
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, int elementTypeParameter = -1, int elementCountParameter = -1);
     ObjectTypeTemplate(const std::string &name);
 
     /**
@@ -92,6 +92,9 @@ public:
         return type;
     }
 
+    int elementTypeParameter() const;
+    int elementCountParameter() const;
+
 
     friend bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
     friend bool operator< (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
@@ -100,6 +103,8 @@ private:
     std::string                _name;
     std::vector<std::string>   _parametersNames;
     std::unordered_map<std::string, int> _parametersNumbers;
+    const int _elementTypeParameter;
+    const int _elementCountParameter;
 
     ObjectTypeTemplate(const ObjectTypeTemplate&) = delete;
     ObjectTypeTemplate& operator=(const ObjectTypeTemplate&) = delete;
