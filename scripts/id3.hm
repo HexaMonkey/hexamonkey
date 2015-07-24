@@ -17,10 +17,10 @@
 
 addMagicNumber 49 44 33
 
-import bestd
-
 class ID3File as File
 {
+	@endianness = "bigEndian";
+	
 	String(3) magic;
 	uint(8) major;
 	uint(8) minor;

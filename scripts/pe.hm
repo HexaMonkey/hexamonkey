@@ -22,6 +22,8 @@ import microsoft
 
 class PEFile as File
 {
+	@endianness = "littleEndian";
+
 	IMAGE_DOS_HEADER _dos_header;
 	IMAGE_DOS_SEGMENT((_dos_header.e_lfanew<<3)-@pos) _dos_segment;
 	IMAGE_NT_HEADERS _nt_header;

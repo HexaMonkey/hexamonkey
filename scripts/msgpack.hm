@@ -6,10 +6,10 @@
 
 addExtension msgpack
 
-import bestd
-
 class MsgPackFile as File
 {
+	@endianness = "bigEndian";
+
 	while(1) MsgPackObject *; // The input file may contain concatenated msg pack objects
 }
 

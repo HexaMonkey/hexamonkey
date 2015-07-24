@@ -17,6 +17,7 @@
 #define A_ATTR 10
 #define A_CONTEXT 11
 #define A_GLOBAL 12
+#define A_ENDIANNESS 13
 
 const std::unordered_map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -31,7 +32,8 @@ const std::unordered_map<std::string, int> reserved = {
     {"@linkTo",           A_LINK_TO},
     {"@attr",             A_ATTR},
     {"@context",          A_CONTEXT},
-    {"@global",           A_GLOBAL}
+    {"@global",           A_GLOBAL},
+    {"@endianness",       A_ENDIANNESS}
 };
 
 class ObjectPosVariableImplementation : public VariableImplementation
@@ -94,6 +96,46 @@ protected:
 
     virtual Variant doGetValue() override {
         return _object.hasLinkTo() ? Variant((long long) _object.linkTo()) : Variant();
+    }
+private:
+    Object& _object;
+};
+
+class ObjectEndiannessVariableImplementation : public VariableImplementation
+{
+public:
+    ObjectEndiannessVariableImplementation(Object& object) : _object(object) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.type() == Variant::stringType) {
+            switch (value.toString()[0]) {
+                case 'b':
+                    _object.setEndianness(Object::bigEndian);
+                    break;
+
+                case 'l':
+                    _object.setEndianness(Object::littleEndian);
+                    break;
+
+                default:
+                    Log::warning("Trying to set an invalid value for endianness, the acceptable value are \"bigEndian\" and \"littleEndian\"");
+
+            }
+        } else {
+            Log::warning("Trying to set a non string value for endianness, the acceptable value are \"bigEndian\" and \"littleEndian\"");
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        switch (_object.endianness()) {
+            case Object::bigEndian:
+                return Variant("bigEndian");
+
+            case Object::littleEndian:
+                return Variant("littleEndian");
+        }
+        return Variant();
     }
 private:
     Object& _object;
@@ -179,6 +221,9 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
 
                     case A_GLOBAL:
                         return _object.root().contextVariable(createIfNeeded);
+
+                    case A_ENDIANNESS:
+                        return Variable(new ObjectEndiannessVariableImplementation(_object), true);
 
                     default:
                         return Variable();

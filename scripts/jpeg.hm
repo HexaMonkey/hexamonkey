@@ -17,10 +17,12 @@
 
 addMagicNumber FF D8
 
-import bestd rgb
+import rgb
 
 class JpegFile as File
 {
+	@endianness = "bigEndian";
+	
 	while(1) {
 		MarkerSegment *;
 		if(self[].marker == 0xffda) {

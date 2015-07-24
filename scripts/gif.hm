@@ -1,9 +1,9 @@
 addMagicNumber 47 49 46 38 xx 61
 addExtension gif
 
-import lestd
-
 class GifFile as File{
+	@endianness = "littleEndian";
+	
 	while(1) DataStream *;
 }
 

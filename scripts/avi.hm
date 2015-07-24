@@ -5,6 +5,8 @@ import microsoft
 
 class AviFile as File, ContainerCHUNK extends CHUNK, ContainerLIST extends LIST, ContainerRIFF extends RIFF
 {
+	@endianness = "littleEndian";
+	
 	while(1) CHUNK *;
 }
 

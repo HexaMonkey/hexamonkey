@@ -198,7 +198,6 @@ bool ProgramLoader::executeCommand(const std::string &program, const std::vector
     }
 
     int status = __PCLOSE(f);
-    std::cerr<<"Compiler status: "<<status<<std::endl;
 
     return (status == EXIT_SUCCESS);
 }

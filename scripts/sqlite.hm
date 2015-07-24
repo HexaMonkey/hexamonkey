@@ -4,10 +4,10 @@
 addMagicNumber  53 51 4c 69 74 65 20 66 6f 72 6d 61 74 20 33 00
 addExtension sqlite
 
-import bestd
-
 class SQLiteFile as File
 {
+	@endianness = "bigEndian";
+
     BTreePage *;
     var contains_ptrmap = self[].db_header.LargestRootBTreePageNumber != 0;
     var page_size = self[].db_header.DatabasePageSize;

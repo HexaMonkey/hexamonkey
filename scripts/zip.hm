@@ -18,10 +18,10 @@
 addMagicNumber 50 4b 03 04
 addExtension zip
 
-import lestd
-
 class ZipFile as File
 {
+	@endianness = "littleEndian";
+	
 	while(1) {
 		Chunk *;
 		var signature = self[].signature;

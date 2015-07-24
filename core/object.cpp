@@ -29,15 +29,15 @@
 
 #define BUFFER_SIZE 1048576
 
-Object::Object(File& file, std::streampos beginningPos) :
+Object::Object(File& file, std::streampos beginningPos, Object *parent) :
     _file(file),
     _beginningPos(beginningPos),
     _size(-1),
     _contentSize(0),
     _pos(0),
-    _parent(nullptr),
+    _parent(parent),
     _lastChild(nullptr),
-    _rank(-1),
+    _rank(parent ? parent->numberOfChildren() : -1),
     _name("*"),
     _value(Variant::null()),
     _children(0),
@@ -45,7 +45,8 @@ Object::Object(File& file, std::streampos beginningPos) :
     _parsedCount(0),
     _parsingInProgress(false),
     _context(nullptr),
-    _attributes(nullptr)
+    _attributes(nullptr),
+    _endianness(parent ? parent->_endianness : bigEndian)
 {
 }
 
@@ -437,6 +438,17 @@ void Object::parseTail()
         }
     }
 }
+
+Object::Endianness Object::endianness() const
+{
+    return _endianness;
+}
+
+void Object::setEndianness(const Object::Endianness &endianness)
+{
+    _endianness = endianness;
+}
+
 
 void Object::explore(int depth)
 {

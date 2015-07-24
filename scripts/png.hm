@@ -18,10 +18,12 @@
 addMagicNumber 89 50 4e 47 0d 0a 1a 0a
 addExtension png
 
-import bestd rgb
+import rgb
 
 class PngFile as File
 {
+	@endianness = "bigEndian";
+
 	byte signature[8];
 	while(1) Chunk *;
 }

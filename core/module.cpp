@@ -207,13 +207,12 @@ const Module *Module::handler(const ObjectType &type) const
 Object* Module::handle(const ObjectType& type, File& file, Object* parent, const Module& fromModule) const
 {
     Object* object;
+
     if(parent != nullptr) {
-        object = new Object(file, parent->beginningPos()+parent->pos());
-        object->_parent = parent;
-        object->_rank = parent->numberOfChildren();
+        object = new Object(file, parent->beginningPos() + parent->pos(), parent);
         parent->_lastChild = object;
     } else {
-        object = new Object(file, 0);
+        object = new Object(file, 0, nullptr);
     }
 
     addParsers(*object, type, fromModule);

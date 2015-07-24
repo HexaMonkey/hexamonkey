@@ -15,38 +15,41 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef WORDPARSER_H
-#define WORDPARSER_H
+#ifndef FLOATPARSER_H
+#define FLOATPARSER_H
 
 #include "core/parser.h"
 
-class WordParser : public SimpleParser
+class SingleFloatParser : public SimpleParser
 {
 public:
-    WordParser(Object& object, int numberOfChars);
-protected:
-    void doParseHead();
-private:
-    int numberOfChars;
-};
-
-class Utf8StringParser : public SimpleParser
-{
-public:
-    Utf8StringParser(Object& object);
+    SingleFloatParser(Object& object);
 protected:
     void doParseHead();
 };
 
-class WideStringParser : public SimpleParser
+class DoubleFloatParser : public SimpleParser
 {
 public:
-    WideStringParser(Object& object, int numberOfChars, bool bigEndian);
+    DoubleFloatParser(Object& object);
 protected:
     void doParseHead();
-private:
-    int numberOfChars;
-    bool bigEndian;
 };
 
-#endif // WORDPARSER_H
+class FixedFloat16Parser : public SimpleParser
+{
+public:
+    FixedFloat16Parser(Object& object);
+protected:
+    void doParseHead();
+};
+
+class FixedFloat32Parser : public SimpleParser
+{
+public:
+    FixedFloat32Parser(Object& object);
+protected:
+    void doParseHead();
+};
+
+#endif // FLOATPARSER_H

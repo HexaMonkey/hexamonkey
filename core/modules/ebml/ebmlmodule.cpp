@@ -26,7 +26,6 @@
 #include "core/modules/ebml/ebmllargeintegerparser.h"
 #include "core/modules/ebml/ebmlsimpleparser.h"
 #include "core/modules/ebml/ebmldateparser.h"
-#include "core/modules/standard/standardtypes.h"
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
 
@@ -35,11 +34,6 @@ using namespace ebmlTypes;
 void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
     formatAdder.addMagicNumber("1a 45 df a3");
-}
-
-void EbmlModule::requestImportations(std::vector<std::string> &formatRequested)
-{
-    formatRequested.push_back("bestd");
 }
 
 bool EbmlModule::doLoad()
@@ -51,7 +45,7 @@ bool EbmlModule::doLoad()
     addTemplate(EBMLElement);
 
     addTemplate(Date);
-    setExtension(Date, standardTypes::int64);
+    setExtension(Date, defaultTypes::int64);
 
     addTemplate(largeInteger);
 

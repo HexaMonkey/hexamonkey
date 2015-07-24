@@ -18,7 +18,6 @@
 #include "core/modules/default/defaulttypes.h"
 #include "core/modules/ebml/ebmlsimpleparser.h"
 #include "core/modules/ebml/ebmltypes.h"
-#include "core/modules/standard/standardtypes.h"
 
 EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
     : ContainerParser(object, module)
@@ -27,7 +26,7 @@ EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
 
 void EbmlIntegerParser::doParseHead()
 {
-    Object* child = addVariable(standardTypes::integer(availableSize()),"payload");
+    Object* child = addVariable(defaultTypes::integer(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -40,7 +39,7 @@ EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
 
 void EbmlUIntegerParser::doParseHead()
 {
-    Object* child = addVariable(standardTypes::uinteger(availableSize()),"payload");
+    Object* child = addVariable(defaultTypes::uinteger(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -53,7 +52,7 @@ EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
 
 void EbmlStringParser::doParseHead()
 {
-    Object* child = addVariable(standardTypes::string(availableSize()/8),"payload");
+    Object* child = addVariable(defaultTypes::string(availableSize()/8),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -91,9 +90,9 @@ void EbmlFloatParser::doParseHead()
 {
     Object* child = nullptr;
     if(availableSize() == 32) {
-        addVariable(standardTypes::singleFloat(),"payload");
+        addVariable(defaultTypes::singleFloat(),"payload");
     } else {
-        addVariable(standardTypes::doubleFloat(),"payload");
+        addVariable(defaultTypes::doubleFloat(),"payload");
     }
     if (child) {
         object().setValue(child->value());

@@ -3,6 +3,8 @@ import stream
 
 class CompletePSITable as File
 {
+	@endianness = "bigEndian";
+
     ParentPID pid;
     PSI_table(@size, pid, 1) *;
 }
