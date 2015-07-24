@@ -541,7 +541,6 @@ int main(int argc, char *argv[])
     {
         // open a file handle to a particular file:
         FILE *file = fopen(argv[1], "r");
-        printf("input: %s\n", argv[1]);
         // make sure it is valid:
         if (!file) 
         {
@@ -562,12 +561,10 @@ int main(int argc, char *argv[])
         if(argc > 2)
         {
             output = fopen(argv[2], "wb");
-            printf("output: %s\n", argv[2]);
         }
         else
         {
             output = fopen("output.hmc", "wb");
-            printf("output: %s\n", "output.hmc");
         }
         
         if (!output)

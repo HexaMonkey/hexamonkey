@@ -15,20 +15,19 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/log/logger.h"
+#include <memory>
+
+#include "core/log/streamlogger.h"
 #include "core/log/logmanager.h"
 #include "core/interpreter/fromfilemodule.h"
 #include "core/moduleloader.h"
 #include "core/object.h"
 #include "core/interpreter/programloader.h"
-#include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/default/defaulttypes.h"
-#include "core/modules/hmc/hmcmodule.h"
-#include "core/modules/mkv/mkvmodule.h"
-#include "core/modules/standard/standardmodule.h"
-#include "core/modules/stream/streammodule.h"
+#include "core/modulesetup.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
+
 
 #if defined(PLATFORM_WIN32)
     #include <windef.h>
@@ -54,32 +53,17 @@ struct CLIOptions {
     std::vector<std::string> leafs;
     DisplayType displayType;
     int maxDepth;
-    CLIOptions() : filePath(), leafs(), displayType(DISPLAY_TYPE_DEFAULT),
-                   maxDepth(-1) {};
+    bool verbose;
+    CLIOptions() : filePath(),
+                   leafs(),
+                   displayType(DISPLAY_TYPE_DEFAULT),
+                   maxDepth(-1),
+                   verbose(false)
+    {
+
+    }
 };
 typedef struct CLIOptions CLIOptions;
-
-class CLILogger : public Logger {
-public:
-    virtual void update(const std::string& errorRaised, LogLevel level) override;
-};
-
-void CLILogger::update(const std::string& errorRaised, LogLevel level) {
-    switch (level) {
-        case LogLevel::Info:
-            std::cout << "[INFO]    ";
-            break;
-
-        case LogLevel::Warning:
-            std::cout << "[WARNING] ";
-            break;
-
-        case LogLevel::Error:
-            std::cout << "[ERROR]   ";
-            break;
-    }
-    std::cout << errorRaised << std::endl;
-}
 
 void print_help()
 {
@@ -88,13 +72,14 @@ Usage: hexamonkey-cli FILE [OPTIONS] [[LEAF] ...]\n\
        hexamonkey-cli [--help]\n\
 The hexamonkey CLI analyses a binary file and extracts information from it. \
 It will go down in the file given a list of leafs (which can either be a field\
- name or an index). Add '+' at the beginning of a leaf name to force it as an\
+ name or an index). Add '+' at the beginning of a leaf name to force it as an \
 index.\n\
 \n\
 Example: hexamonkey-cli test.mp4 1 type\n\
 This will look for a field named 'type' in the second item of the mp4 file.\n\
 \n\
 Options:\n\
+  -v, --verbose : include traces\
   -t, --display-type : What to display. It can be :\n\
      * fileType : file type detected using extension or magic number (leafs \
 are ignored),\n\
@@ -130,7 +115,9 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
     while(!optStr.empty() && moreOptions)
     {
         std::string flag(optStr.front());
-        if(flag == "--display-type" || flag == "-t")
+        if (flag == "--verbose" || flag == "-v") {
+            optStr.pop_front();
+        } else if(flag == "--display-type" || flag == "-t")
         {
             optStr.pop_front();
             if(optStr.empty())
@@ -175,64 +162,22 @@ bool parseArgs(const int argc, const char* const argv[], CLIOptions& options)
 
 int main(int argc, char *argv[])
 {
-    CLILogger logger;
-
     CLIOptions options;
+
     if(!parseArgs(argc, argv, options))
     {
         print_help();
         return 1;
     }
 
-#if defined(PLATFORM_WIN32)
-    char buffer[MAX_PATH];
-    GetModuleFileNameA(NULL, buffer, MAX_PATH);
-    std::string installDir = std::string(buffer);
-    std::string::size_type pos = installDir.find_last_of( "\\/" );
-    installDir = installDir.substr( 0, pos)+"\\";
-
-    std::string userDir = installDir+"scripts\\";
-
-    std::vector<std::string> modelsDirs = {installDir, "..\\models\\"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
-    std::vector<std::string> compilerDirs = {installDir, "..\\compiler\\"};
-    std::vector<std::string> logoDirs = {installDir, "..\\logo\\"};
-
-#elif defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
-    std::string installDir = "/usr/local/share/hexamonkey/";
-    std::string userDir = std::string(getenv("HOME"))+"/.hexamonkey/";
-
-    int mkdir_res = mkdir(userDir.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-    struct stat userDirStat;
-    // Check either that the user directory was created or that it already existed
-    if(mkdir_res && !(stat(userDir.c_str(), &userDirStat) == 0 && S_ISDIR(userDirStat.st_mode)))
-    {
-        std::cerr << "Failed to create user directory: " << userDir << std::endl;
-        return 0;
+    std::unique_ptr<Logger> logger;
+    if (options.verbose) {
+        logger.reset(new StreamLogger(std::cerr));
     }
+    ModuleSetup moduleSetup;
+    moduleSetup.setup();
 
-    std::vector<std::string> modelsDirs = {installDir, "../models/"};
-    std::vector<std::string> scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
-    std::vector<std::string> compilerDirs = {installDir, "../compiler/"};
-    std::vector<std::string> logoDirs = {installDir, "../logo/"};
-#else
-    std::cerr<<"Error: unsuported operating system"<<std::endl;
-    return 0;
-#endif
-
-    ModuleLoader moduleLoader;
-
-    moduleLoader.addModule("bestd", new StandardModule(true));
-    moduleLoader.addModule("lestd", new StandardModule(false));
-    moduleLoader.addModule("ebml",  new EbmlModule);
-    moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
-    moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));
-    moduleLoader.addModule("stream",new StreamModule());
-
-    ProgramLoader programLoader(static_cast<const HmcModule&>(moduleLoader.getModule("hmc")), compilerDirs, userDir);
-
-    moduleLoader.setDirectories(scriptsDirs, programLoader);
-
+    ModuleLoader& moduleLoader = moduleSetup.moduleLoader();
 
     RealFile file;
     file.setPath(argv[1]);
