@@ -41,9 +41,7 @@ void ContainerParser::addChild(Object *child)
             }
         }
 
-        if (!(child->isValid())) {
-            throwChildError(*child, ParsingException::InvalidChild, "child invalid");
-        }
+
 
         int64_t newSize = pos + child->size();
         if (_autogrow && newSize > object().size()) {
@@ -55,33 +53,48 @@ void ContainerParser::addChild(Object *child)
         const int64_t objectSize = object().size();
         const int64_t newAbsolutePosition = object().beginningPos() + newSize;
         const int64_t fileSize = object().file().size();
-        if (!fileGood || newAbsolutePosition > fileSize) {
-            throwChildError(*child, ParsingException::OutOfFile, "out of file");
-        } else if (objectSize != -1 && newSize > objectSize) {
-            throwChildError(*child, ParsingException::OutOfParent, "too big");
+        const bool outOfFile = (!fileGood || newAbsolutePosition > fileSize);
+        const bool outOfParent = (objectSize != -1 && newSize > objectSize);
+        if (outOfFile || outOfParent) {
+            if (object().size() != -1) {
+                newPos = object().size();
+            } else {
+                newPos = 0;
+            }
         } else {
-            if (object()._contentSize < newSize) {
-                object()._contentSize = newSize;
-            }
-
-            if(!child->name().empty()) {
-                object()._lookUpTable[child->name()] = child;
-            }
-
-            child->_parent = &object();
             newPos = child->beginningPos() - object().beginningPos();
             if (child->size() != -1LL) {
                 newPos += child->size();
             }
-
-            object()._children.push_back(child);
-            object()._ownedChildren.push_back(std::unique_ptr<Object>(child));
-            child->_rank = _object._children.size() - 1;
-            object()._lastChild = nullptr;
         }
 
         object().setPos(newPos);
         object().seekObjectEnd();
+
+        if (object()._contentSize < newSize) {
+            object()._contentSize = newSize;
+        }
+
+        if(!child->name().empty()) {
+            object()._lookUpTable[child->name()] = child;
+        }
+
+        child->_parent = &object();
+
+        object()._children.push_back(child);
+        object()._ownedChildren.push_back(std::unique_ptr<Object>(child));
+        child->_rank = _object._children.size() - 1;
+        object()._lastChild = nullptr;
+
+        if (!(child->isValid())) {
+            throwChildError(*child, ParsingException::InvalidChild, "child invalid");
+        } else if (outOfFile) {
+            throwChildError(*child, ParsingException::OutOfFile, "out of file");
+        } else if (outOfParent) {
+            throwChildError(*child, ParsingException::OutOfParent, concat("too big ", child->size()));
+        }
+
+
     }
 }
 
