@@ -1,0 +1,77 @@
+0x16384      SQLiteFile 
+0x8192           BTreePage 
+0x800                DataBaseHeader db_header 
+0x128                    String(16) HeaderString = "SQLite format 3"
+128x16                   uint(16) DatabasePageSize = 1024
+144x8                    uint(8) FileFormatWrite = 1
+152x8                    uint(8) FileFormatRead = 1
+160x8                    uint(8) ReservedSpace = 0
+168x8                    uint(8) MaximumEmbeddedPayloadFraction = 64
+176x8                    uint(8) MinimumEmbeddedPayloadFraction = 32
+184x8                    uint(8) LeafPayloadFraction = 32
+192x32                   uint(32) FileChangeCounter = 2
+224x32                   uint(32) DatabaseFileSize = 0
+256x32                   uint(32) FirstFreelistTrunkPageNumber = 0
+288x32                   uint(32) FreelistPagesNumber = 0
+320x32                   uint(32) SchemaCookie = 1
+352x32                   uint(32) SchemaFormatNumber = 1
+384x32                   uint(32) DefaultPageCacheSize = 0
+416x32                   uint(32) LargestRootBTreePageNumber = 0
+448x32                   uint(32) DatabaseTextEncoding = 1
+480x32                   uint(32) UserVersion = 0
+512x32                   uint(32) IsIncrementalVacuumMode = 0
+544x32                   uint(32) ApplicationId = 0
+576x160                  Data ReservedForExpansion 
+736x32                   uint(32) VersionValidForNumber = 0
+768x32                   uint(32) SQLiteVersionNumber = 0
+800x64               BTreePageHeader btreePageHeader 
+800x8                    uint(8) PageType = 13
+808x16                   uint(16) FirstFreeBlockOffset = 0
+824x16                   uint(16) CellsNumber = 1
+840x16                   uint(16) FirstContentByteOffset = 906
+856x8                    uint(8) FragFreeBytesNumber = 0
+864x16               Tuple(uint(16), 1) cellPointers 
+864x16                   uint(16) = 906
+880x6368             Data unallocatedSpace 
+7248x944             Tuple(TableLeafCell, 1) cells 
+7248x944                 TableLeafCell 
+7248x8                       Varint payload_size = 116
+7248x8                           uint(8) = 116
+7256x8                       Varint row_id = 1
+7256x8                           uint(8) = 1
+7264x928                     Record(116) payload 
+7264x8                           Varint header_size = 7
+7264x8                               uint(8) = 7
+7272x920                         Data data 
+8192x0               Data data 
+8192x8192        BTreePage 
+8192x64              BTreePageHeader btreePageHeader 
+8192x8                   uint(8) PageType = 13
+8200x16                  uint(16) FirstFreeBlockOffset = 0
+8216x16                  uint(16) CellsNumber = 2
+8232x16                  uint(16) FirstContentByteOffset = 961
+8248x8                   uint(8) FragFreeBytesNumber = 0
+8256x32              Tuple(uint(16), 2) cellPointers 
+8256x16                  uint(16) = 990
+8272x16                  uint(16) = 961
+8288x7592            Data unallocatedSpace 
+15880x504            Tuple(TableLeafCell, 2) cells 
+15880x232                TableLeafCell 
+15880x8                      Varint payload_size = 27
+15880x8                          uint(8) = 27
+15888x8                      Varint row_id = 2
+15888x8                          uint(8) = 2
+15896x216                    Record(27) payload 
+15896x8                          Varint header_size = 6
+15896x8                              uint(8) = 6
+15904x208                        Data data 
+16112x272                TableLeafCell 
+16112x8                      Varint payload_size = 32
+16112x8                          uint(8) = 32
+16120x8                      Varint row_id = 1
+16120x8                          uint(8) = 1
+16128x256                    Record(32) payload 
+16128x8                          Varint header_size = 6
+16128x8                              uint(8) = 6
+16136x248                        Data data 
+16384x0              Data data 

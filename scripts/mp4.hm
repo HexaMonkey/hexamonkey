@@ -432,7 +432,9 @@ class DataInformationBox as Box("dinf")
 
 class DataEntryUrlBox extends FullBox as Box("url ")
 {
-	string location;
+    if (!(flags&0b1)) {
+        string location;
+    }
 }
 
 class DataEntryUrnBox extends FullBox as Box("urn ")

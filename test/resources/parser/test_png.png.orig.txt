@@ -1,0 +1,52 @@
+0x26624      PngFile 
+0x64             Tuple(byte, 8) signature 
+0x8                  byte = 137
+8x8                  byte = 80
+16x8                 byte = 78
+24x8                 byte = 71
+32x8                 byte = 13
+40x8                 byte = 10
+48x8                 byte = 26
+56x8                 byte = 10
+64x200           ImageHeader 
+64x32                uint(32) length = 13
+96x32                String(4) type = "IHDR"
+128x32               uint(32) width = 64
+160x32               uint(32) height = 64
+192x8                uint(8) bitDepth = 8
+200x8                uint(8) colorType = 6
+208x8                uint(8) compressionMethod = 0
+216x8                uint(8) filterMethod = 0
+224x8                uint(8) interlaceMethod = 0
+232x32               uint(32) CRC = 2859037150
+264x128          SignificatBits 
+264x32               uint(32) length = 4
+296x32               String(4) type = "sBIT"
+328x8                uint(8) red = 8
+336x8                uint(8) green = 8
+344x8                uint(8) blue = 8
+352x8                uint(8) alpha = 8
+360x32               uint(32) CRC = 2080924808
+392x168          PhysicalPixelDimensions 
+392x32               uint(32) length = 9
+424x32               String(4) type = "pHYs"
+456x32               uint(32) pixelsPerUnitX = 1772
+488x32               uint(32) pixelsPerUnitY = 1772
+520x8                uint(8) unitSpecifier = 1
+528x32               uint(32) CRC = 510998581
+560x296          CompressedTextualData 
+560x32               uint(32) length = 25
+592x32               String(4) type = "tEXt"
+624x72               String keyword = "Software"
+696x8                uint(8) compressionMethod = 119
+704x120              Data compressedText 
+824x32               uint(32) CRC = 2616081434
+856x25672        ImageData 
+856x32               uint(32) length = 3197
+888x32               String(4) type = "IDAT"
+920x25576            Data imageData 
+26496x32             uint(32) CRC = 643000512
+26528x96         ImageTrailer 
+26528x32             uint(32) length = 0
+26560x32             String(4) type = "IEND"
+26592x32             uint(32) CRC = 2923585666

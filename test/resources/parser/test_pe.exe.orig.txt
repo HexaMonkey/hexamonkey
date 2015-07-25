@@ -1,0 +1,556 @@
+0x2273280    PEFile 
+0x512            IMAGE_DOS_HEADER 
+0x16                 WORD e_magic = 23117
+16x16                WORD e_cblp = 144
+32x16                WORD e_cp = 3
+48x16                WORD e_crlc = 0
+64x16                WORD e_cparhdr = 4
+80x16                WORD e_minalloc = 0
+96x16                WORD e_maxalloc = 65535
+112x16               WORD e_ss = 0
+128x16               WORD e_sp = 184
+144x16               WORD e_csum = 0
+160x16               WORD e_ip = 0
+176x16               WORD e_cs = 0
+192x16               WORD e_lfarlc = 64
+208x16               WORD e_ovno = 0
+224x64               Tuple(WORD, 4) e_res 
+224x16                   WORD = 0
+240x16                   WORD = 0
+256x16                   WORD = 0
+272x16                   WORD = 0
+512x1344         IMAGE_DOS_SEGMENT 
+1856x2112        IMAGE_NT_HEADERS 
+1856x32              DWORD Signature = 17744
+1888x160             IMAGE_FILE_HEADER FileHeader 
+1888x16                  IMAGE_FILE_MACHINE Machine = 34404
+1904x16                  WORD NumberOfSections = 5
+1920x32                  DWORD TimeDateStamp = 1290096509
+1952x32                  ADDRESS PointerToSymbolTable = 0
+1984x32                  DWORD NumberOfSymbols = 0
+2016x16                  WORD SizeOfOptionalHeader = 240
+2032x16                  WORD Characteristics = 35
+2048x1920            IMAGE_OPTIONAL_HEADER OptionalHeader 
+2048x16                  WORD Magic = 523
+2064x8                   BYTE MajorLinkerVersion = 8
+2072x8                   BYTE MinorLinkerVersion = 0
+2080x32                  OFFSET SizeOfCode = 186368
+2112x32                  OFFSET SizeOfInitializedData = 105984
+2144x32                  OFFSET SizeOfUninitializedData = 0
+2176x32                  OFFSET AddressOfEntryPoint = 188096
+2208x32                  OFFSET BaseOfCode = 4096
+2240x64                  ULONGLONG ImageBase = 4194304
+2304x32                  DWORD SectionAlignment = 4096
+2336x32                  DWORD FileAlignment = 512
+2368x16                  WORD MajorOperatingSystemVersion = 4
+2384x16                  WORD MinorOperatingSystemVersion = 0
+2400x16                  WORD MajorImageVersion = 0
+2416x16                  WORD MinorImageVersion = 0
+3968x1600        Tuple(IMAGE_SECTION_HEADER, 5) 
+3968x320             IMAGE_SECTION_HEADER = ".text"
+3968x64                  String(8) Name = ".text"
+4032x32                  DWORD VirtualSize = 185900
+4064x32                  DWORD VirtualAddress = 4096
+4096x32                  DWORD SizeOfRawData = 186368
+4128x32                  RVA PointerToRawData = 1024
+4160x32                  DWORD PointerToRelocations = 0
+4192x32                  DWORD PointerToLinenumbers = 0
+4224x16                  WORD NumberOfRelocations = 0
+4240x16                  WORD NumberOfLinenumbers = 0
+4256x32                  DWORD Characteristics = 1610612768
+4288x320             IMAGE_SECTION_HEADER = ".rdata"
+4288x64                  String(8) Name = ".rdata"
+4352x32                  DWORD VirtualSize = 74282
+4384x32                  DWORD VirtualAddress = 192512
+4416x32                  DWORD SizeOfRawData = 74752
+4448x32                  RVA PointerToRawData = 187392
+4480x32                  DWORD PointerToRelocations = 0
+4512x32                  DWORD PointerToLinenumbers = 0
+4544x16                  WORD NumberOfRelocations = 0
+4560x16                  WORD NumberOfLinenumbers = 0
+4576x32                  DWORD Characteristics = 1073741888
+4608x320             IMAGE_SECTION_HEADER = ".data"
+4608x64                  String(8) Name = ".data"
+4672x32                  DWORD VirtualSize = 11696
+4704x32                  DWORD VirtualAddress = 270336
+4736x32                  DWORD SizeOfRawData = 2560
+4768x32                  RVA PointerToRawData = 262144
+4800x32                  DWORD PointerToRelocations = 0
+4832x32                  DWORD PointerToLinenumbers = 0
+4864x16                  WORD NumberOfRelocations = 0
+4880x16                  WORD NumberOfLinenumbers = 0
+4896x32                  DWORD Characteristics = 3221225536
+4928x320             IMAGE_SECTION_HEADER = ".pdata"
+4928x64                  String(8) Name = ".pdata"
+4992x32                  DWORD VirtualSize = 17928
+5024x32                  DWORD VirtualAddress = 282624
+5056x32                  DWORD SizeOfRawData = 18432
+5088x32                  RVA PointerToRawData = 264704
+5120x32                  DWORD PointerToRelocations = 0
+5152x32                  DWORD PointerToLinenumbers = 0
+5184x16                  WORD NumberOfRelocations = 0
+5200x16                  WORD NumberOfLinenumbers = 0
+5216x32                  DWORD Characteristics = 1073741888
+5248x320             IMAGE_SECTION_HEADER = ".rsrc"
+5248x64                  String(8) Name = ".rsrc"
+5312x32                  DWORD VirtualSize = 784
+5344x32                  DWORD VirtualAddress = 303104
+5376x32                  DWORD SizeOfRawData = 1024
+5408x32                  RVA PointerToRawData = 283136
+5440x32                  DWORD PointerToRelocations = 0
+5472x32                  DWORD PointerToLinenumbers = 0
+5504x16                  WORD NumberOfRelocations = 0
+5520x16                  WORD NumberOfLinenumbers = 0
+5536x32                  DWORD Characteristics = 1073741888
+5568x2267712     IMAGE_SECTIONS 
+8192x1490944         IMAGE_SECTION(".text") 
+1499136x598016       IMAGE_SECTION(".rdata") 
+2069792x27360            IMAGE_DIRECTORY_ENTRY_IMPORT 
+2069792x960                  IMAGE_IMPORT_DESCRIPTORS 
+2069792x160                      IMAGE_IMPORT_DESCRIPTOR 
+2069792x32                           RVA OriginalFirstThunk = 264552
+2069824x32                           DWORD TimeDateStamp = 0
+2069856x32                           DWORD ForwarderChain = 0
+2069888x32                           RVA Name = 264928
+2069920x32                           RVA FirstThunk = 193096
+2069952x160                      IMAGE_IMPORT_DESCRIPTOR 
+2069952x32                           RVA OriginalFirstThunk = 264600
+2069984x32                           DWORD TimeDateStamp = 0
+2070016x32                           DWORD ForwarderChain = 0
+2070048x32                           RVA Name = 264982
+2070080x32                           RVA FirstThunk = 193144
+2070112x160                      IMAGE_IMPORT_DESCRIPTOR 
+2070112x32                           RVA OriginalFirstThunk = 263968
+2070144x32                           DWORD TimeDateStamp = 0
+2070176x32                           DWORD ForwarderChain = 0
+2070208x32                           RVA Name = 265112
+2070240x32                           RVA FirstThunk = 192512
+2070272x160                      IMAGE_IMPORT_DESCRIPTOR 
+2070272x32                           RVA OriginalFirstThunk = 264632
+2070304x32                           DWORD TimeDateStamp = 0
+2070336x32                           DWORD ForwarderChain = 0
+2070368x32                           RVA Name = 265384
+2070400x32                           RVA FirstThunk = 193176
+2070432x160                      IMAGE_IMPORT_DESCRIPTOR 
+2070432x32                           RVA OriginalFirstThunk = 264024
+2070464x32                           DWORD TimeDateStamp = 0
+2070496x32                           DWORD ForwarderChain = 0
+2070528x32                           RVA Name = 266780
+2070560x32                           RVA FirstThunk = 192568
+2070592x160                      IMAGE_IMPORT_DESCRIPTOR 
+2070592x32                           RVA OriginalFirstThunk = 0
+2070624x32                           DWORD TimeDateStamp = 0
+2070656x32                           DWORD ForwarderChain = 0
+2070688x32                           RVA Name = 0
+2070720x32                           RVA FirstThunk = 0
+2070752x26400                IMAGE_IMPORT_NAMES 
+2078464x104                      IMAGE_IMPORT_NAME = "OLEAUT32.dll"
+2078896x88                       IMAGE_IMPORT_NAME = "USER32.dll"
+2079936x104                      IMAGE_IMPORT_NAME = "ADVAPI32.dll"
+2082112x88                       IMAGE_IMPORT_NAME = "msvcrt.dll"
+2093280x104                      IMAGE_IMPORT_NAME = "KERNEL32.dll"
+2070752x26400                IMAGE_IMPORT_DATAS 
+2070752x26400                    IMAGE_IMPORT_DATA 
+2075456x384                          IMAGE_THUNK_DATAS 
+2075456x64                               IMAGE_THUNK_DATA64 = 9223372036854775810
+2075520x64                               IMAGE_THUNK_DATA64 = 9223372036854775817
+2075584x64                               IMAGE_THUNK_DATA64 = 9223372036854775818
+2075648x64                               IMAGE_THUNK_DATA64 = 9223372036854775957
+2075712x64                               IMAGE_THUNK_DATA64 = 9223372036854775814
+2075776x64                               IMAGE_THUNK_DATA64 = 0
+2070752x26400                    IMAGE_IMPORT_DATA 
+2075840x256                          IMAGE_THUNK_DATAS 
+2075840x64                               IMAGE_THUNK_DATA64 = 264942
+2075904x64                               IMAGE_THUNK_DATA64 = 264968
+2075968x64                               IMAGE_THUNK_DATA64 = 264954
+2076032x64                               IMAGE_THUNK_DATA64 = 0
+2076096x21056                        IMAGE_IMPORT_BY_NAMES 
+2078576x96                               IMAGE_IMPORT_BY_NAME 
+2078576x16                                   WORD Hint = 42
+2078592x80                                   String Name = "CharNextA"
+2078784x104                              IMAGE_IMPORT_BY_NAME 
+2078784x16                                   WORD Hint = 55
+2078800x88                                   String Name = "CharUpperW"
+2078672x104                              IMAGE_IMPORT_BY_NAME 
+2078672x16                                   WORD Hint = 52
+2078688x88                                   String Name = "CharUpperA"
+2070752x26400                    IMAGE_IMPORT_DATA 
+2070784x448                          IMAGE_THUNK_DATAS 
+2070784x64                               IMAGE_THUNK_DATA64 = 264994
+2070848x64                               IMAGE_THUNK_DATA64 = 265096
+2070912x64                               IMAGE_THUNK_DATA64 = 265076
+2070976x64                               IMAGE_THUNK_DATA64 = 265062
+2071040x64                               IMAGE_THUNK_DATA64 = 265042
+2071104x64                               IMAGE_THUNK_DATA64 = 265018
+2071168x64                               IMAGE_THUNK_DATA64 = 0
+2071232x25920                        IMAGE_IMPORT_BY_NAMES 
+2078992x192                              IMAGE_IMPORT_BY_NAME 
+2078992x16                                   WORD Hint = 28
+2079008x176                                  String Name = "AdjustTokenPrivileges"
+2079808x128                              IMAGE_IMPORT_BY_NAME 
+2079808x16                                   WORD Hint = 493
+2079824x112                                  String Name = "RegOpenKeyExW"
+2079648x152                              IMAGE_IMPORT_BY_NAME 
+2079648x16                                   WORD Hint = 504
+2079664x136                                  String Name = "RegQueryValueExW"
+2079536x112                              IMAGE_IMPORT_BY_NAME 
+2079536x16                                   WORD Hint = 459
+2079552x96                                   String Name = "RegCloseKey"
+2079376x152                              IMAGE_IMPORT_BY_NAME 
+2079376x16                                   WORD Hint = 428
+2079392x136                                  String Name = "OpenProcessToken"
+2079184x192                              IMAGE_IMPORT_BY_NAME 
+2079184x16                                   WORD Hint = 336
+2079200x176                                  String Name = "LookupPrivilegeValueW"
+2070752x26400                    IMAGE_IMPORT_DATA 
+2076096x2368                         IMAGE_THUNK_DATAS 
+2076096x64                               IMAGE_THUNK_DATA64 = 265440
+2076160x64                               IMAGE_THUNK_DATA64 = 265420
+2076224x64                               IMAGE_THUNK_DATA64 = 265410
+2076288x64                               IMAGE_THUNK_DATA64 = 265396
+2076352x64                               IMAGE_THUNK_DATA64 = 265360
+2076416x64                               IMAGE_THUNK_DATA64 = 265336
+2076480x64                               IMAGE_THUNK_DATA64 = 265318
+2076544x64                               IMAGE_THUNK_DATA64 = 265308
+2076608x64                               IMAGE_THUNK_DATA64 = 265298
+2076672x64                               IMAGE_THUNK_DATA64 = 265290
+2076736x64                               IMAGE_THUNK_DATA64 = 265280
+2076800x64                               IMAGE_THUNK_DATA64 = 265272
+2076864x64                               IMAGE_THUNK_DATA64 = 265454
+2076928x64                               IMAGE_THUNK_DATA64 = 265264
+2076992x64                               IMAGE_THUNK_DATA64 = 265254
+2078464x18688                        IMAGE_IMPORT_BY_NAMES 
+2082560x112                              IMAGE_IMPORT_BY_NAME 
+2082560x16                                   WORD Hint = 54
+2082576x96                                   String Name = "_XcptFilter"
+2082400x160                              IMAGE_IMPORT_BY_NAME 
+2082400x16                                   WORD Hint = 45
+2082416x144                                  String Name = "?terminate@@YAXXZ"
+2082320x80                               IMAGE_IMPORT_BY_NAME 
+2082320x16                                   WORD Hint = 366
+2082336x64                                   String Name = "_onexit"
+2082208x112                              IMAGE_IMPORT_BY_NAME 
+2082208x16                                   WORD Hint = 78
+2082224x96                                   String Name = "__dllonexit"
+2081920x192                              IMAGE_IMPORT_BY_NAME 
+2081920x16                                   WORD Hint = 17
+2081936x176                                  String Name = "??1type_info@@UEAA@XZ"
+2081728x184                              IMAGE_IMPORT_BY_NAME 
+2081728x16                                   WORD Hint = 55
+2081744x168                                  String Name = "__C_specific_handler"
+2081584x136                              IMAGE_IMPORT_BY_NAME 
+2081584x16                                   WORD Hint = 126
+2081600x120                                  String Name = "_beginthreadex"
+2081504x80                               IMAGE_IMPORT_BY_NAME 
+2081504x16                                   WORD Hint = 246
+2081520x64                                   String Name = "_isatty"
+2081424x72                               IMAGE_IMPORT_BY_NAME 
+2081424x16                                   WORD Hint = 757
+2081440x56                                   String Name = "wcslen"
+2081360x64                               IMAGE_IMPORT_BY_NAME 
+2081360x16                                   WORD Hint = 607
+2081376x48                                   String Name = "fputc"
+2081280x72                               IMAGE_IMPORT_BY_NAME 
+2081280x16                                   WORD Hint = 595
+2081296x56                                   String Name = "fflush"
+2081216x56                               IMAGE_IMPORT_BY_NAME 
+2081216x16                                   WORD Hint = 245
+2081232x40                                   String Name = "_iob"
+2082672x80                               IMAGE_IMPORT_BY_NAME 
+2082672x16                                   WORD Hint = 127
+2082688x64                                   String Name = "_c_exit"
+2081152x64                               IMAGE_IMPORT_BY_NAME 
+2081152x16                                   WORD Hint = 596
+2081168x48                                   String Name = "fgetc"
+2081072x72                               IMAGE_IMPORT_BY_NAME 
+2081072x16                                   WORD Hint = 592
+2081088x56                                   String Name = "fclose"
+2070752x26400                    IMAGE_IMPORT_DATA 
+2071232x4224                         IMAGE_THUNK_DATAS 
+2071232x64                               IMAGE_THUNK_DATA64 = 266668
+2071296x64                               IMAGE_THUNK_DATA64 = 266684
+2071360x64                               IMAGE_THUNK_DATA64 = 266698
+2071424x64                               IMAGE_THUNK_DATA64 = 266718
+2071488x64                               IMAGE_THUNK_DATA64 = 266740
+2071552x64                               IMAGE_THUNK_DATA64 = 266752
+2071616x64                               IMAGE_THUNK_DATA64 = 265750
+2071680x64                               IMAGE_THUNK_DATA64 = 266644
+2071744x64                               IMAGE_THUNK_DATA64 = 266626
+2071808x64                               IMAGE_THUNK_DATA64 = 266608
+2071872x64                               IMAGE_THUNK_DATA64 = 266592
+2071936x64                               IMAGE_THUNK_DATA64 = 266574
+2072000x64                               IMAGE_THUNK_DATA64 = 266560
+2072064x64                               IMAGE_THUNK_DATA64 = 266544
+2072128x64                               IMAGE_THUNK_DATA64 = 266524
+2075456x21696                        IMAGE_IMPORT_BY_NAMES 
+2092384x120                              IMAGE_IMPORT_BY_NAME 
+2092384x16                                   WORD Hint = 903
+2092400x104                                  String Name = "VirtualAlloc"
+2092512x112                              IMAGE_IMPORT_BY_NAME 
+2092512x16                                   WORD Hint = 905
+2092528x96                                   String Name = "VirtualFree"
+2092624x152                              IMAGE_IMPORT_BY_NAME 
+2092624x16                                   WORD Hint = 388
+2092640x136                                  String Name = "GetModuleHandleW"
+2092784x176                              IMAGE_IMPORT_BY_NAME 
+2092784x16                                   WORD Hint = 918
+2092800x160                                  String Name = "WaitForSingleObject"
+2092960x88                               IMAGE_IMPORT_BY_NAME 
+2092960x16                                   WORD Hint = 797
+2092976x72                                   String Name = "SetEvent"
+2093056x224                              IMAGE_IMPORT_BY_NAME 
+2093056x16                                   WORD Hint = 549
+2093072x208                                  String Name = "InitializeCriticalSection"
+2085040x136                              IMAGE_IMPORT_BY_NAME 
+2085040x16                                   WORD Hint = 772
+2085056x120                                  String Name = "SetConsoleMode"
+2092192x184                              IMAGE_IMPORT_BY_NAME 
+2092192x16                                   WORD Hint = 786
+2092208x168                                  String Name = "SetCurrentDirectoryW"
+2092048x136                              IMAGE_IMPORT_BY_NAME 
+2092048x16                                   WORD Hint = 418
+2092064x120                                  String Name = "GetProcAddress"
+2091904x144                              IMAGE_IMPORT_BY_NAME 
+2091904x16                                   WORD Hint = 428
+2091920x128                                  String Name = "GetProcessTimes"
+2091776x120                              IMAGE_IMPORT_BY_NAME 
+2091776x16                                   WORD Hint = 481
+2091792x104                                  String Name = "GetTickCount"
+2091632x144                              IMAGE_IMPORT_BY_NAME 
+2091632x16                                   WORD Hint = 887
+2091648x128                                  String Name = "UnmapViewOfFile"
+2091520x104                              IMAGE_IMPORT_BY_NAME 
+2091520x16                                   WORD Hint = 634
+2091536x88                                   String Name = "OpenEventW"
+2091392x128                              IMAGE_IMPORT_BY_NAME 
+2091392x16                                   WORD Hint = 612
+2091408x112                                  String Name = "MapViewOfFile"
+2091232x152                              IMAGE_IMPORT_BY_NAME 
+2091232x16                                   WORD Hint = 637
+2091248x136                                  String Name = "OpenFileMappingW"
+1499136x598016           IMAGE_DIRECTORY_ENTRY_IAT 
+1499136x598016               IMAGE_IMPORT_DATA 
+1503808x384                      IMAGE_THUNK_DATAS 
+1503808x64                           IMAGE_THUNK_DATA64 = 9223372036854775810
+1503872x64                           IMAGE_THUNK_DATA64 = 9223372036854775817
+1503936x64                           IMAGE_THUNK_DATA64 = 9223372036854775818
+1504000x64                           IMAGE_THUNK_DATA64 = 9223372036854775957
+1504064x64                           IMAGE_THUNK_DATA64 = 9223372036854775814
+1504128x64                           IMAGE_THUNK_DATA64 = 0
+1499136x598016               IMAGE_IMPORT_DATA 
+1504192x256                      IMAGE_THUNK_DATAS 
+1504192x64                           IMAGE_THUNK_DATA64 = 264942
+1504256x64                           IMAGE_THUNK_DATA64 = 264968
+1504320x64                           IMAGE_THUNK_DATA64 = 264954
+1504384x64                           IMAGE_THUNK_DATA64 = 0
+1504448x592704                   IMAGE_IMPORT_BY_NAMES 
+2078576x96                           IMAGE_IMPORT_BY_NAME 
+2078576x16                               WORD Hint = 42
+2078592x80                               String Name = "CharNextA"
+2078784x104                          IMAGE_IMPORT_BY_NAME 
+2078784x16                               WORD Hint = 55
+2078800x88                               String Name = "CharUpperW"
+2078672x104                          IMAGE_IMPORT_BY_NAME 
+2078672x16                               WORD Hint = 52
+2078688x88                               String Name = "CharUpperA"
+1499136x598016               IMAGE_IMPORT_DATA 
+1499136x448                      IMAGE_THUNK_DATAS 
+1499136x64                           IMAGE_THUNK_DATA64 = 264994
+1499200x64                           IMAGE_THUNK_DATA64 = 265096
+1499264x64                           IMAGE_THUNK_DATA64 = 265076
+1499328x64                           IMAGE_THUNK_DATA64 = 265062
+1499392x64                           IMAGE_THUNK_DATA64 = 265042
+1499456x64                           IMAGE_THUNK_DATA64 = 265018
+1499520x64                           IMAGE_THUNK_DATA64 = 0
+1499584x597568                   IMAGE_IMPORT_BY_NAMES 
+2078992x192                          IMAGE_IMPORT_BY_NAME 
+2078992x16                               WORD Hint = 28
+2079008x176                              String Name = "AdjustTokenPrivileges"
+2079808x128                          IMAGE_IMPORT_BY_NAME 
+2079808x16                               WORD Hint = 493
+2079824x112                              String Name = "RegOpenKeyExW"
+2079648x152                          IMAGE_IMPORT_BY_NAME 
+2079648x16                               WORD Hint = 504
+2079664x136                              String Name = "RegQueryValueExW"
+2079536x112                          IMAGE_IMPORT_BY_NAME 
+2079536x16                               WORD Hint = 459
+2079552x96                               String Name = "RegCloseKey"
+2079376x152                          IMAGE_IMPORT_BY_NAME 
+2079376x16                               WORD Hint = 428
+2079392x136                              String Name = "OpenProcessToken"
+2079184x192                          IMAGE_IMPORT_BY_NAME 
+2079184x16                               WORD Hint = 336
+2079200x176                              String Name = "LookupPrivilegeValueW"
+1499136x598016               IMAGE_IMPORT_DATA 
+1504448x2368                     IMAGE_THUNK_DATAS 
+1504448x64                           IMAGE_THUNK_DATA64 = 265440
+1504512x64                           IMAGE_THUNK_DATA64 = 265420
+1504576x64                           IMAGE_THUNK_DATA64 = 265410
+1504640x64                           IMAGE_THUNK_DATA64 = 265396
+1504704x64                           IMAGE_THUNK_DATA64 = 265360
+1504768x64                           IMAGE_THUNK_DATA64 = 265336
+1504832x64                           IMAGE_THUNK_DATA64 = 265318
+1504896x64                           IMAGE_THUNK_DATA64 = 265308
+1504960x64                           IMAGE_THUNK_DATA64 = 265298
+1505024x64                           IMAGE_THUNK_DATA64 = 265290
+1505088x64                           IMAGE_THUNK_DATA64 = 265280
+1505152x64                           IMAGE_THUNK_DATA64 = 265272
+1505216x64                           IMAGE_THUNK_DATA64 = 265454
+1505280x64                           IMAGE_THUNK_DATA64 = 265264
+1505344x64                           IMAGE_THUNK_DATA64 = 265254
+1506816x590336                   IMAGE_IMPORT_BY_NAMES 
+2082560x112                          IMAGE_IMPORT_BY_NAME 
+2082560x16                               WORD Hint = 54
+2082576x96                               String Name = "_XcptFilter"
+2082400x160                          IMAGE_IMPORT_BY_NAME 
+2082400x16                               WORD Hint = 45
+2082416x144                              String Name = "?terminate@@YAXXZ"
+2082320x80                           IMAGE_IMPORT_BY_NAME 
+2082320x16                               WORD Hint = 366
+2082336x64                               String Name = "_onexit"
+2082208x112                          IMAGE_IMPORT_BY_NAME 
+2082208x16                               WORD Hint = 78
+2082224x96                               String Name = "__dllonexit"
+2081920x192                          IMAGE_IMPORT_BY_NAME 
+2081920x16                               WORD Hint = 17
+2081936x176                              String Name = "??1type_info@@UEAA@XZ"
+2081728x184                          IMAGE_IMPORT_BY_NAME 
+2081728x16                               WORD Hint = 55
+2081744x168                              String Name = "__C_specific_handler"
+2081584x136                          IMAGE_IMPORT_BY_NAME 
+2081584x16                               WORD Hint = 126
+2081600x120                              String Name = "_beginthreadex"
+2081504x80                           IMAGE_IMPORT_BY_NAME 
+2081504x16                               WORD Hint = 246
+2081520x64                               String Name = "_isatty"
+2081424x72                           IMAGE_IMPORT_BY_NAME 
+2081424x16                               WORD Hint = 757
+2081440x56                               String Name = "wcslen"
+2081360x64                           IMAGE_IMPORT_BY_NAME 
+2081360x16                               WORD Hint = 607
+2081376x48                               String Name = "fputc"
+2081280x72                           IMAGE_IMPORT_BY_NAME 
+2081280x16                               WORD Hint = 595
+2081296x56                               String Name = "fflush"
+2081216x56                           IMAGE_IMPORT_BY_NAME 
+2081216x16                               WORD Hint = 245
+2081232x40                               String Name = "_iob"
+2082672x80                           IMAGE_IMPORT_BY_NAME 
+2082672x16                               WORD Hint = 127
+2082688x64                               String Name = "_c_exit"
+2081152x64                           IMAGE_IMPORT_BY_NAME 
+2081152x16                               WORD Hint = 596
+2081168x48                               String Name = "fgetc"
+2081072x72                           IMAGE_IMPORT_BY_NAME 
+2081072x16                               WORD Hint = 592
+2081088x56                               String Name = "fclose"
+1499136x598016               IMAGE_IMPORT_DATA 
+1499584x4224                     IMAGE_THUNK_DATAS 
+1499584x64                           IMAGE_THUNK_DATA64 = 266668
+1499648x64                           IMAGE_THUNK_DATA64 = 266684
+1499712x64                           IMAGE_THUNK_DATA64 = 266698
+1499776x64                           IMAGE_THUNK_DATA64 = 266718
+1499840x64                           IMAGE_THUNK_DATA64 = 266740
+1499904x64                           IMAGE_THUNK_DATA64 = 266752
+1499968x64                           IMAGE_THUNK_DATA64 = 265750
+1500032x64                           IMAGE_THUNK_DATA64 = 266644
+1500096x64                           IMAGE_THUNK_DATA64 = 266626
+1500160x64                           IMAGE_THUNK_DATA64 = 266608
+1500224x64                           IMAGE_THUNK_DATA64 = 266592
+1500288x64                           IMAGE_THUNK_DATA64 = 266574
+1500352x64                           IMAGE_THUNK_DATA64 = 266560
+1500416x64                           IMAGE_THUNK_DATA64 = 266544
+1500480x64                           IMAGE_THUNK_DATA64 = 266524
+1503808x593344                   IMAGE_IMPORT_BY_NAMES 
+2092384x120                          IMAGE_IMPORT_BY_NAME 
+2092384x16                               WORD Hint = 903
+2092400x104                              String Name = "VirtualAlloc"
+2092512x112                          IMAGE_IMPORT_BY_NAME 
+2092512x16                               WORD Hint = 905
+2092528x96                               String Name = "VirtualFree"
+2092624x152                          IMAGE_IMPORT_BY_NAME 
+2092624x16                               WORD Hint = 388
+2092640x136                              String Name = "GetModuleHandleW"
+2092784x176                          IMAGE_IMPORT_BY_NAME 
+2092784x16                               WORD Hint = 918
+2092800x160                              String Name = "WaitForSingleObject"
+2092960x88                           IMAGE_IMPORT_BY_NAME 
+2092960x16                               WORD Hint = 797
+2092976x72                               String Name = "SetEvent"
+2093056x224                          IMAGE_IMPORT_BY_NAME 
+2093056x16                               WORD Hint = 549
+2093072x208                              String Name = "InitializeCriticalSection"
+2085040x136                          IMAGE_IMPORT_BY_NAME 
+2085040x16                               WORD Hint = 772
+2085056x120                              String Name = "SetConsoleMode"
+2092192x184                          IMAGE_IMPORT_BY_NAME 
+2092192x16                               WORD Hint = 786
+2092208x168                              String Name = "SetCurrentDirectoryW"
+2092048x136                          IMAGE_IMPORT_BY_NAME 
+2092048x16                               WORD Hint = 418
+2092064x120                              String Name = "GetProcAddress"
+2091904x144                          IMAGE_IMPORT_BY_NAME 
+2091904x16                               WORD Hint = 428
+2091920x128                              String Name = "GetProcessTimes"
+2091776x120                          IMAGE_IMPORT_BY_NAME 
+2091776x16                               WORD Hint = 481
+2091792x104                              String Name = "GetTickCount"
+2091632x144                          IMAGE_IMPORT_BY_NAME 
+2091632x16                               WORD Hint = 887
+2091648x128                              String Name = "UnmapViewOfFile"
+2091520x104                          IMAGE_IMPORT_BY_NAME 
+2091520x16                               WORD Hint = 634
+2091536x88                               String Name = "OpenEventW"
+2091392x128                          IMAGE_IMPORT_BY_NAME 
+2091392x16                               WORD Hint = 612
+2091408x112                              String Name = "MapViewOfFile"
+2091232x152                          IMAGE_IMPORT_BY_NAME 
+2091232x16                               WORD Hint = 637
+2091248x136                              String Name = "OpenFileMappingW"
+2097152x20480        IMAGE_SECTION(".data") 
+2117632x147456       IMAGE_SECTION(".pdata") 
+2117632x147456           IMAGE_DIRECTORY_ENTRY_EXCEPTION 
+2265088x8192         IMAGE_SECTION(".rsrc") 
+2265088x8192             IMAGE_DIRECTORY_ENTRY_RESOURCE 
+2265088x192                  IMAGE_RESOURCE_DIRECTORY directory 
+2265088x32                       DWORD Characteristics = 0
+2265120x32                       DWORD TimeDateStamp = 0
+2265152x16                       WORD MajorVersion = 0
+2265168x16                       WORD MinorVersion = 0
+2265184x16                       WORD NumberOfNamedEntries = 0
+2265200x16                       WORD NumberOfIdEntries = 1
+2265216x0                        Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 0) NamedEntries 
+2265216x64                       Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 1) IdEntries 
+2265216x64                           IMAGE_RESOURCE_DIRECTORY_ENTRY 
+2265216x32                               DWORD IntegerID = 16
+2265248x32                               ResourceRVA = 24
+2265280x192                  IMAGE_RESOURCE_DIRECTORY directory 
+2265280x32                       DWORD Characteristics = 0
+2265312x32                       DWORD TimeDateStamp = 0
+2265344x16                       WORD MajorVersion = 0
+2265360x16                       WORD MinorVersion = 0
+2265376x16                       WORD NumberOfNamedEntries = 0
+2265392x16                       WORD NumberOfIdEntries = 1
+2265408x0                        Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 0) NamedEntries 
+2265408x64                       Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 1) IdEntries 
+2265408x64                           IMAGE_RESOURCE_DIRECTORY_ENTRY 
+2265408x32                               DWORD IntegerID = 1
+2265440x32                               ResourceRVA = 48
+2265472x192                  IMAGE_RESOURCE_DIRECTORY directory 
+2265472x32                       DWORD Characteristics = 0
+2265504x32                       DWORD TimeDateStamp = 0
+2265536x16                       WORD MajorVersion = 0
+2265552x16                       WORD MinorVersion = 0
+2265568x16                       WORD NumberOfNamedEntries = 0
+2265584x16                       WORD NumberOfIdEntries = 1
+2265600x0                        Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 0) NamedEntries 
+2265600x64                       Tuple(IMAGE_RESOURCE_DIRECTORY_ENTRY, 1) IdEntries 
+2265600x64                           IMAGE_RESOURCE_DIRECTORY_ENTRY 
+2265600x32                               DWORD IntegerID = 1033
+2265632x32                               ResourceRVA = 72
+2265664x128                  IMAGE_RESOURCE_DATA_ENTRY leaf 
+2265664x32                       RVA OffsetToData = 303200
+2265696x32                       ULONG Size = 684
+2265728x32                       ULONG CodePage = 0
+2265760x32                       ULONG Reserved = 0
+2265856x5472                 Data leafData 

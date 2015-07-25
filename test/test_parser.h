@@ -16,10 +16,15 @@ public:
 
 private slots:
     void test_asf();
+    void test_avi();
     void test_gif();
     void test_jpg();
+    void test_pe();
+    void test_png();
     void test_messagepack();
     void test_mp4();
+    void test_sqlite();
+    void test_zip();
 
 private:
     bool checkFile(const std::string& path, int depth = -1, int width = -1);

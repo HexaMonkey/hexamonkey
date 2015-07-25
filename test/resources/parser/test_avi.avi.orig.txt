@@ -1,0 +1,295 @@
+0x1331936    AviFile 
+0x1331936        AviRIFF 
+0x32                 FOURCC dwFourCC = "RIFF"
+32x32                DWORD dwSize = 166484
+64x32                FOURCC dwFourCC = "AVI "
+96x16096             HeaderList 
+96x32                    FOURCC dwFourCC = "LIST"
+128x32                   DWORD dwSize = 2004
+160x32                   FOURCC dwFourCC = "hdrl"
+192x512                  MainAviHeader 
+192x32                       FOURCC dwFourCC = "avih"
+224x32                       DWORD dwSize = 56
+256x32                       DWORD dwMicroSecPerFrame = 114280
+288x32                       DWORD dwMaxBytesPerSec = 153600
+320x32                       DWORD dwPaddingGranularity = 494667447
+352x32                       DWORD dwFlags = 272
+384x32                       DWORD dwTotalFrames = 19
+416x32                       DWORD dwInitialFrames = 0
+448x32                       DWORD dwStreams = 1
+480x32                       DWORD dwSuggestedBufferSize = 38912
+512x32                       DWORD dwWidth = 320
+544x32                       DWORD dwHeight = 200
+576x128                      Tuple(DWORD, 4) dwReserved 
+576x32                           DWORD = 946603008
+608x32                           DWORD = 1692444596
+640x32                           DWORD = 102171496
+672x32                           DWORD = 0
+704x9184                 StreamHeaderList 
+704x32                       FOURCC dwFourCC = "LIST"
+736x32                       DWORD dwSize = 1140
+768x32                       FOURCC dwFourCC = "strl"
+800x512                      StreamHeader 
+800x32                           FOURCC dwFourCC = "strh"
+832x32                           DWORD dwSize = 56
+864x32                           FOURCC fccType = "vids"
+896x32                           FOURCC fccHandler = "MSVC"
+928x32                           DWORD dwFlags = 0
+960x16                           WORD wPriority = 0
+976x16                           WORD wLanguage = 0
+992x32                           DWORD dwInitialFrames = 0
+1024x32                          DWORD dwScale = 114280
+1056x32                          DWORD dwRate = 1000000
+1088x32                          DWORD dwStart = 0
+1120x32                          DWORD dwLength = 19
+1152x32                          DWORD dwSuggestedBufferSize = 36838
+1184x32                          DWORD dwQuality = 8500
+1216x32                          DWORD dwSampleSize = 0
+1312x8576                    BitmapInfoHeader 
+1312x32                          FOURCC dwFourCC = "strf"
+1344x32                          DWORD dwSize = 1064
+1376x32                          DWORD biSize = 40
+1408x32                          LONG biWidth = 320
+1440x32                          LONG biHeight = 200
+1472x16                          WORD biPlanes = 1
+1488x16                          WORD biBitCount = 8
+1504x32                          FOURCC biCompression = "CRAM"
+1536x32                          DWORD biSizeImage = 40002
+1568x32                          LONG biXPelsPerMeter = 0
+1600x32                          LONG biYPelsPerMeter = 0
+1632x32                          DWORD biClrUsed = 256
+1664x32                          DWORD biClrImportant = 0
+9888x128                 CHUNK("vedt") 
+9888x32                      FOURCC dwFourCC = "vedt"
+9920x32                      DWORD dwSize = 8
+10016x6176               Junk 
+10016x32                     FOURCC dwFourCC = "JUNK"
+10048x32                     DWORD dwSize = 764
+10080x6112                   Data payload 
+16192x1310816        MovieList 
+16192x32                 FOURCC dwFourCC = "LIST"
+16224x32                 DWORD dwSize = 163844
+16256x32                 FOURCC dwFourCC = "movi"
+16288x311296             MovieRecord 
+16288x32                     FOURCC dwFourCC = "LIST"
+16320x32                     DWORD dwSize = 38904
+16352x32                     FOURCC dwFourCC = "rec "
+16384x294768                 VideoChunk 
+16384x32                         FOURCC dwFourCC = "00dc"
+16416x32                         DWORD dwSize = 36838
+16448x294704                     Data payload 
+311152x16432                 Junk 
+311152x32                        FOURCC dwFourCC = "JUNK"
+311184x32                        DWORD dwSize = 2046
+311216x16368                     Data payload 
+327584x32768             MovieRecord 
+327584x32                    FOURCC dwFourCC = "LIST"
+327616x32                    DWORD dwSize = 4088
+327648x32                    FOURCC dwFourCC = "rec "
+327680x31136                 VideoChunk 
+327680x32                        FOURCC dwFourCC = "00dc"
+327712x32                        DWORD dwSize = 3884
+327744x31072                     Data payload 
+358816x1536                  Junk 
+358816x32                        FOURCC dwFourCC = "JUNK"
+358848x32                        DWORD dwSize = 184
+358880x1472                      Data payload 
+360352x32768             MovieRecord 
+360352x32                    FOURCC dwFourCC = "LIST"
+360384x32                    DWORD dwSize = 4088
+360416x32                    FOURCC dwFourCC = "rec "
+360448x31936                 VideoChunk 
+360448x32                        FOURCC dwFourCC = "00dc"
+360480x32                        DWORD dwSize = 3984
+360512x31872                     Data payload 
+392384x736                   Junk 
+392384x32                        FOURCC dwFourCC = "JUNK"
+392416x32                        DWORD dwSize = 84
+392448x672                       Data payload 
+393120x49152             MovieRecord 
+393120x32                    FOURCC dwFourCC = "LIST"
+393152x32                    DWORD dwSize = 6136
+393184x32                    FOURCC dwFourCC = "rec "
+393216x39328                 VideoChunk 
+393216x32                        FOURCC dwFourCC = "00dc"
+393248x32                        DWORD dwSize = 4908
+393280x39264                     Data payload 
+432544x9728                  Junk 
+432544x32                        FOURCC dwFourCC = "JUNK"
+432576x32                        DWORD dwSize = 1208
+432608x9664                      Data payload 
+442272x49152             MovieRecord 
+442272x32                    FOURCC dwFourCC = "LIST"
+442304x32                    DWORD dwSize = 6136
+442336x32                    FOURCC dwFourCC = "rec "
+442368x34848                 VideoChunk 
+442368x32                        FOURCC dwFourCC = "00dc"
+442400x32                        DWORD dwSize = 4348
+442432x34784                     Data payload 
+477216x14208                 Junk 
+477216x32                        FOURCC dwFourCC = "JUNK"
+477248x32                        DWORD dwSize = 1768
+477280x14144                     Data payload 
+491424x49152             MovieRecord 
+491424x32                    FOURCC dwFourCC = "LIST"
+491456x32                    DWORD dwSize = 6136
+491488x32                    FOURCC dwFourCC = "rec "
+491520x36256                 VideoChunk 
+491520x32                        FOURCC dwFourCC = "00dc"
+491552x32                        DWORD dwSize = 4524
+491584x36192                     Data payload 
+527776x12800                 Junk 
+527776x32                        FOURCC dwFourCC = "JUNK"
+527808x32                        DWORD dwSize = 1592
+527840x12736                     Data payload 
+540576x49152             MovieRecord 
+540576x32                    FOURCC dwFourCC = "LIST"
+540608x32                    DWORD dwSize = 6136
+540640x32                    FOURCC dwFourCC = "rec "
+540672x38608                 VideoChunk 
+540672x32                        FOURCC dwFourCC = "00dc"
+540704x32                        DWORD dwSize = 4818
+540736x38544                     Data payload 
+579280x10448                 Junk 
+579280x32                        FOURCC dwFourCC = "JUNK"
+579312x32                        DWORD dwSize = 1298
+579344x10384                     Data payload 
+589728x49152             MovieRecord 
+589728x32                    FOURCC dwFourCC = "LIST"
+589760x32                    DWORD dwSize = 6136
+589792x32                    FOURCC dwFourCC = "rec "
+589824x36688                 VideoChunk 
+589824x32                        FOURCC dwFourCC = "00dc"
+589856x32                        DWORD dwSize = 4578
+589888x36624                     Data payload 
+626512x12368                 Junk 
+626512x32                        FOURCC dwFourCC = "JUNK"
+626544x32                        DWORD dwSize = 1538
+626576x12304                     Data payload 
+638880x49152             MovieRecord 
+638880x32                    FOURCC dwFourCC = "LIST"
+638912x32                    DWORD dwSize = 6136
+638944x32                    FOURCC dwFourCC = "rec "
+638976x37296                 VideoChunk 
+638976x32                        FOURCC dwFourCC = "00dc"
+639008x32                        DWORD dwSize = 4654
+639040x37232                     Data payload 
+676272x11760                 Junk 
+676272x32                        FOURCC dwFourCC = "JUNK"
+676304x32                        DWORD dwSize = 1462
+676336x11696                     Data payload 
+688032x49152             MovieRecord 
+688032x32                    FOURCC dwFourCC = "LIST"
+688064x32                    DWORD dwSize = 6136
+688096x32                    FOURCC dwFourCC = "rec "
+688128x36560                 VideoChunk 
+688128x32                        FOURCC dwFourCC = "00dc"
+688160x32                        DWORD dwSize = 4562
+688192x36496                     Data payload 
+724688x12496                 Junk 
+724688x32                        FOURCC dwFourCC = "JUNK"
+724720x32                        DWORD dwSize = 1554
+724752x12432                     Data payload 
+737184x49152             MovieRecord 
+737184x32                    FOURCC dwFourCC = "LIST"
+737216x32                    DWORD dwSize = 6136
+737248x32                    FOURCC dwFourCC = "rec "
+737280x36752                 VideoChunk 
+737280x32                        FOURCC dwFourCC = "00dc"
+737312x32                        DWORD dwSize = 4586
+737344x36688                     Data payload 
+774032x12304                 Junk 
+774032x32                        FOURCC dwFourCC = "JUNK"
+774064x32                        DWORD dwSize = 1530
+774096x12240                     Data payload 
+786336x49152             MovieRecord 
+786336x32                    FOURCC dwFourCC = "LIST"
+786368x32                    DWORD dwSize = 6136
+786400x32                    FOURCC dwFourCC = "rec "
+786432x34032                 VideoChunk 
+786432x32                        FOURCC dwFourCC = "00dc"
+786464x32                        DWORD dwSize = 4246
+786496x33968                     Data payload 
+820464x15024                 Junk 
+820464x32                        FOURCC dwFourCC = "JUNK"
+820496x32                        DWORD dwSize = 1870
+820528x14960                     Data payload 
+1327008x4928         IndexEntries 
+1327008x32               FOURCC dwFourCC = "idx1"
+1327040x32               DWORD dwSize = 608
+1327072x4864             Array(IndexEntry) entries 
+1327072x128                  IndexEntry 
+1327072x32                       FOURCC ckid = "rec "
+1327104x32                       DWORD dwFlags = 1
+1327136x32                       DWORD dwChunkOffset = 4
+1327168x32                       DWORD dwChunkLength = 38904
+1327200x128                  IndexEntry 
+1327200x32                       FOURCC ckid = "00dc"
+1327232x32                       DWORD dwFlags = 18
+1327264x32                       DWORD dwChunkOffset = 16
+1327296x32                       DWORD dwChunkLength = 36838
+1327328x128                  IndexEntry 
+1327328x32                       FOURCC ckid = "rec "
+1327360x32                       DWORD dwFlags = 1
+1327392x32                       DWORD dwChunkOffset = 38916
+1327424x32                       DWORD dwChunkLength = 4088
+1327456x128                  IndexEntry 
+1327456x32                       FOURCC ckid = "00dc"
+1327488x32                       DWORD dwFlags = 2
+1327520x32                       DWORD dwChunkOffset = 38928
+1327552x32                       DWORD dwChunkLength = 3884
+1327584x128                  IndexEntry 
+1327584x32                       FOURCC ckid = "rec "
+1327616x32                       DWORD dwFlags = 1
+1327648x32                       DWORD dwChunkOffset = 43012
+1327680x32                       DWORD dwChunkLength = 4088
+1327712x128                  IndexEntry 
+1327712x32                       FOURCC ckid = "00dc"
+1327744x32                       DWORD dwFlags = 2
+1327776x32                       DWORD dwChunkOffset = 43024
+1327808x32                       DWORD dwChunkLength = 3984
+1327840x128                  IndexEntry 
+1327840x32                       FOURCC ckid = "rec "
+1327872x32                       DWORD dwFlags = 1
+1327904x32                       DWORD dwChunkOffset = 47108
+1327936x32                       DWORD dwChunkLength = 6136
+1327968x128                  IndexEntry 
+1327968x32                       FOURCC ckid = "00dc"
+1328000x32                       DWORD dwFlags = 2
+1328032x32                       DWORD dwChunkOffset = 47120
+1328064x32                       DWORD dwChunkLength = 4908
+1328096x128                  IndexEntry 
+1328096x32                       FOURCC ckid = "rec "
+1328128x32                       DWORD dwFlags = 1
+1328160x32                       DWORD dwChunkOffset = 53252
+1328192x32                       DWORD dwChunkLength = 6136
+1328224x128                  IndexEntry 
+1328224x32                       FOURCC ckid = "00dc"
+1328256x32                       DWORD dwFlags = 2
+1328288x32                       DWORD dwChunkOffset = 53264
+1328320x32                       DWORD dwChunkLength = 4348
+1328352x128                  IndexEntry 
+1328352x32                       FOURCC ckid = "rec "
+1328384x32                       DWORD dwFlags = 1
+1328416x32                       DWORD dwChunkOffset = 59396
+1328448x32                       DWORD dwChunkLength = 6136
+1328480x128                  IndexEntry 
+1328480x32                       FOURCC ckid = "00dc"
+1328512x32                       DWORD dwFlags = 2
+1328544x32                       DWORD dwChunkOffset = 59408
+1328576x32                       DWORD dwChunkLength = 4524
+1328608x128                  IndexEntry 
+1328608x32                       FOURCC ckid = "rec "
+1328640x32                       DWORD dwFlags = 1
+1328672x32                       DWORD dwChunkOffset = 65540
+1328704x32                       DWORD dwChunkLength = 6136
+1328736x128                  IndexEntry 
+1328736x32                       FOURCC ckid = "00dc"
+1328768x32                       DWORD dwFlags = 2
+1328800x32                       DWORD dwChunkOffset = 65552
+1328832x32                       DWORD dwChunkLength = 4818
+1328864x128                  IndexEntry 
+1328864x32                       FOURCC ckid = "rec "
+1328896x32                       DWORD dwFlags = 1
+1328928x32                       DWORD dwChunkOffset = 71684
+1328960x32                       DWORD dwChunkLength = 6136

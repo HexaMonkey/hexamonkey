@@ -14,6 +14,11 @@ void TestParser::test_asf()
     QVERIFY(checkFile("resources/parser/test_asf.asf", 3, 30));
 }
 
+void TestParser::test_avi()
+{
+    QVERIFY(checkFile("resources/parser/test_avi.avi", -1, 15));
+}
+
 void TestParser::test_gif()
 {
     QVERIFY(checkFile("resources/parser/test_gif.gif", -1, 20));
@@ -24,6 +29,16 @@ void TestParser::test_jpg()
     QVERIFY(checkFile("resources/parser/test_jpg.jpg", -1, 20));
 }
 
+void TestParser::test_pe()
+{
+    QVERIFY(checkFile("resources/parser/test_pe.exe", -1, 15));
+}
+
+void TestParser::test_png()
+{
+    QVERIFY(checkFile("resources/parser/test_png.png"));
+}
+
 void TestParser::test_messagepack()
 {
     QVERIFY(checkFile("resources/parser/test_msgpack.msgpack"));
@@ -32,6 +47,16 @@ void TestParser::test_messagepack()
 void TestParser::test_mp4()
 {
     QVERIFY(checkFile("resources/parser/test_mp4.mp4", -1, 20));
+}
+
+void TestParser::test_sqlite()
+{
+    QVERIFY(checkFile("resources/parser/test_sqlite.sqlite"));
+}
+
+void TestParser::test_zip()
+{
+    QVERIFY(checkFile("resources/parser/test_zip.zip"));
 }
 
 bool TestParser::checkFile(const std::string &path, int depth, int width)

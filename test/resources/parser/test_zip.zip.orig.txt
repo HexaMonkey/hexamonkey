@@ -1,0 +1,191 @@
+0x6768       ZipFile 
+0x280            LocalFile 
+0x32                 uint(32) signature = 67324752
+32x16                uint(16) version = 20
+48x16                uint(16) bitflag = 0
+64x16                uint(16) compressionMethod = 0
+80x16                uint(16) lastModFileTime = 3790
+96x16                uint(16) lastModFileDate = 18170
+112x32               uint(32) crc32 = 0
+144x32               uint(32) compressedSize = 0
+176x32               uint(32) uncompressedSize = 0
+208x16               uint(16) fileNameLength = 5
+224x16               uint(16) extraFieldLength = 0
+240x40               String(5) fileName = "dir0/"
+280x0                Data extraField 
+280x0                Data fileData 
+280x384          LocalFile 
+280x32               uint(32) signature = 67324752
+312x16               uint(16) version = 10
+328x16               uint(16) bitflag = 0
+344x16               uint(16) compressionMethod = 0
+360x16               uint(16) lastModFileTime = 2958
+376x16               uint(16) lastModFileDate = 18170
+392x32               uint(32) crc32 = 3632233996
+424x32               uint(32) compressedSize = 4
+456x32               uint(32) uncompressedSize = 4
+488x16               uint(16) fileNameLength = 14
+504x16               uint(16) extraFieldLength = 0
+520x112              String(14) fileName = "dir0/file0.txt"
+632x0                Data extraField 
+632x32               Data fileData 
+664x520          LocalFile 
+664x32               uint(32) signature = 67324752
+696x16               uint(16) version = 20
+712x16               uint(16) bitflag = 0
+728x16               uint(16) compressionMethod = 8
+744x16               uint(16) lastModFileTime = 2966
+760x16               uint(16) lastModFileDate = 18170
+776x32               uint(32) crc32 = 399391120
+808x32               uint(32) compressedSize = 21
+840x32               uint(32) uncompressedSize = 344
+872x16               uint(16) fileNameLength = 14
+888x16               uint(16) extraFieldLength = 0
+904x112              String(14) fileName = "dir0/file1.txt"
+1016x0               Data extraField 
+1016x168             Data fileData 
+1184x528         LocalFile 
+1184x32              uint(32) signature = 67324752
+1216x16              uint(16) version = 20
+1232x16              uint(16) bitflag = 0
+1248x16              uint(16) compressionMethod = 8
+1264x16              uint(16) lastModFileTime = 2972
+1280x16              uint(16) lastModFileDate = 18170
+1296x32              uint(32) crc32 = 742697737
+1328x32              uint(32) compressedSize = 22
+1360x32              uint(32) uncompressedSize = 836
+1392x16              uint(16) fileNameLength = 14
+1408x16              uint(16) extraFieldLength = 0
+1424x112             String(14) fileName = "dir0/file2.txt"
+1536x0               Data extraField 
+1536x176             Data fileData 
+1712x1160        LocalFile 
+1712x32              uint(32) signature = 67324752
+1744x16              uint(16) version = 20
+1760x16              uint(16) bitflag = 0
+1776x16              uint(16) compressionMethod = 8
+1792x16              uint(16) lastModFileTime = 3014
+1808x16              uint(16) lastModFileDate = 18170
+1824x32              uint(32) crc32 = 637701259
+1856x32              uint(32) compressedSize = 107
+1888x32              uint(32) uncompressedSize = 16544
+1920x16              uint(16) fileNameLength = 8
+1936x16              uint(16) extraFieldLength = 0
+1952x64              String(8) fileName = "file.txt"
+2016x0               Data extraField 
+2016x856             Data fileData 
+2872x696         CentralDirectoryHeader 
+2872x32              uint(32) signature = 33639248
+2904x16              uint(16) versionMadeBy = 63
+2920x16              uint(16) versionNeededToExtract = 20
+2936x16              uint(16) bitflag = 0
+2952x16              uint(16) compressionMethod = 0
+2968x16              uint(16) lastModFileTime = 3790
+2984x16              uint(16) lastModFileDate = 18170
+3000x32              uint(32) crc32 = 0
+3032x32              uint(32) compressedSize = 0
+3064x32              uint(32) uncompressedSize = 0
+3096x16              uint(16) fileNameLength = 5
+3112x16              uint(16) extraFieldLength = 36
+3128x16              uint(16) fileCommentLength = 0
+3144x16              uint(16) diskNumberStart = 0
+3160x16              uint(16) internalFileAttributes = 0
+3176x32              uint(32) externalFileAttributes = 16
+3208x32              uint(32) relativeOffsetOfLocalHeader = 0
+3240x40              String(5) fileName = "dir0/"
+3280x288             Data extraField 
+3568x0               String(0) fileComment = ""
+3568x768         CentralDirectoryHeader 
+3568x32              uint(32) signature = 33639248
+3600x16              uint(16) versionMadeBy = 63
+3616x16              uint(16) versionNeededToExtract = 10
+3632x16              uint(16) bitflag = 0
+3648x16              uint(16) compressionMethod = 0
+3664x16              uint(16) lastModFileTime = 2958
+3680x16              uint(16) lastModFileDate = 18170
+3696x32              uint(32) crc32 = 3632233996
+3728x32              uint(32) compressedSize = 4
+3760x32              uint(32) uncompressedSize = 4
+3792x16              uint(16) fileNameLength = 14
+3808x16              uint(16) extraFieldLength = 36
+3824x16              uint(16) fileCommentLength = 0
+3840x16              uint(16) diskNumberStart = 0
+3856x16              uint(16) internalFileAttributes = 0
+3872x32              uint(32) externalFileAttributes = 32
+3904x32              uint(32) relativeOffsetOfLocalHeader = 35
+3936x112             String(14) fileName = "dir0/file0.txt"
+4048x288             Data extraField 
+4336x0               String(0) fileComment = ""
+4336x768         CentralDirectoryHeader 
+4336x32              uint(32) signature = 33639248
+4368x16              uint(16) versionMadeBy = 63
+4384x16              uint(16) versionNeededToExtract = 20
+4400x16              uint(16) bitflag = 0
+4416x16              uint(16) compressionMethod = 8
+4432x16              uint(16) lastModFileTime = 2966
+4448x16              uint(16) lastModFileDate = 18170
+4464x32              uint(32) crc32 = 399391120
+4496x32              uint(32) compressedSize = 21
+4528x32              uint(32) uncompressedSize = 344
+4560x16              uint(16) fileNameLength = 14
+4576x16              uint(16) extraFieldLength = 36
+4592x16              uint(16) fileCommentLength = 0
+4608x16              uint(16) diskNumberStart = 0
+4624x16              uint(16) internalFileAttributes = 0
+4640x32              uint(32) externalFileAttributes = 32
+4672x32              uint(32) relativeOffsetOfLocalHeader = 83
+4704x112             String(14) fileName = "dir0/file1.txt"
+4816x288             Data extraField 
+5104x0               String(0) fileComment = ""
+5104x768         CentralDirectoryHeader 
+5104x32              uint(32) signature = 33639248
+5136x16              uint(16) versionMadeBy = 63
+5152x16              uint(16) versionNeededToExtract = 20
+5168x16              uint(16) bitflag = 0
+5184x16              uint(16) compressionMethod = 8
+5200x16              uint(16) lastModFileTime = 2972
+5216x16              uint(16) lastModFileDate = 18170
+5232x32              uint(32) crc32 = 742697737
+5264x32              uint(32) compressedSize = 22
+5296x32              uint(32) uncompressedSize = 836
+5328x16              uint(16) fileNameLength = 14
+5344x16              uint(16) extraFieldLength = 36
+5360x16              uint(16) fileCommentLength = 0
+5376x16              uint(16) diskNumberStart = 0
+5392x16              uint(16) internalFileAttributes = 0
+5408x32              uint(32) externalFileAttributes = 32
+5440x32              uint(32) relativeOffsetOfLocalHeader = 148
+5472x112             String(14) fileName = "dir0/file2.txt"
+5584x288             Data extraField 
+5872x0               String(0) fileComment = ""
+5872x720         CentralDirectoryHeader 
+5872x32              uint(32) signature = 33639248
+5904x16              uint(16) versionMadeBy = 63
+5920x16              uint(16) versionNeededToExtract = 20
+5936x16              uint(16) bitflag = 0
+5952x16              uint(16) compressionMethod = 8
+5968x16              uint(16) lastModFileTime = 3014
+5984x16              uint(16) lastModFileDate = 18170
+6000x32              uint(32) crc32 = 637701259
+6032x32              uint(32) compressedSize = 107
+6064x32              uint(32) uncompressedSize = 16544
+6096x16              uint(16) fileNameLength = 8
+6112x16              uint(16) extraFieldLength = 36
+6128x16              uint(16) fileCommentLength = 0
+6144x16              uint(16) diskNumberStart = 0
+6160x16              uint(16) internalFileAttributes = 0
+6176x32              uint(32) externalFileAttributes = 32
+6208x32              uint(32) relativeOffsetOfLocalHeader = 214
+6240x64              String(8) fileName = "file.txt"
+6304x288             Data extraField 
+6592x0               String(0) fileComment = ""
+6592x176         EndOfCentralDirectoryRecord 
+6592x32              uint(32) signature = 101010256
+6624x16              uint(16) numberOfThisDisk = 0
+6640x16              uint(16) numberOfTheDiskWithTheStartOfTheCentralDirectory = 0
+6656x16              uint(16) totalNumberOfEntriesInTheCentralDirectoryOnThisDisk = 5
+6672x16              uint(16) totalNumberOfEntriesInTheCentralDirectory = 5
+6688x32              uint(32) sizeOfTheCentralDirectory = 465
+6720x32              uint(32) offsetOfStartOfCentralDirectoryWithRespectToTheStartingDiskNumber = 359
+6752x16              uint(16) ZIPFileCommentLength = 0
+6768x0               String(0) ZIPFileComment = ""

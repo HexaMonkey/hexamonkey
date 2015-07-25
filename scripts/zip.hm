@@ -67,7 +67,7 @@ class LocalFile as Chunk(0x4034b50)
 		uint(32)    uncompressedSize;
 	}
 	
-	@value = fileName;
+	@attr.fileName = fileName;
 }
 
 class ArchiveExtraRecord as Chunk(0x8064b50)
@@ -99,7 +99,7 @@ class CentralDirectoryHeader as Chunk(0x2014b50)
 	Data  (8*extraFieldLength)  extraField;
 	String(fileCommentLength)   fileComment;
 	
-	@value = fileName;
+	@attr.fileName = fileName;
 }
 
 class DigitalSignature as Chunk(0x5054b50)
