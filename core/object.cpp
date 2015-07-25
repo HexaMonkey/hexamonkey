@@ -46,7 +46,7 @@ Object::Object(File& file, std::streampos beginningPos, Object *parent) :
     _parsingInProgress(false),
     _context(nullptr),
     _attributes(nullptr),
-    _valid(true)
+    _valid(true),
     _endianness(parent ? parent->_endianness : bigEndian)
 {
 }
@@ -631,8 +631,7 @@ void Object::addParser(Parser *parser)
 
 std::ostream& Object::display(std::ostream& out, std::string prefix) const
 {
-    out << prefix << type() << " " << this<< " "<<_valid;
-    //out << prefix << type() << " " << name();
+    out << prefix << type() << " " << name();
     if(!value().isValueless())
         out << " = " << value();
 

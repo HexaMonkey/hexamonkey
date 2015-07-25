@@ -287,10 +287,10 @@ class Object
         bool isValid() const;
         void invalidate();
 
-    private:
-
         Endianness endianness() const;
         void setEndianness(const Endianness &endianness);
+
+    private:
 
         friend class Module;
         friend class ContainerParser;
