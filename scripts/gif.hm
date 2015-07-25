@@ -1,24 +1,27 @@
+// Based on specification http://www.w3.org/Graphics/GIF/spec-gif89a.txt
+// Interesting link http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
+
 addMagicNumber 47 49 46 38 xx 61
 addExtension gif
 
 import lestd
 
-class GifFile as File{
-	while(1) DataStream *;
-}
+import rgb
 
-class DataStream{
-	Header *;
-	LogicalScreenDescription *;
-	
-	do {
-		Block block;
-	} while(block.Descriptor != 0x3b)
+class GifFile as File{
+	while (1) {
+		Header _;
+		LogicalScreenDescription _;
+		
+		do {
+			Block _;
+		} while(self[].Descriptor != 0x3b)
+	}
 }
 
 class Header{
-	String(3) signature;
-	String(3) version;
+	String(3) Signature;
+	String(3) Version;
 }
 
 class LogicalScreenDescription{
@@ -31,13 +34,8 @@ class LogicalScreenDescription{
 	uint(8) BackgroundColorIndex;
 	uint(8) PixelAspectRatio;
 	if (GlobalColorTableFlag != 0){
-		ColorTable(SizeOfGlobalColorTable) *;
+		RGB GlobalColorTable[1<<(SizeOfGlobalColorTable + 1)];
 	}
-}
-
-class ColorTable (SizeOfGlobalColorTable){
-	@size = 8*3*(1<<(@args.SizeOfGlobalColorTable + 1));
-	Data(@size) Data;
 }
 
 class Block(ID){
@@ -57,7 +55,7 @@ class ImageDescriptor as Block(0x2c){
 	uint(3) SizeOfLocalColorTable;
 	if (LocalColorTableFlag != 0)
 	{
-		ColorTable(SizeOfLocalColorTable);
+		RGB LocalColorTable[1<<(SizeOfLocalColorTable + 1)];
 	}
 	TableBasedImageData *;
 }
@@ -71,14 +69,16 @@ class TableBasedImageData
 class DataSubSequence
 {
 	do {
-		DataSubBlock dataSubBlock;
-	} while(dataSubBlock.length != 0)
+		DataSubBlock #;
+	} while(self[].Length /*&& self[].Data != undefined*/)
+	@args.@elementType = DataSubBlock();
+	@args.@elementCount = @numberOfChildren;
 }
 
 class DataSubBlock
 {
-	uint(8) length;
-	Data(8*length) Data;
+	uint(8) Length;
+	Data(8*Length) Data;
 }
 
 class Extension(ID) as Block(0x21){
@@ -97,8 +97,20 @@ class GraphicControlExtension as Extension(0xf9){
 	uint(8) BlockTerminator;
 }
 
+class CommentExtension as Extension(0xfe)
+{
+	DataSubSequence CommentData;
+}
+
+class ApplicationExtension as Extension(0xff)
+{
+	uint(8) BlockSize;
+	String(8) ApplicationIdentifier;
+	String(3) ApplicationAnthentificationCode;
+	DataSubSequence ApplicationData;
+}
+
 class Trailer as Block(0x3b)
 {
 	//empty on purpose
-}
-	
+}	
