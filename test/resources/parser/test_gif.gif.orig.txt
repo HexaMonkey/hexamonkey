@@ -1,0 +1,333 @@
+0x244368     GifFile 
+0x48             Header 
+0x24                 String(3) Signature = "GIF"
+24x24                String(3) Version = "87a"
+48x56            LogicalScreenDescription 
+48x16                uint(16) LogicalScreenWidth = 64001
+64x16                uint(16) LogicalScreenHeight = 23809
+80x1                 uint(1) GlobalColorTableFlag = 0
+81x3                 uint(3) ColorResolution = 7
+84x1                 uint(1) SortFlag = 0
+85x3                 uint(3) SizeOfGlobalColorTable = 7
+88x8                 uint(8) BackgroundColorIndex = 0
+96x8                 uint(8) PixelAspectRatio = 0
+104x152          ApplicationExtension 
+104x8                uint(8) Descriptor = 33
+112x8                uint(8) Label = 255
+120x8                uint(8) BlockSize = 11
+128x64               String(8) ApplicationIdentifier = "NETSCAPE"
+192x24               String(3) ApplicationAnthentificationCode = "2.0"
+216x40               DataSubSequence ApplicationData 
+216x32                   DataSubBlock 
+216x8                        uint(8) Length = 3
+224x24                       Data Data 
+248x8                    DataSubBlock 
+248x8                        uint(8) Length = 0
+256x0                        Data Data 
+256x64           GraphicControlExtension 
+256x8                uint(8) Descriptor = 33
+264x8                uint(8) Label = 249
+272x8                uint(8) BlockSize = 4
+280x3                uint(3) Reserved = 0
+283x3                uint(3) DisposalMethod = 1
+286x1                uint(1) UserInputFlag = 0
+287x1                uint(1) TransparentColorFlag = 1
+288x16               uint(16) DelayTime = 51200
+304x8                uint(8) TransparentColorIndex = 255
+312x8                uint(8) BlockTerminator = 0
+320x218968       ImageDescriptor 
+320x8                uint(8) Descriptor = 44
+328x16               uint(16) ImageLeftPosition = 0
+344x16               uint(16) ImageTopPosition = 0
+360x16               uint(16) ImageWidth = 64001
+376x16               uint(16) ImageHeight = 23809
+392x1                uint(1) LocalColorTableFlag = 1
+393x1                uint(1) InterlaceFlage = 0
+394x1                uint(1) SortFlag = 0
+395x2                uint(2) Reserved = 0
+397x3                uint(3) SizeOfLocalColorTable = 7
+400x6144             Tuple(RGB, 256) LocalColorTable 
+400x24                   RGB 
+400x8                        byte red = 4
+408x8                        byte green = 8
+416x8                        byte blue = 36
+424x24                   RGB 
+424x8                        byte red = 68
+432x8                        byte green = 146
+440x8                        byte blue = 52
+448x24                   RGB 
+448x8                        byte red = 86
+456x8                        byte green = 158
+464x8                        byte blue = 147
+472x24                   RGB 
+472x8                        byte red = 132
+480x8                        byte green = 182
+488x8                        byte blue = 60
+496x24                   RGB 
+496x8                        byte red = 156
+504x8                        byte green = 204
+512x8                        byte blue = 136
+520x24                   RGB 
+520x8                        byte red = 99
+528x8                        byte green = 178
+536x8                        byte blue = 68
+544x24                   RGB 
+544x8                        byte red = 122
+552x8                        byte green = 40
+560x8                        byte blue = 141
+568x24                   RGB 
+568x8                        byte red = 201
+576x8                        byte green = 138
+584x8                        byte blue = 11
+592x24                   RGB 
+592x8                        byte red = 205
+600x8                        byte green = 197
+608x8                        byte blue = 201
+616x24                   RGB 
+616x8                        byte red = 132
+624x8                        byte green = 186
+632x8                        byte blue = 68
+640x24                   RGB 
+640x8                        byte red = 79
+648x8                        byte green = 69
+656x8                        byte blue = 44
+664x24                   RGB 
+664x8                        byte red = 76
+672x8                        byte green = 146
+680x8                        byte blue = 199
+688x24                   RGB 
+688x8                        byte red = 244
+696x8                        byte green = 158
+704x8                        byte blue = 4
+712x24                   RGB 
+712x8                        byte red = 210
+720x8                        byte green = 231
+728x8                        byte blue = 197
+736x24                   RGB 
+736x8                        byte red = 204
+744x8                        byte green = 84
+752x8                        byte blue = 85
+760x24                   RGB 
+760x8                        byte red = 252
+768x8                        byte green = 210
+776x8                        byte blue = 68
+784x24                   RGB 
+784x8                        byte red = 139
+792x8                        byte green = 83
+800x8                        byte blue = 162
+808x24                   RGB 
+808x8                        byte red = 126
+816x8                        byte green = 105
+824x8                        byte blue = 51
+832x24                   RGB 
+832x8                        byte red = 244
+840x8                        byte green = 211
+848x8                        byte blue = 43
+856x24                   RGB 
+856x8                        byte red = 156
+864x8                        byte green = 142
+872x8                        byte blue = 36
+6544x212744          TableBasedImageData 
+6544x8                   uint(8) LZWMinimumCodeSize = 8
+6552x212736              DataSubSequence 
+6552x2048                    DataSubBlock 
+6552x8                           uint(8) Length = 255
+6560x2040                        Data Data 
+8600x2048                    DataSubBlock 
+8600x8                           uint(8) Length = 255
+8608x2040                        Data Data 
+10648x2048                   DataSubBlock 
+10648x8                          uint(8) Length = 255
+10656x2040                       Data Data 
+12696x2048                   DataSubBlock 
+12696x8                          uint(8) Length = 255
+12704x2040                       Data Data 
+14744x2048                   DataSubBlock 
+14744x8                          uint(8) Length = 255
+14752x2040                       Data Data 
+16792x2048                   DataSubBlock 
+16792x8                          uint(8) Length = 255
+16800x2040                       Data Data 
+18840x2048                   DataSubBlock 
+18840x8                          uint(8) Length = 255
+18848x2040                       Data Data 
+20888x2048                   DataSubBlock 
+20888x8                          uint(8) Length = 255
+20896x2040                       Data Data 
+22936x2048                   DataSubBlock 
+22936x8                          uint(8) Length = 255
+22944x2040                       Data Data 
+24984x2048                   DataSubBlock 
+24984x8                          uint(8) Length = 255
+24992x2040                       Data Data 
+27032x2048                   DataSubBlock 
+27032x8                          uint(8) Length = 255
+27040x2040                       Data Data 
+29080x2048                   DataSubBlock 
+29080x8                          uint(8) Length = 255
+29088x2040                       Data Data 
+31128x2048                   DataSubBlock 
+31128x8                          uint(8) Length = 255
+31136x2040                       Data Data 
+33176x2048                   DataSubBlock 
+33176x8                          uint(8) Length = 255
+33184x2040                       Data Data 
+35224x2048                   DataSubBlock 
+35224x8                          uint(8) Length = 255
+35232x2040                       Data Data 
+37272x2048                   DataSubBlock 
+37272x8                          uint(8) Length = 255
+37280x2040                       Data Data 
+39320x2048                   DataSubBlock 
+39320x8                          uint(8) Length = 255
+39328x2040                       Data Data 
+41368x2048                   DataSubBlock 
+41368x8                          uint(8) Length = 255
+41376x2040                       Data Data 
+43416x2048                   DataSubBlock 
+43416x8                          uint(8) Length = 255
+43424x2040                       Data Data 
+45464x2048                   DataSubBlock 
+45464x8                          uint(8) Length = 255
+45472x2040                       Data Data 
+219288x64        GraphicControlExtension 
+219288x8             uint(8) Descriptor = 33
+219296x8             uint(8) Label = 249
+219304x8             uint(8) BlockSize = 4
+219312x3             uint(3) Reserved = 0
+219315x3             uint(3) DisposalMethod = 1
+219318x1             uint(1) UserInputFlag = 0
+219319x1             uint(1) TransparentColorFlag = 1
+219320x16            uint(16) DelayTime = 51200
+219336x8             uint(8) TransparentColorIndex = 255
+219344x8             uint(8) BlockTerminator = 0
+219352x25008     ImageDescriptor 
+219352x8             uint(8) Descriptor = 44
+219360x16            uint(16) ImageLeftPosition = 47872
+219376x16            uint(16) ImageTopPosition = 33280
+219392x16            uint(16) ImageWidth = 27392
+219408x16            uint(16) ImageHeight = 24064
+219424x1             uint(1) LocalColorTableFlag = 1
+219425x1             uint(1) InterlaceFlage = 0
+219426x1             uint(1) SortFlag = 0
+219427x2             uint(2) Reserved = 0
+219429x3             uint(3) SizeOfLocalColorTable = 7
+219432x6144          Tuple(RGB, 256) LocalColorTable 
+219432x24                RGB 
+219432x8                     byte red = 4
+219440x8                     byte green = 18
+219448x8                     byte blue = 36
+219456x24                RGB 
+219456x8                     byte red = 140
+219464x8                     byte green = 118
+219472x8                     byte blue = 52
+219480x24                RGB 
+219480x8                     byte red = 204
+219488x8                     byte green = 166
+219496x8                     byte blue = 60
+219504x24                RGB 
+219504x8                     byte red = 76
+219512x8                     byte green = 70
+219520x8                     byte blue = 44
+219528x24                RGB 
+219528x8                     byte red = 220
+219536x8                     byte green = 70
+219544x8                     byte blue = 52
+219552x24                RGB 
+219552x8                     byte red = 236
+219560x8                     byte green = 190
+219568x8                     byte blue = 60
+219576x24                RGB 
+219576x8                     byte red = 172
+219584x8                     byte green = 142
+219592x8                     byte blue = 52
+219600x24                RGB 
+219600x8                     byte red = 220
+219608x8                     byte green = 94
+219616x8                     byte blue = 52
+219624x24                RGB 
+219624x8                     byte red = 220
+219632x8                     byte green = 50
+219640x8                     byte blue = 52
+219648x24                RGB 
+219648x8                     byte red = 220
+219656x8                     byte green = 178
+219664x8                     byte blue = 60
+219672x24                RGB 
+219672x8                     byte red = 108
+219680x8                     byte green = 94
+219688x8                     byte blue = 44
+219696x24                RGB 
+219696x8                     byte red = 44
+219704x8                     byte green = 46
+219712x8                     byte blue = 36
+219720x24                RGB 
+219720x8                     byte red = 228
+219728x8                     byte green = 118
+219736x8                     byte blue = 60
+219744x24                RGB 
+219744x8                     byte red = 252
+219752x8                     byte green = 202
+219760x8                     byte blue = 60
+219768x24                RGB 
+219768x8                     byte red = 236
+219776x8                     byte green = 142
+219784x8                     byte blue = 60
+219792x24                RGB 
+219792x8                     byte red = 228
+219800x8                     byte green = 86
+219808x8                     byte blue = 44
+219816x24                RGB 
+219816x8                     byte red = 244
+219824x8                     byte green = 198
+219832x8                     byte blue = 68
+219840x24                RGB 
+219840x8                     byte red = 228
+219848x8                     byte green = 106
+219856x8                     byte blue = 44
+219864x24                RGB 
+219864x8                     byte red = 228
+219872x8                     byte green = 186
+219880x8                     byte blue = 60
+219888x24                RGB 
+219888x8                     byte red = 244
+219896x8                     byte green = 166
+219904x8                     byte blue = 60
+225576x18784         TableBasedImageData 
+225576x8                 uint(8) LZWMinimumCodeSize = 8
+225584x18776             DataSubSequence 
+225584x2048                  DataSubBlock 
+225584x8                         uint(8) Length = 255
+225592x2040                      Data Data 
+227632x2048                  DataSubBlock 
+227632x8                         uint(8) Length = 255
+227640x2040                      Data Data 
+229680x2048                  DataSubBlock 
+229680x8                         uint(8) Length = 255
+229688x2040                      Data Data 
+231728x2048                  DataSubBlock 
+231728x8                         uint(8) Length = 255
+231736x2040                      Data Data 
+233776x2048                  DataSubBlock 
+233776x8                         uint(8) Length = 255
+233784x2040                      Data Data 
+235824x2048                  DataSubBlock 
+235824x8                         uint(8) Length = 255
+235832x2040                      Data Data 
+237872x2048                  DataSubBlock 
+237872x8                         uint(8) Length = 255
+237880x2040                      Data Data 
+239920x2048                  DataSubBlock 
+239920x8                         uint(8) Length = 255
+239928x2040                      Data Data 
+241968x2048                  DataSubBlock 
+241968x8                         uint(8) Length = 255
+241976x2040                      Data Data 
+244016x336                   DataSubBlock 
+244016x8                         uint(8) Length = 41
+244024x328                       Data Data 
+244352x8                     DataSubBlock 
+244352x8                         uint(8) Length = 0
+244360x0                         Data Data 
+244360x8         Trailer 
+244360x8             uint(8) Descriptor = 59
