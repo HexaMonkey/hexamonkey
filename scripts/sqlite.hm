@@ -71,8 +71,9 @@ class BTreePage
     } else {
         var unalloc_size = 0;
     }
-
+	
     Data(unalloc_size) unallocatedSpace;
+	
     if(btreePageHeader.PageType == 2) {
         IndexInteriorCell cells[btreePageHeader.CellsNumber];
     } else if(btreePageHeader.PageType == 5) {
@@ -89,10 +90,11 @@ class BTreePage
 class TableLeafCell {
     Varint payload_size;
     Varint row_id;
-    Record(payload_size) payload; // todo : take into account overflow
-    if(payload_size > @parent.@size / 8 - 35) {
-        uint(32) overflow_page_number;
-    }
+    Record(payload_size) payload;
+    // TODO: figure out overflow
+    //if(payload_size > @parent.@parent.size - 35) {
+    //    uint(32) overflow_page_number;
+    //}
 }
 
 class TableInteriorCell {
@@ -103,14 +105,16 @@ class TableInteriorCell {
 class IndexLeafCell {
     Varint payload_size;
     Data(8*payload_size) payload;
-    uint(32) page_number;
+    // TODO : figure out overflow
+    //uint(32) page_number;
 }
 
 class IndexInteriorCell {
     uint(32) left_child_page_number;
     Varint payload_size;
     Data(8*payload_size) payload;
-    uint(32) page_number;
+    // TODO : figure out overflow
+    //uint(32) page_number;
 }
 
 class Varint {
