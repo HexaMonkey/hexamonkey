@@ -84,14 +84,26 @@ void TestUtil::testBitUtil_popCount()
 
 void TestUtil::testFileUtil_fileExists()
 {
-    QCOMPARE(fileExists("resources/fake_zip.zip"), true);
-    QCOMPARE(fileExists("resources/some_imaginary_file"), false);
+    QCOMPARE(fileExists("resources/util/file_exists_true.txt"), true);
+    QCOMPARE(fileExists("resources/util/file_exists_false.txt"), false);
 }
 
 void TestUtil::testFileUtil_getFile()
 {
-    QCOMPARE(getFile({"resources/"}, "fake_zip.zip"),
-                                std::string("resources/fake_zip.zip"));
+    QCOMPARE(getFile({"resources/util/dir1/"}, "get_file.txt"),
+                                std::string("resources/util/dir1/get_file.txt"));
+
+    QCOMPARE(getFile({"resources/util/dir0/", "resources/util/dir1/"}, "get_file.txt"),
+                                std::string("resources/util/dir1/get_file.txt"));
+
+    QCOMPARE(getFile({"resources/util/dir0/", "some/imaginary/dir/", "resources/util/dir1/"}, "get_file.txt"),
+                                std::string("resources/util/dir1/get_file.txt"));
+
+    QCOMPARE(getFile({"resources/util/dir0/"}, "get_file.txt"),
+                                std::string());
+
+    QCOMPARE(getFile({}, "get_file.txt"),
+                                std::string());
 }
 
 void TestUtil::testFileUtil_getDirContent()
@@ -100,16 +112,16 @@ void TestUtil::testFileUtil_getDirContent()
     getDirContent("some/imaginary/dir", content);
     QCOMPARE(content.size(), std::vector<std::string>::size_type(0));
     content.clear();
-    getDirContent("../models/", content);
+    getDirContent("resources/util/dir0", content);
 
     // Keep this list up to date.
-    QCOMPARE(find(content.begin(), content.end(), "hmcmodel.csv")
+    QCOMPARE(find(content.begin(), content.end(), "file0.txt")
                                                      != content.end(),
              true);
-    QCOMPARE(find(content.begin(), content.end(), "hmcoperators.csv")
+    QCOMPARE(find(content.begin(), content.end(), "file1.txt")
                                                      != content.end(),
              true);
-    QCOMPARE(find(content.begin(), content.end(), "mkvmodel.xml")
+    QCOMPARE(find(content.begin(), content.end(), "file2.txt")
                                                      != content.end(),
              true);
 }

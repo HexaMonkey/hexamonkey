@@ -154,6 +154,12 @@ test/moc_*.cpp
 !test/resources/*
 !test/resources/util
 !test/resources/util/*
+!test/resources/util/dir0
+!test/resources/util/dir0/*
+!test/resources/util/dir1
+!test/resources/util/dir1/*
 !test/resources/parser
 !test/resources/parser/*
 test/resources/parser/*.new.txt
+!test/resources/formatDetector
+!test/resources/formatDetector/*

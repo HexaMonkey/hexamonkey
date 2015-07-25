@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
     int errorCount = 0;
     for (QObject* test : testList) {
-        errorCount += QTest::qExec(test, argc, argv);
+        errorCount += QTest::qExec(test, argc, argv) ? 1 : 0;
         qDebug(" ");
     }
 
