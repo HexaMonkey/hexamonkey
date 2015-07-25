@@ -76,6 +76,7 @@ private:
 
     std::string _path;
     std::ifstream _file;
+    int64_t _size;
 };
 
 #endif // REALFILE_H

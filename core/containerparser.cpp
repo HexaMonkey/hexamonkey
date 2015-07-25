@@ -18,6 +18,7 @@
 #include "core/containerparser.h"
 #include "core/module.h"
 #include "core/log/logmanager.h"
+#include "core/parsingexception.h"
 
 ContainerParser::ContainerParser(Object &object, const Module &module)
     : Parser(object),
@@ -30,7 +31,6 @@ ContainerParser::ContainerParser(Object &object, const Module &module)
 void ContainerParser::addChild(Object *child)
 {
     if (child != nullptr) {
-
         std::streamoff pos = object().pos();
         if (child->size() == -1LL) {
             if (object().size() != -1LL && child->isSetToExpandOnAddition()) {
@@ -41,6 +41,9 @@ void ContainerParser::addChild(Object *child)
             }
         }
 
+        if (!(child->isValid())) {
+            throwChildError(*child, ParsingException::InvalidChild, "child invalid");
+        }
 
         int64_t newSize = pos + child->size();
         if (_autogrow && newSize > object().size()) {
@@ -48,7 +51,15 @@ void ContainerParser::addChild(Object *child)
         }
 
         std::streamoff newPos;
-        if (newSize <= object().size() || object().size() == -1) {
+        const bool fileGood = object().file().good();
+        const int64_t objectSize = object().size();
+        const int64_t newAbsolutePosition = object().beginningPos() + newSize;
+        const int64_t fileSize = object().file().size();
+        if (!fileGood || newAbsolutePosition > fileSize) {
+            throwChildError(*child, ParsingException::OutOfFile, "out of file");
+        } else if (objectSize != -1 && newSize > objectSize) {
+            throwChildError(*child, ParsingException::OutOfParent, "too big");
+        } else {
             if (object()._contentSize < newSize) {
                 object()._contentSize = newSize;
             }
@@ -67,17 +78,8 @@ void ContainerParser::addChild(Object *child)
             object()._ownedChildren.push_back(std::unique_ptr<Object>(child));
             child->_rank = _object._children.size() - 1;
             object()._lastChild = nullptr;
-        } else {
-
-            if (object().size() != -1LL) {
-                newPos = object().size();
-            } else {
-                newPos = 0LL;
-            }
-
-            setParsed();
-            Log::error("Child ", child->type(), " ", child->name(), " cannot be added: too big");
         }
+
         object().setPos(newPos);
         object().seekObjectEnd();
     }
@@ -128,4 +130,9 @@ void ContainerParser::setAutogrow()
     if(object().size()<0) {
         object().setSize(0);
     }
+}
+
+void ContainerParser::throwChildError(const Object &child, ParsingException::Type type, const std::string reason) const
+{
+    throw ParsingException(type, concat("Child ", child, " cannot be added to ", object(), " : ", reason));
 }

@@ -279,6 +279,8 @@ class Object
         const Variable& contextVariable(bool createIfNeeded = false);
         const Variable& attributesVariable(bool createIfNeeded = false);
 
+        bool isValid() const;
+        void invalidate();
     private:
         friend class Module;
         friend class ContainerParser;
@@ -322,6 +324,8 @@ class Object
 
         ObjectAttributes* _attributes;
         Variable _attributesVariable;
+
+        bool _valid;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

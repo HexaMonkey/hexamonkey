@@ -39,10 +39,13 @@ const std::string& RealFile::path() const
 void RealFile::open()
 {
     _file.open(_path.c_str(), std::ios::in|std::ios::binary);
-    if(!good())
-    {
+    if(!good()) {
         Log::error("Unable to open file", _path);
-     }
+    } else {
+        FileAnchor fileAnchor(*this);
+        _file.seekg(0, std::ios::end);
+        _size = tellg();
+    }
 }
 
 void RealFile::close()
@@ -123,9 +126,7 @@ int64_t RealFile::tellg() {return _file.tellg() * 8 + _bitPosition;}
 
 int64_t RealFile::size()
 {
-    FileAnchor fileAnchor(*this);
-    _file.seekg(0, std::ios::end);
-    return tellg();
+    return _size;
 }
 
 bool RealFile::good()

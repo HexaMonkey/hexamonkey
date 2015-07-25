@@ -17,6 +17,7 @@
 
 #include "core/parser.h"
 #include "core/log/logmanager.h"
+#include "core/parsingexception.h"
 
 ObjectType errorType;
 
@@ -35,8 +36,12 @@ void Parser::parseHead()
     Object::Parsing parsing(object());
     if(parsing.isAvailable() && !_headParsed)
     {
-        doParseHead();
-        setHeadParsed();
+        try {
+            doParseHead();
+            setHeadParsed();
+        } catch (const ParsingException& exception) {
+            handleParsingException(exception);
+        }
     }
 }
 
@@ -48,8 +53,12 @@ void Parser::parse()
         Object::Parsing parsing(object());
         if(parsing.isAvailable() && !_parsed)
         {
-            doParse();
-            _parsed = true;
+            try {
+                doParse();
+                _parsed = true;
+            } catch (const ParsingException& exception) {
+                handleParsingException(exception);
+            }
         }
     }
 }
@@ -58,15 +67,20 @@ bool Parser::parseSome(int hint)
 {
     parseHead();
     Object::Parsing parsing(object());
-    if(parsing.isAvailable() && !_parsed && doParseSome(hint))
-    {
-        _parsed = true;
+    try {
+        if(parsing.isAvailable() && !_parsed && doParseSome(hint))
+        {
+            _parsed = true;
+        }
+    } catch (const ParsingException& exception) {
+        handleParsingException(exception);
     }
     return _parsed;
 }
 
 void Parser::parseTail()
 {
+
     if(!parsed())
     {
         parse();
@@ -74,8 +88,12 @@ void Parser::parseTail()
 
     if(!_tailParsed)
     {
-        doParseTail();
-        _tailParsed = true;
+        try {
+            doParseTail();
+            _tailParsed = true;
+        } catch (const ParsingException& exception) {
+            handleParsingException(exception);
+        }
     }
 }
 
@@ -175,6 +193,11 @@ void Parser::setHeadParsed()
     }
 }
 
+void Parser::handleParsingException(const ParsingException &exception)
+{
+    Log::error(exception.what());
+    object().invalidate();
+}
 
 SimpleParser::SimpleParser(Object &object) : Parser(object)
 {
@@ -186,10 +209,14 @@ void SimpleParser::parseHead()
 
     if(parsing.isAvailable() && !_headParsed)
     {
-        doParseHead();
-        setHeadParsed();
-        _parsed = true;
-        _tailParsed = true;
+        try {
+            doParseHead();
+            setHeadParsed();
+            _parsed = true;
+            _tailParsed = true;
+        } catch (const ParsingException& exception) {
+            handleParsingException(exception);
+        }
     }
 }
 

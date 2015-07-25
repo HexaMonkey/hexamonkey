@@ -21,6 +21,7 @@
 #include <functional>
 
 #include "core/parser.h"
+#include "core/parsingexception.h"
 
 class Module;
 
@@ -72,6 +73,8 @@ protected:
     void setAutogrow();
 
 private:
+    void throwChildError(const Object& child, ParsingException::Type type, const std::string reason) const;
+
     const Module& _module;
     bool _autogrow;
 };

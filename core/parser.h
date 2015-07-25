@@ -20,6 +20,8 @@
 
 #include <string>
 
+class ParsingException;
+
 #include "core/object.h"
 
 /**
@@ -157,6 +159,8 @@ private:
 
     bool lockObject();
     void unlockObject();
+
+    void handleParsingException(const ParsingException& exception);
 
     bool _headParsed;
     bool _parsed;

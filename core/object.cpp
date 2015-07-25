@@ -45,7 +45,8 @@ Object::Object(File& file, std::streampos beginningPos) :
     _parsedCount(0),
     _parsingInProgress(false),
     _context(nullptr),
-    _attributes(nullptr)
+    _attributes(nullptr),
+    _valid(true)
 {
 }
 
@@ -276,6 +277,16 @@ const Variable &Object::attributesVariable(bool createIfNeeded)
     return _attributesVariable;
 }
 
+bool Object::isValid() const
+{
+    return _valid;
+}
+
+void Object::invalidate()
+{
+    _valid = false;
+}
+
 void Object::seekBeginning()
 {
     _file.seekg(_beginningPos,std::ios::beg);
@@ -390,7 +401,7 @@ void Object::parse()
 
 void Object::parseBody()
 {
-    while(_parsedCount < _parsers.size())
+    while(_valid && _parsedCount < _parsers.size())
     {
         auto& parser = _parsers[_parsedCount];
         parser->parse();
@@ -402,7 +413,7 @@ bool Object::parseSome(int hint)
 {
     size_t initialCount = _children.size();
 
-    while(_parsedCount < _parsers.size() && _children.size() < initialCount+hint)
+    while(_valid && _parsedCount < _parsers.size() && _children.size() < initialCount+hint)
     {
         auto& parser = _parsers[_parsedCount];
         if(parser->parseSome(initialCount+hint-_children.size()))
@@ -415,8 +426,9 @@ bool Object::parseSome(int hint)
         }
     }
 
-    if(_parsedCount == _parsers.size())
-    {
+    if (!_valid) {
+        return true;
+    } else if(_parsedCount == _parsers.size()) {
         parseTail();
         return true;
     }
@@ -432,7 +444,9 @@ void Object::parseTail()
     {
         if(parser)
         {
-            parser->parseTail();
+            if (_valid) {
+                parser->parseTail();
+            }
             parser.reset();
         }
     }
@@ -592,7 +606,7 @@ int64_t Object::rank() const
 
 void Object::addParser(Parser *parser)
 {
-    if(parser != nullptr)
+    if(_valid && parser != nullptr)
     {
         if(!parser->headParsed())
         {
@@ -605,7 +619,8 @@ void Object::addParser(Parser *parser)
 
 std::ostream& Object::display(std::ostream& out, std::string prefix) const
 {
-    out << prefix << type() << " " << name();
+    out << prefix << type() << " " << this<< " "<<_valid;
+    //out << prefix << type() << " " << name();
     if(!value().isValueless())
         out << " = " << value();
 
@@ -630,6 +645,10 @@ std::ostream &Object::displayTree(std::ostream &out, std::string prefix) const
 
 bool Object::parsed()
 {
+    if (!_valid) {
+        return true;
+    }
+
     for(int i = _parsers.size() - 1; i >= 0; --i)
     {
         auto& parser = _parsers[i];
