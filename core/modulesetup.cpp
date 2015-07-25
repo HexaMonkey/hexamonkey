@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-#include "core/modules/standard/standardmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/mkv/mkvmodule.h"
 #include "core/modules/hmc/hmcmodule.h"
@@ -57,8 +56,6 @@ void ModuleSetup::setup()
 
     _logoPath = getFile(logoDirs, "logo.svg");
 
-    _moduleLoader.addModule("bestd", new StandardModule(true));
-    _moduleLoader.addModule("lestd", new StandardModule(false));
     _moduleLoader.addModule("ebml",  new EbmlModule);
     _moduleLoader.addModule("mkv",   new MkvModule(getFile(modelsDirs, "mkvmodel.xml")));
     _moduleLoader.addModule("hmc",   new HmcModule(getFile(modelsDirs, "hmcmodel.csv")));

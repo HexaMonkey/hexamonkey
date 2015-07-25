@@ -24,7 +24,6 @@ class EbmlModule : public MapModule
 {
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
-    void requestImportations(std::vector<std::string>& formatRequested) override;
     bool doLoad() override;
 
 private:

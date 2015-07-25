@@ -32,6 +32,7 @@ SOURCES += \
     ../core/interpreter/blockexecution.cpp \
     ../core/log/logger.cpp \
     ../core/log/logmanager.cpp \
+    ../core/log/streamlogger.cpp \
     ../core/modules/default/elementarycontainerparser.cpp \
     ../core/modules/default/tupleparser.cpp \
     ../core/modules/default/fileparser.cpp \
@@ -39,11 +40,10 @@ SOURCES += \
     ../core/modules/default/arrayparser.cpp \
     ../core/modules/default/dataparser.cpp \
     ../core/modules/default/structparser.cpp \
-    ../core/modules/standard/wordparser.cpp \
-    ../core/modules/standard/standardmodule.cpp \
-    ../core/modules/standard/intparser.cpp \
-    ../core/modules/standard/floatparser.cpp \
-    ../core/modules/standard/bitparser.cpp \
+    ../core/modules/default/wordparser.cpp \
+    ../core/modules/default/intparser.cpp \
+    ../core/modules/default/floatparser.cpp \
+    ../core/modules/default/bitparser.cpp \
     ../core/modules/ebml/ebmlsimpleparser.cpp \
     ../core/modules/ebml/ebmlmodule.cpp \
     ../core/modules/ebml/ebmlmasterparser.cpp \
@@ -104,6 +104,7 @@ HEADERS  += \
     ../core/interpreter/blockexecution.h \
     ../core/log/logger.h \
     ../core/log/logmanager.h \
+    ../core/log/streamlogger.h \
     ../core/modules/default/elementarycontainerparser.h \
     ../core/modules/default/dataparser.h \
     ../core/modules/default/tupleparser.h \
@@ -112,12 +113,10 @@ HEADERS  += \
     ../core/modules/default/defaultmodule.h \
     ../core/modules/default/arrayparser.h \
     ../core/modules/default/structparser.h \
-    ../core/modules/standard/wordparser.h \
-    ../core/modules/standard/standardtypes.h \
-    ../core/modules/standard/standardmodule.h \
-    ../core/modules/standard/intparser.h \
-    ../core/modules/standard/floatparser.h \
-    ../core/modules/standard/bitparser.h \
+    ../core/modules/default/wordparser.h \
+    ../core/modules/default/intparser.h \
+    ../core/modules/default/floatparser.h \
+    ../core/modules/default/bitparser.h \
     ../core/modules/ebml/ebmltypes.h \
     ../core/modules/ebml/ebmlsimpleparser.h \
     ../core/modules/ebml/ebmlmodule.h \

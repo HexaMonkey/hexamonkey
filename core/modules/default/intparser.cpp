@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/modules/standard/intparser.h"
+#include "core/modules/default/intparser.h"
 
 Int8Parser::Int8Parser(Object &object, Variant::Display display) : SimpleParser(object), display(display)
 {
@@ -33,8 +33,8 @@ void Int8Parser::doParseHead()
 }
 
 
-Int16Parser::Int16Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+Int16Parser::Int16Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -42,7 +42,7 @@ void Int16Parser::doParseHead()
 {
     object().setSize(16);
     int16_t integer;
-    if(bigEndian)
+    if(object().endianness() == Object::bigEndian)
     {
         object().file().read(reinterpret_cast<char* >(&integer)+1, 8);
         object().file().read(reinterpret_cast<char* >(&integer), 8);
@@ -56,8 +56,8 @@ void Int16Parser::doParseHead()
 }
 
 
-Int32Parser::Int32Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+Int32Parser::Int32Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -66,7 +66,7 @@ void Int32Parser::doParseHead()
     object().setSize(32);
     int32_t integer;
     object().file().read(reinterpret_cast<char* >(&integer), 32);
-    if(bigEndian) {
+    if(object().endianness() == Object::bigEndian) {
         integer = __builtin_bswap32(integer);
     }
 
@@ -76,8 +76,8 @@ void Int32Parser::doParseHead()
 }
 
 
-Int64Parser::Int64Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+Int64Parser::Int64Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -86,7 +86,7 @@ void Int64Parser::doParseHead()
     object().setSize(64);
     int64_t integer;
     object().file().read(reinterpret_cast<char* >(&integer), 64);
-    if(bigEndian)
+    if(object().endianness() == Object::bigEndian)
         integer = __builtin_bswap64(integer);
 
     Variant value(integer);
@@ -95,10 +95,9 @@ void Int64Parser::doParseHead()
 }
 
 
-IntXParser::IntXParser(Object &object, uint8_t size, bool bigEndian, Variant::Display display)
+IntXParser::IntXParser(Object &object, uint8_t size, Variant::Display display)
     : SimpleParser(object),
       size(size),
-      bigEndian(bigEndian),
       display(display)
 {
 }
@@ -112,7 +111,7 @@ void IntXParser::doParseHead()
     char* pInteger = reinterpret_cast<char* >(&integer);
     object().file().read(buffer, size);
     for (int i = 0 ; i < byteSize ; i++) {
-        if(bigEndian)
+        if(object().endianness() == Object::bigEndian)
             pInteger[byteSize - 1 - i] = buffer[i];
         else
             pInteger[i] = buffer[i];
@@ -143,8 +142,8 @@ void UInt8Parser::doParseHead()
     object().setValue(value);
 }
 
-UInt16Parser::UInt16Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+UInt16Parser::UInt16Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -152,7 +151,7 @@ void UInt16Parser::doParseHead()
 {
     object().setSize(16);
     uint16_t integer;
-    if (bigEndian) {
+    if (object().endianness() == Object::bigEndian) {
         object().file().read(reinterpret_cast<char* >(&integer)+1, 8);
         object().file().read(reinterpret_cast<char* >(&integer), 8);
     } else {
@@ -165,8 +164,8 @@ void UInt16Parser::doParseHead()
 }
 
 
-UInt32Parser::UInt32Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+UInt32Parser::UInt32Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -175,7 +174,7 @@ void UInt32Parser::doParseHead()
     object().setSize(32);
     uint32_t integer;
     object().file().read(reinterpret_cast<char* >(&integer), 32);
-    if (bigEndian) {
+    if (object().endianness() == Object::bigEndian) {
         integer = __builtin_bswap32(integer);
     }
 
@@ -185,8 +184,8 @@ void UInt32Parser::doParseHead()
 }
 
 
-UInt64Parser::UInt64Parser(Object &object, bool bigEndian, Variant::Display display)
-    : SimpleParser(object), bigEndian(bigEndian), display(display)
+UInt64Parser::UInt64Parser(Object &object, Variant::Display display)
+    : SimpleParser(object), display(display)
 {
 }
 
@@ -195,7 +194,7 @@ void UInt64Parser::doParseHead()
     object().setSize(64);
     uint64_t integer;
     object().file().read(reinterpret_cast<char* >(&integer), 64);
-    if(bigEndian) {
+    if(object().endianness() == Object::bigEndian) {
         integer = __builtin_bswap64(integer);
     }
 
@@ -205,10 +204,9 @@ void UInt64Parser::doParseHead()
 }
 
 
-UIntXParser::UIntXParser(Object &object, uint8_t size, bool bigEndian, Variant::Display display)
+UIntXParser::UIntXParser(Object &object, uint8_t size, Variant::Display display)
     : SimpleParser(object),
       size(size),
-      bigEndian(bigEndian),
       display(display)
 {
 }
@@ -222,7 +220,7 @@ void UIntXParser::doParseHead()
     char* pInteger = reinterpret_cast<char* >(&integer);
     object().file().read(buffer, size);
     for (int i = 0 ; i < byteSize ; ++i) {
-        if(bigEndian) {
+        if(object().endianness() == Object::bigEndian) {
             pInteger[byteSize -1 - i] = buffer[i];
         } else {
             pInteger[i] = buffer[i];

@@ -4,8 +4,6 @@
 addMagicNumber 47 49 46 38 xx 61
 addExtension gif
 
-import lestd
-
 import rgb
 
 class GifFile as File{

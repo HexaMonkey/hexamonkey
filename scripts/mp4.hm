@@ -20,10 +20,12 @@ addExtension mp4
 addExtension mov
 addExtension m4a
 
-import bestd uuid
+import uuid
 
 class Mp4File as File
 {
+	@endianness = "bigEndian";
+
 	while(1) Box *;
 }
 

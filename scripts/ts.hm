@@ -18,14 +18,14 @@
 addSyncbyte 0x47 188
 addExtension ts
 
-import bestd
-
 class bslbf(size) extends Bitset(size)
 class uimsbf(size) extends uint(size)
 class tcimsbf(size) extends int(size)
 
 class TsFile as File
 {
+	@endianness = "bigEndian";
+
 	@attr._pmt_pids_size = 0;
 	while(1) transport_packet #;
 }

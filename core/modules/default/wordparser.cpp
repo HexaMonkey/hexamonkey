@@ -15,7 +15,7 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/modules/standard/wordparser.h"
+#include "core/modules/default/wordparser.h"
 #include "core/log/logmanager.h"
 
 
@@ -83,8 +83,8 @@ void Utf8StringParser::doParseHead()
 }
 
 
-WideStringParser::WideStringParser(Object &object, int numberOfChars, bool bigEndian)
-    : SimpleParser(object), numberOfChars(numberOfChars), bigEndian(bigEndian)
+WideStringParser::WideStringParser(Object &object, int numberOfChars)
+    : SimpleParser(object), numberOfChars(numberOfChars)
 {
 }
 
@@ -96,7 +96,7 @@ void WideStringParser::doParseHead()
     for(int i = 0; i < numberOfChars; ++i)
     {
         uint16_t ch = 0;
-        if(bigEndian) {
+        if(object().endianness() == Object::bigEndian) {
             object().file().read(reinterpret_cast<char*>(&ch)+1, 8);
             object().file().read(reinterpret_cast<char*>(&ch), 8);
         } else {

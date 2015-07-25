@@ -40,6 +40,15 @@ const Module &ModuleLoader::getModule(File &file) const
 
 const Module &ModuleLoader::getModule(const std::string &key) const
 {
+    if (key == "bestd") {
+        Log::warning("Standard module bestd is deprecated, all object are now directly available in default module");
+        Log::warning("Endianness is handled by adding @endianness = \"bigEndian\"; in the definition of the root object");
+    }
+
+    if (key == "lestd") {
+        Log::warning("Standard module lestd is deprecated, all object are now directly available in default module");
+        Log::warning("Endianness is handled by adding @endianness = \"littleEndian\"; in the definition of the root object");
+    }
 
     auto it = modules.find(key);
 

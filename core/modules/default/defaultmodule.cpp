@@ -22,6 +22,11 @@
 #include "core/modules/default/tupleparser.h"
 #include "core/modules/default/dataparser.h"
 #include "core/modules/default/structparser.h"
+#include "core/modules/default/intparser.h"
+#include "core/modules/default/bitparser.h"
+#include "core/modules/default/wordparser.h"
+#include "core/modules/default/floatparser.h"
+
 #include "core/variable/variable.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
@@ -116,6 +121,168 @@ bool DefaultModule::doLoad()
          }
          return s;
     });
+
+    addTemplate(integer);
+    addParser("int", [this]parserLambda
+    {
+        if (type.parameterSpecified(0)) {
+            int size = type.parameterValue(0).toInteger();
+            int base = 0;
+            if (type.parameterSpecified(1)) {
+                base = type.parameterValue(1).toInteger();
+            }
+            Variant::Display display = Variant::decimal;
+            switch (base) {
+                case 2:
+                    display = Variant::binary;
+                    break;
+
+                case 8:
+                    display = Variant::octal;
+                    break;
+
+                case 16:
+                    display = Variant::hexadecimal;
+                    break;
+            }
+
+            if(size<=64)
+            {
+                switch(size)
+                {
+                    case 8:
+                        return new Int8Parser(object, display);
+                    case 16:
+                        return new Int16Parser(object, display);
+                    case 32:
+                        return new Int32Parser(object, display);
+                    case 64:
+                        return new Int64Parser(object, display);
+                    default:
+                        return new IntXParser(object, size, display);
+                }
+            }
+        }
+        return nullptr;
+
+    });
+    setFixedSizeFromArg("int", 0);
+
+    addTemplate(uinteger);
+    addParser("uint", [this]parserLambda
+    {
+        if (type.parameterSpecified(0)) {
+            int size = type.parameterValue(0).toInteger();
+            int base = 0;
+            if (type.parameterSpecified(1)) {
+                base = type.parameterValue(1).toInteger();
+            }
+            Variant::Display display = Variant::decimal;
+            switch (base) {
+                case 2:
+                    display = Variant::binary;
+                    break;
+
+                case 8:
+                    display = Variant::octal;
+                    break;
+
+                case 16:
+                    display = Variant::hexadecimal;
+                    break;
+            }
+
+            if(size<=64)
+            {
+                switch(size)
+                {
+                    case 8:
+                        return new UInt8Parser(object, display);
+                    case 16:
+                        return new UInt16Parser(object, display);
+                    case 32:
+                        return new UInt32Parser(object, display);
+                    case 64:
+                        return new UInt64Parser(object, display);
+                    default:
+                        return new UIntXParser(object, size, display);
+                }
+            }
+        }
+        return nullptr;
+    });
+    setFixedSizeFromArg("uint", 0);
+
+    addTemplate(byte);
+    addParser("byte", [this]parserLambda
+    {
+        return new UInt8Parser(object, Variant::hexadecimal);
+    });
+    setFixedSize("byte", 8);
+
+
+    addTemplate(singleFloat);
+    addParser("float", [this]parserLambda{return new SingleFloatParser(object);});
+    setFixedSize("float", 32);
+
+    addTemplate(doubleFloat);
+    addParser("double", [this]parserLambda{return new DoubleFloatParser(object);});
+    setFixedSize("double", 64);
+
+    addTemplate(fixedFloat);
+    addParser("fixedFloat", []parserLambda
+    {
+        if(type == fixed16)
+            return new FixedFloat16Parser(object);
+        if(type == fixed32)
+            return new FixedFloat32Parser(object);
+        return nullptr;
+    });
+    setFixedSize("fixedFloat", []fixedSizeLambda
+    {
+         if(type.parameterSpecified(0) && type.parameterSpecified(1))
+             return type.parameterValue(0).toInteger()+type.parameterValue(1).toInteger();
+         return HM_UNKNOWN_SIZE;
+    });
+
+    addTemplate(string);
+    addParser("String", []parserLambda
+    {
+        if(type.parameterSpecified(0))
+            return new WordParser(object, type.parameterValue(0).toInteger());
+        return new Utf8StringParser(object);
+    });
+    setFixedSize("String", []fixedSizeLambda
+    {
+         if(type.parameterSpecified(0))
+             return 8*type.parameterValue(0).toInteger();
+         return HM_UNKNOWN_SIZE;
+    });
+
+    addTemplate(wstring);
+    addParser("WString", [this]parserLambda
+    {
+        if(type.parameterSpecified(0))
+            return new WideStringParser(object, type.parameterValue(0).toInteger());
+        return new Utf8StringParser(object);
+    });
+    setFixedSize("WString", []fixedSizeLambda
+    {
+         if(type.parameterSpecified(0))
+             return 16*type.parameterValue(0).toInteger();
+         return HM_UNKNOWN_SIZE;
+    });
+
+
+    addTemplate(bitset);
+    addParser("Bitset", []parserLambda
+    {
+        if(type.parameterSpecified(0))
+            return new BitParser(object, type.parameterValue(0).toInteger());
+        return nullptr;
+    });
+    setFixedSizeFromArg("Bitset", 0);
+
 
     addFunction("sizeof",
                 {"type"},

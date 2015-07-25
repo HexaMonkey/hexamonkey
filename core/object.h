@@ -52,6 +52,11 @@ class ObjectAttributes;
 class Object
 {
     public:
+        enum Endianness {
+            bigEndian = 0,
+            littleEndian = 1
+        };
+
         typedef std::vector<Object*> container;
         typedef container::iterator iterator;
         typedef container::const_iterator const_iterator;
@@ -281,11 +286,16 @@ class Object
 
         bool isValid() const;
         void invalidate();
+
     private:
+
+        Endianness endianness() const;
+        void setEndianness(const Endianness &endianness);
+
         friend class Module;
         friend class ContainerParser;
 
-        Object(File& file, std::streampos beginningPos);
+        Object(File& file, std::streampos beginningPos, Object* parent);
 
         void parse();
         void parseBody();
@@ -326,6 +336,8 @@ class Object
         Variable _attributesVariable;
 
         bool _valid;
+
+        Endianness _endianness;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

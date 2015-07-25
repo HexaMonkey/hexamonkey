@@ -17,7 +17,7 @@
 
 #include <bitset>
 
-#include "core/modules/standard/bitparser.h"
+#include "core/modules/default/bitparser.h"
 
 #include "core/log/logmanager.h"
 

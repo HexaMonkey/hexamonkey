@@ -15,10 +15,10 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/modules/standard/floatparser.h"
+#include "core/modules/default/floatparser.h"
 
-SingleFloatParser::SingleFloatParser(Object &object, bool bigEndian)
-    : SimpleParser(object), bigEndian(bigEndian)
+SingleFloatParser::SingleFloatParser(Object &object)
+    : SimpleParser(object)
 {
 }
 
@@ -27,15 +27,15 @@ void SingleFloatParser::doParseHead()
     object().setSize(32);
     union {int32_t i; float f;} val;
     object().file().read(reinterpret_cast<char* >(&val.i), 32);
-    if(bigEndian)
+    if(object().endianness() == Object::bigEndian)
         val.i = __builtin_bswap32(val.i);
 
     object().setValue(val.f);
 }
 
 
-DoubleFloatParser::DoubleFloatParser(Object &object, bool bigEndian)
-    : SimpleParser(object), bigEndian(bigEndian)
+DoubleFloatParser::DoubleFloatParser(Object &object)
+    : SimpleParser(object)
 {
 }
 
@@ -44,7 +44,7 @@ void DoubleFloatParser::doParseHead()
     object().setSize(64);
     union {int64_t i; double f;} val;
     object().file().read(reinterpret_cast<char* >(&val.i), 64);
-    if(bigEndian)
+    if(object().endianness() == Object::bigEndian)
         val.i = __builtin_bswap64(val.i);
 
     object().setValue(val.f);

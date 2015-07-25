@@ -2,6 +2,8 @@ import ts
 
 class PES as File
 {
+	@endianness = "bigEndian";
+
     bslbf(24)  packet_start_code_prefix;
     uimsbf(8)  stream_id;
     uimsbf(16) PES_packet_length;

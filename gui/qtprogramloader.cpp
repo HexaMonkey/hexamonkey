@@ -26,7 +26,12 @@ bool QtProgramLoader::executeCommand(const std::string &program, const std::vect
 
     if(!error.empty())
     {
-        std::cerr<<"Program error : "<<error<<std::endl;
+        std::cerr<<"Program error for : "<<program;
+        for (const std::string& argument : arguments) {
+            std::cerr<<" "<<argument;
+        }
+        std::cerr<<std::endl;
+        std::cerr<<error<<std::endl;
         return false;
     }
 

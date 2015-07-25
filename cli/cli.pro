@@ -1,6 +1,14 @@
+unix {
+        ! include( ../common_link.pri ) {
+                error( "Could not find the common_link.pri file!" )
+        }
+        DEPENDPATH += ..
+}
 
-! include( ../common_link.pri ) {
-error( "Could not find the common_link.pri file!" )
+win32 {
+        ! include(../core/core.pri) {
+                error( "Could not find the core.pri file!" )
+        }
 }
 
 CONFIG += c++11 no_include_pwd
