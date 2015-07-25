@@ -78,10 +78,9 @@ class Transparency as Chunk("tRNS")
 	} 
 }
 
-class FixedPoint
+class FixedPoint extends uint(32)
 {
-	uint(32) data;
-	@value = data / 100000.0;
+	@value /= 100000.0;
 }
 
 class Gamma as Chunk("gAMA")
