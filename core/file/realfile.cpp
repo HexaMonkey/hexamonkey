@@ -87,7 +87,7 @@ void RealFile::read(char* s, int64_t count )
         }
 
         //Copy bits
-        int firstByte = (_bitPosition+shift>8)? 1 : 0;
+        int firstByte = (_bitPosition+shift>=8)? 1 : 0;
         for(int i = firstByte; i < byteCount; ++i)
         {
             s[i-firstByte] = buffer[i];
