@@ -1,0 +1,87 @@
+
+
+class DefaultTestFile as File
+{
+    @endianness = "bigEndian";
+    uint(8)  v100;
+    uint(16) v4242;
+    uint(32) v320000000;
+    uint(64) v999999999999999999;
+    
+    uint(4)  v10;
+    uint(8)  v100;
+    uint(16) v4242;
+    uint(4)  v10;
+    uint(2)  v1;
+    uint(20) v424242;
+    uint(2)  v1;
+    
+    int(8) v100;
+    int(8) vm100;
+    int(16) v4242;
+    int(16) vm4242;
+    int(32) v320000000;
+    int(32) vm320000000;
+    int(64) v999999999999999999;
+    int(64) vm999999999999999999;
+    
+    @endianness = "littleEndian";
+    
+    int(8) v100;
+    int(8) vm100;
+    int(16) v4242;
+    int(16) vm4242;
+    int(32) v320000000;
+    int(32) vm320000000;
+    int(64) v999999999999999999;
+    int(64) vm999999999999999999;
+    
+    int(4) v1;
+    int(4) vm1;
+    
+    @endianness = "bigEndian";
+    
+    float vPi;
+    double vPi;
+    
+    Bitset(4)  v10;
+    Bitset(8)  v100;
+    Bitset(16) v4242;
+    Bitset(4)  v10;
+    Bitset(2)  v1;
+    Bitset(20) v424242;
+    Bitset(2)  v1;
+    
+    String hello;
+    String(5) hello;
+    String(7) hello;
+    String helloUTF8;
+    
+    WString hello;
+    WString(5) hello;
+    WString(7) hello;
+    WString helloWide;
+    
+    @endianness = "littleEndian";
+    
+    WString hello;
+    WString(5) hello;
+    WString(7) hello;
+    WString helloWide;
+    
+    Array(uint(16), 128) array8;
+    ArrayContainer arrayContainer;
+    uint(16) tuple8[8];
+    Data(128) data128;
+    struct StructTest {
+        uint(8) uint8;
+        uint(8) uint8;
+        uint(16) uint16;
+        uint(32) uint32;
+    } struct128;
+}
+
+class ArrayContainer extends Data(128)
+{
+    uint(16) array8[]; 
+}
