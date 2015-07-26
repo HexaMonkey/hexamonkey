@@ -53,21 +53,23 @@ void Utf8StringParser::doParseHead()
         {
             break;
         }
-        char mask = 1 << 7;
+        unsigned char mask = 1 << 7;
         if((ch & mask) == 0)
         {
             S<<ch;
         }
         else
         {
+            S <<'?';
+            unsigned char& toCount = reinterpret_cast<unsigned char&>(ch);
             char testChar = 1;
             //skipping extended characters but still
             //check if no \0, to avoid infinite loop on faulty
             //data
-            for(mask>>=1; ch & mask; mask>>=1)
+            for(mask>>=1; toCount & mask; mask>>=1)
             {
-                object().file().seekg(8,std::ios::cur);
                 object().file().read(&testChar, 8);
+                ++stringLength;
                 if (testChar == '\0') {
                     break;
                 }
@@ -90,10 +92,10 @@ WideStringParser::WideStringParser(Object &object, int numberOfChars)
 
 void WideStringParser::doParseHead()
 {
-    object().setSize(numberOfChars * 16);
-    std::string word(numberOfChars, '?');
+    std::stringstream S;
+    std::streamoff stringLength = 0;
 
-    for(int i = 0; i < numberOfChars; ++i)
+    for(int i = 0; numberOfChars == -1 || i < numberOfChars; ++i)
     {
         uint16_t ch = 0;
         if(object().endianness() == Object::bigEndian) {
@@ -102,15 +104,24 @@ void WideStringParser::doParseHead()
         } else {
             object().file().read(reinterpret_cast<char*>(&ch), 16);
         }
+        ++stringLength;
 
         if(ch == 0) {
-            word.resize(i);
             break;
         }
+
         if(ch < 0x80) {
-            word[i] = ch;
+            S << (char)ch;
+        } else {
+            S << '?';
         }
     }
 
-    object().setValue(word);
+    if (numberOfChars == -1) {
+        object().setSize(16 * stringLength);
+    }  else {
+        object().setSize(16 * numberOfChars);
+    }
+
+    object().setValue(S.str());
 }

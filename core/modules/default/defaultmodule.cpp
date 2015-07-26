@@ -262,9 +262,14 @@ bool DefaultModule::doLoad()
     addTemplate(wstring);
     addParser("WString", [this]parserLambda
     {
-        if(type.parameterSpecified(0))
-            return new WideStringParser(object, type.parameterValue(0).toInteger());
-        return new Utf8StringParser(object);
+        int64_t size;
+        if(type.parameterSpecified(0)) {
+            size = type.parameterValue(0).toInteger();
+        } else {
+            size = -1;
+        }
+
+        return new WideStringParser(object, size);
     });
     setFixedSize("WString", []fixedSizeLambda
     {
