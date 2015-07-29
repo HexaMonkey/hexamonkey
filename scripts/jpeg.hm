@@ -17,7 +17,7 @@
 
 addMagicNumber FF D8
 
-import rgb
+import rgb exif_interop
 
 class JpegFile as File
 {
@@ -239,7 +239,72 @@ class JFIFExtension as ApplicationSegment(0, "JFXX")
 
 class Exif extends ApplicationSegment
 {
+    uint(8,16) identifierExtraByte;
+    
+    ExifData(@rem) *;    
 }
+
+class ExifData(_size) extends Data(_size)
+{
+    @context.offset = @beginningPos;
+    TiffHeader _header;
+    
+    @pos = 8*_header.OffsetOfInteroperability;
+    IFD("Image") zerothIFD;
+    
+    var exifIFDOffset = zerothIFD[ExifTagInteroperability()];
+    if (exifIFDOffset) {
+        @pos = 8*exifIFDOffset;
+        IFD("Exif") exifIFD;
+    }
+    
+    var gpsIFDOffset = gpsIFD[GPSTagInteroperability()];
+    if (gpsIFDOffset) {
+        @pos = 8*gpsIFDOffset;
+        IFD("GPS") gpsIFD;
+    }
+    
+    var firstIFDOffset = zerothIFD.NextInteroperabilityIndex;
+    if (firstIFDOffset) {
+        @pos = 8*firstIFDOffset;
+        IFD("Image") firstIFDOffset;
+    }
+}
+
+class TiffHeader
+{
+    String(2) byteOrder;
+    
+    if (byteOrder == "II") {
+        @endianness = @parent.@endianness = "littleEndian";
+    } else if (byteOrder == "MM"){
+        @endianness = @parent.@endianness = "bigEndian";
+    } else {
+        %error("Unrecognized byte order");
+    }
+    uint(16) n42;
+    uint(32) OffsetOfInteroperability;
+}
+
+class IFD(namespace)
+{
+    uint(16) NumberOfInteroperability;
+    for (var i = 0, n = NumberOfInteroperability; i < n; ++i) {
+        Interoperability(@args.namespace) _;
+    }
+    uint(32) NextInteroperabilityIndex;
+    for (var i = 0, n = NumberOfInteroperability; i < n; ++i) {
+        interoperability := self[1+i];
+        if (interoperability.@linkTo) {
+            @absPos = interoperability.@linkTo;
+            (interoperability.@attr._valueType) _;
+            interoperability.@value = _.@value;
+            %log("args " + self[1+i].@type.@name);
+            _.@attr.valueFor = self[1+i].@type;
+        }
+    }
+}
+
 
 forward ApplicationSegment(1, "Exif") to Exif
 forward ApplicationSegment(1, "EXIF") to Exif
@@ -270,3 +335,4 @@ class PhotoshopIRB as ApplicationSegment(13, "Photoshop 3.0")
 class Adobe as ApplicationSegment(14, "Adobe")
 {
 }
+
