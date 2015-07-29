@@ -21,10 +21,22 @@ class DWORD(_base) extends uint(32, _base)
 class QWORD(_base) extends uint(64, _base)
 
 class BOOL(_base) extends int(32, _base)
+class SHORT(_base) extends int(16, _base)
+class USHORT(_base) extends uint(16, _base)
 class LONG(_base) extends int(32, _base)
 class ULONG(_base) extends uint(32, _base)
 class LONGLONG(_base) extends int(64, _base)
 class ULONGLONG(_base) extends uint(64, _base)
+
+class INT8(_base) extends int(8, _base)
+class UINT8(_base) extends uint(8, _base)
+class INT16(_base) extends int(16, _base)
+class UINT16(_base) extends uint(16, _base)
+class INT32(_base) extends int(32, _base)
+class UINT32(_base) extends uint(32, _base)
+class INT64(_base) extends int(64, _base)
+class UINT64(_base) extends uint(64, _base)
+
 
 class FOURCC extends String(4)
 
