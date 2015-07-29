@@ -6,7 +6,13 @@
 
 TestParser::TestParser()
 {
+    moduleSetup.addScriptDirectory("resources\\parser\\scripts\\");
     moduleSetup.setup();
+}
+
+void TestParser::test_default()
+{
+    QVERIFY(checkFile("resources/parser/test_default.bin", -1, -1, "test_default"));
 }
 
 void TestParser::test_asf()
@@ -59,7 +65,7 @@ void TestParser::test_zip()
     QVERIFY(checkFile("resources/parser/test_zip.zip"));
 }
 
-bool TestParser::checkFile(const std::string &path, int depth, int width)
+bool TestParser::checkFile(const std::string &path, int depth, int width, const std::string &moduleKey)
 {
     RealFile file;
     file.setPath(path);
@@ -70,7 +76,8 @@ bool TestParser::checkFile(const std::string &path, int depth, int width)
         return false;
     }
 
-    const Module& module = moduleSetup.moduleLoader().getModule(file);
+    ModuleLoader& moduleLoader = moduleSetup.moduleLoader();
+    const Module& module = moduleKey.empty() ? moduleLoader.getModule(file) : moduleLoader.getModule(moduleKey);
 
     Object* object = module.handle(defaultTypes::file, file);
 
