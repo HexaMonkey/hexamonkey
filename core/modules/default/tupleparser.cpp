@@ -27,9 +27,6 @@ void TupleParser::doParseHead()
 {
     ElementaryContainerParser::doParseHead();
 
-    ObjectType& type = *modifiableType();
-    type.setElementCount(count);
-
     if (!count) {
         setParsed();
     } else {

@@ -253,7 +253,7 @@ protected:
     /**
      * @brief
      */
-    const ObjectTypeTemplate& newTemplate(const std::string& name, const std::vector<std::string>& parameters = std::vector<std::string>());
+    ObjectTypeTemplate& newTemplate(const std::string& name, const std::vector<std::string>& parameters = std::vector<std::string>());
 
 private:
     friend class ModuleLoader;

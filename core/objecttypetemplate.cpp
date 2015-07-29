@@ -18,8 +18,24 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, int elementTypeParameter, int elementCountParameter)
-    :_name(name), _parametersNames(parameterNames), _elementTypeParameter(elementTypeParameter), _elementCountParameter(elementCountParameter)
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames,
+                                       const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator,
+                                       const ObjectTypeTemplate::AttributeGenerator &elementCountGenerator)
+    : ObjectTypeTemplate(name, parameterNames)
+{
+    setElementTypeGenerator(elementTypeGenerator);
+    setElementCountGenerator(elementCountGenerator);
+}
+
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames,
+                                       const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator)
+    : ObjectTypeTemplate(name, parameterNames)
+{
+    setElementTypeGenerator(elementTypeGenerator);
+}
+
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
+    :_name(name), _parametersNames(parameterNames), _attributeFlag(0)
 
 {
     for(unsigned int i = 0; i < _parametersNames.size(); ++i)
@@ -73,16 +89,36 @@ void ObjectTypeTemplate::addParameter(const std::string& parameterName)
     _parametersNames.push_back(parameterName);
 }
 
-int ObjectTypeTemplate::elementTypeParameter() const
+void ObjectTypeTemplate::setElementTypeGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
 {
-    if (_elementTypeParameter != -1)
-        return _elementTypeParameter;
-    return _elementTypeParameter;
+    _attributeFlag |= _elementTypeAttribute;
+    _elementTypeGenerator = generator;
 }
 
-int ObjectTypeTemplate::elementCountParameter() const
+bool ObjectTypeTemplate::hasElementTypeGenerator() const
 {
-    return _elementCountParameter;
+    return _attributeFlag & _elementTypeAttribute;
+}
+
+const ObjectTypeTemplate::AttributeGenerator& ObjectTypeTemplate::elementTypeGenerator() const
+{
+    return _elementTypeGenerator;
+}
+
+void ObjectTypeTemplate::setElementCountGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
+{
+    _attributeFlag |= _elementCountAttribute;
+    _elementCountGenerator = generator;
+}
+
+bool ObjectTypeTemplate::hasElementCountGenerator() const
+{
+    return _attributeFlag & _elementCountAttribute;
+}
+
+const ObjectTypeTemplate::AttributeGenerator &ObjectTypeTemplate::elementCountGenerator() const
+{
+    return _elementCountGenerator;
 }
 
 bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)

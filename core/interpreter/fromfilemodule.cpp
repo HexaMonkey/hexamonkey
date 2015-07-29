@@ -237,17 +237,35 @@ void FromFileModule::nameScan(Program& declarations)
     {
         if(declaration.tag() == HMC_CLASS_DECLARATION)
         {
-            Program typeTemplate = declaration.node(0).node(0);
+            Program classInfo = declaration.node(0);
+            Program typeTemplate = classInfo.node(0);
             const std::string& name = typeTemplate.node(0).payload().toString();
             std::vector<std::string> parameters;
             for(Program arg:typeTemplate.node(1))
             {
                 parameters.push_back(arg.payload().toString());
             }
-            const ObjectTypeTemplate& temp = newTemplate(name, parameters);
+            ObjectTypeTemplate& objectTypeTemplate = newTemplate(name, parameters);
 #ifdef LOAD_TRACE
-            std::cerr<<"    "<<temp<<std::endl;
+            std::cerr<<"    "<<objectTypeTemplate<<std::endl;
 #endif
+
+            Program typeAttributes = declaration.node(0).node(3);
+            for (Program typeAttribute : typeAttributes) {
+                const std::string& name = typeAttribute.node(0).payload().toString();
+                Program program = typeAttribute.node(1);
+                auto generator = [this, program]objectTypeAttributeLambda
+                {
+                    return Evaluator(Variable(new TypeScope(type), false), *this).rightValue(program).value();
+                };
+
+                if (name == "elemType") {
+                    objectTypeTemplate.setElementTypeGenerator(generator);
+                } else if (name == "elemCount") {
+                    objectTypeTemplate.setElementCountGenerator(generator);
+                }
+            }
+
             Program classDefinition = declaration.node(1);
             _definitions[name] = classDefinition;
         }

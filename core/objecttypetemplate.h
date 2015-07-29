@@ -21,9 +21,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <functional>
 
 #include "core/objecttype.h"
 #include "core/variant.h"
+
+
+#define objectTypeAttributeLambda (const ObjectType &type) ->Variant
 
 /**
  * @brief Template for a \link ObjectType type\endlink
@@ -34,7 +38,14 @@
 class ObjectTypeTemplate
 {
 public:
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, int elementTypeParameter = -1, int elementCountParameter = -1);
+    typedef std::function<Variant (const ObjectType &)> AttributeGenerator;
+
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames,
+                       const AttributeGenerator& elementTypeGenerator,
+                       const AttributeGenerator& elementCountGenerator);
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames,
+                       const AttributeGenerator& elementTypeGenerator);
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames);
     ObjectTypeTemplate(const std::string &name);
 
     /**
@@ -92,8 +103,13 @@ public:
         return type;
     }
 
-    int elementTypeParameter() const;
-    int elementCountParameter() const;
+    void setElementTypeGenerator(const AttributeGenerator& generator);
+    bool hasElementTypeGenerator() const;
+    const AttributeGenerator &elementTypeGenerator() const;
+
+    void setElementCountGenerator(const AttributeGenerator& generator);
+    bool hasElementCountGenerator() const;
+    const AttributeGenerator &elementCountGenerator() const;
 
 
     friend bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
@@ -103,8 +119,12 @@ private:
     std::string                _name;
     std::vector<std::string>   _parametersNames;
     std::unordered_map<std::string, int> _parametersNumbers;
-    const int _elementTypeParameter;
-    const int _elementCountParameter;
+
+    const static uint8_t _elementTypeAttribute = 0x1;
+    const static uint8_t _elementCountAttribute = 0x2;
+    uint8_t _attributeFlag;
+    AttributeGenerator _elementTypeGenerator;
+    AttributeGenerator _elementCountGenerator;
 
     ObjectTypeTemplate(const ObjectTypeTemplate&) = delete;
     ObjectTypeTemplate& operator=(const ObjectTypeTemplate&) = delete;

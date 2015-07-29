@@ -119,12 +119,12 @@ bool ObjectType::extendsDirectly(const ObjectType& other) const
 
 bool ObjectType::hasElementType() const
 {
-    return !pElementType()->isValueless();
+    return !vElementType().isValueless();
 }
 
 const ObjectType &ObjectType::elementType() const
 {
-    return pElementType()->toObjectType();
+    return vElementType().toObjectType();
 }
 
 void ObjectType::setElementType(const ObjectType &type)
@@ -134,13 +134,13 @@ void ObjectType::setElementType(const ObjectType &type)
 
 bool ObjectType::hasElementCount() const
 {
-    return !pElementCount()->isValueless();
+    return !vElementCount().isValueless();
 }
 
 
 size_t ObjectType::elementCount() const
 {
-    return pElementCount()->toUnsignedInteger();
+    return vElementCount().toUnsignedInteger();
 }
 
 void ObjectType::setElementCount(long long count)
@@ -173,26 +173,24 @@ ObjectType& ObjectType::operator =(ObjectType other)
     return *this;
 }
 
-const Variant *ObjectType::pElementType() const
+const Variant &ObjectType::vElementType() const
 {
-    const Variant* pElementType;
-    if (_typeTemplate && _typeTemplate->elementTypeParameter() != -1 && _typeTemplate->elementTypeParameter() < numberOfParameters()) {
-        pElementType = &parameterValue(_typeTemplate->elementTypeParameter());
-    } else {
-        pElementType = &_elementType;
+    if (_elementType.isValueless()
+            && _typeTemplate
+            && _typeTemplate->hasElementTypeGenerator()) {
+        _elementType.setValue(typeTemplate().elementTypeGenerator()(*this));
     }
-    return pElementType;
+    return _elementType;
 }
 
-const Variant *ObjectType::pElementCount() const
+const Variant &ObjectType::vElementCount() const
 {
-    const Variant* pElementCount;
-    if (_typeTemplate && _typeTemplate->elementCountParameter() != -1 && _typeTemplate->elementCountParameter() < numberOfParameters()) {
-        pElementCount = &parameterValue(_typeTemplate->elementCountParameter());
-    } else {
-        pElementCount = &_elementCount;
+    if (_elementCount.isValueless()
+            && _typeTemplate
+            && _typeTemplate->hasElementCountGenerator()) {
+        _elementCount.setValue(typeTemplate().elementCountGenerator()(*this));
     }
-    return pElementCount;
+    return _elementCount;
 }
 
 bool operator==(const ObjectType& a, const ObjectType& b)

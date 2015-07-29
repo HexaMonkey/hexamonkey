@@ -25,9 +25,18 @@ namespace defaultTypes
 {
     const ObjectTypeTemplate file("File");
 
-    const ObjectTypeTemplate array("Array",{"elementType", "size", "_namePattern"}, 0);
+    const ObjectTypeTemplate array("Array",{"elementType", "size", "_namePattern"},
+                                   []objectTypeAttributeLambda {
+                                       return type.parameterValue(0);
+                                   });
 
-    const ObjectTypeTemplate tuple("Tuple",{"elementType", "count", "_namePattern"}, 0, 1);
+    const ObjectTypeTemplate tuple("Tuple",{"elementType", "count", "_namePattern"},
+                                   []objectTypeAttributeLambda {
+                                       return type.parameterValue(0);
+                                   },
+                                   []objectTypeAttributeLambda {
+                                       return type.parameterValue(1);
+                                   });
 
     const ObjectTypeTemplate data("Data", {"_size"});
 

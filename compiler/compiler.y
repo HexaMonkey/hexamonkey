@@ -34,7 +34,7 @@
     double             f;
 }
 
-%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN SELF_TOKEN
+%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN SELF_TOKEN WITH_TOKEN 
 %right IF_TOKEN ELSE_TOKEN
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN REMOVE_TOKEN
@@ -143,7 +143,7 @@ class_token:
 	CLASS_TOKEN {push_line();}
 
 class_info:
-    type_template extension specification {push_master(HMC_CLASS_INFO, 3);}
+    type_template extension specification type_attributes {push_master(HMC_CLASS_INFO, 4);}
 
 class_infos:
     class_info',' class_info {stash(0);++infos;} 
@@ -279,10 +279,22 @@ extends_token:
 specification:
     /*empty*/ {push_master(HMC_SPECIFICATION,0);}
    | as_token type {push_master(HMC_SPECIFICATION,2);}
-
+   
 as_token:
 	AS_TOKEN {push_line();}
+
+type_attributes:
+	/*empty*/ {push_master(HMC_TYPE_ATTRIBUTES,0);}
+   |WITH_TOKEN '{'type_attribute_items'}' 
    
+type_attribute_items:
+	/*empty*/ {push_master(HMC_TYPE_ATTRIBUTES,0);}
+   |type_attribute_item {push_master(HMC_TYPE_ATTRIBUTES,1);}
+   |type_attribute_items ',' type_attribute_item {push_master(HMC_TYPE_ATTRIBUTES,2);}
+
+type_attribute_item:
+	identifier ':' right_value {push_master(HMC_TYPE_ATTRIBUTE_ITEM, 2)}
+
 class_definition:
     /*empty*/ {push_master(HMC_EXECUTION_BLOCK, 0);push_master(HMC_EXECUTION_BLOCK, 0); push_master(HMC_CLASS_DEFINITION, 2);}
    |execution_block {push_master(HMC_EXECUTION_BLOCK, 0); push_master(HMC_CLASS_DEFINITION, 2);}

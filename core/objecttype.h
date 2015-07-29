@@ -19,6 +19,7 @@
 #define OBJECTTYPE_H
 
 #include <vector>
+#include <functional>
 
 #include "core/variant.h"
 
@@ -153,14 +154,14 @@ public:
     ObjectType& operator=(ObjectType other);
 
 private:
-    const Variant* pElementType() const;
-    const Variant* pElementCount() const;
+    const Variant& vElementType() const;
+    const Variant& vElementCount() const;
 
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
     Variant _name;
-    Variant _elementType;
-    Variant _elementCount;
+    mutable Variant _elementType;
+    mutable Variant _elementCount;
 
     void _setParameters(int first);
 

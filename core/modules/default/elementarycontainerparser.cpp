@@ -5,8 +5,6 @@
 ElementaryContainerParser::ElementaryContainerParser(Object &object, const Module &module, const ObjectType &elementType, const std::string &namePattern)
     :ContainerParser(object, module), elementType(elementType)
 {
-    modifiableType()->setElementType(elementType);
-
     if (namePattern.empty()) {
         hasFixedName = true;
         fixedName = "#";
