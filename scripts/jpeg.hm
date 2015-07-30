@@ -19,7 +19,8 @@ addMagicNumber FF D8
 
 import rgb exif_interop
 
-class JpegFile as File
+class JpegFile as File,
+      JpegData(_size) extends Data(_size)
 {
 	@endianness = "bigEndian";
 	
@@ -258,7 +259,7 @@ class ExifData(_size) extends Data(_size)
         IFD("Exif") exifIFD;
     }
     
-    var gpsIFDOffset = gpsIFD[GPSTagInteroperability()];
+    var gpsIFDOffset = zerothIFD[GPSTagInteroperability()];
     if (gpsIFDOffset) {
         @pos = 8*gpsIFDOffset;
         IFD("GPS") gpsIFD;
@@ -267,7 +268,13 @@ class ExifData(_size) extends Data(_size)
     var firstIFDOffset = zerothIFD.NextInteroperabilityIndex;
     if (firstIFDOffset) {
         @pos = 8*firstIFDOffset;
-        IFD("Image") firstIFDOffset;
+        IFD("Image") firstIFD;
+        var ThumbnailOffset = firstIFD[JPEGInterchangeFormatInteroperability()];
+        var ThumbnailOffsetLength = firstIFD[JPEGInterchangeFormatLengthInteroperability()];
+        if (ThumbnailOffset && ThumbnailOffset) {
+            @pos = 8*ThumbnailOffset;
+            JpegData(8*ThumbnailOffsetLength) ThumbnailData;
+        }
     }
 }
 
@@ -299,7 +306,6 @@ class IFD(namespace)
             @absPos = interoperability.@linkTo;
             (interoperability.@attr._valueType) _;
             interoperability.@value = _.@value;
-            %log("args " + self[1+i].@type.@name);
             _.@attr.valueFor = self[1+i].@type;
         }
     }

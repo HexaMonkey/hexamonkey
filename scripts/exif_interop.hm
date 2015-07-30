@@ -31,7 +31,7 @@ class Interoperability(namespace, tag) extends Data(96)
     }
     @attr._valueType = valueType;
     
-    //...
+    ...
     var valueSize = %sizeof(valueType);
     if (valueSize > @rem) {
         uint(32) valueOffset;
@@ -43,6 +43,20 @@ class Interoperability(namespace, tag) extends Data(96)
             Data(@rem) padding;
         }
     }    
+}
+
+class rational 
+{
+    uint(32) numerator;
+    uint(32) denominator;
+    @value = numerator / denominator;
+}
+
+class srational 
+{
+    int(32) numerator;
+    int(32) denominator;
+    @value = numerator / denominator;
 }
 
 class ProcessingSoftwareInteroperability as Interoperability("Image", 0x000B)
