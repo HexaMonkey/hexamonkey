@@ -119,6 +119,11 @@ private:
     const ObjectType& _type;
 };
 
+Variant AbstractTypeScope::doGetValue()
+{
+    return constType();
+}
+
 Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
     ObjectType* mType = modifiable ? modifiableType() : nullptr;

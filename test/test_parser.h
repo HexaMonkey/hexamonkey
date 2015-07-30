@@ -15,6 +15,8 @@ public:
     TestParser();
 
 private slots:
+    void test_default();
+
     void test_asf();
     void test_avi();
     void test_gif();
@@ -27,7 +29,8 @@ private slots:
     void test_zip();
 
 private:
-    bool checkFile(const std::string& path, int depth = -1, int width = -1);
+
+    bool checkFile(const std::string& path, int depth = -1, int width = -1, const std::string &moduleKey = "");
 
     void writeObject(Object& object, const std::string& path, int depth, int width);
     void writeObjectRecursive(Object& object, std::ofstream& file, int currentDepth, int remainingDepth, int width);

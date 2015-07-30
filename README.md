@@ -61,7 +61,12 @@ Under Windows
 -------------
 
 Build the .exe files
-You need the version of qt5 with the MinGW 4.7 compiler to build the project and also cygwin with gcc3, flex, bison and make. 
+You need the version of qt5 with the MinGW compiler to build the project and also cygwin with gcc3, flex, bison and make. Sadly the most recent version of cygwin don't ship gcc3, so you'll have to use the Cygwin time machine (www.fruitbat.org/Cygwin/) to get older version of the packages. So download the cygwin setup file from the official site (www.cygwin.com) and then run 
+
+setup-x86.exe -X -S ftp://www.fruitbat.org/pub/cygwin/circa/2012/08/20/222043 -O
+
+Follow the installer instructions and select the packages gcc, flex, bison and make. Then you should have all the tools you need to build the project.
+
 First step : in cygwin browse the compiler directory of the source then run
 
 make CFLAGS=-mno-cygwin

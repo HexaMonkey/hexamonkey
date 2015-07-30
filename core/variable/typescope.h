@@ -14,6 +14,7 @@ class ObjectType;
 class AbstractTypeScope : public VariableImplementation
 {
 protected:
+    virtual Variant doGetValue() override;
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
 
     virtual ObjectType* modifiableType() = 0;

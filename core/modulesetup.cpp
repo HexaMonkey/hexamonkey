@@ -21,7 +21,7 @@ void ModuleSetup::setup()
 {
     std::vector<std::string> logoDirs;
     std::vector<std::string> modelsDirs;
-    std::vector<std::string> scriptsDirs;
+
     std::vector<std::string> compilerDirs;
 
 #if defined(PLATFORM_WIN32)
@@ -34,7 +34,8 @@ void ModuleSetup::setup()
     std::string userDir = installDir+"scripts\\";
 
     modelsDirs = {installDir, "..\\models\\"};
-    scriptsDirs = {installDir+"scripts\\", "..\\scripts\\"};
+    _scriptsDirs.push_back(installDir+"scripts\\");
+    _scriptsDirs.push_back("..\\scripts\\");
     compilerDirs = {installDir, "..\\compiler\\"};
     logoDirs = {installDir, "..\\logo\\"};
 
@@ -46,7 +47,9 @@ void ModuleSetup::setup()
     mkdir(userDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
     modelsDirs = {installDir, "../models/"};
-    scriptsDirs = {installDir+"scripts/", userDir, "../scripts/"};
+    _scriptsDirs.push_back(installDir+"scripts/");
+    _scriptsDirs.push_back(userDir);
+    _scriptsDirs.push_back("../scripts/");
     compilerDirs = {"/usr/bin/", "../compiler/"};
     logoDirs = {installDir, "../logo/"};
 
@@ -63,11 +66,16 @@ void ModuleSetup::setup()
 
     _programLoader.reset(createProgramLoader(static_cast<const HmcModule&>(_moduleLoader.getModule("hmc")), compilerDirs, userDir));
 
-    _moduleLoader.setDirectories(scriptsDirs, programLoader());
+    _moduleLoader.setDirectories(_scriptsDirs, programLoader());
 }
 
 ModuleSetup::~ModuleSetup()
 {
+}
+
+void ModuleSetup::addScriptDirectory(const std::string &dir)
+{
+    _scriptsDirs.push_back(dir);
 }
 
 ProgramLoader *ModuleSetup::createProgramLoader(const HmcModule &hmcModule, const std::vector<std::string> &compilerDir, const std::string &userDir)

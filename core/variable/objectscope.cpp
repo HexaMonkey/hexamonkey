@@ -4,6 +4,8 @@
 
 #include "core/object.h"
 
+#include "core/variable/typescope.h"
+
 #define A_SIZE 0
 #define A_PARENT 1
 #define A_ROOT 2
@@ -18,6 +20,8 @@
 #define A_CONTEXT 11
 #define A_GLOBAL 12
 #define A_ENDIANNESS 13
+#define A_ABS_POS 14
+#define A_TYPE 15
 
 const std::unordered_map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -33,7 +37,9 @@ const std::unordered_map<std::string, int> reserved = {
     {"@attr",             A_ATTR},
     {"@context",          A_CONTEXT},
     {"@global",           A_GLOBAL},
-    {"@endianness",       A_ENDIANNESS}
+    {"@endianness",       A_ENDIANNESS},
+    {"@absPos",           A_ABS_POS},
+    {"@type",             A_TYPE},
 };
 
 class ObjectPosVariableImplementation : public VariableImplementation
@@ -52,6 +58,27 @@ protected:
 
     virtual Variant doGetValue() override {
         return Variant((long long) _object.pos());
+    }
+private:
+    Object& _object;
+};
+
+class ObjectAbsPosVariableImplementation : public VariableImplementation
+{
+public:
+    ObjectAbsPosVariableImplementation(Object& object) : _object(object) {}
+
+protected:
+    virtual void doSetValue(const Variant& value) override {
+        if (value.hasNumericalType()) {
+            _object.setPos(value.toInteger() - _object.beginningPos());
+        } else {
+            Log::warning("Trying to set a non numerical value for a pos");
+        }
+    }
+
+    virtual Variant doGetValue() override {
+        return Variant(_object.beginningPos() + (long long) _object.pos());
     }
 private:
     Object& _object;
@@ -200,6 +227,9 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                     case A_POS:
                         return Variable(new ObjectPosVariableImplementation(_object), true);
 
+                    case A_ABS_POS:
+                        return Variable(new ObjectAbsPosVariableImplementation(_object), true);
+
                     case A_REM:
                         return Variable::copy(_object.size() - _object.pos());
 
@@ -224,6 +254,9 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
 
                     case A_ENDIANNESS:
                         return Variable(new ObjectEndiannessVariableImplementation(_object), true);
+
+                    case A_TYPE:
+                        return Variable(new TypeScope(_object.type()), false);
 
                     default:
                         return Variable();

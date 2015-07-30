@@ -1,0 +1,1507 @@
+class Interoperability(namespace, tag) extends Data(96)
+{
+    uint(16, 16) tag;
+    @args.tag = tag;
+    uint(16, 16) type;
+    uint(32) count;
+    
+    typeMap := @global.typeMap;
+    if (typeMap == undefined) {
+        typeMap := @global.typeMap := {};
+    
+        typeMap[1]  = uint(8);     // BYTE
+        typeMap[2]  = String(1);   // ASCII
+        typeMap[3]  = uint(16);    // SHORT
+        typeMap[4]  = uint(32);    // LONG
+        typeMap[5]  = rational();  // RATIONAL
+        typeMap[7]  = Data(8);     // UNDEFINED
+        typeMap[9]  = int(32);     // SLONG
+        typeMap[10] = srational(); // SRATIONAL
+    }
+    
+    var valueType = typeMap[type];
+    if (count != 1) {
+        if (type == 2) {//ASCII
+            valueType = String(count);
+        } else if (type == 7) {
+            valueType = Data(8*count);
+        } else {
+            valueType = Tuple(valueType, count);
+        }
+    }
+    @attr._valueType = valueType;
+    
+    //...
+    var valueSize = %sizeof(valueType);
+    if (valueSize > @rem) {
+        uint(32) valueOffset;
+        @linkTo = @context.offset + 8 * valueOffset;
+    } else {
+        (valueType) value;
+        @value = value;
+        if (@rem) {
+            Data(@rem) padding;
+        }
+    }    
+}
+
+class ProcessingSoftwareInteroperability as Interoperability("Image", 0x000B)
+{
+
+}
+
+class ImageIDInteroperability as Interoperability("Image", 0x800D)
+{
+
+}
+
+class GPSTagInteroperability as Interoperability("Image", 0x8825)
+{
+
+}
+
+class InterlaceInteroperability as Interoperability("Image", 0x8829)
+{
+
+}
+
+class TimeZoneOffsetInteroperability as Interoperability("Image", 0x882A)
+{
+
+}
+
+class SelfTimerModeInteroperability as Interoperability("Image", 0x882B)
+{
+
+}
+
+class DNGVersionInteroperability as Interoperability("Image", 0xC612)
+{
+
+}
+
+class ImageNumberInteroperability as Interoperability("Image", 0x9211)
+{
+
+}
+
+class SecurityClassificationInteroperability as Interoperability("Image", 0x9212)
+{
+
+}
+
+class YCbCrPositioningInteroperability as Interoperability("Image", 0x0213)
+{
+
+}
+
+class UniqueCameraModelInteroperability as Interoperability("Image", 0xC614)
+{
+
+}
+
+class LocalizedCameraModelInteroperability as Interoperability("Image", 0xC615)
+{
+
+}
+
+class CFAPlaneColorInteroperability as Interoperability("Image", 0xC616)
+{
+
+}
+
+class CFALayoutInteroperability as Interoperability("Image", 0xC617)
+{
+
+}
+
+class XPTitleInteroperability as Interoperability("Image", 0x9C9B)
+{
+
+}
+
+class XPCommentInteroperability as Interoperability("Image", 0x9C9C)
+{
+
+}
+
+class XPAuthorInteroperability as Interoperability("Image", 0x9C9D)
+{
+
+}
+
+class XPKeywordsInteroperability as Interoperability("Image", 0x9C9E)
+{
+
+}
+
+class XPSubjectInteroperability as Interoperability("Image", 0x9C9F)
+{
+
+}
+
+class PrintImageMatchingInteroperability as Interoperability("Image", 0xC4A5)
+{
+
+}
+
+class NewSubfileTypeInteroperability as Interoperability("Image", 0x00FE)
+{
+
+}
+
+class SubfileTypeInteroperability as Interoperability("Image", 0x00FF)
+{
+
+}
+
+class ImageWidthInteroperability as Interoperability("Image", 0x0100)
+{
+
+}
+
+class ImageLengthInteroperability as Interoperability("Image", 0x0101)
+{
+
+}
+
+class BitsPerSampleInteroperability as Interoperability("Image", 0x0102)
+{
+
+}
+
+class CompressionInteroperability as Interoperability("Image", 0x0103)
+{
+
+}
+
+class PhotometricInterpretationInteroperability as Interoperability("Image", 0x0106)
+{
+
+}
+
+class ThreshholdingInteroperability as Interoperability("Image", 0x0107)
+{
+
+}
+
+class CellWidthInteroperability as Interoperability("Image", 0x0108)
+{
+
+}
+
+class CellLengthInteroperability as Interoperability("Image", 0x0109)
+{
+
+}
+
+class FillOrderInteroperability as Interoperability("Image", 0x010A)
+{
+
+}
+
+class DocumentNameInteroperability as Interoperability("Image", 0x010D)
+{
+
+}
+
+class ImageDescriptionInteroperability as Interoperability("Image", 0x010E)
+{
+
+}
+
+class MakeInteroperability as Interoperability("Image", 0x010F)
+{
+
+}
+
+class ModelInteroperability as Interoperability("Image", 0x0110)
+{
+
+}
+
+class StripOffsetsInteroperability as Interoperability("Image", 0x0111)
+{
+
+}
+
+class OrientationInteroperability as Interoperability("Image", 0x0112)
+{
+
+}
+
+class SamplesPerPixelInteroperability as Interoperability("Image", 0x0115)
+{
+
+}
+
+class RowsPerStripInteroperability as Interoperability("Image", 0x0116)
+{
+
+}
+
+class StripByteCountsInteroperability as Interoperability("Image", 0x0117)
+{
+
+}
+
+class XResolutionInteroperability as Interoperability("Image", 0x011A)
+{
+
+}
+
+class YResolutionInteroperability as Interoperability("Image", 0x011B)
+{
+
+}
+
+class PlanarConfigurationInteroperability as Interoperability("Image", 0x011C)
+{
+
+}
+
+class GrayResponseUnitInteroperability as Interoperability("Image", 0x0122)
+{
+
+}
+
+class GrayResponseCurveInteroperability as Interoperability("Image", 0x0123)
+{
+
+}
+
+class T4OptionsInteroperability as Interoperability("Image", 0x0124)
+{
+
+}
+
+class T6OptionsInteroperability as Interoperability("Image", 0x0125)
+{
+
+}
+
+class ResolutionUnitInteroperability as Interoperability("Image", 0x0128)
+{
+
+}
+
+class TransferFunctionInteroperability as Interoperability("Image", 0x012D)
+{
+
+}
+
+class SoftwareInteroperability as Interoperability("Image", 0x0131)
+{
+
+}
+
+class DateTimeInteroperability as Interoperability("Image", 0x0132)
+{
+
+}
+
+class ArtistInteroperability as Interoperability("Image", 0x013B)
+{
+
+}
+
+class HostComputerInteroperability as Interoperability("Image", 0x013C)
+{
+
+}
+
+class PredictorInteroperability as Interoperability("Image", 0x013D)
+{
+
+}
+
+class WhitePointInteroperability as Interoperability("Image", 0x013E)
+{
+
+}
+
+class PrimaryChromaticitiesInteroperability as Interoperability("Image", 0x013F)
+{
+
+}
+
+class ColorMapInteroperability as Interoperability("Image", 0x0140)
+{
+
+}
+
+class HalftoneHintsInteroperability as Interoperability("Image", 0x0141)
+{
+
+}
+
+class TileWidthInteroperability as Interoperability("Image", 0x0142)
+{
+
+}
+
+class TileLengthInteroperability as Interoperability("Image", 0x0143)
+{
+
+}
+
+class TileOffsetsInteroperability as Interoperability("Image", 0x0144)
+{
+
+}
+
+class TileByteCountsInteroperability as Interoperability("Image", 0x0145)
+{
+
+}
+
+class SubIFDsInteroperability as Interoperability("Image", 0x014A)
+{
+
+}
+
+class InkSetInteroperability as Interoperability("Image", 0x014C)
+{
+
+}
+
+class InkNamesInteroperability as Interoperability("Image", 0x014D)
+{
+
+}
+
+class NumberOfInksInteroperability as Interoperability("Image", 0x014E)
+{
+
+}
+
+class DotRangeInteroperability as Interoperability("Image", 0x0150)
+{
+
+}
+
+class TargetPrinterInteroperability as Interoperability("Image", 0x0151)
+{
+
+}
+
+class ExtraSamplesInteroperability as Interoperability("Image", 0x0152)
+{
+
+}
+
+class SampleFormatInteroperability as Interoperability("Image", 0x0153)
+{
+
+}
+
+class SMinSampleValueInteroperability as Interoperability("Image", 0x0154)
+{
+
+}
+
+class SMaxSampleValueInteroperability as Interoperability("Image", 0x0155)
+{
+
+}
+
+class TransferRangeInteroperability as Interoperability("Image", 0x0156)
+{
+
+}
+
+class ClipPathInteroperability as Interoperability("Image", 0x0157)
+{
+
+}
+
+class XClipPathUnitsInteroperability as Interoperability("Image", 0x0158)
+{
+
+}
+
+class YClipPathUnitsInteroperability as Interoperability("Image", 0x0159)
+{
+
+}
+
+class IndexedInteroperability as Interoperability("Image", 0x015A)
+{
+
+}
+
+class JPEGTablesInteroperability as Interoperability("Image", 0x015B)
+{
+
+}
+
+class OPIProxyInteroperability as Interoperability("Image", 0x015F)
+{
+
+}
+
+class JPEGProcInteroperability as Interoperability("Image", 0x0200)
+{
+
+}
+
+class JPEGInterchangeFormatInteroperability as Interoperability("Image", 0x0201)
+{
+
+}
+
+class JPEGInterchangeFormatLengthInteroperability as Interoperability("Image", 0x0202)
+{
+
+}
+
+class JPEGRestartIntervalInteroperability as Interoperability("Image", 0x0203)
+{
+
+}
+
+class JPEGLosslessPredictorsInteroperability as Interoperability("Image", 0x0205)
+{
+
+}
+
+class JPEGPointTransformsInteroperability as Interoperability("Image", 0x0206)
+{
+
+}
+
+class JPEGQTablesInteroperability as Interoperability("Image", 0x0207)
+{
+
+}
+
+class JPEGDCTablesInteroperability as Interoperability("Image", 0x0208)
+{
+
+}
+
+class JPEGACTablesInteroperability as Interoperability("Image", 0x0209)
+{
+
+}
+
+class FlashEnergyInteroperability as Interoperability("Image", 0x920B)
+{
+
+}
+
+class SpatialFrequencyResponseInteroperability as Interoperability("Image", 0x920C)
+{
+
+}
+
+class NoiseInteroperability as Interoperability("Image", 0x920D)
+{
+
+}
+
+class FocalPlaneXResolutionInteroperability as Interoperability("Image", 0x920E)
+{
+
+}
+
+class FocalPlaneYResolutionInteroperability as Interoperability("Image", 0x920F)
+{
+
+}
+
+class FocalPlaneResolutionUnitInteroperability as Interoperability("Image", 0x9210)
+{
+
+}
+
+class YCbCrCoefficientsInteroperability as Interoperability("Image", 0x0211)
+{
+
+}
+
+class YCbCrSubSamplingInteroperability as Interoperability("Image", 0x0212)
+{
+
+}
+
+class DNGBackwardVersionInteroperability as Interoperability("Image", 0xC613)
+{
+
+}
+
+class ReferenceBlackWhiteInteroperability as Interoperability("Image", 0x0214)
+{
+
+}
+
+class ExposureIndexInteroperability as Interoperability("Image", 0x9215)
+{
+
+}
+
+class TIFFEPStandardIDInteroperability as Interoperability("Image", 0x9216)
+{
+
+}
+
+class SensingMethodInteroperability as Interoperability("Image", 0x9217)
+{
+
+}
+
+class LinearizationTableInteroperability as Interoperability("Image", 0xC618)
+{
+
+}
+
+class BlackLevelRepeatDimInteroperability as Interoperability("Image", 0xC619)
+{
+
+}
+
+class BlackLevelInteroperability as Interoperability("Image", 0xC61A)
+{
+
+}
+
+class BlackLevelDeltaHInteroperability as Interoperability("Image", 0xC61B)
+{
+
+}
+
+class BlackLevelDeltaVInteroperability as Interoperability("Image", 0xC61C)
+{
+
+}
+
+class WhiteLevelInteroperability as Interoperability("Image", 0xC61D)
+{
+
+}
+
+class DefaultScaleInteroperability as Interoperability("Image", 0xC61E)
+{
+
+}
+
+class DefaultCropOriginInteroperability as Interoperability("Image", 0xC61F)
+{
+
+}
+
+class DefaultCropSizeInteroperability as Interoperability("Image", 0xC620)
+{
+
+}
+
+class ColorMatrix1Interoperability as Interoperability("Image", 0xC621)
+{
+
+}
+
+class ColorMatrix2Interoperability as Interoperability("Image", 0xC622)
+{
+
+}
+
+class CameraCalibration1Interoperability as Interoperability("Image", 0xC623)
+{
+
+}
+
+class CameraCalibration2Interoperability as Interoperability("Image", 0xC624)
+{
+
+}
+
+class ReductionMatrix1Interoperability as Interoperability("Image", 0xC625)
+{
+
+}
+
+class ReductionMatrix2Interoperability as Interoperability("Image", 0xC626)
+{
+
+}
+
+class AnalogBalanceInteroperability as Interoperability("Image", 0xC627)
+{
+
+}
+
+class AsShotNeutralInteroperability as Interoperability("Image", 0xC628)
+{
+
+}
+
+class AsShotWhiteXYInteroperability as Interoperability("Image", 0xC629)
+{
+
+}
+
+class BaselineExposureInteroperability as Interoperability("Image", 0xC62A)
+{
+
+}
+
+class BaselineNoiseInteroperability as Interoperability("Image", 0xC62B)
+{
+
+}
+
+class BaselineSharpnessInteroperability as Interoperability("Image", 0xC62C)
+{
+
+}
+
+class BayerGreenSplitInteroperability as Interoperability("Image", 0xC62D)
+{
+
+}
+
+class LinearResponseLimitInteroperability as Interoperability("Image", 0xC62E)
+{
+
+}
+
+class CameraSerialNumberInteroperability as Interoperability("Image", 0xC62F)
+{
+
+}
+
+class LensInfoInteroperability as Interoperability("Image", 0xC630)
+{
+
+}
+
+class ChromaBlurRadiusInteroperability as Interoperability("Image", 0xC631)
+{
+
+}
+
+class AntiAliasStrengthInteroperability as Interoperability("Image", 0xC632)
+{
+
+}
+
+class ShadowScaleInteroperability as Interoperability("Image", 0xC633)
+{
+
+}
+
+class DNGPrivateDataInteroperability as Interoperability("Image", 0xC634)
+{
+
+}
+
+class MakerNoteSafetyInteroperability as Interoperability("Image", 0xC635)
+{
+
+}
+
+class ImageResourcesInteroperability as Interoperability("Image", 0x8649)
+{
+
+}
+
+class CalibrationIlluminant1Interoperability as Interoperability("Image", 0xC65A)
+{
+
+}
+
+class CalibrationIlluminant2Interoperability as Interoperability("Image", 0xC65B)
+{
+
+}
+
+class BestQualityScaleInteroperability as Interoperability("Image", 0xC65C)
+{
+
+}
+
+class RawDataUniqueIDInteroperability as Interoperability("Image", 0xC65D)
+{
+
+}
+
+class OriginalRawFileNameInteroperability as Interoperability("Image", 0xC68B)
+{
+
+}
+
+class OriginalRawFileDataInteroperability as Interoperability("Image", 0xC68C)
+{
+
+}
+
+class CFARepeatPatternDimInteroperability as Interoperability("Image", 0x828D)
+{
+
+}
+
+class CFAPatternInteroperability as Interoperability("Image", 0x828E)
+{
+
+}
+
+class BatteryLevelInteroperability as Interoperability("Image", 0x828F)
+{
+
+}
+
+class AsShotPreProfileMatrixInteroperability as Interoperability("Image", 0xC690)
+{
+
+}
+
+class CurrentICCProfileInteroperability as Interoperability("Image", 0xC691)
+{
+
+}
+
+class CurrentPreProfileMatrixInteroperability as Interoperability("Image", 0xC692)
+{
+
+}
+
+class CopyrightInteroperability as Interoperability("Image", 0x8298)
+{
+
+}
+
+class ExposureTimeInteroperability as Interoperability("Image", 0x829A)
+{
+
+}
+
+class XMLPacketInteroperability as Interoperability("Image", 0x02BC)
+{
+
+}
+
+class ColorimetricReferenceInteroperability as Interoperability("Image", 0xC6BF)
+{
+
+}
+
+class ImageHistoryInteroperability as Interoperability("Image", 0x9213)
+{
+
+}
+
+class CameraCalibrationSignatureInteroperability as Interoperability("Image", 0xC6F3)
+{
+
+}
+
+class ProfileCalibrationSignatureInteroperability as Interoperability("Image", 0xC6F4)
+{
+
+}
+
+class AsShotProfileNameInteroperability as Interoperability("Image", 0xC6F6)
+{
+
+}
+
+class NoiseReductionAppliedInteroperability as Interoperability("Image", 0xC6F7)
+{
+
+}
+
+class ProfileNameInteroperability as Interoperability("Image", 0xC6F8)
+{
+
+}
+
+class ProfileHueSatMapDimsInteroperability as Interoperability("Image", 0xC6F9)
+{
+
+}
+
+class ProfileHueSatMapData1Interoperability as Interoperability("Image", 0xC6FA)
+{
+
+}
+
+class ProfileHueSatMapData2Interoperability as Interoperability("Image", 0xC6FB)
+{
+
+}
+
+class ProfileToneCurveInteroperability as Interoperability("Image", 0xC6FC)
+{
+
+}
+
+class ProfileEmbedPolicyInteroperability as Interoperability("Image", 0xC6FD)
+{
+
+}
+
+class ProfileCopyrightInteroperability as Interoperability("Image", 0xC6FE)
+{
+
+}
+
+class ForwardMatrix1Interoperability as Interoperability("Image", 0xC714)
+{
+
+}
+
+class ForwardMatrix2Interoperability as Interoperability("Image", 0xC715)
+{
+
+}
+
+class PreviewApplicationNameInteroperability as Interoperability("Image", 0xC716)
+{
+
+}
+
+class PreviewApplicationVersionInteroperability as Interoperability("Image", 0xC717)
+{
+
+}
+
+class PreviewSettingsNameInteroperability as Interoperability("Image", 0xC718)
+{
+
+}
+
+class PreviewSettingsDigestInteroperability as Interoperability("Image", 0xC719)
+{
+
+}
+
+class PreviewColorSpaceInteroperability as Interoperability("Image", 0xC71A)
+{
+
+}
+
+class PreviewDateTimeInteroperability as Interoperability("Image", 0xC71B)
+{
+
+}
+
+class RawImageDigestInteroperability as Interoperability("Image", 0xC71C)
+{
+
+}
+
+class OriginalRawFileDigestInteroperability as Interoperability("Image", 0xC71D)
+{
+
+}
+
+class SubTileBlockSizeInteroperability as Interoperability("Image", 0xC71E)
+{
+
+}
+
+class RowInterleaveFactorInteroperability as Interoperability("Image", 0xC71F)
+{
+
+}
+
+class ProfileLookTableDimsInteroperability as Interoperability("Image", 0xC725)
+{
+
+}
+
+class ProfileLookTableDataInteroperability as Interoperability("Image", 0xC726)
+{
+
+}
+
+class OpcodeList1Interoperability as Interoperability("Image", 0xC740)
+{
+
+}
+
+class OpcodeList2Interoperability as Interoperability("Image", 0xC741)
+{
+
+}
+
+class RatingInteroperability as Interoperability("Image", 0x4746)
+{
+
+}
+
+class RatingPercentInteroperability as Interoperability("Image", 0x4749)
+{
+
+}
+
+class OpcodeList3Interoperability as Interoperability("Image", 0xC74E)
+{
+
+}
+
+class ActiveAreaInteroperability as Interoperability("Image", 0xC68D)
+{
+
+}
+
+class MaskedAreasInteroperability as Interoperability("Image", 0xC68E)
+{
+
+}
+
+class AsShotICCProfileInteroperability as Interoperability("Image", 0xC68F)
+{
+
+}
+
+class ExifTagInteroperability as Interoperability("Image", 0x8769)
+{
+
+}
+
+class InterColorProfileInteroperability as Interoperability("Image", 0x8773)
+{
+
+}
+
+class ProgramImageMatchingDataEntry(tag)
+{
+    uint(16, 16) tag;
+    Data(32) content;
+    @args.tag = tag;
+}
+
+
+class ProgramImageMatchingData(_size) extends Data(_size)
+{
+    String(8) header;
+    String version;
+    %log("rem : "+@rem);
+    if ((@rem) % 32  != 0) {
+        Data(32 - (@rem % 32)) padding;
+    }
+    uint(16) count;
+    ProgramImageMatchingDataEntry entries[count];
+}
+
+class PrintImageMatchingInteroperability as Interoperability("Image", 0xC4A5)
+{
+    @attr._valueType = ProgramImageMatchingData(%sizeof(@attr._valueType));
+}
+
+class ExifVersionInteroperability as Interoperability("Exif", 0x9000)
+{
+
+}
+
+class ComponentsConfigurationInteroperability as Interoperability("Exif", 0x9101)
+{
+
+}
+
+class CompressedBitsPerPixelInteroperability as Interoperability("Exif", 0x9102)
+{
+
+}
+
+class DateTimeOriginalInteroperability as Interoperability("Exif", 0x9003)
+{
+
+}
+
+class DateTimeDigitizedInteroperability as Interoperability("Exif", 0x9004)
+{
+
+}
+
+class MaxApertureValueInteroperability as Interoperability("Exif", 0x9205)
+{
+
+}
+
+class SubjectDistanceInteroperability as Interoperability("Exif", 0x9206)
+{
+
+}
+
+class ShutterSpeedValueInteroperability as Interoperability("Exif", 0x9201)
+{
+
+}
+
+class LightSourceInteroperability as Interoperability("Exif", 0x9208)
+{
+
+}
+
+class FlashInteroperability as Interoperability("Exif", 0x9209)
+{
+
+}
+
+class FocalLengthInteroperability as Interoperability("Exif", 0x920A)
+{
+
+}
+
+class FlashEnergyInteroperability as Interoperability("Exif", 0xA20B)
+{
+
+}
+
+class SpatialFrequencyResponseInteroperability as Interoperability("Exif", 0xA20C)
+{
+
+}
+
+class ApertureValueInteroperability as Interoperability("Exif", 0x9202)
+{
+
+}
+
+class FocalPlaneXResolutionInteroperability as Interoperability("Exif", 0xA20E)
+{
+
+}
+
+class FocalPlaneYResolutionInteroperability as Interoperability("Exif", 0xA20F)
+{
+
+}
+
+class SubSecTimeInteroperability as Interoperability("Exif", 0x9290)
+{
+
+}
+
+class SubSecTimeOriginalInteroperability as Interoperability("Exif", 0x9291)
+{
+
+}
+
+class SubSecTimeDigitizedInteroperability as Interoperability("Exif", 0x9292)
+{
+
+}
+
+class BrightnessValueInteroperability as Interoperability("Exif", 0x9203)
+{
+
+}
+
+class SubjectAreaInteroperability as Interoperability("Exif", 0x9214)
+{
+
+}
+
+class ExposureIndexInteroperability as Interoperability("Exif", 0xA215)
+{
+
+}
+
+class ContrastInteroperability as Interoperability("Exif", 0xA408)
+{
+
+}
+
+class SensingMethodInteroperability as Interoperability("Exif", 0xA217)
+{
+
+}
+
+class ExposureBiasValueInteroperability as Interoperability("Exif", 0x9204)
+{
+
+}
+
+class ExposureTimeInteroperability as Interoperability("Exif", 0x829A)
+{
+
+}
+
+class FNumberInteroperability as Interoperability("Exif", 0x829D)
+{
+
+}
+
+class FileSourceInteroperability as Interoperability("Exif", 0xA300)
+{
+
+}
+
+class InteroperabilityTagInteroperability as Interoperability("Exif", 0xA005)
+{
+
+}
+
+class ImageUniqueIDInteroperability as Interoperability("Exif", 0xA420)
+{
+
+}
+
+class CameraOwnerNameInteroperability as Interoperability("Exif", 0xA430)
+{
+
+}
+
+class ExposureProgramInteroperability as Interoperability("Exif", 0x8822)
+{
+
+}
+
+class SpectralSensitivityInteroperability as Interoperability("Exif", 0x8824)
+{
+
+}
+
+class UserCommentInteroperability as Interoperability("Exif", 0x9286)
+{
+
+}
+
+class ISOSpeedRatingsInteroperability as Interoperability("Exif", 0x8827)
+{
+
+}
+
+class OECFInteroperability as Interoperability("Exif", 0x8828)
+{
+
+}
+
+class WhiteBalanceInteroperability as Interoperability("Exif", 0xA403)
+{
+
+}
+
+class MeteringModeInteroperability as Interoperability("Exif", 0x9207)
+{
+
+}
+
+class LensSpecificationInteroperability as Interoperability("Exif", 0xA432)
+{
+
+}
+
+class GammaInteroperability as Interoperability("Exif", 0xA500)
+{
+
+}
+
+class SensitivityTypeInteroperability as Interoperability("Exif", 0x8830)
+{
+
+}
+
+class StandardOutputSensitivityInteroperability as Interoperability("Exif", 0x8831)
+{
+
+}
+
+class RecommendedExposureIndexInteroperability as Interoperability("Exif", 0x8832)
+{
+
+}
+
+class ISOSpeedInteroperability as Interoperability("Exif", 0x8833)
+{
+
+}
+
+class ISOSpeedLatitudeyyyInteroperability as Interoperability("Exif", 0x8834)
+{
+
+}
+
+class ISOSpeedLatitudezzzInteroperability as Interoperability("Exif", 0x8835)
+{
+
+}
+
+class SaturationInteroperability as Interoperability("Exif", 0xA409)
+{
+
+}
+
+class LensModelInteroperability as Interoperability("Exif", 0xA434)
+{
+
+}
+
+class SceneTypeInteroperability as Interoperability("Exif", 0xA301)
+{
+
+}
+
+class SharpnessInteroperability as Interoperability("Exif", 0xA40A)
+{
+
+}
+
+class LensSerialNumberInteroperability as Interoperability("Exif", 0xA435)
+{
+
+}
+
+class DigitalZoomRatioInteroperability as Interoperability("Exif", 0xA404)
+{
+
+}
+
+class PixelXDimensionInteroperability as Interoperability("Exif", 0xA002)
+{
+
+}
+
+class DeviceSettingDescriptionInteroperability as Interoperability("Exif", 0xA40B)
+{
+
+}
+
+class CustomRenderedInteroperability as Interoperability("Exif", 0xA401)
+{
+
+}
+
+class FlashpixVersionInteroperability as Interoperability("Exif", 0xA000)
+{
+
+}
+
+class SubjectDistanceRangeInteroperability as Interoperability("Exif", 0xA40C)
+{
+
+}
+
+class LensMakeInteroperability as Interoperability("Exif", 0xA433)
+{
+
+}
+
+class FocalLengthIn35mmFilmInteroperability as Interoperability("Exif", 0xA405)
+{
+
+}
+
+class CFAPatternInteroperability as Interoperability("Exif", 0xA302)
+{
+
+}
+
+class ColorSpaceInteroperability as Interoperability("Exif", 0xA001)
+{
+
+}
+
+class PixelYDimensionInteroperability as Interoperability("Exif", 0xA003)
+{
+
+}
+
+class FocalPlaneResolutionUnitInteroperability as Interoperability("Exif", 0xA210)
+{
+
+}
+
+class ExposureModeInteroperability as Interoperability("Exif", 0xA402)
+{
+
+}
+
+class BodySerialNumberInteroperability as Interoperability("Exif", 0xA431)
+{
+
+}
+
+class SceneCaptureTypeInteroperability as Interoperability("Exif", 0xA406)
+{
+
+}
+
+class GainControlInteroperability as Interoperability("Exif", 0xA407)
+{
+
+}
+
+class SubjectLocationInteroperability as Interoperability("Exif", 0xA214)
+{
+
+}
+
+class MakerNoteInteroperability as Interoperability("Exif", 0x927C)
+{
+
+}
+
+class RelatedSoundFileInteroperability as Interoperability("Exif", 0xA004)
+{
+
+}
+
+class GPSVersionIDInteroperability as Interoperability("GPS", 0x0000)
+{
+
+}
+
+class GPSLatitudeRefInteroperability as Interoperability("GPS", 0x0001)
+{
+
+}
+
+class GPSLatitudeInteroperability as Interoperability("GPS", 0x0002)
+{
+
+}
+
+class GPSLongitudeRefInteroperability as Interoperability("GPS", 0x0003)
+{
+
+}
+
+class GPSLongitudeInteroperability as Interoperability("GPS", 0x0004)
+{
+
+}
+
+class GPSAltitudeRefInteroperability as Interoperability("GPS", 0x0005)
+{
+
+}
+
+class GPSAltitudeInteroperability as Interoperability("GPS", 0x0006)
+{
+
+}
+
+class GPSTimeStampInteroperability as Interoperability("GPS", 0x0007)
+{
+
+}
+
+class GPSSatellitesInteroperability as Interoperability("GPS", 0x0008)
+{
+
+}
+
+class GPSStatusInteroperability as Interoperability("GPS", 0x0009)
+{
+
+}
+
+class GPSMeasureModeInteroperability as Interoperability("GPS", 0x000A)
+{
+
+}
+
+class GPSDOPInteroperability as Interoperability("GPS", 0x000B)
+{
+
+}
+
+class GPSSpeedRefInteroperability as Interoperability("GPS", 0x000C)
+{
+
+}
+
+class GPSSpeedInteroperability as Interoperability("GPS", 0x000D)
+{
+
+}
+
+class GPSTrackRefInteroperability as Interoperability("GPS", 0x000E)
+{
+
+}
+
+class GPSTrackInteroperability as Interoperability("GPS", 0x000F)
+{
+
+}
+
+class GPSImgDirectionRefInteroperability as Interoperability("GPS", 0x0010)
+{
+
+}
+
+class GPSImgDirectionInteroperability as Interoperability("GPS", 0x0011)
+{
+
+}
+
+class GPSMapDatumInteroperability as Interoperability("GPS", 0x0012)
+{
+
+}
+
+class GPSDestLatitudeRefInteroperability as Interoperability("GPS", 0x0013)
+{
+
+}
+
+class GPSDestLatitudeInteroperability as Interoperability("GPS", 0x0014)
+{
+
+}
+
+class GPSDestLongitudeRefInteroperability as Interoperability("GPS", 0x0015)
+{
+
+}
+
+class GPSDestLongitudeInteroperability as Interoperability("GPS", 0x0016)
+{
+
+}
+
+class GPSDestBearingRefInteroperability as Interoperability("GPS", 0x0017)
+{
+
+}
+
+class GPSDestBearingInteroperability as Interoperability("GPS", 0x0018)
+{
+
+}
+
+class GPSDestDistanceRefInteroperability as Interoperability("GPS", 0x0019)
+{
+
+}
+
+class GPSDestDistanceInteroperability as Interoperability("GPS", 0x001A)
+{
+
+}
+
+class GPSProcessingMethodInteroperability as Interoperability("GPS", 0x001B)
+{
+
+}
+
+class GPSAreaInformationInteroperability as Interoperability("GPS", 0x001C)
+{
+
+}
+
+class GPSDateStampInteroperability as Interoperability("GPS", 0x001D)
+{
+
+}
+
+class GPSDifferentialInteroperability as Interoperability("GPS", 0x001E)
+{
+
+}
+
+class GPSHPositioningErrorInteroperability as Interoperability("GPS", 0x001F)
+{
+
+}
+
+class InteroperabilityIndexInteroperability as Interoperability("Interop", 0x0001)
+{
+
+}
+
