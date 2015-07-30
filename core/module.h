@@ -274,6 +274,7 @@ private:
 
     ObjectType specifyLocally(const ObjectType& parent) const;
     void addParsers(Object& data, const ObjectType &type, const Module& fromModule, const ObjectType &lastType = ObjectType()) const;
+    void addParsersRecursive(Object& object, const ObjectType &type, const Module& fromModule, const ObjectType &lastType) const;
 
     Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
 

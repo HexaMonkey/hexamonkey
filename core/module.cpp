@@ -19,6 +19,7 @@
 #include "core/object.h"
 #include "core/objecttypetemplate.h"
 #include "core/util/iterutil.h"
+#include "core/parser.h"
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;
@@ -137,6 +138,22 @@ ObjectType Module::specifyLocally(const ObjectType& parent) const
 
 void Module::addParsers(Object &object, const ObjectType &type, const Module &fromModule, const ObjectType &lastType) const
 {
+    addParsersRecursive(object, type, fromModule, lastType);
+
+    const auto& parsers = object._parsers;
+    if (std::any_of(parsers.begin(), parsers.end(), [](const std::unique_ptr<Parser>& parser) {
+        if (parser) {
+            return parser->needTailParsing();
+        } else {
+            return false;
+        }
+    })) {
+        object.parse();
+    };
+}
+
+void Module::addParsersRecursive(Object &object, const ObjectType &type, const Module &fromModule, const ObjectType &lastType) const
+{
     //Building the father list
     std::list<ObjectType> fathers;
     ObjectType currentType = type;
@@ -161,7 +178,7 @@ void Module::addParsers(Object &object, const ObjectType &type, const Module &fr
     ObjectType specification = specify(object.type());
     if(!specification.isNull())
     {
-        addParsers(object, specification, fromModule, object.type());
+        addParsersRecursive(object, specification, fromModule, object.type());
     }
 }
 

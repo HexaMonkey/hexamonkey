@@ -36,13 +36,14 @@
 class FromFileParser : public ContainerParser
 {
 public:
-    FromFileParser(Object& object, const Module &module, Program classDefinition, Program::const_iterator headerEnd);
+    FromFileParser(Object& object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing);
 
 private:
     virtual void doParseHead() final;
     virtual void doParse() final;
     virtual bool doParseSome(int hint) final;
     virtual void doParseTail() final;
+    virtual bool doNeedTailParsing() final;
 
     Object& _object;
 
@@ -54,6 +55,8 @@ private:
 
     BlockExecution _bodyExecution;
     BlockExecution _tailExecution;
+
+    bool _needTailParsing;
 };
 
 #endif // FROMFILEPARSER_H

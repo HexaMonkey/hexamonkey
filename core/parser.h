@@ -80,6 +80,11 @@ public:
     bool tailParsed() const;
 
     /**
+     * @brief Check if tail needs parsing with priority
+     */
+    bool needTailParsing();
+
+    /**
      * @brief Get the \link Object object\endlink manipulated by the \link Parser parser\endlink
      */
     Object &object();
@@ -120,7 +125,6 @@ protected:
      */
     void setNoTail();
 
-
     /**
      * @brief [Virtual] Parse what must be parsed as soon as possible (do nothing by default)
      */
@@ -147,6 +151,10 @@ protected:
      */
     virtual void doParseTail();
 
+    /**
+     * @brief [Virtual] Tell if tail should be parsed with priority
+     */
+    virtual bool doNeedTailParsing();
 
 private:
     friend class SimpleParser;

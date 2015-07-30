@@ -93,7 +93,7 @@ Parser *FromFileModule::getParser(const ObjectType &type, Object &object, const 
     if(definition.node(0).size() == 0)
         return nullptr;
 
-    return new FromFileParser(object, fromModule, definition, headerEnd(name));
+    return new FromFileParser(object, fromModule, definition, headerEnd(name), needTailParsing(name));
 }
 
 int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &module) const
@@ -364,7 +364,7 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
         switch(line.tag())
         {
         case HMC_EXECUTION_BLOCK:
-            guessSize(line);
+            size += guessSize(line);
             break;
 
         case HMC_DECLARATION:
@@ -432,32 +432,7 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     Program::const_reverse_iterator reverseHeaderEnd = bodyBlock.rbegin();
     for(;reverseHeaderEnd != bodyBlock.rend(); ++reverseHeaderEnd)
     {
-        const Program& line = *reverseHeaderEnd;
-
-        //Check dependencies
-        std::set<VariablePath> variableSet = variableDependencies(line, true);
-
-        if(std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariablePath& headerOnlyVar) -> bool
-        {
-            auto find = variableSet.find(headerOnlyVar);
-            if(find != variableSet.end())
-                return true;
-
-            auto upper = variableSet.upper_bound(headerOnlyVar);
-            if(upper == variableSet.end())
-                return false;
-
-            if((*upper).inScopeOf(headerOnlyVar))
-                return true;
-
-            return false;
-
-        })) {
-                break;
-        }
-
-        //Check showcased declarations
-        if(line.tag() == HMC_DECLARATION && line.node(2).payload().toInteger()) {
+        if(checkHeaderOnlyVar(*reverseHeaderEnd)) {
             break;
         }
     }
@@ -466,6 +441,26 @@ Program::const_iterator FromFileModule::headerEnd(const std::string &name) const
     std::advance(headerEnd, std::distance(reverseHeaderEnd, bodyBlock.rend()));
     _headerEnd[name] = headerEnd;
     return headerEnd;
+}
+
+bool FromFileModule::needTailParsing(const std::string &name) const
+{
+    auto alreadyIt = _needTailParsing.find(name);
+    if(alreadyIt != _needTailParsing.end())
+        return alreadyIt->second;
+
+    Program tailBlock = _definitions.find(name)->second.node(1);
+
+    bool result = false;
+    for(Program line : tailBlock)
+    {
+        if(checkHeaderOnlyVar(line)) {
+            result = true;
+        }
+    }
+
+    _needTailParsing[name] = result;
+    return result;
 }
 
 FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescriptor(const std::string &name) const
@@ -563,6 +558,29 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
             break;
 
     }
+}
+
+bool FromFileModule::checkHeaderOnlyVar(const Program &line) const
+{
+    //Check dependencies
+    std::set<VariablePath> variableSet = variableDependencies(line, true);
+
+    return std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariablePath& headerOnlyVar) -> bool
+    {
+        auto find = variableSet.find(headerOnlyVar);
+        if(find != variableSet.end())
+            return true;
+
+        auto upper = variableSet.upper_bound(headerOnlyVar);
+        if(upper == variableSet.end())
+            return false;
+
+        if((*upper).inScopeOf(headerOnlyVar))
+            return true;
+
+        return false;
+
+    });
 }
 
 
