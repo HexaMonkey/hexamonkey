@@ -187,7 +187,7 @@ function_arguments:
 
 function_argument_list:
     function_argument {push_master(HMC_FUNCTION_ARGUMENTS, 1);}
-   |function_argument_list function_argument {push_master(HMC_FUNCTION_ARGUMENTS, 2);}   
+   |function_argument_list ',' function_argument {push_master(HMC_FUNCTION_ARGUMENTS, 2);}   
 ;
 
 function_argument:
