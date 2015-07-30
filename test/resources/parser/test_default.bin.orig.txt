@@ -1,1 +1,85 @@
-0x664        File 
+0x2560       DefaultTestFile 
+0x8              uint(8) v100 = 100
+8x16             uint(16) v4242 = 4242
+24x32            uint(32) v320000000 = 320000000
+56x64            uint(64) v999999999999999999 = 999999999999999999
+120x4            uint(4) v10 = 10
+124x8            uint(8) v100 = 100
+132x16           uint(16) v4242 = 4242
+148x4            uint(4) v10 = 10
+152x2            uint(2) v1 = 1
+154x20           uint(20) v424242 = 424242
+174x2            uint(2) v1 = 1
+176x8            int(8) v100 = 100
+184x8            int(8) vm100 = -100
+192x16           int(16) v4242 = 4242
+208x16           int(16) vm4242 = -4242
+224x32           int(32) v320000000 = 320000000
+256x32           int(32) vm320000000 = -320000000
+288x64           int(64) v999999999999999999 = 999999999999999999
+352x64           int(64) vm999999999999999999 = -999999999999999999
+416x8            int(8) v100 = 100
+424x8            int(8) vm100 = -100
+432x16           int(16) v4242 = 4242
+448x16           int(16) vm4242 = -4242
+464x32           int(32) v320000000 = 320000000
+496x32           int(32) vm320000000 = -320000000
+528x64           int(64) v999999999999999999 = 999999999999999999
+592x64           int(64) vm999999999999999999 = -999999999999999999
+656x4            int(4) v1 = 1
+660x4            int(4) vm1 = -1
+664x32           float vPi = 3.14159
+696x64           double vPi = 3.14159
+760x4            Bitset(4) v10 = 10
+764x8            Bitset(8) v100 = 100
+772x16           Bitset(16) v4242 = 4242
+788x4            Bitset(4) v10 = 10
+792x2            Bitset(2) v1 = 1
+794x20           Bitset(20) v424242 = 424242
+814x2            Bitset(2) v1 = 1
+816x48           String hello = "hello"
+864x40           String(5) hello = "hello"
+904x56           String(7) hello = "hello"
+960x128          String helloUTF8 = "hello????"
+1088x96          WString hello = "hello"
+1184x80          WString(5) hello = "hello"
+1264x112         WString(7) hello = "hello"
+1376x128         WString helloWide = "hello??"
+1504x96          WString hello = "hello"
+1600x80          WString(5) hello = "hello"
+1680x112         WString(7) hello = "hello"
+1792x128         WString helloWide = "hello??"
+1920x128         Array(uint(16), 128) array8 
+1920x16              uint(16) = 0
+1936x16              uint(16) = 0
+1952x16              uint(16) = 0
+1968x16              uint(16) = 0
+1984x16              uint(16) = 0
+2000x16              uint(16) = 0
+2016x16              uint(16) = 0
+2032x16              uint(16) = 0
+2048x128         ArrayContainer arrayContainer 
+2048x128             Array(uint(16)) array8 
+2048x16                  uint(16) = 0
+2064x16                  uint(16) = 0
+2080x16                  uint(16) = 0
+2096x16                  uint(16) = 0
+2112x16                  uint(16) = 0
+2128x16                  uint(16) = 0
+2144x16                  uint(16) = 0
+2160x16                  uint(16) = 0
+2176x128         Tuple(uint(16), 8) tuple8 
+2176x16              uint(16) = 0
+2192x16              uint(16) = 0
+2208x16              uint(16) = 0
+2224x16              uint(16) = 0
+2240x16              uint(16) = 0
+2256x16              uint(16) = 0
+2272x16              uint(16) = 0
+2288x16              uint(16) = 0
+2304x128         Data data128 
+2432x64          StructTest struct128 
+2432x8               uint(8) uint8 = 0
+2440x8               uint(8) uint8 = 0
+2448x16              uint(16) uint16 = 0
+2464x32              uint(32) uint32 = 0
