@@ -19,6 +19,7 @@ private slots:
 
     void test_asf();
     void test_avi();
+    void test_bmp();
     void test_gif();
     void test_jpg();
     void test_pe();
@@ -30,12 +31,13 @@ private slots:
 
 private:
 
-    bool checkFile(const std::string& path, int depth = -1, int width = -1, const std::string &moduleKey = "");
+    bool checkFile(const std::string& fileName, int depth = -1, int width = -1, const std::string &moduleKey = "");
 
-    void writeObject(Object& object, const std::string& path, int depth, int width);
+    void writeObject(Object& object, const std::string& outputPath, int depth, int width);
     void writeObjectRecursive(Object& object, std::ofstream& file, int currentDepth, int remainingDepth, int width);
 
     QtModuleSetup moduleSetup;
+    const std::string path;
 };
 
 #endif // TEST_PARSER_H

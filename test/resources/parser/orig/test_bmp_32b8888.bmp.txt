@@ -1,0 +1,75 @@
+0x1904       BmpFile 
+0x112            WinBMPFileHeader 
+0x16                 WORD FileType = 19778
+16x32                DWORD FileSize = 238
+48x16                WORD Reserved1 = 0
+64x16                WORD Reserved2 = 0
+80x32                DWORD BitmapOffset = 138
+112x992          WinBitmapHeader 
+112x32               DWORD Size = 124
+144x32               LONG Width = 5
+176x32               LONG Height = 5
+208x16               WORD Planes = 1
+224x16               WORD BitsPerPixel = 32
+240x32               DWORD Compression = 3
+272x32               DWORD SizeOfBitmap = 100
+304x32               LONG HorzResolution = 2835
+336x32               LONG VertResolution = 2835
+368x32               DWORD ColorsUsed = 0
+400x32               DWORD ColorsImportant = 0
+432x32               DWORD RedMask = 4278190080
+464x32               DWORD GreenMask = 16711680
+496x32               DWORD BlueMask = 65280
+528x32               DWORD AlphaMask = 255
+560x32               REVERSED_FOURCC CSType = "sRGB"
+560x8                    BYTE = 66
+568x8                    BYTE = 71
+576x8                    BYTE = 82
+584x8                    BYTE = 115
+592x32               LONG RedX = 0
+624x32               LONG RedY = 0
+656x32               LONG RedZ = 0
+688x32               LONG GreenX = 0
+720x32               LONG GreenY = 0
+752x32               LONG GreenZ = 0
+784x32               LONG BlueX = 0
+816x32               LONG BlueY = 0
+848x32               LONG BlueZ = 0
+880x32               DWORD GammaRed = 0
+912x32               DWORD GammaGreen = 0
+944x32               DWORD GammaBlue = 0
+976x32               DWORD Intent = 2
+1008x32              DWORD ProfileData = 0
+1040x32              DWORD ProfileSize = 0
+1072x32              DWORD Reserved = 0
+1104x800         Tuple(PixelRow(5), 5) PixelData 
+1104x160             PixelRow(5) 
+1104x32                  BitfieldRGBA(8, 8, 8, 8) = 4294967295
+1136x32                  BitfieldRGBA(8, 8, 8, 8) = 4294967295
+1168x32                  BitfieldRGBA(8, 8, 8, 8) = 4294967295
+1200x32                  BitfieldRGBA(8, 8, 8, 8) = 4294967295
+1232x32                  BitfieldRGBA(8, 8, 8, 8) = 4294967295
+1264x160             PixelRow(5) 
+1264x32                  BitfieldRGBA(8, 8, 8, 8) = 726638720
+1296x32                  BitfieldRGBA(8, 8, 8, 8) = 726638720
+1328x32                  BitfieldRGBA(8, 8, 8, 8) = 726638720
+1360x32                  BitfieldRGBA(8, 8, 8, 8) = 726638720
+1392x32                  BitfieldRGBA(8, 8, 8, 8) = 726638720
+1424x160             PixelRow(5) 
+1424x32                  BitfieldRGBA(8, 8, 8, 8) = 2147516671
+1456x32                  BitfieldRGBA(8, 8, 8, 8) = 4278223103
+1488x32                  BitfieldRGBA(8, 8, 8, 8) = 8421631
+1520x32                  BitfieldRGBA(8, 8, 8, 8) = 2155905279
+1552x32                  BitfieldRGBA(8, 8, 8, 8) = 4286611711
+1584x160             PixelRow(5) 
+1584x32                  BitfieldRGBA(8, 8, 8, 8) = 4286578943
+1616x32                  BitfieldRGBA(8, 8, 8, 8) = 16711935
+1648x32                  BitfieldRGBA(8, 8, 8, 8) = 2164195583
+1680x32                  BitfieldRGBA(8, 8, 8, 8) = 4294902015
+1712x32                  BitfieldRGBA(8, 8, 8, 8) = 33023
+1744x160             PixelRow(5) 
+1744x32                  BitfieldRGBA(8, 8, 8, 8) = 255
+1776x32                  BitfieldRGBA(8, 8, 8, 8) = 2147483903
+1808x32                  BitfieldRGBA(8, 8, 8, 8) = 4278190335
+1840x32                  BitfieldRGBA(8, 8, 8, 8) = 8388863
+1872x32                  BitfieldRGBA(8, 8, 8, 8) = 2155872511

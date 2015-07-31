@@ -3,76 +3,88 @@
 #include "core/modules/default/defaulttypes.h"
 
 #include "core/util/fileutil.h"
+#include "core/log/logmanager.h"
 
-TestParser::TestParser()
+TestParser::TestParser() : path("resources/parser/")
 {
-    moduleSetup.addScriptDirectory("resources\\parser\\scripts\\");
+    moduleSetup.addScriptDirectory(path+"scripts/");
     moduleSetup.setup();
+
 }
 
 void TestParser::test_default()
 {
-    QVERIFY(checkFile("resources/parser/test_default.bin", -1, -1, "test_default"));
+    QVERIFY(checkFile("test_default.bin", -1, -1, "test_default"));
 }
 
 void TestParser::test_asf()
 {
-    QVERIFY(checkFile("resources/parser/test_asf.asf", 3, 30));
+    QVERIFY(checkFile("test_asf.asf", 3, 30));
 }
 
 void TestParser::test_avi()
 {
-    QVERIFY(checkFile("resources/parser/test_avi.avi", -1, 15));
+    QVERIFY(checkFile("test_avi.avi", -1, 15));
+}
+
+void TestParser::test_bmp()
+{
+    QVERIFY(checkFile("test_bmp_4.bmp"));
+    QVERIFY(checkFile("test_bmp_16b565.bmp"));
+    QVERIFY(checkFile("test_bmp_24.bmp"));
+    QVERIFY(checkFile("test_bmp_32b8888.bmp"));
 }
 
 void TestParser::test_gif()
 {
-    QVERIFY(checkFile("resources/parser/test_gif.gif", -1, 20));
+    QVERIFY(checkFile("test_gif.gif", -1, 20));
 }
 
 void TestParser::test_jpg()
 {
-    QVERIFY(checkFile("resources/parser/test_jpg.jpg", -1, 20));
+    QVERIFY(checkFile("test_jpg.jpg", -1, 20));
 }
 
 void TestParser::test_pe()
 {
-    QVERIFY(checkFile("resources/parser/test_pe.exe", -1, 15));
+    QVERIFY(checkFile("test_pe.exe", -1, 15));
 }
 
 void TestParser::test_png()
 {
-    QVERIFY(checkFile("resources/parser/test_png.png"));
+    QVERIFY(checkFile("test_png.png"));
 }
 
 void TestParser::test_messagepack()
 {
-    QVERIFY(checkFile("resources/parser/test_msgpack.msgpack"));
+    QVERIFY(checkFile("test_msgpack.msgpack"));
 }
 
 void TestParser::test_mp4()
 {
-    QVERIFY(checkFile("resources/parser/test_mp4.mp4", -1, 20));
+    QVERIFY(checkFile("test_mp4.mp4", -1, 20));
 }
 
 void TestParser::test_sqlite()
 {
-    QVERIFY(checkFile("resources/parser/test_sqlite.sqlite"));
+    QVERIFY(checkFile("test_sqlite.sqlite"));
 }
 
 void TestParser::test_zip()
 {
-    QVERIFY(checkFile("resources/parser/test_zip.zip"));
+    QVERIFY(checkFile("test_zip.zip"));
 }
 
-bool TestParser::checkFile(const std::string &path, int depth, int width, const std::string &moduleKey)
+bool TestParser::checkFile(const std::string &fileName, int depth, int width, const std::string &moduleKey)
 {
+    Log::info("Checking ", fileName);
+
     RealFile file;
-    file.setPath(path);
+    file.setPath(path+fileName);
 
     if (!file.good())
     {
-        std::cerr << "File not found" << std::endl;
+        Log::error("File not found ", fileName);
         return false;
     }
 
@@ -85,22 +97,22 @@ bool TestParser::checkFile(const std::string &path, int depth, int width, const 
         return false;
     }
 
-    const std::string origPath = path+".orig.txt";
+    const std::string origPath = path+"orig/"+fileName+".txt";
     if (!fileExists(origPath)) {
         writeObject(*object, origPath, depth, width);
         return true;
     } else {
-        const std::string newPath = path+".new.txt";
+        const std::string newPath = path+"new/"+fileName+".txt";
         writeObject(*object, newPath, depth, width);
         return fileCompare(origPath, newPath);
     }
 
 }
 
-void TestParser::writeObject(Object &object, const std::string &path, int depth, int width)
+void TestParser::writeObject(Object &object, const std::string &outputPath, int depth, int width)
 {
     std::ofstream file;
-    file.open(path);
+    file.open(outputPath);
 
     writeObjectRecursive(object, file, 0, depth, width);
 }

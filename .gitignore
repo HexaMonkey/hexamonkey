@@ -160,7 +160,8 @@ test/moc_*.cpp
 !test/resources/util/dir1/*
 !test/resources/parser
 !test/resources/parser/*
-test/resources/parser/*.new.txt
+!test/resources/parser/orig
+!test/resources/parser/orig/*
 !test/resources/parser/scripts
 !test/resources/parser/scripts/*.hm
 !test/resources/formatDetector

@@ -1,0 +1,136 @@
+0x1104       BmpFile 
+0x112            WinBMPFileHeader 
+0x16                 WORD FileType = 19778
+16x32                DWORD FileSize = 138
+48x16                WORD Reserved1 = 0
+64x16                WORD Reserved2 = 0
+80x32                DWORD BitmapOffset = 118
+112x320          WinBitmapHeader 
+112x32               DWORD Size = 40
+144x32               LONG Width = 5
+176x32               LONG Height = 5
+208x16               WORD Planes = 1
+224x16               WORD BitsPerPixel = 4
+240x32               DWORD Compression = 0
+272x32               DWORD SizeOfBitmap = 20
+304x32               LONG HorzResolution = 2835
+336x32               LONG VertResolution = 2835
+368x32               DWORD ColorsUsed = 0
+400x32               DWORD ColorsImportant = 0
+432x512          Tuple(Win3xPaletteElement, 16) ColorTable 
+432x32               Win3xPaletteElement 
+432x8                    BYTE Blue = 0
+440x8                    BYTE Green = 0
+448x8                    BYTE Red = 0
+456x8                    BYTE Reserved = 0
+464x32               Win3xPaletteElement 
+464x8                    BYTE Blue = 0
+472x8                    BYTE Green = 0
+480x8                    BYTE Red = 128
+488x8                    BYTE Reserved = 0
+496x32               Win3xPaletteElement 
+496x8                    BYTE Blue = 0
+504x8                    BYTE Green = 128
+512x8                    BYTE Red = 0
+520x8                    BYTE Reserved = 0
+528x32               Win3xPaletteElement 
+528x8                    BYTE Blue = 0
+536x8                    BYTE Green = 128
+544x8                    BYTE Red = 128
+552x8                    BYTE Reserved = 0
+560x32               Win3xPaletteElement 
+560x8                    BYTE Blue = 128
+568x8                    BYTE Green = 0
+576x8                    BYTE Red = 0
+584x8                    BYTE Reserved = 0
+592x32               Win3xPaletteElement 
+592x8                    BYTE Blue = 128
+600x8                    BYTE Green = 0
+608x8                    BYTE Red = 128
+616x8                    BYTE Reserved = 0
+624x32               Win3xPaletteElement 
+624x8                    BYTE Blue = 128
+632x8                    BYTE Green = 128
+640x8                    BYTE Red = 0
+648x8                    BYTE Reserved = 0
+656x32               Win3xPaletteElement 
+656x8                    BYTE Blue = 128
+664x8                    BYTE Green = 128
+672x8                    BYTE Red = 128
+680x8                    BYTE Reserved = 0
+688x32               Win3xPaletteElement 
+688x8                    BYTE Blue = 192
+696x8                    BYTE Green = 192
+704x8                    BYTE Red = 192
+712x8                    BYTE Reserved = 0
+720x32               Win3xPaletteElement 
+720x8                    BYTE Blue = 0
+728x8                    BYTE Green = 0
+736x8                    BYTE Red = 255
+744x8                    BYTE Reserved = 0
+752x32               Win3xPaletteElement 
+752x8                    BYTE Blue = 0
+760x8                    BYTE Green = 255
+768x8                    BYTE Red = 0
+776x8                    BYTE Reserved = 0
+784x32               Win3xPaletteElement 
+784x8                    BYTE Blue = 0
+792x8                    BYTE Green = 255
+800x8                    BYTE Red = 255
+808x8                    BYTE Reserved = 0
+816x32               Win3xPaletteElement 
+816x8                    BYTE Blue = 255
+824x8                    BYTE Green = 0
+832x8                    BYTE Red = 0
+840x8                    BYTE Reserved = 0
+848x32               Win3xPaletteElement 
+848x8                    BYTE Blue = 255
+856x8                    BYTE Green = 0
+864x8                    BYTE Red = 255
+872x8                    BYTE Reserved = 0
+880x32               Win3xPaletteElement 
+880x8                    BYTE Blue = 255
+888x8                    BYTE Green = 255
+896x8                    BYTE Red = 0
+904x8                    BYTE Reserved = 0
+912x32               Win3xPaletteElement 
+912x8                    BYTE Blue = 255
+920x8                    BYTE Green = 255
+928x8                    BYTE Red = 255
+936x8                    BYTE Reserved = 0
+944x160          Tuple(PixelRow(5), 5) PixelData 
+944x32               PixelRow(5) 
+944x4                    RGBIndex(4) = 15
+948x4                    RGBIndex(4) = 15
+952x4                    RGBIndex(4) = 15
+956x4                    RGBIndex(4) = 15
+960x4                    RGBIndex(4) = 15
+964x12                   Data padding 
+976x32               PixelRow(5) 
+976x4                    RGBIndex(4) = 6
+980x4                    RGBIndex(4) = 6
+984x4                    RGBIndex(4) = 6
+988x4                    RGBIndex(4) = 6
+992x4                    RGBIndex(4) = 6
+996x12                   Data padding 
+1008x32              PixelRow(5) 
+1008x4                   RGBIndex(4) = 5
+1012x4                   RGBIndex(4) = 5
+1016x4                   RGBIndex(4) = 6
+1020x4                   RGBIndex(4) = 7
+1024x4                   RGBIndex(4) = 8
+1028x12                  Data padding 
+1040x32              PixelRow(5) 
+1040x4                   RGBIndex(4) = 3
+1044x4                   RGBIndex(4) = 10
+1048x4                   RGBIndex(4) = 3
+1052x4                   RGBIndex(4) = 11
+1056x4                   RGBIndex(4) = 4
+1060x12                  Data padding 
+1072x32              PixelRow(5) 
+1072x4                   RGBIndex(4) = 0
+1076x4                   RGBIndex(4) = 1
+1080x4                   RGBIndex(4) = 9
+1084x4                   RGBIndex(4) = 2
+1088x4                   RGBIndex(4) = 3
+1092x12                  Data padding 
