@@ -1,0 +1,390 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+// specification at http://www.fileformat.info/format/bmp/egff.htm
+// samples available at http://entropymine.com/jason/bmpsuite/
+
+addMagicNumber 42 4D
+
+import microsoft rgb
+
+class BmpFile as File
+{
+	@endianness = "littleEndian";
+	WinBMPFileHeader _fileHeader;
+	WinBitmapHeader _bitmapHeader;
+	
+	var compression = _bitmapHeader.Compression;
+	var version = _bitmapHeader.@attr.version;
+	var bitsPerPixel = _bitmapHeader.BitsPerPixel;
+	var width = _bitmapHeader.Width;	
+	var height = _bitmapHeader.Height;
+	if (height < 0) {
+		height = -height;
+	}
+	
+	// Bitfield map extension
+	if (compression == 3 && version == 3) {
+		WinNtBitfieldsMasks _bitFieldMasks;
+	}
+	
+	// Color Palette 
+	var colorTableCount = _bitmapHeader.ColorsUsed;
+	if (colorTableCount || bitsPerPixel < 16) {
+		
+		if (colorTableCount == 0) {
+			colorTableCount = 1 << _bitmapHeader.BitsPerPixel;
+		}
+		Win3xPaletteElement ColorTable[colorTableCount];
+		@context.ColorTable := ColorTable;
+	} 
+	
+	//Pixel Data
+	@pos = 8*_fileHeader.BitmapOffset;
+	if (compression == 0 || compression == 3 || compression == 6) { // Uncompressed or BitFields
+		var pixelType;
+		if (compression == 0) { // Uncompressed
+			if (bitsPerPixel == 1 || bitsPerPixel == 4 || bitsPerPixel == 8) {
+				pixelType = RGBIndex(bitsPerPixel);
+			} else if (bitsPerPixel == 24) {
+				pixelType = RGB();
+			} else if (bitsPerPixel == 32) {
+				pixelType = Win3xPaletteElement();
+			} else {
+				%error("Invalid number of pixels "+bitsPerPixel);
+			}
+		} else { // Bitfields
+		
+			if (version == 3) {
+				pixelType = %getBitfieldRGB(bitsPerPixel, _bitFieldMasks);
+			} else if (version >= 4) {
+				pixelType = %getBitfieldRGB(bitsPerPixel, _bitmapHeader);
+			} else {
+				%error("Bit field compression not supported on version "+version);	
+			}
+		}
+		
+		var rowSize = %pad(%sizeof(pixelType) * width, 32);
+		%log("Row size "+%sizeof(pixelType));
+		PixelRow(width, pixelType, rowSize) PixelData[height];
+		
+	} else if (compression == 1 || compression == 2) { // RLE
+		RLEData(bitsPerPixel, _bitmapHeader.SizeOfBitmap) PixelData;
+	}
+	
+	// Profile Data
+	if (_bitmapHeader.ProfileData) {
+		@pos = 8*_bitmapHeader.ProfileData;
+		Data(_bitmapHeader.ProfileSize) ProfileData;
+	}
+	
+	
+}
+
+class WinBMPFileHeader
+{
+	WORD   FileType;     /* File type, always 4D42h ("BM") */
+	DWORD  FileSize;     /* Size of the file in bytes */
+	WORD   Reserved1;    /* Always 0 */
+	WORD   Reserved2;    /* Always 0 */
+	DWORD  BitmapOffset; /* Starting position of image data in bytes */
+}
+
+class Win3xPaletteElement
+{
+	BYTE Blue;      /* Blue component */
+	BYTE Green;     /* Green component */
+	BYTE Red;       /* Red component */
+	BYTE Reserved;  /* Padding (always 0) */
+	
+	@attr.code = "#"+%str(Red, 16, 2)+%str(Green, 16, 2)+%str(Blue, 16, 2);
+}
+
+class WinBitmapHeader
+{
+	DWORD Size;            /* Size of this header in bytes */
+	@size = 8*Size;
+	var SIZE_TYPE = (Size == 12 ? SHORT() : LONG()); // Width and height size depend on header version
+	
+	@attr.version = 2;
+	(SIZE_TYPE)  Width;    /* Image width in pixels */
+	(SIZE_TYPE)  Height;   /* Image height in pixels */
+	WORD  Planes;          /* Number of color planes */
+	WORD  BitsPerPixel;    /* Number of bits per pixel */
+	/* Fields added for Windows 3.x follow this line */
+	if (@rem) {
+		@attr.version = 3;
+		DWORD Compression;     /* Compression methods used */
+		if (Compression == 0) {
+			Compression.@attr.type = "Uncompressed";
+		} else if (Compression == 1) {
+			Compression.@attr.type = "RLE-8";
+		} else if (Compression == 2) {
+			Compression.@attr.type = "RLE-4";
+		} else if (Compression == 3) {
+			Compression.@attr.type = "Bitfields";
+		}
+		DWORD SizeOfBitmap;    /* Size of bitmap in bytes */
+		LONG  HorzResolution;  /* Horizontal resolution in pixels per meter */
+		LONG  VertResolution;  /* Vertical resolution in pixels per meter */
+		DWORD ColorsUsed;      /* Number of colors in the image */
+		DWORD ColorsImportant; /* Minimum number of important colors */
+		/* Fields added for Windows 4.x follow this line */
+		if (@rem) {
+			@attr.version = 4;
+			DWORD(16) RedMask;       /* Mask identifying bits of red component */
+			DWORD(16) GreenMask;     /* Mask identifying bits of green component */
+			DWORD(16) BlueMask;      /* Mask identifying bits of blue component */
+			DWORD(16) AlphaMask;     /* Mask identifying bits of alpha component */
+			
+			REVERSED_FOURCC CSType; /* Color space type */
+			LONG  RedX;          /* X coordinate of red endpoint */
+			LONG  RedY;          /* Y coordinate of red endpoint */
+			LONG  RedZ;          /* Z coordinate of red endpoint */
+			LONG  GreenX;        /* X coordinate of green endpoint */
+			LONG  GreenY;        /* Y coordinate of green endpoint */
+			LONG  GreenZ;        /* Z coordinate of green endpoint */
+			LONG  BlueX;         /* X coordinate of blue endpoint */
+			LONG  BlueY;         /* Y coordinate of blue endpoint */
+			LONG  BlueZ;         /* Z coordinate of blue endpoint */
+			DWORD GammaRed;      /* Gamma red coordinate scale value */
+			DWORD GammaGreen;    /* Gamma green coordinate scale value */
+			DWORD GammaBlue;     /* Gamma blue coordinate scale value */
+			
+			if (@rem) {
+				@attr.version = 5;
+				
+				DWORD Intent;
+				if (Intent == 1) {
+					Intent.@attr[] = "Graphic";
+				} else if (Intent == 2) {
+					Intent.@attr[] = "Proof";
+				} else if (Intent == 4) {
+					Intent.@attr[] = "Picture";
+				} else if (Intent == 8) {
+					Intent.@attr[] = "Match";
+				}
+				DWORD ProfileData;
+				DWORD ProfileSize;
+				DWORD Reserved;
+			}
+		}
+	}
+}
+
+class WinNtBitfieldsMasks
+{
+	DWORD(16) RedMask;         /* Mask identifying bits of red component */
+	DWORD(16) GreenMask;       /* Mask identifying bits of green component */
+	DWORD(16) BlueMask;        /* Mask identifying bits of blue component */
+} 
+
+class PixelRow(width, _type, _size) extends Data(_size) with {elemType:_type, elemCount:width}
+{
+	var pixelType = @args._type;
+	for (var i = 0, n = @args.width; i < n; ++i) {
+		(pixelType) #;
+	}
+	
+	if (@rem != 0) {
+		Data(@rem) padding;
+	}
+}
+
+class RGBIndex(size) extends uint(size)
+{
+	@attr.code = @context.ColorTable[@value].@attr.code;
+}
+
+class RGB
+{
+	BYTE Blue;
+	BYTE Green;
+	BYTE Red;
+	@attr.code = "#"+%str(Red, 16, 2)+%str(Green, 16, 2)+%str(Blue, 16, 2);
+}
+
+class BitfieldRGB(redCount, greenCount, blueCount, 
+                  _bitsPerPixel, 
+				  _redMask, _greenMask, _blueMask, 
+				  _redShift, _greenShift, _blueShift) extends uint(_bitsPerPixel, 16)
+{	
+	var red   = %maskedColor(@value, @args._redMask,   @args._redShift,   @args.redCount);
+	var green = %maskedColor(@value, @args._greenMask, @args._greenShift, @args.greenCount);
+	var blue  = %maskedColor(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
+
+	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+}
+
+class BitfieldRGBA(redCount, greenCount, blueCount, alphaCount, 
+                   _bitsPerPixel, 
+				   _redMask, _greenMask, _blueMask, _alphaMask, 
+				   _redShift, _greenShift, _blueShift, _alphaShift) extends uint(_bitsPerPixel, 16)
+{	
+	var red   = %maskedColor(@value, @args._redMask,   @args._redShift,   @args.redCount);
+	var green = %maskedColor(@value, @args._greenMask, @args._greenShift, @args.greenCount);
+	var blue  = %maskedColor(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
+	var alpha = %maskedColor(@value, @args._alphaMask, @args._alphaShift, @args.alphaCount);
+
+	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+ (@alpha == 0xff ? "" : %str(alpha, 16, 2));
+}
+
+function getBitfieldRGB(const bitsPerPixel, const bitFieldMasks)
+{
+	var redMask = bitFieldMasks.RedMask;
+	var redCount = %maskCount(redMask);
+	var redShift = %maskShift(redMask);
+	
+	var greenMask = bitFieldMasks.GreenMask;
+	var greenCount = %maskCount(greenMask);
+	var greenShift = %maskShift(greenMask);
+	
+	var blueMask = bitFieldMasks.BlueMask;
+	var blueCount = %maskCount(blueMask);
+	var blueShift = %maskShift(blueMask);
+	
+	var alphaMask = bitFieldMasks.AlphaMask;
+	var alphaCount = %maskCount(alphaMask);
+	var alphaShift = %maskShift(alphaMask);
+	
+	if (alphaCount) {
+		return BitfieldRGBA(redCount, greenCount, blueCount, alphaCount, 
+							bitsPerPixel, 
+							redMask, greenMask, blueMask, alphaMask, 
+							redShift, greenShift, blueShift, alphaShift);
+	} else {
+		return BitfieldRGB(redCount, greenCount, blueCount, 
+						   bitsPerPixel, 
+						   redMask, greenMask, blueMask, 
+						   redShift, greenShift, blueShift);
+	}
+}
+
+function maskCount (const mask)
+{
+	var count = 0;
+	
+	var newMask = mask;
+	while (newMask) {
+		newMask = (newMask << 1) & mask;
+		++count;
+	}
+	
+	return count;
+}
+
+function maskShift (const mask)
+{
+	if (!mask) {
+		return 0;
+	}
+	
+	var newMask = mask;
+	var shift = 0;
+	
+	while ((newMask & 0xff) != newMask) {
+		newMask >>= 1;
+		++shift;
+	}
+	
+	while (newMask && !(newMask & 0x80)) {
+		newMask <<= 1;
+		--shift;
+	}
+	
+	return shift;
+}
+
+function maskedColor(const input, const mask, const shift, const count)
+{
+	var value = input & mask;
+	if (shift > 0) {
+		value >>= shift;
+	} else {
+		value <<= (-shift);
+	}
+	
+	if (count < 4) {
+		value |= value >> count;
+		value |= value >> 2*count;
+	} else if (count < 8) {
+		value |= value >> count;
+	}
+	return value;
+}
+
+class RLEData (version, _size) extends Data(8*_size)
+{
+	while (1) RLEChunk(null, @args.version) *;
+}
+
+virtual class RLEChunk(type, version)
+{
+	BYTE Count;
+	
+	if (Count == 0) {
+		BYTE Info;
+		if (Info == 0) {
+			@args.type = "EndOfLine";
+		} else if (Info == 1) {
+			@args.type = "EndOfFile";
+		} else if (Info == 2) {
+			BYTE HOffset;
+			BYTE VOffset;
+			@args.type = "Delta";
+		} else {
+			@args.type = "Absolute";
+			@pos = 8;
+			@size = %pad(8 *(Info + 1), 32);
+			if (@args.version == 8) {
+				RGBIndex(8) colors[Info];
+			} else {
+				RGBIndex(4) colors[2*Info];
+			}
+			
+			if (@rem) {
+				Data(paddingSize);
+			}
+		}
+	} else {
+		@args.type = "RLE";
+		if (@args.version == 8) {
+			RGBIndex(8) color;
+		} else {
+			RGBIndex(4) color1;
+			RGBIndex(4) color2;
+		}
+	}
+}
+
+class EndOfFileMarker as RLEChunk("EndOfFile")
+class EndOfLineMarker as RLEChunk("EndOfLine")
+class DeltaMarker as RLEChunk("Delta")
+class RLERun as RLEChunk("RLE")
+class AbsoluteRun as RLEChunk("Absolute")
+
+
+
+function pad(size, increment)
+{
+	var mod = size % increment; 
+	if (mod != 0) {
+		return size + increment - mod;
+	} else {
+		return size;
+	}
+}
