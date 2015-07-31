@@ -240,7 +240,7 @@ class BitfieldRGBA(redCount, greenCount, blueCount, alphaCount,
 	var blue  = %maskedColor(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
 	var alpha = %maskedColor(@value, @args._alphaMask, @args._alphaShift, @args.alphaCount);
 
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+ (@alpha == 0xff ? "" : %str(alpha, 16, 2));
+	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+ (alpha == 0xff ? "" : %str(alpha, 16, 2));
 }
 
 function getBitfieldRGB(const bitsPerPixel, const bitFieldMasks)
