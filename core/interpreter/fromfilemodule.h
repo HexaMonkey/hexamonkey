@@ -69,7 +69,9 @@ private:
     static std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly);
     static void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false);
 
+    bool checkHeaderOnlyVar(const Program& line) const;
     Program::const_iterator headerEnd(const std::string& name) const;
+    bool needTailParsing(const std::string& name) const;
     FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
 
     const Program& program() const;
@@ -83,6 +85,7 @@ private:
     mutable std::unordered_map<std::string, int64_t> _fixedSizes;
     mutable std::unordered_map<std::string, bool> _sizeDependency;
     mutable std::unordered_map<std::string, Program::const_iterator> _headerEnd;
+    mutable std::unordered_map<std::string, bool> _needTailParsing;
 
     Evaluator eval;
 

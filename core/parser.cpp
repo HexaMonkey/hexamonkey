@@ -167,6 +167,11 @@ void Parser::setNoTail()
     _hasTail = false;
 }
 
+bool Parser::needTailParsing()
+{
+    return doNeedTailParsing();
+}
+
 void Parser::doParseHead()
 {
 }
@@ -183,6 +188,11 @@ bool Parser::doParseSome(int hint)
 
 void Parser::doParseTail()
 {
+}
+
+bool Parser::doNeedTailParsing()
+{
+    return false;
 }
 
 void Parser::setHeadParsed()
