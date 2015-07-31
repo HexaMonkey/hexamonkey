@@ -1,6 +1,7 @@
 
 #include <QTest>
 #include <vector>
+#include <ostream>
 
 #include "test_variant.h"
 #include "test_formatdetector.h"
@@ -9,8 +10,13 @@
 
 #include "core/util/strutil.h"
 
+#include "core/log/streamlogger.h"
+
 int main(int argc, char** argv)
 {
+    std::ofstream logFile;
+    logFile.open("test.txt");
+    StreamLogger streamLogger(logFile);
     TestVariant testVariant;
     TestFormatDetector testFormatDetector;
     TestUtil testUtil;
