@@ -216,7 +216,7 @@ class IMAGE_SECTIONS
 	}
 }
 
-class IMAGE_DIRECTORY_ENTRY(index, _size) extends Data(-1)
+virtual class IMAGE_DIRECTORY_ENTRY(index, _size) extends Data(-1)
 
 //*********************************************************
 // Export table

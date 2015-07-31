@@ -25,7 +25,7 @@
 namespace ebmlTypes
 {
     const ObjectTypeTemplate EBMLFile("EBMLFile");
-    const ObjectTypeTemplate EBMLElement("EBMLElement", {"id"});
+    const ObjectTypeTemplate EBMLElement("EBMLElement", {"id"}, true);
     const ObjectTypeTemplate largeInteger("LargeInteger");
     const ObjectTypeTemplate Date("Date");
 

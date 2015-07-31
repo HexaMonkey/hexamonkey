@@ -13,7 +13,7 @@ class MsgPackFile as File
 	while(1) MsgPackObject *; // The input file may contain concatenated msg pack objects
 }
 
-class MsgPackObject(byteId)
+virtual class MsgPackObject(byteId)
 {
     uint(8, 16) first_byte;
 	

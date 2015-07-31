@@ -125,7 +125,6 @@ HEADERS  += \
     ../core/modules/ebml/ebmldateparser.h \
     ../core/modules/ebml/ebmlcontainerparser.h \
     ../core/modules/hmc/hmcmodule.h \
-    ../core/modules/mkv/mkvtypes.h \
     ../core/modules/mkv/mkvmodule.h \
     ../core/modules/stream/streammodule.h \
     ../core/modules/stream/parentpidparser.h \

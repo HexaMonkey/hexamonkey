@@ -40,11 +40,12 @@ class ObjectTypeTemplate
 public:
     typedef std::function<Variant (const ObjectType &)> AttributeGenerator;
 
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames,
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual,
                        const AttributeGenerator& elementTypeGenerator,
                        const AttributeGenerator& elementCountGenerator);
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames,
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual,
                        const AttributeGenerator& elementTypeGenerator);
+    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual);
     ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames);
     ObjectTypeTemplate(const std::string &name);
 
@@ -111,6 +112,8 @@ public:
     bool hasElementCountGenerator() const;
     const AttributeGenerator &elementCountGenerator() const;
 
+    bool isVirtual() const;
+    void setVirtual(bool value);
 
     friend bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
     friend bool operator< (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
@@ -125,6 +128,8 @@ private:
     uint8_t _attributeFlag;
     AttributeGenerator _elementTypeGenerator;
     AttributeGenerator _elementCountGenerator;
+
+    bool _virtual;
 
     ObjectTypeTemplate(const ObjectTypeTemplate&) = delete;
     ObjectTypeTemplate& operator=(const ObjectTypeTemplate&) = delete;

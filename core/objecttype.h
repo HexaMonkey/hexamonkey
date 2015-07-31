@@ -153,6 +153,9 @@ public:
     friend void swap(ObjectType& a, ObjectType& b);
     ObjectType& operator=(ObjectType other);
 
+    bool isVirtual() const;
+    void setVirtual(bool value);
+
 private:
     const Variant& vElementType() const;
     const Variant& vElementCount() const;
@@ -162,6 +165,8 @@ private:
     Variant _name;
     mutable Variant _elementType;
     mutable Variant _elementCount;
+
+    bool _virtual;
 
     void _setParameters(int first);
 

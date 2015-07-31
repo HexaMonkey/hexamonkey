@@ -23,14 +23,14 @@
 
 namespace defaultTypes
 {
-    const ObjectTypeTemplate file("File");
+    const ObjectTypeTemplate file("File", std::vector<std::string>(), true);
 
-    const ObjectTypeTemplate array("Array",{"elementType", "size", "_namePattern"},
+    const ObjectTypeTemplate array("Array",{"elementType", "size", "_namePattern"}, false,
                                    []objectTypeAttributeLambda {
                                        return type.parameterValue(0);
                                    });
 
-    const ObjectTypeTemplate tuple("Tuple",{"elementType", "count", "_namePattern"},
+    const ObjectTypeTemplate tuple("Tuple",{"elementType", "count", "_namePattern"}, false,
                                    []objectTypeAttributeLambda {
                                        return type.parameterValue(0);
                                    },

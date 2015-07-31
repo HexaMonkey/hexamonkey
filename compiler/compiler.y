@@ -25,6 +25,7 @@
     int yydebug=1;                                                                    
     int indent=0; 
     int infos=0;
+	int isVirtual = 0;
 %}    
 
 %union {
@@ -34,7 +35,7 @@
     double             f;
 }
 
-%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN SELF_TOKEN WITH_TOKEN 
+%token CLASS_TOKEN EXTENDS_TOKEN AS_TOKEN TYPEDEF_TOKEN FOR_TOKEN WHILE_TOKEN DO_TOKEN RETURN_TOKEN BREAK_TOKEN CONTINUE_TOKEN VAR_TOKEN FORWARD_TOKEN TO_TOKEN FUNCTION_TOKEN CONST_TOKEN ELLIPSIS_TOKEN HEADER_TOKEN SELF_TOKEN WITH_TOKEN VIRTUAL_TOKEN
 %right IF_TOKEN ELSE_TOKEN
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN REMOVE_TOKEN
@@ -140,10 +141,12 @@ class_declaration:
 ;
 
 class_token:
-	CLASS_TOKEN {push_line();}
+	CLASS_TOKEN {isVirtual = 0; push_line();}
+   |VIRTUAL_TOKEN CLASS_TOKEN {isVirtual = 1; push_line();}
 
 class_info:
-    type_template extension specification type_attributes {push_master(HMC_CLASS_INFO, 4);}
+    type_template extension specification type_attributes {push_integer(HMC_VIRTUAL, isVirtual); 
+	                                                       push_master(HMC_CLASS_INFO, 5);}
 
 class_infos:
     class_info',' class_info {stash(0);++infos;} 

@@ -26,7 +26,7 @@ class AsfFile as File
 	while(1) OBJECT *;
 }
 
-class OBJECT(Id) 
+virtual class OBJECT(Id) 
 {
 	GUID ObjectId;
 	QWORD ObjectSize;
@@ -504,7 +504,7 @@ class AdvancedContentEncryptionObject as OBJECT("43058533-6981-49E6-9B74-AD12CB8
 	ContentEncryptionRecord ContentEncryptionRecords[];
 }
 
-class Media(Id, size)
+virtual class Media(Id, size)
 {
 	@size = 8*@args.size;
 }
@@ -580,7 +580,7 @@ class FileTransferMedia as Media("91BD222C-F21C-497A-8B6D-5AA86BFC0185"),
 	Data(FormatDataSize<<3) FormatData; 
 }
 
-class ErrorCorrection(Id, size)
+virtual class ErrorCorrection(Id, size)
 {
 	@size = 8*@args.size;
 }

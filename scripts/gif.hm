@@ -36,7 +36,7 @@ class LogicalScreenDescription{
 	}
 }
 
-class Block(ID){
+virtual class Block(ID) {
 	uint(8,16) Descriptor;
 	@args.ID = Descriptor;
 }
@@ -79,7 +79,7 @@ class DataSubBlock
 	Data(8*Length) Data;
 }
 
-class Extension(ID) as Block(0x21){
+virtual class Extension(ID) as Block(0x21){
 	uint(8,16) Label;
 	@args.ID = Label;
 }

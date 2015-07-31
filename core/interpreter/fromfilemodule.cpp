@@ -122,7 +122,7 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
         return HM_UNKNOWN_SIZE;
     }
 
-    if(module.getFather(type).isNull())
+    if(!type.typeTemplate().isVirtual() && module.getFather(type).isNull())
     {
         int64_t size = guessSize(definition);
         if(size>=0)
@@ -250,7 +250,7 @@ void FromFileModule::nameScan(Program& declarations)
             std::cerr<<"    "<<objectTypeTemplate<<std::endl;
 #endif
 
-            Program typeAttributes = declaration.node(0).node(3);
+            Program typeAttributes = classInfo.node(3);
             for (Program typeAttribute : typeAttributes) {
                 const std::string& name = typeAttribute.node(0).payload().toString();
                 Program program = typeAttribute.node(1);
@@ -264,6 +264,11 @@ void FromFileModule::nameScan(Program& declarations)
                 } else if (name == "elemCount") {
                     objectTypeTemplate.setElementCountGenerator(generator);
                 }
+            }
+
+            Program isVirtual = classInfo.node(4);
+            if (isVirtual.payload().toBool()) {
+                objectTypeTemplate.setVirtual(true);
             }
 
             Program classDefinition = declaration.node(1);

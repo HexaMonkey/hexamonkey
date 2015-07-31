@@ -38,7 +38,7 @@ class ZipFile as File
 	}
 }
 
-class Chunk(signature)
+virtual class Chunk(signature)
 {
 	uint(32,16) signature;
 	@args.signature = signature; 

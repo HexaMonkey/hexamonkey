@@ -28,7 +28,7 @@ class PngFile as File
 	while(1) Chunk *;
 }
 
-class Chunk(code)
+virtual class Chunk(code)
 {
 	uint(32)  length;
 	String(4) type;

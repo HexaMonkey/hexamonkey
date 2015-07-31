@@ -18,24 +18,24 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames,
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual,
                                        const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator,
                                        const ObjectTypeTemplate::AttributeGenerator &elementCountGenerator)
-    : ObjectTypeTemplate(name, parameterNames)
+    : ObjectTypeTemplate(name, parameterNames, isVirtual)
 {
     setElementTypeGenerator(elementTypeGenerator);
     setElementCountGenerator(elementCountGenerator);
 }
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames,
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual,
                                        const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator)
-    : ObjectTypeTemplate(name, parameterNames)
+    : ObjectTypeTemplate(name, parameterNames, isVirtual)
 {
     setElementTypeGenerator(elementTypeGenerator);
 }
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
-    :_name(name), _parametersNames(parameterNames), _attributeFlag(0)
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual)
+    :_name(name), _parametersNames(parameterNames), _attributeFlag(0), _virtual(isVirtual)
 
 {
     for(unsigned int i = 0; i < _parametersNames.size(); ++i)
@@ -44,8 +44,14 @@ ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vecto
     }
 }
 
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
+    :ObjectTypeTemplate(name, parameterNames, false)
+
+{
+}
+
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string& name)
-    : ObjectTypeTemplate(name, std::vector<std::string>())
+    : ObjectTypeTemplate(name, std::vector<std::string>(), false)
 {
 }
 
@@ -119,6 +125,16 @@ bool ObjectTypeTemplate::hasElementCountGenerator() const
 const ObjectTypeTemplate::AttributeGenerator &ObjectTypeTemplate::elementCountGenerator() const
 {
     return _elementCountGenerator;
+}
+
+bool ObjectTypeTemplate::isVirtual() const
+{
+    return _virtual;
+}
+
+void ObjectTypeTemplate::setVirtual(bool value)
+{
+    _virtual = value;
 }
 
 bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)

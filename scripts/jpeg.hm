@@ -34,7 +34,7 @@ class JpegFile as File,
 	MarkerSegment *;
 }
 
-class MarkerSegment(symbol)
+virtual class MarkerSegment(symbol)
 {
 	uint(16,16) marker;
 
@@ -76,7 +76,6 @@ class MarkerSegment(symbol)
 	} else if(marker == 0xfffe) {
 		@args.symbol = "COM";
 	}
-	
 }
 
 class StartOfImage as MarkerSegment("SOI");
@@ -196,7 +195,7 @@ class CommentSegment as MarkerSegment("COM")
 	String(@rem/8) comment;
 }
 
-class ApplicationSegment(n, identifier) as MarkerSegment("APP")
+virtual class ApplicationSegment(n, identifier) as MarkerSegment("APP")
 {
 	var n = @args.n = marker - 0xffe0;
 	String identifier;

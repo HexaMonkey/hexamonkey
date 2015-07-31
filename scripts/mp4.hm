@@ -29,7 +29,7 @@ class Mp4File as File
 	while(1) Box *;
 }
 
-class Box(boxtype, extended_type)
+virtual class Box(boxtype, extended_type)
 {
 	uint(32) size;
 	string(4) type;
@@ -247,7 +247,7 @@ class BitRateBox as Box("btrt")
 	uint(32) avgBitrate;
 }
 
-class MetaDataSampleEntry(codingname) extends SampleEntry(codingname)
+virtual class MetaDataSampleEntry(codingname) extends SampleEntry(codingname)
 
 class XMLMetaDataSampleEntry as MetaDataSampleEntry("metx")
 {
@@ -729,7 +729,7 @@ class ItemProtectionBox extends FullBox as Box("ipro")
 	ProtectionSchemeInfoBox protection_informations[];
 }
 
-class ItemInfoExtension(extension_type)
+virtual class ItemInfoExtension(extension_type)
 
 class FDItemInfoExtension as ItemInfoExtension("fdel")
 {

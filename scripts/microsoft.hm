@@ -65,4 +65,14 @@ class RECT
 	WORD bottom;
 }
 
+class REVERSED_FOURCC extends Tuple(BYTE(), 4) 
+{
+	@value = "";
+	for (var i = 3; i >= 0; --i) {
+		if (self[i]) {
+			@value += %fromAscii(self[i]);
+		}
+	}
+}
+
 class BITS(size) extends Bitset(size)

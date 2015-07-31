@@ -20,6 +20,7 @@
 #include "core/objecttypetemplate.h"
 #include "core/util/iterutil.h"
 #include "core/parser.h"
+#include "core/log/logmanager.h"
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;
@@ -184,6 +185,9 @@ void Module::addParsersRecursive(Object &object, const ObjectType &type, const M
 
 void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
 {
+    if (!parent.typeTemplate().isVirtual()) {
+        Log::error("Cannot forward ",parent," to ",child," because ",parent.typeTemplate(), " is not virtual ");
+    }
     const ObjectType* parentPtr = new ObjectType(parent);
     _automaticSpecifications.insert(std::make_pair(parentPtr, child));
 }

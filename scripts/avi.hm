@@ -10,7 +10,7 @@ class AviFile as File, ContainerCHUNK extends CHUNK, ContainerLIST extends LIST,
 	while(1) CHUNK *;
 }
 
-class CHUNK(code) 
+virtual class CHUNK(code) 
 {
 	FOURCC dwFourCC;
 	DWORD dwSize;
@@ -29,7 +29,7 @@ class CHUNK(code)
 	}
 }
 
-class LIST(code) as CHUNK("LIST"), RIFF(code) as CHUNK("RIFF")
+virtual class LIST(code) as CHUNK("LIST"), RIFF(code) as CHUNK("RIFF")
 {
 	FOURCC dwFourCC;
 	@args.code = dwFourCC;
@@ -76,9 +76,9 @@ class StreamHeader as CHUNK("strh")
 	RECT rcFrame;
 }
 
-class StreamFormat(fccType) as CHUNK("strf")
+virtual class StreamFormat(fccType) as CHUNK("strf")
 {
-	@args[0] = @parent[StreamHeader()].fccType;
+	@args.fccType = @parent[StreamHeader()].fccType;
 }
 
 class BitmapInfoHeader as StreamFormat("vids")

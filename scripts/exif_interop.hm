@@ -1,4 +1,4 @@
-class Interoperability(namespace, tag) extends Data(96)
+virtual class Interoperability(namespace, tag) extends Data(96)
 {
     uint(16, 16) tag;
     @args.tag = tag;

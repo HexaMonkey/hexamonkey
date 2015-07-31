@@ -99,6 +99,7 @@ extern int line_number;
 "delete"    {return REMOVE_TOKEN;}
 "self"      {return SELF_TOKEN;}
 "with"      {return WITH_TOKEN;}
+"virtual"   {return VIRTUAL_TOKEN;}
 
 "import"            {return IMPORT_TOKEN;}
 "addMagicNumber"    {return ADD_MAGIC_NUMBER_TOKEN;}

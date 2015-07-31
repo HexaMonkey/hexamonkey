@@ -31,3 +31,21 @@ class RGBA
 	byte alpha;
 	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+%str(alpha, 16, 2);
 }
+
+class DenseRGB(redCount, greenCount, blueCount, _bitsPerPixels, _redMask, _greenMask, _blueMask) extends uint(_bitsPerPixels, 16)
+{
+	var shift = @args._bitsPerPixels - @args.redCount;
+	
+	var red   = (@value & @args._redMask) >> shift;
+	red <<= 8 - @args.redCount;
+	
+	shift -= @args.greenCount;
+	var green = (@value & @args._greenMask) >> shift;
+	green <<= 8 - @args.greenCount;
+	
+	shift -= @args.blueCount;
+	var blue  = (@value & @args._blueMask) >> shift;
+	blue <<= 8 - @args.blueCount;
+	
+	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+}
