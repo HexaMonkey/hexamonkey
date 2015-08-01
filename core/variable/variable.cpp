@@ -223,9 +223,9 @@ Variant VariableImplementation::doGetValue()
     return nullVariant;
 }
 
-void VariableImplementation::doSetValue(const Variant &/*value*/)
+void VariableImplementation::doSetValue(const Variant &value)
 {
-    Log::warning("Trying to assign a value to a variable that doesn't support assignment");
+    Log::warning("Trying to assign a value ", value," to a variable that doesn't support assignment");
 }
 
 Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modifiable*/, bool /*createIfNeeded*/)
@@ -233,14 +233,14 @@ Variable VariableImplementation::doGetField(const Variant &/*key*/, bool /*modif
     return Variable();
 }
 
-void VariableImplementation::doSetField(const Variant &/*key*/, const Variable &/*variable*/)
+void VariableImplementation::doSetField(const Variant &key, const Variable &/*variable*/)
 {
-    Log::warning("Trying to assign a field on a variable that doesn't support assignment");
+    Log::warning("Trying to assign a field ", key," on a variable that doesn't support assignment");
 }
 
 void VariableImplementation::doRemoveField(const Variant &key)
 {
-    Log::warning("Trying to remove a field on a variable that doesn't support removal");
+    Log::warning("Trying to remove a field ", key," on a variable that doesn't support removal");
 }
 
 
