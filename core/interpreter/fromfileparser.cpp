@@ -26,14 +26,14 @@
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
     : ContainerParser(object, module),
       _object(object),
-      _scope(new LocalScope(object.variable()), true),
+      _scope(new LocalScope(object.parserVariableToBeAdded(this)), true),
       _headerEnd(headerEnd),
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
       _tailExecution(classDefinition.node(1), _evaluator, _scope, this),
       _needTailParsing(needTailParsing)
 {
-    _scope.setField("@args", Variable(new ParserTypeScope(*this), true));
+    _scope.setField("@args", object.parserTypeScopeToBeAdded(this));
     UNUSED(hmcElemNames);
 
     auto bodyBlock = classDefinition.node(0);

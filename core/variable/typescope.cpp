@@ -205,7 +205,7 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
         if(mType) {
             return Variable::ref(mType->parameterValue(parameterIndex));
         } else {
-            return Variable::constRef(cType.parameterValue(parameterIndex));
+            return Variable::copy(cType.parameterValue(parameterIndex));
         }
     } else {
         return Variable();
@@ -234,17 +234,17 @@ const ObjectType &TypeScope::constType()
     return _constType;
 }
 
-ParserTypeScope::ParserTypeScope(Parser &parser)
+ParserTypeScope::ParserTypeScope(std::shared_ptr<Parser> parser)
     : _parser(parser)
 {
 }
 
 ObjectType *ParserTypeScope::modifiableType()
 {
-    return _parser.modifiableType();
+    return _parser->modifiableType();
 }
 
 const ObjectType &ParserTypeScope::constType()
 {
-    return _parser.constType();
+    return _parser->constType();
 }

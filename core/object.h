@@ -280,9 +280,15 @@ class Object
 
         void dumpStreamToFile(const std::string& path);
 
+
         const Variable& variable();
         const Variable& contextVariable(bool createIfNeeded = false);
         const Variable& attributesVariable(bool createIfNeeded = false);
+
+        Variable parserVariable(Parser* parser);
+        Variable parserTypeScope(Parser* parser);
+        Variable parserVariableToBeAdded(Parser* parser);
+        Variable parserTypeScopeToBeAdded(Parser* parser);
 
         bool isValid() const;
         void invalidate();
@@ -291,7 +297,6 @@ class Object
         void setEndianness(const Endianness &endianness);
 
     private:
-
         friend class Module;
         friend class ContainerParser;
 
@@ -321,7 +326,7 @@ class Object
         std::vector<std::unique_ptr<Object> > _ownedChildren;
         std::unordered_map<std::string, Object*> _lookUpTable;
 
-        std::vector<std::unique_ptr<Parser> > _parsers;
+        std::vector<std::shared_ptr<Parser> > _parsers;
         bool _expandOnAddition;
 
         size_t _parsedCount;
@@ -338,6 +343,8 @@ class Object
         bool _valid;
 
         Endianness _endianness;
+
+        std::shared_ptr<Parser> _toBeAddedParser;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

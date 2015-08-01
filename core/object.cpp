@@ -25,6 +25,7 @@
 #include "core/variable/objectcontext.h"
 #include "core/variable/objectattributes.h"
 #include "core/variable/objectscope.h"
+#include "core/variable/typescope.h"
 
 
 #define BUFFER_SIZE 1048576
@@ -238,6 +239,44 @@ void Object::dumpStreamToFile(const std::string &path)
 {
     std::ofstream out (path, std::ios::out | std::ios::binary);
     dumpStream(out);
+}
+
+Variable Object::parserVariable(Parser *parser)
+{
+    for (const std::shared_ptr<Parser> aParser : _parsers) {
+        if (aParser.get() == parser) {
+            return Variable(new ObjectScope(*this, aParser), true);
+        }
+    }
+    Log::error("Could not get parser variable");
+    return Variable();
+}
+
+Variable Object::parserTypeScope(Parser *parser)
+{
+    for (const std::shared_ptr<Parser> aParser : _parsers) {
+        if (aParser.get() == parser) {
+            return Variable(new ParserTypeScope(aParser), true);
+        }
+    }
+    Log::error("Could not get parser type variable");
+    return Variable();
+}
+
+Variable Object::parserVariableToBeAdded(Parser *parser)
+{
+    if (!_toBeAddedParser) {
+        _toBeAddedParser.reset(parser);
+    }
+    return Variable(new ObjectScope(*this, _toBeAddedParser), true);
+}
+
+Variable Object::parserTypeScopeToBeAdded(Parser *parser)
+{
+    if (!_toBeAddedParser) {
+        _toBeAddedParser.reset(parser);
+    }
+    return Variable(new ParserTypeScope(_toBeAddedParser), true);
 }
 
 const Variable &Object::variable()
@@ -625,7 +664,12 @@ void Object::addParser(Parser *parser)
             parseBody();
             parser->parseHead();
         }
-        _parsers.push_back(std::unique_ptr<Parser>(parser));
+        if (_toBeAddedParser) {
+            _parsers.push_back(_toBeAddedParser);
+            _toBeAddedParser.reset();
+        } else {
+            _parsers.push_back(std::shared_ptr<Parser>(parser));
+        }
     }
 }
 

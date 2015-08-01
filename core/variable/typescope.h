@@ -43,12 +43,12 @@ private:
 class ParserTypeScope : public AbstractTypeScope
 {
 public:
-    ParserTypeScope(Parser& parser);
+    ParserTypeScope(std::shared_ptr<Parser> parser);
 protected:
     virtual ObjectType* modifiableType() override;
     virtual const ObjectType& constType() override;
 private:
-    Parser& _parser;
+    std::shared_ptr<Parser> _parser;
 };
 
 

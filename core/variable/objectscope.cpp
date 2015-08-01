@@ -5,6 +5,7 @@
 #include "core/object.h"
 
 #include "core/variable/typescope.h"
+#include "core/objecttypetemplate.h"
 
 #define A_SIZE 0
 #define A_PARENT 1
@@ -174,6 +175,11 @@ ObjectScope::ObjectScope(Object &object)
 {
 }
 
+ObjectScope::ObjectScope(Object &object, const std::shared_ptr<Parser> &parser)
+    :_object(object), _parser(parser)
+{
+}
+
 Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
     if (key.isValueless()) {
@@ -263,12 +269,26 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                 }
             }
         } else {
-
-            Object* elem = _object.lookUp(name, true);
-            if (elem != nullptr) {
-                return elem->variable();
+            if (_parser) {
+                Object* elem = _object.lookUp(name, false);
+                if (elem != nullptr) {
+                    return elem->variable();
+                } else {
+                    const ObjectType& type = _parser->constType();
+                    int parameterIndex = type.typeTemplate().parameterNumber(name);
+                    if (parameterIndex != -1) {
+                        return Variable::copy(type.parameterValue(parameterIndex));
+                    } else {
+                        return Variable();
+                    }
+                }
             } else {
-                return Variable();
+                Object* elem = _object.lookUp(name, true);
+                if (elem != nullptr) {
+                    return elem->variable();
+                } else {
+                    return Variable();
+                }
             }
         }
 
