@@ -248,9 +248,14 @@ bool DefaultModule::doLoad()
     addTemplate(string);
     addParser("String", []parserLambda
     {
-        if(type.parameterSpecified(0))
-            return new WordParser(object, type.parameterValue(0).toInteger());
-        return new Utf8StringParser(object);
+        int numberOfChars;
+        if(type.parameterSpecified(0)) {
+            numberOfChars = (int) type.parameterValue(0).toInteger();
+        } else {
+            numberOfChars = -1;
+        }
+
+        return new Utf8StringParser(object, numberOfChars);
     });
     setFixedSize("String", []fixedSizeLambda
     {

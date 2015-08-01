@@ -630,10 +630,10 @@
 3067528x464                  ItunesDescriptionBox 
 3067528x32                       uint(32) size = 58
 3067560x32                       string(4) type = "ilst"
-3067592x400                      ItunesTagBox("ctoo") 
+3067592x400                      ItunesTagBox("?too") 
 3067592x32                           uint(32) size = 50
-3067624x32                           string(4) type = "©too"
-3067656x336                          ItunesDataBox("ctoo") data 
+3067624x32                           string(4) type = "?too"
+3067656x336                          ItunesDataBox("?too") data 
 3067656x32                               uint(32) size = 42
 3067688x32                               string(4) type = "data"
 3067720x32                               uint(32) data_type = 1

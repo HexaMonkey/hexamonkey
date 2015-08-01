@@ -20,22 +20,14 @@
 
 #include "core/parser.h"
 
-class WordParser : public SimpleParser
+class Utf8StringParser : public SimpleParser
 {
 public:
-    WordParser(Object& object, int numberOfChars);
+    Utf8StringParser(Object& object, int numberOfChars);
 protected:
     void doParseHead();
 private:
     int numberOfChars;
-};
-
-class Utf8StringParser : public SimpleParser
-{
-public:
-    Utf8StringParser(Object& object);
-protected:
-    void doParseHead();
 };
 
 class WideStringParser : public SimpleParser

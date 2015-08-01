@@ -18,25 +18,8 @@
 #include "core/modules/default/wordparser.h"
 #include "core/log/logmanager.h"
 
-
-WordParser::WordParser(Object &object, int numberOfChars)
+Utf8StringParser::Utf8StringParser(Object &object, int numberOfChars)
     : SimpleParser(object), numberOfChars(numberOfChars)
-{
-}
-
-void WordParser::doParseHead()
-{
-    object().setSize(numberOfChars * 8 );
-    char* _word = new char[numberOfChars+1];
-    object().file().read(_word, object().size());
-    _word[numberOfChars] = '\0';
-    object().setValue(std::string(_word));
-    delete(_word);
-}
-
-
-Utf8StringParser::Utf8StringParser(Object &object)
-    : SimpleParser(object)
 {
 }
 
@@ -44,10 +27,11 @@ void Utf8StringParser::doParseHead()
 {
     std::stringstream S;
     std::streamoff stringLength = 0;
-    while(object().file().good())
+    while((numberOfChars == -1 || stringLength < numberOfChars) && object().file().good())
     {
         char ch;
         object().file().read(&ch, 8);
+
         ++stringLength;
         if(ch == '\0')
         {
@@ -81,7 +65,11 @@ void Utf8StringParser::doParseHead()
         }
     }
     object().setValue(S.str());
-    object().setSize(8*stringLength);
+    if (numberOfChars == -1) {
+        object().setSize(8 * stringLength);
+    } else {
+        object().setSize(8 * numberOfChars);
+    }
 }
 
 
