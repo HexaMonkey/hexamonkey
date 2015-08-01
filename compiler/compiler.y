@@ -407,6 +407,7 @@ name_identifier:
     IDENT {push_string(HMC_IDENTIFIER, $1);}
    |'*'   {push_string(HMC_IDENTIFIER, "*");}
    |'#'   {push_string(HMC_IDENTIFIER, "#");}
+   |'(' right_value ')' 
     
 right_value:
      right_value '=' right_value                 {handle_op(HMC_ASSIGN_OP);}

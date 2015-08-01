@@ -201,7 +201,12 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
     if(hasParser())
     {
         ObjectType type = eval.rightValue(declaration.node(0)).value().toObjectType();
-        std::string name = declaration.node(1).payload().toString();
+
+        const Program& nameProgram = declaration.node(1);
+
+        std::string name = nameProgram.tag() == HMC_IDENTIFIER ?
+                               nameProgram.payload().toString()
+                             : eval.rightValue(nameProgram).value().toString();
 #ifdef EXECUTION_TRACE
         std::stringstream S;
         S<<"Declaration "<<type<<" "<<name;
