@@ -32,6 +32,7 @@ virtual class Interoperability(namespace, tag) extends Data(96)
     @attr._valueType = valueType;
     
     ...
+    valueType = @attr._valueType;
     var valueSize = %sizeof(valueType);
     if (valueSize > @rem) {
         uint(32) valueOffset;
@@ -39,6 +40,9 @@ virtual class Interoperability(namespace, tag) extends Data(96)
     } else {
         (valueType) value;
         @value = value;
+        if (value.@attr.type) {
+            @attr.type = value.@attr.type;
+        }
         if (@rem) {
             Data(@rem) padding;
         }
@@ -106,7 +110,16 @@ class SecurityClassificationInteroperability as Interoperability("Image", 0x9212
 
 class YCbCrPositioningInteroperability as Interoperability("Image", 0x0213)
 {
+    @attr._valueType = YCbCrPositioniningValue();
+}
 
+class YCbCrPositioniningValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "centered";
+    } else if (@value == 2) {
+        @attr.type = "co-sited";
+    }
 }
 
 class UniqueCameraModelInteroperability as Interoperability("Image", 0xC614)
@@ -186,12 +199,30 @@ class BitsPerSampleInteroperability as Interoperability("Image", 0x0102)
 
 class CompressionInteroperability as Interoperability("Image", 0x0103)
 {
+    @attr._valueType = CompressionValue();
+}
 
+class CompressionValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "uncompressed";
+    } else if (@value == 6) {
+        @attr.type = "JPEG compression";
+    }
 }
 
 class PhotometricInterpretationInteroperability as Interoperability("Image", 0x0106)
 {
+    @attr._valueType = PhotometricInterpretationValue();
+}
 
+class PhotometricInterpretationValue extends uint(16)
+{
+    if (@value == 2) {
+        @attr.type = "RGB";
+    } else if (@value == 6) {
+        @attr.type = "YCbCr";
+    }
 }
 
 class ThreshholdingInteroperability as Interoperability("Image", 0x0107)
@@ -241,7 +272,28 @@ class StripOffsetsInteroperability as Interoperability("Image", 0x0111)
 
 class OrientationInteroperability as Interoperability("Image", 0x0112)
 {
+    @attr._valueType = OrientationValue();
+}
 
+class OrientationValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "top-left";
+    } else if (@value == 2) {
+        @attr.type = "top-right";
+    } else if (@value == 3) {
+        @attr.type = "bottom-right";
+    } else if (@value == 4) {
+        @attr.type = "bottom-left";
+    } else if (@value == 5) {
+        @attr.type = "left-top";
+    } else if (@value == 6) {
+        @attr.type = "right-top";
+    } else if (@value == 7) {
+        @attr.type = "right-bottom";
+    } else if (@value == 8) {
+        @attr.type = "left-bottom";
+    }
 }
 
 class SamplesPerPixelInteroperability as Interoperability("Image", 0x0115)
@@ -271,7 +323,16 @@ class YResolutionInteroperability as Interoperability("Image", 0x011B)
 
 class PlanarConfigurationInteroperability as Interoperability("Image", 0x011C)
 {
+    @attr._valueType = PlanarConfigurationValue();
+}
 
+class PlanarConfigurationValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "chunky format";
+    } else if (@value == 2) {
+        @attr.type = "planar format";
+    }
 }
 
 class GrayResponseUnitInteroperability as Interoperability("Image", 0x0122)
@@ -296,7 +357,16 @@ class T6OptionsInteroperability as Interoperability("Image", 0x0125)
 
 class ResolutionUnitInteroperability as Interoperability("Image", 0x0128)
 {
+    @attr._valueType = ResolutionUnitValue();
+}
 
+class ResolutionUnitValue extends uint(16)
+{
+    if (@value == 2) {
+        @attr.type = "inches";
+    } else if (@value == 3) {
+        @attr.type = "centimeters";
+    }
 }
 
 class TransferFunctionInteroperability as Interoperability("Image", 0x012D)
@@ -506,7 +576,15 @@ class FlashEnergyInteroperability as Interoperability("Image", 0x920B)
 
 class SpatialFrequencyResponseInteroperability as Interoperability("Image", 0x920C)
 {
+    @attr._valueType = SpatialFrequencyData(count);
+}
 
+class SpatialFrequencyData(_count) extends Data(_count)
+{
+    uint(16) columns;
+    uint(16) rows;
+    String columnItemNames[columns];
+    srational values[columns][rows];
 }
 
 class NoiseInteroperability as Interoperability("Image", 0x920D)
@@ -536,7 +614,18 @@ class YCbCrCoefficientsInteroperability as Interoperability("Image", 0x0211)
 
 class YCbCrSubSamplingInteroperability as Interoperability("Image", 0x0212)
 {
+    @attr._valueType = YCbCrSubSamplingValue();
+}
 
+class YCbCrSubSamplingValue extends Tuple(uint(16), 2)
+{
+    if (self[0].@value == 2) {
+        if (self[1].@value == 1) {
+            @attr.type = "YCbCr4:2:2";
+        } else if (self[1].@value == 2) {
+            @attr.type = "YCbCr4:2:0";
+        }
+    }
 }
 
 class DNGBackwardVersionInteroperability as Interoperability("Image", 0xC613)
@@ -561,7 +650,26 @@ class TIFFEPStandardIDInteroperability as Interoperability("Image", 0x9216)
 
 class SensingMethodInteroperability as Interoperability("Image", 0x9217)
 {
+    @attr._valueType = SensingMethodValue();
+}
 
+class SensingMethodValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "Not defined";
+    } else if (@value == 2) {
+        @attr.type = "One-chip area sensor";
+    } else if (@value == 3) {
+        @attr.type = "Two-chip area sensor";
+    } else if (@value == 4) {
+        @attr.type = "Three-chip area sensor";
+    } else if (@value == 5) {
+        @attr.type = "Color sequential area sensor";
+    } else if (@value == 7) {
+        @attr.type = "Trilinear sensor";
+    } else if (@value == 8) {
+        @attr.type = "Color sequential linear sensor";
+    }
 }
 
 class LinearizationTableInteroperability as Interoperability("Image", 0xC618)
@@ -756,7 +864,33 @@ class CFARepeatPatternDimInteroperability as Interoperability("Image", 0x828D)
 
 class CFAPatternInteroperability as Interoperability("Image", 0x828E)
 {
+    @attr._valueType = CFAPatternData(count);
+}
 
+class CFAPatternData(_count) extends Data(_count)
+{
+    uint(16) columns;
+    uint(16) rows;
+    CFAValue values[columns][rows];
+}
+
+class CFAValue extends uint(8)
+{
+    if (@value == 0) {
+        @attr.type = "RED";
+    } else if (@value == 1) {
+        @attr.type = "GREEN";
+    } else if (@value == 2) {
+        @attr.type = "BLUE";
+    } else if (@value == 3) {
+        @attr.type = "CYAN";
+    } else if (@value == 4) {
+        @attr.type = "MAGENTA";
+    } else if (@value == 5) {
+        @attr.type = "YELLOW";
+    } else if (@value == 6) {
+        @attr.type = "WHITE";
+    }
 }
 
 class BatteryLevelInteroperability as Interoperability("Image", 0x828F)
@@ -781,7 +915,19 @@ class CurrentPreProfileMatrixInteroperability as Interoperability("Image", 0xC69
 
 class CopyrightInteroperability as Interoperability("Image", 0x8298)
 {
+    @attr._valueType = CopyrightStrings(count);
+}
 
+class CopyrightStrings(count) extends Data(8*count)
+{
+    @value = "";
+    while(1) {
+        String #;
+        @value += self[];
+        if (@rem) {
+            @value += ";"; 
+        }
+    }
 }
 
 class ExposureTimeInteroperability as Interoperability("Image", 0x829A)
@@ -1006,12 +1152,33 @@ class PrintImageMatchingInteroperability as Interoperability("Image", 0xC4A5)
 
 class ExifVersionInteroperability as Interoperability("Exif", 0x9000)
 {
-
+    @attr._valueType = Version();
 }
 
 class ComponentsConfigurationInteroperability as Interoperability("Exif", 0x9101)
 {
+    @attr._valueType = ComponentsConfigurationValue(count);
+}
 
+class ComponentsConfigurationValue(count) extends Tuple(uint(8), count)
+{
+    @value = "";
+    for (var i = 0; i < count; ++i) {
+        var value = self[i];
+        if (value == 1) {
+            @value += "Y";
+        } else if (value == 2) {
+            @value += "Cb";
+        } else if (value == 3) {
+            @value += "Cr";
+        } else if (value == 4) {
+            @value += "R";
+        } else if (value == 5) {
+            @value += "G";
+        } else if (value == 6) {
+            @value += "B";
+        }
+    }
 }
 
 class CompressedBitsPerPixelInteroperability as Interoperability("Exif", 0x9102)
@@ -1046,12 +1213,88 @@ class ShutterSpeedValueInteroperability as Interoperability("Exif", 0x9201)
 
 class LightSourceInteroperability as Interoperability("Exif", 0x9208)
 {
+    @attr._valueType = LightSourceValue();
+}
 
+class LightSourceValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "unknown";
+    } else if (@value == 1) {
+        @attr.type = "Daylight";
+    } else if (@value == 2) {
+        @attr.type = "Fluorescent";
+    } else if (@value == 3) {
+        @attr.type = "Tungsten";
+    } else if (@value == 4) {
+        @attr.type = "Flash";
+    } else if (@value == 9) {
+        @attr.type = "Fine weather";
+    } else if (@value == 10) {
+        @attr.type = "Cloudy weather";
+    } else if (@value == 11) {
+        @attr.type = "Shade";
+    } else if (@value == 12) {
+        @attr.type = "Daylight fluorescentDay";
+    } else if (@value == 13) {
+        @attr.type = "Day white fluorescent";
+    } else if (@value == 14) {
+        @attr.type = "Cool white fluorescent";
+    } else if (@value == 15) {
+        @attr.type = "White fluorescent";
+    } else if (@value == 17) {
+        @attr.type = "Standard light A";
+    } else if (@value == 18) {
+        @attr.type = "Standard light B";
+    } else if (@value == 19) {
+        @attr.type = "Standard light C";
+    } else if (@value == 20) {
+        @attr.type = "D55";
+    } else if (@value == 21) {
+        @attr.type = "D65";
+    } else if (@value == 22) {
+        @attr.type = "D75";
+    } else if (@value == 23) {
+        @attr.type = "D50";
+    } else if (@value == 24) {
+        @attr.type = "ISO studio tungsten";
+    } else if (@value == 255) {
+        @attr.type = "other light source";
+    }
 }
 
 class FlashInteroperability as Interoperability("Exif", 0x9209)
 {
+    @attr._valueType = FlashData();
+}
 
+class FlashData 
+{
+    uint(1) reserved;
+    uint(1) redEyeMode;
+    uint(1) flashFunction;
+    
+    uint(2) flashMode;
+    if (flashMode == 0b01) {
+        flashMode.@attr.type = "Compulsory flash firing";
+    } else if (flashMode == 0b10) {
+        flashMode.@attr.type = "Compulsory flash suppression";
+    } else if (flashMode == 0b11) {
+        flashMode.@attr.type = "Auto mode";
+    } else {
+        flashMode.@attr.type = "unknown";
+    }
+    
+    uint(2) flashReturn;
+    if (flashReturn == 0b00) {
+        flashReturn.@attr.type = "No strobe return detection function";
+    } else if (flashReturn == 0b10) {
+        flashReturn.@attr.type = "Strobe return light not detected";
+    } else if (flashReturn == 0b11) {
+        flashReturn.@attr.type = "Strobe return light detected";
+    }
+    
+    uint(1) flashFired;
 }
 
 class FocalLengthInteroperability as Interoperability("Exif", 0x920A)
@@ -1116,7 +1359,18 @@ class ExposureIndexInteroperability as Interoperability("Exif", 0xA215)
 
 class ContrastInteroperability as Interoperability("Exif", 0xA408)
 {
+    @attr._valueType = ContrastValue();
+}
 
+class ContrastValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Normal";
+    } else if (@value == 1) {
+        @attr.type = "Soft";
+    } else if (@value == 2) {
+        @attr.type = "Hard";
+    }
 }
 
 class SensingMethodInteroperability as Interoperability("Exif", 0xA217)
@@ -1141,7 +1395,14 @@ class FNumberInteroperability as Interoperability("Exif", 0x829D)
 
 class FileSourceInteroperability as Interoperability("Exif", 0xA300)
 {
+    @attr._valueType = FileSourceValue();
+}
 
+class FileSourceValue extends uint(8)
+{
+    if (@value == 3) {
+        @attr.type = "DSC";
+    }
 }
 
 class InteroperabilityTagInteroperability as Interoperability("Exif", 0xA005)
@@ -1161,7 +1422,30 @@ class CameraOwnerNameInteroperability as Interoperability("Exif", 0xA430)
 
 class ExposureProgramInteroperability as Interoperability("Exif", 0x8822)
 {
+    @attr._valueType = ExposureProgramValue();
+}
 
+class ExposureProgramValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Not defined";
+    } else if (@value == 1) {
+        @attr.type = "Manual";
+    } else if (@value == 2) {
+        @attr.type = "Normal program";
+    } else if (@value == 3) {
+        @attr.type = "Aperture priority";
+    } else if (@value == 4) {
+        @attr.type = "Shutter priority";
+    } else if (@value == 5) {
+        @attr.type = "Creative program";
+    } else if (@value == 6) {
+        @attr.type = "Action Program";
+    } else if (@value == 7) {
+        @attr.type = "Portrait mode";
+    } else if (@value == 8) {
+        @attr.type = "Landscape mode";
+    }
 }
 
 class SpectralSensitivityInteroperability as Interoperability("Exif", 0x8824)
@@ -1171,7 +1455,14 @@ class SpectralSensitivityInteroperability as Interoperability("Exif", 0x8824)
 
 class UserCommentInteroperability as Interoperability("Exif", 0x9286)
 {
+    @attr._valueType = UserCommentData(count);
+}
 
+class UserCommentData(_count) extends Data(8*count)
+{
+    String(8) code;
+    String payload;
+    @value = payload;
 }
 
 class ISOSpeedRatingsInteroperability as Interoperability("Exif", 0x8827)
@@ -1181,17 +1472,55 @@ class ISOSpeedRatingsInteroperability as Interoperability("Exif", 0x8827)
 
 class OECFInteroperability as Interoperability("Exif", 0x8828)
 {
+    @attr._valueType = OECFData(count);
+}
 
+class OECFData(_count) extends Data(_count)
+{
+    uint(16) columns;
+    uint(16) rows;
+    String columnItemNames[columns];
+    srational values[columns][rows];
 }
 
 class WhiteBalanceInteroperability as Interoperability("Exif", 0xA403)
 {
+    @attr._valueType = WhiteBalanceValue();
+}
 
+class WhiteBalanceValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Auto white balance";
+    } else if (@value == 1) {
+        @attr.type = "Manual white balance";
+    }
 }
 
 class MeteringModeInteroperability as Interoperability("Exif", 0x9207)
 {
+    @attr._valueType = MeteringModeValue();
+}
 
+class MeteringModeValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "unknown";
+    } else if (@value == 1) {
+        @attr.type = "Average";
+    } else if (@value == 2) {
+        @attr.type = "CenterWeightedAverage";
+    } else if (@value == 3) {
+        @attr.type = "Spot";
+    } else if (@value == 4) {
+        @attr.type = "MultiSpot";
+    } else if (@value == 5) {
+        @attr.type = "Pattern";
+    } else if (@value == 6) {
+        @attr.type = "Partial";
+    } else if (@value == 255) {
+        @attr.type = "other";
+    }
 }
 
 class LensSpecificationInteroperability as Interoperability("Exif", 0xA432)
@@ -1236,7 +1565,18 @@ class ISOSpeedLatitudezzzInteroperability as Interoperability("Exif", 0x8835)
 
 class SaturationInteroperability as Interoperability("Exif", 0xA409)
 {
+    @attr._valueType = SaturationValue();
+}
 
+class SaturationValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Normal";
+    } else if (@value == 1) {
+        @attr.type = "Low saturation";
+    } else if (@value == 2) {
+        @attr.type = "High saturation";
+    }
 }
 
 class LensModelInteroperability as Interoperability("Exif", 0xA434)
@@ -1246,12 +1586,30 @@ class LensModelInteroperability as Interoperability("Exif", 0xA434)
 
 class SceneTypeInteroperability as Interoperability("Exif", 0xA301)
 {
+    @attr._valueType = SceneTypeValue();
+}
 
+class SceneTypeValue extends uint(8)
+{
+    if (@value == 1) {
+        @attr.type = "A directly photographed image";
+    }
 }
 
 class SharpnessInteroperability as Interoperability("Exif", 0xA40A)
 {
+    @attr._valueType = SharpnessValue();
+}
 
+class SharpnessValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Normal";
+    } else if (@value == 1) {
+        @attr.type = "Soft";
+    } else if (@value == 2) {
+        @attr.type = "Hard";
+    }
 }
 
 class LensSerialNumberInteroperability as Interoperability("Exif", 0xA435)
@@ -1271,22 +1629,56 @@ class PixelXDimensionInteroperability as Interoperability("Exif", 0xA002)
 
 class DeviceSettingDescriptionInteroperability as Interoperability("Exif", 0xA40B)
 {
+    @attr._valueType = DeviceSettingData(count);
+}
 
+class DeviceSettingData(_count) extends Data(_count)
+{
+    uint(16) columns;
+    uint(16) rows;
+    String(columns) values[rows];
 }
 
 class CustomRenderedInteroperability as Interoperability("Exif", 0xA401)
 {
+    @attr._valueType = CustomRenderedValue();
+}
 
+class CustomRenderedValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Normal process";
+    } else if (@value == 1) {
+        @attr.type = "Custom process";
+    }
 }
 
 class FlashpixVersionInteroperability as Interoperability("Exif", 0xA000)
 {
+    @attr._valueType = Version();
+}
 
+class Version extends String(4)
+{
+    @value = %int(@value)/100.0;
 }
 
 class SubjectDistanceRangeInteroperability as Interoperability("Exif", 0xA40C)
 {
+    @attr._valueType = SubjectDistanceValue();
+}
 
+class SubjectDistanceValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "unknown";
+    } else if (@value == 1) {
+        @attr.type = "Macro";
+    } else if (@value == 2) {
+        @attr.type = "Close view";
+    } else if (@value == 3) {
+        @attr.type = "Distant view";
+    }
 }
 
 class LensMakeInteroperability as Interoperability("Exif", 0xA433)
@@ -1306,7 +1698,16 @@ class CFAPatternInteroperability as Interoperability("Exif", 0xA302)
 
 class ColorSpaceInteroperability as Interoperability("Exif", 0xA001)
 {
+    @attr._valueType = ColorSpaceValue();
+}
 
+class ColorSpaceValue extends uint(16)
+{
+    if (@value == 1) {
+        @attr.type = "sRGB";
+    } else if (@value == 0xffff) {
+        @attr.type = "Uncalibrated";
+    }
 }
 
 class PixelYDimensionInteroperability as Interoperability("Exif", 0xA003)
@@ -1321,7 +1722,16 @@ class FocalPlaneResolutionUnitInteroperability as Interoperability("Exif", 0xA21
 
 class ExposureModeInteroperability as Interoperability("Exif", 0xA402)
 {
+    @attr._valueType = ExposureModeValue();
+}
 
+class ExposureModeValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Normal process";
+    } else if (@value == 1) {
+        @attr.type = "Custom process";
+    }
 }
 
 class BodySerialNumberInteroperability as Interoperability("Exif", 0xA431)
@@ -1331,12 +1741,40 @@ class BodySerialNumberInteroperability as Interoperability("Exif", 0xA431)
 
 class SceneCaptureTypeInteroperability as Interoperability("Exif", 0xA406)
 {
+    @attr._valueType = SceneCaptureValue();
+}
 
+class SceneCaptureValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Standard";
+    } else if (@value == 1) {
+        @attr.type = "Landscape";
+    } else if (@value == 2) {
+        @attr.type = "Portrait";
+    } else if (@value == 3) {
+        @attr.type = "Night scene";
+    }
 }
 
 class GainControlInteroperability as Interoperability("Exif", 0xA407)
 {
+    @attr._valueType = GainControlValue();
+}
 
+class GainControlValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "None";
+    } else if (@value == 1) {
+        @attr.type = "Low gain up";
+    } else if (@value == 2) {
+        @attr.type = "High gain up";
+    } else if (@value == 3) {
+        @attr.type = "Low gain down";
+    } else if (@value == 4) {
+        @attr.type = "High gain down";
+    }
 }
 
 class SubjectLocationInteroperability as Interoperability("Exif", 0xA214)
@@ -1381,7 +1819,16 @@ class GPSLongitudeInteroperability as Interoperability("GPS", 0x0004)
 
 class GPSAltitudeRefInteroperability as Interoperability("GPS", 0x0005)
 {
+    @attr._valueType = GPSAltitudeRefValue();
+}
 
+class GPSAltitudeRefValue extends uint(16)
+{
+    if (@value == 0) {
+        @attr.type = "Sea level";
+    } else if (@value == 1) {
+        @attr.type = "Sea level reference (negative value)";
+    }
 }
 
 class GPSAltitudeInteroperability as Interoperability("GPS", 0x0006)
