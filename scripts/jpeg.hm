@@ -17,6 +17,10 @@
 
 addMagicNumber FF D8
 
+addExtension jpg
+
+addExtension jpeg
+
 import rgb exif_interop
 
 class JpegFile as File,
@@ -244,76 +248,30 @@ class Exif extends ApplicationSegment
     ExifData(@rem) *;    
 }
 
-class ExifData(_size) extends Data(_size)
-{
-    @context.offset = @beginningPos;
-    TiffHeader _header;
-    
-    @pos = 8*_header.OffsetOfInteroperability;
-    IFD("Image") zerothIFD;
-    
-    var exifIFDOffset = zerothIFD[ExifTagInteroperability()];
+forward ApplicationSegment(1, "Exif") to Exif
+forward ApplicationSegment(1, "EXIF") to Exif
+
+class ExifData(_size) extends TiffData(_size)
+{    
+    var exifIFDOffset = IFD0[ExifTagInteroperability()];
     if (exifIFDOffset) {
         @pos = 8*exifIFDOffset;
         IFD("Exif") exifIFD;
     }
     
-    var gpsIFDOffset = zerothIFD[GPSTagInteroperability()];
+    var gpsIFDOffset = IFD0[GPSTagInteroperability()];
     if (gpsIFDOffset) {
         @pos = 8*gpsIFDOffset;
         IFD("GPS") gpsIFD;
     }
     
-    var firstIFDOffset = zerothIFD.NextInteroperabilityIndex;
-    if (firstIFDOffset) {
-        @pos = 8*firstIFDOffset;
-        IFD("Image") firstIFD;
-        var ThumbnailOffset = firstIFD[JPEGInterchangeFormatInteroperability()];
-        var ThumbnailOffsetLength = firstIFD[JPEGInterchangeFormatLengthInteroperability()];
-        if (ThumbnailOffset && ThumbnailOffset) {
-            @pos = 8*ThumbnailOffset;
-            JpegData(8*ThumbnailOffsetLength) ThumbnailData;
-        }
+    var ThumbnailOffset = IFD1[JPEGInterchangeFormatInteroperability()];
+    var ThumbnailOffsetLength = IFD1[JPEGInterchangeFormatLengthInteroperability()];
+    if (ThumbnailOffset && ThumbnailOffset) {
+        @pos = 8*ThumbnailOffset;
+        JpegData(8*ThumbnailOffsetLength) ThumbnailData;
     }
 }
-
-class TiffHeader
-{
-    String(2) byteOrder;
-    
-    if (byteOrder == "II") {
-        @endianness = @parent.@endianness = "littleEndian";
-    } else if (byteOrder == "MM"){
-        @endianness = @parent.@endianness = "bigEndian";
-    } else {
-        %error("Unrecognized byte order");
-    }
-    uint(16) n42;
-    uint(32) OffsetOfInteroperability;
-}
-
-class IFD(namespace)
-{
-    uint(16) NumberOfInteroperability;
-    for (var i = 0, n = NumberOfInteroperability; i < n; ++i) {
-        Interoperability(@args.namespace) _;
-    }
-    uint(32) NextInteroperabilityIndex;
-    for (var i = 0, n = NumberOfInteroperability; i < n; ++i) {
-        interoperability := self[1+i];
-        if (interoperability.@linkTo) {
-            @absPos = interoperability.@linkTo;
-            (interoperability.@attr._valueType) _;
-            interoperability.@value = _.@value;
-            _.@attr.valueFor = self[1+i].@type;
-        }
-    }
-}
-
-
-forward ApplicationSegment(1, "Exif") to Exif
-forward ApplicationSegment(1, "EXIF") to Exif
-
  
 class XMP as ApplicationSegment(1, "http://ns.adobe.com/xap/1.0/")
 {

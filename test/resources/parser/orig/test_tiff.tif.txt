@@ -1,0 +1,196 @@
+0x607776     TiffFile 
+0x64             TiffHeader 
+0x16                 String(2) byteOrder = "MM"
+16x16                uint(16) n42 = 42
+32x32                uint(32) OffsetOfInteroperability = 8
+64x607712        IFD("Image") IFD0 
+64x16                uint(16) NumberOfInteroperability = 16
+80x96                ImageWidthInteroperability = 439
+80x16                    uint(16) tag = 256
+96x16                    uint(16) type = 4
+112x32                   uint(32) count = 1
+144x32                   uint(32) value = 439
+176x96               ImageLengthInteroperability = 167
+176x16                   uint(16) tag = 257
+192x16                   uint(16) type = 4
+208x32                   uint(32) count = 1
+240x32                   uint(32) value = 167
+272x96               BitsPerSampleInteroperability = 8
+272x16                   uint(16) tag = 258
+288x16                   uint(16) type = 3
+304x32                   uint(32) count = 1
+336x16                   uint(16) value = 8
+352x16                   Data padding 
+368x96               CompressionInteroperability = 1
+368x16                   uint(16) tag = 259
+384x16                   uint(16) type = 3
+400x32                   uint(32) count = 1
+432x16                   CompressionValue value = 1
+448x16                   Data padding 
+464x96               PhotometricInterpretationInteroperability = 1
+464x16                   uint(16) tag = 262
+480x16                   uint(16) type = 3
+496x32                   uint(32) count = 1
+528x16                   PhotometricInterpretationValue value = 1
+544x16                   Data padding 
+560x96               ImageDescriptionInteroperability = "<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Warning: this comment is an OME-XML metadata block, which contains crucial dimensional parameters and other important metadata. Please edit cautiously (if at all), and back up the original data before doing so. For more information, see the OME-TIFF web site: http://ome-xml.org/wiki/OmeTiff. --><OME xmlns="http://www.openmicroscopy.org/Schemas/OME/2015-01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" UUID="urn:uuid:3ae3a3aa-3e3c-46ce-a482-2de397ed7947" xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2015-01 http://www.openmicroscopy.org/Schemas/OME/2015-01/ome.xsd"><Image ID="Image:0" Name="single-channel"><Pixels BigEndian="true" DimensionOrder="XYZCT" ID="Pixels:0" SizeC="1" SizeT="1" SizeX="439" SizeY="167" SizeZ="1" Type="int8"><Channel ID="Channel:0:0" SamplesPerPixel="1"><LightPath/></Channel><TiffData FirstC="0" FirstT="0" FirstZ="0" IFD="0" PlaneCount="1"><UUID FileName="single-channel.ome.tif">urn:uuid:3ae3a3aa-3e3c-46ce-a482-2de397ed7947</UUID></TiffData></Pixels></Image></OME>"
+560x16                   uint(16) tag = 270
+576x16                   uint(16) type = 2
+592x32                   uint(32) count = 1085
+624x32                   uint(32) valueOffset = 74887
+656x96               StripOffsetsInteroperability 
+656x16                   uint(16) tag = 273
+672x16                   uint(16) type = 4
+688x32                   uint(32) count = 167
+720x32                   uint(32) valueOffset = 206
+752x96               SamplesPerPixelInteroperability = 1
+752x16                   uint(16) tag = 277
+768x16                   uint(16) type = 3
+784x32                   uint(32) count = 1
+816x16                   uint(16) value = 1
+832x16                   Data padding 
+848x96               RowsPerStripInteroperability = 1
+848x16                   uint(16) tag = 278
+864x16                   uint(16) type = 4
+880x32                   uint(32) count = 1
+912x32                   uint(32) value = 1
+944x96               StripByteCountsInteroperability 
+944x16                   uint(16) tag = 279
+960x16                   uint(16) type = 4
+976x32                   uint(32) count = 167
+1008x32                  uint(32) valueOffset = 874
+1040x96              XResolutionInteroperability = 0
+1040x16                  uint(16) tag = 282
+1056x16                  uint(16) type = 5
+1072x32                  uint(32) count = 1
+1104x32                  uint(32) valueOffset = 1542
+1136x96              YResolutionInteroperability = 0
+1136x16                  uint(16) tag = 283
+1152x16                  uint(16) type = 5
+1168x32                  uint(32) count = 1
+1200x32                  uint(32) valueOffset = 1550
+1232x96              PlanarConfigurationInteroperability = 1
+1232x16                  uint(16) tag = 284
+1248x16                  uint(16) type = 3
+1264x32                  uint(32) count = 1
+1296x16                  PlanarConfigurationValue value = 1
+1312x16                  Data padding 
+1328x96              ResolutionUnitInteroperability = 3
+1328x16                  uint(16) tag = 296
+1344x16                  uint(16) type = 3
+1360x32                  uint(32) count = 1
+1392x16                  ResolutionUnitValue value = 3
+1408x16                  Data padding 
+1424x96              SoftwareInteroperability = "OME Bio-Formats"
+1424x16                  uint(16) tag = 305
+1440x16                  uint(16) type = 2
+1456x32                  uint(32) count = 16
+1488x32                  uint(32) valueOffset = 1558
+1520x96              SampleFormatInteroperability = 2
+1520x16                  uint(16) tag = 339
+1536x16                  uint(16) type = 3
+1552x32                  uint(32) count = 1
+1584x16                  uint(16) value = 2
+1600x16                  Data padding 
+1616x32              uint(32) NextInteroperabilityIndex = 0
+599096x8680          String(1085) = "<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Warning: this comment is an OME-XML metadata block, which contains crucial dimensional parameters and other important metadata. Please edit cautiously (if at all), and back up the original data before doing so. For more information, see the OME-TIFF web site: http://ome-xml.org/wiki/OmeTiff. --><OME xmlns="http://www.openmicroscopy.org/Schemas/OME/2015-01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" UUID="urn:uuid:3ae3a3aa-3e3c-46ce-a482-2de397ed7947" xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2015-01 http://www.openmicroscopy.org/Schemas/OME/2015-01/ome.xsd"><Image ID="Image:0" Name="single-channel"><Pixels BigEndian="true" DimensionOrder="XYZCT" ID="Pixels:0" SizeC="1" SizeT="1" SizeX="439" SizeY="167" SizeZ="1" Type="int8"><Channel ID="Channel:0:0" SamplesPerPixel="1"><LightPath/></Channel><TiffData FirstC="0" FirstT="0" FirstZ="0" IFD="0" PlaneCount="1"><UUID FileName="single-channel.ome.tif">urn:uuid:3ae3a3aa-3e3c-46ce-a482-2de397ed7947</UUID></TiffData></Pixels></Image></OME>"
+1648x5344            Tuple(uint(32), 167) 
+1648x32                  uint(32) = 1574
+1680x32                  uint(32) = 2013
+1712x32                  uint(32) = 2452
+1744x32                  uint(32) = 2891
+1776x32                  uint(32) = 3330
+1808x32                  uint(32) = 3769
+1840x32                  uint(32) = 4208
+1872x32                  uint(32) = 4647
+1904x32                  uint(32) = 5086
+1936x32                  uint(32) = 5525
+1968x32                  uint(32) = 5964
+2000x32                  uint(32) = 6403
+2032x32                  uint(32) = 6842
+2064x32                  uint(32) = 7281
+2096x32                  uint(32) = 7720
+2128x32                  uint(32) = 8159
+2160x32                  uint(32) = 8598
+2192x32                  uint(32) = 9037
+2224x32                  uint(32) = 9476
+2256x32                  uint(32) = 9915
+2288x32                  uint(32) = 10354
+2320x32                  uint(32) = 10793
+2352x32                  uint(32) = 11232
+2384x32                  uint(32) = 11671
+2416x32                  uint(32) = 12110
+2448x32                  uint(32) = 12549
+2480x32                  uint(32) = 12988
+2512x32                  uint(32) = 13427
+2544x32                  uint(32) = 13866
+2576x32                  uint(32) = 14305
+6992x5344            Tuple(uint(32), 167) 
+6992x32                  uint(32) = 439
+7024x32                  uint(32) = 439
+7056x32                  uint(32) = 439
+7088x32                  uint(32) = 439
+7120x32                  uint(32) = 439
+7152x32                  uint(32) = 439
+7184x32                  uint(32) = 439
+7216x32                  uint(32) = 439
+7248x32                  uint(32) = 439
+7280x32                  uint(32) = 439
+7312x32                  uint(32) = 439
+7344x32                  uint(32) = 439
+7376x32                  uint(32) = 439
+7408x32                  uint(32) = 439
+7440x32                  uint(32) = 439
+7472x32                  uint(32) = 439
+7504x32                  uint(32) = 439
+7536x32                  uint(32) = 439
+7568x32                  uint(32) = 439
+7600x32                  uint(32) = 439
+7632x32                  uint(32) = 439
+7664x32                  uint(32) = 439
+7696x32                  uint(32) = 439
+7728x32                  uint(32) = 439
+7760x32                  uint(32) = 439
+7792x32                  uint(32) = 439
+7824x32                  uint(32) = 439
+7856x32                  uint(32) = 439
+7888x32                  uint(32) = 439
+7920x32                  uint(32) = 439
+12336x64             rational = 0
+12336x32                 uint(32) numerator = 0
+12368x32                 uint(32) denominator = 1000
+12400x64             rational = 0
+12400x32                 uint(32) numerator = 0
+12432x32                 uint(32) denominator = 1000
+12464x128            String(16) = "OME Bio-Formats"
+12592x586504     StripData(167) Strip0 
+12592x3512           Data 
+16104x3512           Data 
+19616x3512           Data 
+23128x3512           Data 
+26640x3512           Data 
+30152x3512           Data 
+33664x3512           Data 
+37176x3512           Data 
+40688x3512           Data 
+44200x3512           Data 
+47712x3512           Data 
+51224x3512           Data 
+54736x3512           Data 
+58248x3512           Data 
+61760x3512           Data 
+65272x3512           Data 
+68784x3512           Data 
+72296x3512           Data 
+75808x3512           Data 
+79320x3512           Data 
+82832x3512           Data 
+86344x3512           Data 
+89856x3512           Data 
+93368x3512           Data 
+96880x3512           Data 
+100392x3512          Data 
+103904x3512          Data 
+107416x3512          Data 
+110928x3512          Data 
+114440x3512          Data 

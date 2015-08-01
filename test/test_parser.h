@@ -27,6 +27,7 @@ private slots:
     void test_messagepack();
     void test_mp4();
     void test_sqlite();
+    void test_tiff();
     void test_zip();
 
 private:
