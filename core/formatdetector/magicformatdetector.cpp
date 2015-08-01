@@ -24,7 +24,7 @@
 
 void MagicFormatDetector::addMagicNumber(const std::string& format, const std::string &magicNumber)
 {
-    _magicNumbers[format] = magicNumber;
+    _magicNumbers[magicNumber] = format;
 }
 
 void MagicFormatDetector::addMagicNumber(const std::string &format, const std::string &magicNumber, int offset)
@@ -43,8 +43,8 @@ std::string MagicFormatDetector::doGetFormat(File &file) const
     std::string bestFormat = "";
     unsigned int bestMagicLength = 0;
     for(const auto& entry:_magicNumbers) {
-        const std::string& format = entry.first;
-        std::stringstream magicNumber(entry.second);
+        const std::string& format = entry.second;
+        std::stringstream magicNumber(entry.first);
         file.seekg(0, std::ios_base::beg);
 
         if(std::all_of(std::istream_iterator<std::string>(magicNumber) , std::istream_iterator<std::string>(), [&](const std::string& token)
