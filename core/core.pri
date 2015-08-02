@@ -109,7 +109,6 @@ HEADERS  += \
     ../core/modules/default/dataparser.h \
     ../core/modules/default/tupleparser.h \
     ../core/modules/default/fileparser.h \
-    ../core/modules/default/defaulttypes.h \
     ../core/modules/default/defaultmodule.h \
     ../core/modules/default/arrayparser.h \
     ../core/modules/default/structparser.h \
@@ -117,7 +116,6 @@ HEADERS  += \
     ../core/modules/default/intparser.h \
     ../core/modules/default/floatparser.h \
     ../core/modules/default/bitparser.h \
-    ../core/modules/ebml/ebmltypes.h \
     ../core/modules/ebml/ebmlsimpleparser.h \
     ../core/modules/ebml/ebmlmodule.h \
     ../core/modules/ebml/ebmlmasterparser.h \

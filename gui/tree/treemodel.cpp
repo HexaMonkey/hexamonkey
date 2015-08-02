@@ -17,7 +17,7 @@
 
 #include <QMessageBox>
 
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 #include "gui/tree/treemodel.h"
 #include "gui/tree/treeitem.h"
 #include "gui/tree/treeobjectitem.h"
@@ -59,7 +59,7 @@ QModelIndex TreeModel::addFile(File* file, const Module& module)
     beginInsertRows(QModelIndex(),0,0);
 
     TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem, file));
-    item.setObjectMemory(module.handle(defaultTypes::file, item.file()));
+    item.setObjectMemory(module.handle(DefaultModule::file(), item.file()));
 
     QModelIndex itemIndex = index(realRowCount(QModelIndex())-1, 0, QModelIndex());
 

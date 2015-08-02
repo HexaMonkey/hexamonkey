@@ -16,7 +16,7 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/modules/ebml/ebmlcontainerparser.h"
-#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/ebml/ebmlmodule.h"
 
 EbmlContainerParser::EbmlContainerParser(Object &object, const Module &module)
     : ContainerParser(object, module)
@@ -25,8 +25,8 @@ EbmlContainerParser::EbmlContainerParser(Object &object, const Module &module)
 
 void EbmlContainerParser::doParseHead()
 {
-    Object* p_id = addVariable(ebmlTypes::largeInteger(), "id");
-    Object* p_size = addVariable(ebmlTypes::largeInteger(), "size");
+    Object* p_id = addVariable(EbmlModule::largeInteger(), "id");
+    Object* p_size = addVariable(EbmlModule::largeInteger(), "size");
 
     object().setSize(8*p_size->value().toInteger()+p_id->size()+p_size->size());
 

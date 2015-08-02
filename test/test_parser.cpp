@@ -1,6 +1,6 @@
 #include "test_parser.h"
 
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
@@ -96,7 +96,7 @@ bool TestParser::checkFile(const std::string &fileName, int depth, int width, co
     ModuleLoader& moduleLoader = moduleSetup.moduleLoader();
     const Module& module = moduleKey.empty() ? moduleLoader.getModule(file) : moduleLoader.getModule(moduleKey);
 
-    Object* object = module.handle(defaultTypes::file, file);
+    Object* object = module.handle(DefaultModule::file, file);
 
     if (!object) {
         return false;

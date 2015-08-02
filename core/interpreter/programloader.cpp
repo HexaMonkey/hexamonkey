@@ -20,7 +20,7 @@
 #include <cstdio>
 
 #include "compiler/model.h"
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 #include "core/objecttypetemplate.h"
 #include "core/parser.h"
 #include "core/modules/hmc/hmcmodule.h"
@@ -118,7 +118,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     File& file = memory.file();
     file.setPath(path);
 
-    Object& fileObject = memory.setFileObject(_module.handle(defaultTypes::file(), file));
+    Object& fileObject = memory.setFileObject(_module.handle(DefaultModule::file(), file));
     fileObject.explore(1);
 
     if(fileObject.numberOfChildren() >= 2)

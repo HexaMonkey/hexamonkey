@@ -19,7 +19,7 @@
 #include <streambuf>
 #include <map>
 
-#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/mkv/mkvmodule.h"
 #include "core/util/rapidxml/rapidxml.hpp"
 #include "core/util/bitutil.h"
@@ -28,7 +28,6 @@
 #include "core/log/logmanager.h"
 
 using namespace rapidxml;
-using namespace ebmlTypes;
 
 MkvModule::MkvModule(std::string modelPath) : _modelPath(modelPath)
 {
@@ -70,13 +69,13 @@ bool MkvModule::doLoad()
 
         addParser(name);
         const ObjectTypeTemplate& typeTemplate = newTemplate(name);
-        setSpecification(EBMLElement(id), typeTemplate());
+        setSpecification(EbmlModule::EBMLElement(id), typeTemplate());
 
-        for(int i =0;i<numberOfTypeElements;++i)
+        for(int i =0;i<EbmlModule::numberOfTypeElements;++i)
         {
-            if(type == typeElementAtributes[i])
+            if(type == EbmlModule::typeElementAtributes[i])
             {
-                setExtension(typeTemplate, getTemplate(typeElements[i])());
+                setExtension(typeTemplate, getTemplate(EbmlModule::typeElements[i])());
                 break;
             }
         }

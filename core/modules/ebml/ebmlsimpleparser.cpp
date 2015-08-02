@@ -15,9 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 #include "core/modules/ebml/ebmlsimpleparser.h"
-#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/ebml/ebmlmodule.h"
 
 EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
     : ContainerParser(object, module)
@@ -26,7 +26,7 @@ EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
 
 void EbmlIntegerParser::doParseHead()
 {
-    Object* child = addVariable(defaultTypes::integer(availableSize()),"payload");
+    Object* child = addVariable(DefaultModule::integer(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -39,7 +39,7 @@ EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
 
 void EbmlUIntegerParser::doParseHead()
 {
-    Object* child = addVariable(defaultTypes::uinteger(availableSize()),"payload");
+    Object* child = addVariable(DefaultModule::uinteger(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -52,7 +52,7 @@ EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
 
 void EbmlStringParser::doParseHead()
 {
-    Object* child = addVariable(defaultTypes::string(availableSize()/8),"payload");
+    Object* child = addVariable(DefaultModule::string(availableSize()/8),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -65,7 +65,7 @@ EbmlBinaryParser::EbmlBinaryParser(Object& object, const Module& module)
 
 void EbmlBinaryParser::doParseHead()
 {
-    addVariable(defaultTypes::data(availableSize()), "payload");
+    addVariable(DefaultModule::data(availableSize()), "payload");
 }
 
 EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& module)
@@ -75,7 +75,7 @@ EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& m
 
 void EbmlDateContainerParser::doParseHead()
 {
-    Object* child = addVariable(ebmlTypes::Date(), "payload");
+    Object* child = addVariable(EbmlModule::Date(), "payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -90,9 +90,9 @@ void EbmlFloatParser::doParseHead()
 {
     Object* child = nullptr;
     if(availableSize() == 32) {
-        addVariable(defaultTypes::singleFloat(),"payload");
+        addVariable(DefaultModule::singleFloat(),"payload");
     } else {
-        addVariable(defaultTypes::doubleFloat(),"payload");
+        addVariable(DefaultModule::doubleFloat(),"payload");
     }
     if (child) {
         object().setValue(child->value());

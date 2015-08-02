@@ -16,7 +16,6 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "core/modules/default/defaultmodule.h"
-#include "core/modules/default/defaulttypes.h"
 #include "core/modules/default/fileparser.h"
 #include "core/modules/default/arrayparser.h"
 #include "core/modules/default/tupleparser.h"
@@ -31,7 +30,48 @@
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
-using namespace defaultTypes;
+const ObjectTypeTemplate DefaultModule::file("File", std::vector<std::string>(), true);
+
+const ObjectTypeTemplate DefaultModule::array("Array",{"elementType", "size", "_namePattern"}, false,
+                               []objectTypeAttributeLambda {
+                                   return type.parameterValue(0);
+                               });
+
+const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "_namePattern"}, false,
+                               []objectTypeAttributeLambda {
+                                   return type.parameterValue(0);
+                               },
+                               []objectTypeAttributeLambda {
+                                   return type.parameterValue(1);
+                               });
+
+const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
+
+const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"});
+
+const ObjectTypeTemplate DefaultModule::integer("int",{"size", "_base"});
+const ObjectTypeTemplate DefaultModule::uinteger("uint",{"size", "_base"});
+const ObjectTypeTemplate DefaultModule::byte("byte");
+
+const ObjectType DefaultModule::int8(DefaultModule::integer(8));
+const ObjectType DefaultModule::int16(DefaultModule::integer(16));
+const ObjectType DefaultModule::int32(DefaultModule::integer(32));
+const ObjectType DefaultModule::int64(DefaultModule::integer(64));
+
+const ObjectType DefaultModule::uint8(DefaultModule::uinteger(8));
+const ObjectType DefaultModule::uint16(DefaultModule::uinteger(16));
+const ObjectType DefaultModule::uint32(DefaultModule::uinteger(32));
+const ObjectType DefaultModule::uint64(DefaultModule::uinteger(64));
+
+const ObjectTypeTemplate DefaultModule::fixedFloat("fixedFloat", {"integer","decimal"});
+const ObjectTypeTemplate DefaultModule::singleFloat("float");
+const ObjectTypeTemplate DefaultModule::doubleFloat("double");
+
+const ObjectTypeTemplate DefaultModule::string("String", {"charCount"});
+const ObjectTypeTemplate DefaultModule::wstring("WString", {"charCount"});
+
+const ObjectTypeTemplate DefaultModule::bitset("Bitset", {"size"});
+
 
 bool DefaultModule::doLoad()
 {
@@ -232,10 +272,17 @@ bool DefaultModule::doLoad()
     addTemplate(fixedFloat);
     addParser("fixedFloat", []parserLambda
     {
-        if(type == fixed16)
-            return new FixedFloat16Parser(object);
-        if(type == fixed32)
-            return new FixedFloat32Parser(object);
+        if(type.parameterSpecified(0) && type.parameterSpecified(1)) {
+                      int64_t decimal = type.parameterValue(0).toInteger();
+                      int64_t fractionnal = type.parameterValue(1).toInteger();
+                      if (decimal == fractionnal) {
+                          if (decimal == 16) {
+                              return new FixedFloat16Parser(object);
+                          } else if (decimal == 32) {
+                              return new FixedFloat32Parser(object);
+                          }
+                      }
+        }
         return nullptr;
     });
     setFixedSize("fixedFloat", []fixedSizeLambda

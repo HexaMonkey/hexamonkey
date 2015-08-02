@@ -18,14 +18,12 @@
 #include <fstream>
 
 #include "core/objecttypetemplate.h"
-#include "core/modules/ebml/ebmltypes.h"
+#include "core/modules/ebml/ebmlmodule.h"
 #include "core/modules/hmc/hmcmodule.h"
 #include "core/util/csvreader.h"
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
-
-using namespace ebmlTypes;
 
 HmcModule::HmcModule(std::string modelPath) : _modelPath(modelPath)
 {
@@ -68,13 +66,13 @@ bool HmcModule::doLoad()
 
         addParser(name);
         const ObjectTypeTemplate& typeTemplate = newTemplate(name);
-        setSpecification(EBMLElement(i), typeTemplate());
+        setSpecification(EbmlModule::EBMLElement(i), typeTemplate());
 
-        for(int j =0;j<numberOfTypeElements;++j)
+        for(int j =0;j<EbmlModule::numberOfTypeElements;++j)
         {
-            if(type == typeElementAtributes[j])
+            if(type == EbmlModule::typeElementAtributes[j])
             {
-                setExtension(typeTemplate, getTemplate(typeElements[j])());
+                setExtension(typeTemplate, getTemplate(EbmlModule::typeElements[j])());
                 break;
             }
         }

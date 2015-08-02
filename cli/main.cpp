@@ -23,7 +23,7 @@
 #include "core/moduleloader.h"
 #include "core/object.h"
 #include "core/interpreter/programloader.h"
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 #include "core/modulesetup.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
         const Module& module = moduleLoader.getModule(file);
 
         std::vector<Object*> objs;
-        objs.push_back(module.handle(defaultTypes::file, file));
+        objs.push_back(module.handle(DefaultModule::file, file));
 
 
         Object*child = nullptr;

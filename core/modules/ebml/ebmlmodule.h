@@ -22,6 +22,21 @@
 
 class EbmlModule : public MapModule
 {
+public:
+    static const ObjectTypeTemplate EBMLFile;
+    static const ObjectTypeTemplate EBMLElement;
+    static const ObjectTypeTemplate largeInteger;
+    static const ObjectTypeTemplate Date;
+
+    static const int numberOfTypeElements;
+    static const std::string typeElements[];
+    static const std::string typeElementAtributes[];
+
+    static const int numberOfDefaultElements;
+    static const std::string defaultElements[];
+    static const uint32_t defaultElementIds[];
+    static const int defaultElementTypes[];
+
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     bool doLoad() override;

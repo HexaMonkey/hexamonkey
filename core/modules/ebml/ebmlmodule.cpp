@@ -18,9 +18,8 @@
 #include <fstream>
 #include <streambuf>
 
-#include "core/modules/default/defaulttypes.h"
+#include "core/modules/default/defaultmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
-#include "core/modules/ebml/ebmltypes.h"
 #include "core/modules/ebml/ebmlmasterparser.h"
 #include "core/modules/ebml/ebmlcontainerparser.h"
 #include "core/modules/ebml/ebmllargeintegerparser.h"
@@ -29,7 +28,19 @@
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
 
-using namespace ebmlTypes;
+const ObjectTypeTemplate EbmlModule::EBMLFile("EBMLFile");
+const ObjectTypeTemplate EbmlModule::EBMLElement("EBMLElement", {"id"}, true);
+const ObjectTypeTemplate EbmlModule::largeInteger("LargeInteger");
+const ObjectTypeTemplate EbmlModule::Date("Date");
+
+const int EbmlModule::numberOfTypeElements = 8;
+const std::string EbmlModule::typeElements[] = {"MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
+const std::string EbmlModule::typeElementAtributes[] = {"master","integer","uinteger","float","string","utf-8","date","binary"};
+
+const int EbmlModule::numberOfDefaultElements = 8;
+const std::string EbmlModule::defaultElements[] = {"EBML", "EBMLVersion", "EBMLReadVersion", "EBMLMaxIDLength", "EBMLMaxSizeLength", "DocType", "DocTypeVersion", "DocTypeReadVersion"};
+const uint32_t EbmlModule::defaultElementIds[] = {0xa45dfa3, 0x286, 0x2f7, 0x2f2, 0x2f3, 0x282, 0x287, 0x285};
+const int EbmlModule::defaultElementTypes[] = {0,2,2,2,2,4,2,2};
 
 void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
@@ -39,13 +50,13 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 bool EbmlModule::doLoad()
 {
     addTemplate(EBMLFile);
-    setExtension(EBMLFile, defaultTypes::file());
-    setSpecification(defaultTypes::file(), EBMLFile());
+    setExtension(EBMLFile, DefaultModule::file());
+    setSpecification(DefaultModule::file(), EBMLFile());
 
     addTemplate(EBMLElement);
 
     addTemplate(Date);
-    setExtension(Date, defaultTypes::int64);
+    setExtension(Date, DefaultModule::int64);
 
     addTemplate(largeInteger);
 
