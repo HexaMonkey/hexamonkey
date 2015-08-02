@@ -1,56 +1,20 @@
 0x9070536    AsfFile 
 0x5416           HeaderObject 
 0x128                GUID ObjectId = "75B22630-668E-11CF-A6D9-00AA0062CE6C"
-0x32                     uint(32) = 1974609456
-32x16                    uint(16) = 26254
-48x16                    uint(16) = 4559
-64x64                    Tuple(BYTE, 8) 
-64x8                         BYTE = 166
-72x8                         BYTE = 217
-80x8                         BYTE = 0
-88x8                         BYTE = 170
-96x8                         BYTE = 0
-104x8                        BYTE = 98
-112x8                        BYTE = 206
-120x8                        BYTE = 108
 128x64               QWORD ObjectSize = 677
 192x32               DWORD NumberOfHeaderObjects = 6
 224x8                BYTE Reserved1 = 1
 232x8                BYTE Reserved2 = 2
 240x832              FilePropertiesObject 
 240x128                  GUID ObjectId = "8CABDCA1-A947-11CF-8EE4-00C00C205365"
-240x32                       uint(32) = 2360073377
-272x16                       uint(16) = 43335
-288x16                       uint(16) = 4559
-304x64                       Tuple(BYTE, 8) 
-304x8                            BYTE = 142
-312x8                            BYTE = 228
-320x8                            BYTE = 0
-328x8                            BYTE = 192
-336x8                            BYTE = 12
-344x8                            BYTE = 32
-352x8                            BYTE = 83
-360x8                            BYTE = 101
 368x64                   QWORD ObjectSize = 104
 432x128                  GUID FileID = "F8E7557E-E552-49E0-94AA-5EBD4CD409A3"
-432x32                       uint(32) = 4175910270
-464x16                       uint(16) = 58706
-480x16                       uint(16) = 18912
-496x64                       Tuple(BYTE, 8) 
-496x8                            BYTE = 148
-504x8                            BYTE = 170
-512x8                            BYTE = 94
-520x8                            BYTE = 189
-528x8                            BYTE = 76
-536x8                            BYTE = 212
-544x8                            BYTE = 9
-552x8                            BYTE = 163
 560x64                   QWORD FileSize = 1133817
-624x64                   QWORD CreationDate = 126310281988780000
+624x64                   QWORD_DATE CreationDate = 126310281988780000
 688x64                   QWORD DataPacketsCount = 354
-752x64                   QWORD PlayDuration = 383660000
-816x64                   QWORD SendDuration = 354000000
-880x64                   QWORD Preroll = 3100
+752x64                   QWORD_DURATION PlayDuration = 383660000
+816x64                   QWORD_DURATION SendDuration = 354000000
+880x64                   QWORD_DURATION_MILLI Preroll = 3100
 944x6                    BITS(6) Reserved = 0
 950x1                    BITS(1) BroadCastFlag = 1
 951x1                    BITS(1) SeekableFlag = 0
@@ -60,76 +24,16 @@
 1040x32                  DWORD MaximumBitrate = 256000
 1072x368             HeaderExtensionObject 
 1072x128                 GUID ObjectId = "5FBF03B5-A92E-11CF-8EE3-00C00C205365"
-1072x32                      uint(32) = 1606353845
-1104x16                      uint(16) = 43310
-1120x16                      uint(16) = 4559
-1136x64                      Tuple(BYTE, 8) 
-1136x8                           BYTE = 142
-1144x8                           BYTE = 227
-1152x8                           BYTE = 0
-1160x8                           BYTE = 192
-1168x8                           BYTE = 12
-1176x8                           BYTE = 32
-1184x8                           BYTE = 83
-1192x8                           BYTE = 101
 1200x64                  QWORD ObjectSize = 46
-1264x128                 GUID ReservedField1 = "ABD3D211-A9BA-11CF-8EE6-00C00C205365"
-1264x32                      uint(32) = 2882785809
-1296x16                      uint(16) = 43450
-1312x16                      uint(16) = 4559
-1328x64                      Tuple(BYTE, 8) 
-1328x8                           BYTE = 142
-1336x8                           BYTE = 230
-1344x8                           BYTE = 0
-1352x8                           BYTE = 192
-1360x8                           BYTE = 12
-1368x8                           BYTE = 32
-1376x8                           BYTE = 83
-1384x8                           BYTE = 101
+1264x128                 Enum(GUID) ReservedField1 = "ABD3D211-A9BA-11CF-8EE6-00C00C205365"
 1392x16                  WORD ReservedField2 = 6
 1408x32                  DWORD HeaderExtensionDataSize = 0
 1440x912             StreamPropertiesObject 
 1440x128                 GUID ObjectId = "B7DC0791-A9B7-11CF-8EE6-00C00C205365"
-1440x32                      uint(32) = 3084650385
-1472x16                      uint(16) = 43447
-1488x16                      uint(16) = 4559
-1504x64                      Tuple(BYTE, 8) 
-1504x8                           BYTE = 142
-1512x8                           BYTE = 230
-1520x8                           BYTE = 0
-1528x8                           BYTE = 192
-1536x8                           BYTE = 12
-1544x8                           BYTE = 32
-1552x8                           BYTE = 83
-1560x8                           BYTE = 101
 1568x64                  QWORD ObjectSize = 114
-1632x128                 GUID StreamType = "F8699E40-5B4D-11CF-A8FD-00805F5C442B"
-1632x32                      uint(32) = 4167671360
-1664x16                      uint(16) = 23373
-1680x16                      uint(16) = 4559
-1696x64                      Tuple(BYTE, 8) 
-1696x8                           BYTE = 168
-1704x8                           BYTE = 253
-1712x8                           BYTE = 0
-1720x8                           BYTE = 128
-1728x8                           BYTE = 95
-1736x8                           BYTE = 92
-1744x8                           BYTE = 68
-1752x8                           BYTE = 43
-1760x128                 GUID ErrorCorrectionType = "BFC3CD50-618F-11CF-8BB2-00AA00B4E220"
-1760x32                      uint(32) = 3217280336
-1792x16                      uint(16) = 24975
-1808x16                      uint(16) = 4559
-1824x64                      Tuple(BYTE, 8) 
-1824x8                           BYTE = 139
-1832x8                           BYTE = 178
-1840x8                           BYTE = 0
-1848x8                           BYTE = 170
-1856x8                           BYTE = 0
-1864x8                           BYTE = 180
-1872x8                           BYTE = 226
-1880x8                           BYTE = 32
-1888x64                  QWORD TimeOffset = 0
+1632x128                 Enum(GUID) StreamType = "F8699E40-5B4D-11CF-A8FD-00805F5C442B"
+1760x128                 Enum(GUID) ErrorCorrectionType = "BFC3CD50-618F-11CF-8BB2-00AA00B4E220"
+1888x64                  QWORD_DURATION TimeOffset = 0
 1952x32                  DWORD TypeSpecificDataLength = 28
 1984x32                  DWORD ErrorCorrectionDataLength = 8
 2016x1                   BITS(1) Reserved = 0
@@ -154,46 +58,10 @@
 2344x8                       Data SilenceData 
 2352x1032            StreamPropertiesObject 
 2352x128                 GUID ObjectId = "B7DC0791-A9B7-11CF-8EE6-00C00C205365"
-2352x32                      uint(32) = 3084650385
-2384x16                      uint(16) = 43447
-2400x16                      uint(16) = 4559
-2416x64                      Tuple(BYTE, 8) 
-2416x8                           BYTE = 142
-2424x8                           BYTE = 230
-2432x8                           BYTE = 0
-2440x8                           BYTE = 192
-2448x8                           BYTE = 12
-2456x8                           BYTE = 32
-2464x8                           BYTE = 83
-2472x8                           BYTE = 101
 2480x64                  QWORD ObjectSize = 129
-2544x128                 GUID StreamType = "BC19EFC0-5B4D-11CF-A8FD-00805F5C442B"
-2544x32                      uint(32) = 3155816384
-2576x16                      uint(16) = 23373
-2592x16                      uint(16) = 4559
-2608x64                      Tuple(BYTE, 8) 
-2608x8                           BYTE = 168
-2616x8                           BYTE = 253
-2624x8                           BYTE = 0
-2632x8                           BYTE = 128
-2640x8                           BYTE = 95
-2648x8                           BYTE = 92
-2656x8                           BYTE = 68
-2664x8                           BYTE = 43
-2672x128                 GUID ErrorCorrectionType = "20FB5700-5B55-11CF-A8FD-00805F5C442B"
-2672x32                      uint(32) = 553342720
-2704x16                      uint(16) = 23381
-2720x16                      uint(16) = 4559
-2736x64                      Tuple(BYTE, 8) 
-2736x8                           BYTE = 168
-2744x8                           BYTE = 253
-2752x8                           BYTE = 0
-2760x8                           BYTE = 128
-2768x8                           BYTE = 95
-2776x8                           BYTE = 92
-2784x8                           BYTE = 68
-2792x8                           BYTE = 43
-2800x64                  QWORD TimeOffset = 0
+2544x128                 Enum(GUID) StreamType = "BC19EFC0-5B4D-11CF-A8FD-00805F5C442B"
+2672x128                 Enum(GUID) ErrorCorrectionType = "20FB5700-5B55-11CF-A8FD-00805F5C442B"
+2800x64                  QWORD_DURATION TimeOffset = 0
 2864x32                  DWORD TypeSpecificDataLength = 51
 2896x32                  DWORD ErrorCorrectionDataLength = 0
 2928x1                   BITS(1) Reserved = 0
@@ -222,36 +90,12 @@
 3384x0                   NoErrorCorrection ErrorCorrectionData 
 3384x1680            CodecListObject 
 3384x128                 GUID ObjectId = "86D15240-311D-11D0-A3A4-00A0C90348F6"
-3384x32                      uint(32) = 2261865024
-3416x16                      uint(16) = 12573
-3432x16                      uint(16) = 4560
-3448x64                      Tuple(BYTE, 8) 
-3448x8                           BYTE = 163
-3456x8                           BYTE = 164
-3464x8                           BYTE = 0
-3472x8                           BYTE = 160
-3480x8                           BYTE = 201
-3488x8                           BYTE = 3
-3496x8                           BYTE = 72
-3504x8                           BYTE = 246
 3512x64                  QWORD ObjectSize = 210
 3576x128                 GUID Reserved = "86D15241-311D-11D0-A3A4-00A0C90348F6"
-3576x32                      uint(32) = 2261865025
-3608x16                      uint(16) = 12573
-3624x16                      uint(16) = 4560
-3640x64                      Tuple(BYTE, 8) 
-3640x8                           BYTE = 163
-3648x8                           BYTE = 164
-3656x8                           BYTE = 0
-3664x8                           BYTE = 160
-3672x8                           BYTE = 201
-3680x8                           BYTE = 3
-3688x8                           BYTE = 72
-3696x8                           BYTE = 246
 3704x32                  DWORD CodecEntriesCount = 2
 3736x1328                Array(CodecEntry) CodecEntries 
 3736x720                     CodecEntry 
-3736x16                          WORD Type = 2
+3736x16                          Enum(WORD) Type = 2
 3752x16                          WORD CodecNameLength = 15
 3768x240                         WString(15) CodecName = "DivX ;-) Audio"
 4008x16                          WORD CodecDescriptionLength = 25
@@ -259,7 +103,7 @@
 4424x16                          WORD CodecInformationLength = 2
 4440x16                          Data CodecInformation 
 4456x608                     CodecEntry 
-4456x16                          WORD Type = 1
+4456x16                          Enum(WORD) Type = 1
 4472x16                          WORD CodecNameLength = 32
 4488x512                         WString(32) CodecName = "Microsoft MPEG-4 Video Codec V3"
 5000x16                          WORD CodecDescriptionLength = 0
@@ -268,18 +112,6 @@
 5032x32                          Data CodecInformation 
 5064x352             ContentDescriptionObject 
 5064x128                 GUID ObjectId = "75B22633-668E-11CF-A6D9-00AA0062CE6C"
-5064x32                      uint(32) = 1974609459
-5096x16                      uint(16) = 26254
-5112x16                      uint(16) = 4559
-5128x64                      Tuple(BYTE, 8) 
-5128x8                           BYTE = 166
-5136x8                           BYTE = 217
-5144x8                           BYTE = 0
-5152x8                           BYTE = 170
-5160x8                           BYTE = 0
-5168x8                           BYTE = 98
-5176x8                           BYTE = 206
-5184x8                           BYTE = 108
 5192x64                  QWORD ObjectSize = 44
 5256x16                  WORD TitleLength = 2
 5272x16                  WORD AuthorLength = 2
@@ -293,36 +125,12 @@
 5400x16                  WString(1) Rating = ""
 5416x9062800     DataObject 
 5416x128             GUID ObjectId = "75B22636-668E-11CF-A6D9-00AA0062CE6C"
-5416x32                  uint(32) = 1974609462
-5448x16                  uint(16) = 26254
-5464x16                  uint(16) = 4559
-5480x64                  Tuple(BYTE, 8) 
-5480x8                       BYTE = 166
-5488x8                       BYTE = 217
-5496x8                       BYTE = 0
-5504x8                       BYTE = 170
-5512x8                       BYTE = 0
-5520x8                       BYTE = 98
-5528x8                       BYTE = 206
-5536x8                       BYTE = 108
 5544x64              QWORD ObjectSize = 1132850
 5608x128             GUID FileId = "F8E7557E-E552-49E0-94AA-5EBD4CD409A3"
-5608x32                  uint(32) = 4175910270
-5640x16                  uint(16) = 58706
-5656x16                  uint(16) = 18912
-5672x64                  Tuple(BYTE, 8) 
-5672x8                       BYTE = 148
-5680x8                       BYTE = 170
-5688x8                       BYTE = 94
-5696x8                       BYTE = 189
-5704x8                       BYTE = 76
-5712x8                       BYTE = 212
-5720x8                       BYTE = 9
-5728x8                       BYTE = 163
 5736x64              QWORD TotalDataPackets = 354
 5800x16              WORD Reserved = 257
-5816x9062400         Tuple(DataPacket(25600), 354) data_packets 
-5816x25600               DataPacket(25600) 
+5816x9062400         Tuple(DataPacket, 354) data_packets 
+5816x25600               DataPacket 
 5816x1                       BITS(1) ErrorCorrectionPresent = 1
 5817x2                       BITS(2) ErrorCorrectionLengthType = 0
 5819x1                       BITS(1) OpaqueDataPresent = 0
@@ -349,7 +157,7 @@
 5912x0                       Tuple(, 2) Payloads 
 5912x0                            
 5912x0                            
-31416x25600              DataPacket(25600) 
+31416x25600              DataPacket 
 31416x1                      BITS(1) ErrorCorrectionPresent = 1
 31417x2                      BITS(2) ErrorCorrectionLengthType = 0
 31419x1                      BITS(1) OpaqueDataPresent = 0
@@ -376,7 +184,7 @@
 31512x0                      Tuple(, 2) Payloads 
 31512x0                           
 31512x0                           
-57016x25600              DataPacket(25600) 
+57016x25600              DataPacket 
 57016x1                      BITS(1) ErrorCorrectionPresent = 1
 57017x2                      BITS(2) ErrorCorrectionLengthType = 0
 57019x1                      BITS(1) OpaqueDataPresent = 0
@@ -404,7 +212,7 @@
 57112x0                           
 57112x0                           
 57112x0                           
-82616x25600              DataPacket(25600) 
+82616x25600              DataPacket 
 82616x1                      BITS(1) ErrorCorrectionPresent = 1
 82617x2                      BITS(2) ErrorCorrectionLengthType = 0
 82619x1                      BITS(1) OpaqueDataPresent = 0
@@ -433,7 +241,7 @@
 82768x64                     Data ReplicatedDataLength 
 82832x0                       Payload 
 82832x25384                  Data Padding 
-108216x25600             DataPacket(25600) 
+108216x25600             DataPacket 
 108216x1                     BITS(1) ErrorCorrectionPresent = 1
 108217x2                     BITS(2) ErrorCorrectionLengthType = 0
 108219x1                     BITS(1) OpaqueDataPresent = 0
@@ -461,7 +269,7 @@
 108312x0                          
 108312x0                          
 108312x0                          
-133816x25600             DataPacket(25600) 
+133816x25600             DataPacket 
 133816x1                     BITS(1) ErrorCorrectionPresent = 1
 133817x2                     BITS(2) ErrorCorrectionLengthType = 0
 133819x1                     BITS(1) OpaqueDataPresent = 0
@@ -489,7 +297,7 @@
 133912x0                          
 133912x0                          
 133912x0                          
-159416x25600             DataPacket(25600) 
+159416x25600             DataPacket 
 159416x1                     BITS(1) ErrorCorrectionPresent = 1
 159417x2                     BITS(2) ErrorCorrectionLengthType = 0
 159419x1                     BITS(1) OpaqueDataPresent = 0
@@ -516,7 +324,7 @@
 159512x0                     Tuple(, 2) Payloads 
 159512x0                          
 159512x0                          
-185016x25600             DataPacket(25600) 
+185016x25600             DataPacket 
 185016x1                     BITS(1) ErrorCorrectionPresent = 1
 185017x2                     BITS(2) ErrorCorrectionLengthType = 0
 185019x1                     BITS(1) OpaqueDataPresent = 0
@@ -545,7 +353,7 @@
 185112x0                          
 185112x0                          
 185112x0                          
-210616x25600             DataPacket(25600) 
+210616x25600             DataPacket 
 210616x1                     BITS(1) ErrorCorrectionPresent = 1
 210617x2                     BITS(2) ErrorCorrectionLengthType = 0
 210619x1                     BITS(1) OpaqueDataPresent = 0
@@ -574,7 +382,7 @@
 210712x0                          
 210712x0                          
 210712x0                          
-236216x25600             DataPacket(25600) 
+236216x25600             DataPacket 
 236216x1                     BITS(1) ErrorCorrectionPresent = 1
 236217x2                     BITS(2) ErrorCorrectionLengthType = 0
 236219x1                     BITS(1) OpaqueDataPresent = 0
@@ -603,7 +411,7 @@
 236312x0                          
 236312x0                          
 236312x0                          
-261816x25600             DataPacket(25600) 
+261816x25600             DataPacket 
 261816x1                     BITS(1) ErrorCorrectionPresent = 1
 261817x2                     BITS(2) ErrorCorrectionLengthType = 0
 261819x1                     BITS(1) OpaqueDataPresent = 0
@@ -631,7 +439,7 @@
 261912x0                          
 261912x0                          
 261912x0                          
-287416x25600             DataPacket(25600) 
+287416x25600             DataPacket 
 287416x1                     BITS(1) ErrorCorrectionPresent = 1
 287417x2                     BITS(2) ErrorCorrectionLengthType = 0
 287419x1                     BITS(1) OpaqueDataPresent = 0
@@ -660,7 +468,7 @@
 287512x0                          
 287512x0                          
 287512x0                          
-313016x25600             DataPacket(25600) 
+313016x25600             DataPacket 
 313016x1                     BITS(1) ErrorCorrectionPresent = 1
 313017x2                     BITS(2) ErrorCorrectionLengthType = 0
 313019x1                     BITS(1) OpaqueDataPresent = 0
@@ -688,7 +496,7 @@
 313112x0                          
 313112x0                          
 313112x0                          
-338616x25600             DataPacket(25600) 
+338616x25600             DataPacket 
 338616x1                     BITS(1) ErrorCorrectionPresent = 1
 338617x2                     BITS(2) ErrorCorrectionLengthType = 0
 338619x1                     BITS(1) OpaqueDataPresent = 0
@@ -715,7 +523,7 @@
 338712x0                     Tuple(, 2) Payloads 
 338712x0                          
 338712x0                          
-364216x25600             DataPacket(25600) 
+364216x25600             DataPacket 
 364216x1                     BITS(1) ErrorCorrectionPresent = 1
 364217x2                     BITS(2) ErrorCorrectionLengthType = 0
 364219x1                     BITS(1) OpaqueDataPresent = 0
@@ -743,7 +551,7 @@
 364312x0                          
 364312x0                          
 364312x0                          
-389816x25600             DataPacket(25600) 
+389816x25600             DataPacket 
 389816x1                     BITS(1) ErrorCorrectionPresent = 1
 389817x2                     BITS(2) ErrorCorrectionLengthType = 0
 389819x1                     BITS(1) OpaqueDataPresent = 0
@@ -772,7 +580,7 @@
 389912x0                          
 389912x0                          
 389912x0                          
-415416x25600             DataPacket(25600) 
+415416x25600             DataPacket 
 415416x1                     BITS(1) ErrorCorrectionPresent = 1
 415417x2                     BITS(2) ErrorCorrectionLengthType = 0
 415419x1                     BITS(1) OpaqueDataPresent = 0
@@ -800,7 +608,7 @@
 415512x0                          
 415512x0                          
 415512x0                          
-441016x25600             DataPacket(25600) 
+441016x25600             DataPacket 
 441016x1                     BITS(1) ErrorCorrectionPresent = 1
 441017x2                     BITS(2) ErrorCorrectionLengthType = 0
 441019x1                     BITS(1) OpaqueDataPresent = 0
@@ -828,7 +636,7 @@
 441112x0                          
 441112x0                          
 441112x0                          
-466616x25600             DataPacket(25600) 
+466616x25600             DataPacket 
 466616x1                     BITS(1) ErrorCorrectionPresent = 1
 466617x2                     BITS(2) ErrorCorrectionLengthType = 0
 466619x1                     BITS(1) OpaqueDataPresent = 0
@@ -856,7 +664,7 @@
 466712x0                          
 466712x0                          
 466712x0                          
-492216x25600             DataPacket(25600) 
+492216x25600             DataPacket 
 492216x1                     BITS(1) ErrorCorrectionPresent = 1
 492217x2                     BITS(2) ErrorCorrectionLengthType = 0
 492219x1                     BITS(1) OpaqueDataPresent = 0
@@ -885,7 +693,7 @@
 492312x0                          
 492312x0                          
 492312x0                          
-517816x25600             DataPacket(25600) 
+517816x25600             DataPacket 
 517816x1                     BITS(1) ErrorCorrectionPresent = 1
 517817x2                     BITS(2) ErrorCorrectionLengthType = 0
 517819x1                     BITS(1) OpaqueDataPresent = 0
@@ -914,7 +722,7 @@
 517912x0                          
 517912x0                          
 517912x0                          
-543416x25600             DataPacket(25600) 
+543416x25600             DataPacket 
 543416x1                     BITS(1) ErrorCorrectionPresent = 1
 543417x2                     BITS(2) ErrorCorrectionLengthType = 0
 543419x1                     BITS(1) OpaqueDataPresent = 0
@@ -942,7 +750,7 @@
 543512x0                          
 543512x0                          
 543512x0                          
-569016x25600             DataPacket(25600) 
+569016x25600             DataPacket 
 569016x1                     BITS(1) ErrorCorrectionPresent = 1
 569017x2                     BITS(2) ErrorCorrectionLengthType = 0
 569019x1                     BITS(1) OpaqueDataPresent = 0
@@ -970,7 +778,7 @@
 569112x0                          
 569112x0                          
 569112x0                          
-594616x25600             DataPacket(25600) 
+594616x25600             DataPacket 
 594616x1                     BITS(1) ErrorCorrectionPresent = 1
 594617x2                     BITS(2) ErrorCorrectionLengthType = 0
 594619x1                     BITS(1) OpaqueDataPresent = 0
@@ -997,7 +805,7 @@
 594712x0                     Tuple(, 2) Payloads 
 594712x0                          
 594712x0                          
-620216x25600             DataPacket(25600) 
+620216x25600             DataPacket 
 620216x1                     BITS(1) ErrorCorrectionPresent = 1
 620217x2                     BITS(2) ErrorCorrectionLengthType = 0
 620219x1                     BITS(1) OpaqueDataPresent = 0
@@ -1025,7 +833,7 @@
 620312x0                          
 620312x0                          
 620312x0                          
-645816x25600             DataPacket(25600) 
+645816x25600             DataPacket 
 645816x1                     BITS(1) ErrorCorrectionPresent = 1
 645817x2                     BITS(2) ErrorCorrectionLengthType = 0
 645819x1                     BITS(1) OpaqueDataPresent = 0
@@ -1053,7 +861,7 @@
 645912x0                          
 645912x0                          
 645912x0                          
-671416x25600             DataPacket(25600) 
+671416x25600             DataPacket 
 671416x1                     BITS(1) ErrorCorrectionPresent = 1
 671417x2                     BITS(2) ErrorCorrectionLengthType = 0
 671419x1                     BITS(1) OpaqueDataPresent = 0
@@ -1080,7 +888,7 @@
 671512x0                     Tuple(, 2) Payloads 
 671512x0                          
 671512x0                          
-697016x25600             DataPacket(25600) 
+697016x25600             DataPacket 
 697016x1                     BITS(1) ErrorCorrectionPresent = 1
 697017x2                     BITS(2) ErrorCorrectionLengthType = 0
 697019x1                     BITS(1) OpaqueDataPresent = 0
@@ -1107,7 +915,7 @@
 697112x0                     Tuple(, 2) Payloads 
 697112x0                          
 697112x0                          
-722616x25600             DataPacket(25600) 
+722616x25600             DataPacket 
 722616x1                     BITS(1) ErrorCorrectionPresent = 1
 722617x2                     BITS(2) ErrorCorrectionLengthType = 0
 722619x1                     BITS(1) OpaqueDataPresent = 0
@@ -1134,7 +942,7 @@
 722712x0                     Tuple(, 2) Payloads 
 722712x0                          
 722712x0                          
-748216x25600             DataPacket(25600) 
+748216x25600             DataPacket 
 748216x1                     BITS(1) ErrorCorrectionPresent = 1
 748217x2                     BITS(2) ErrorCorrectionLengthType = 0
 748219x1                     BITS(1) OpaqueDataPresent = 0
@@ -1164,32 +972,8 @@
 748312x0                          
 9068216x2320     SimpleIndexObject 
 9068216x128          GUID ObjectId = "33000890-E5B1-11CF-89F4-00A0C90349CB"
-9068216x32               uint(32) = 855640208
-9068248x16               uint(16) = 58801
-9068264x16               uint(16) = 4559
-9068280x64               Tuple(BYTE, 8) 
-9068280x8                    BYTE = 137
-9068288x8                    BYTE = 244
-9068296x8                    BYTE = 0
-9068304x8                    BYTE = 160
-9068312x8                    BYTE = 201
-9068320x8                    BYTE = 3
-9068328x8                    BYTE = 73
-9068336x8                    BYTE = 203
 9068344x64           QWORD ObjectSize = 290
 9068408x128          GUID FileID = "00000000-0032-0000-2036-34206B627073"
-9068408x32               uint(32) = 0
-9068440x16               uint(16) = 50
-9068456x16               uint(16) = 0
-9068472x64               Tuple(BYTE, 8) 
-9068472x8                    BYTE = 32
-9068480x8                    BYTE = 54
-9068488x8                    BYTE = 52
-9068496x8                    BYTE = 32
-9068504x8                    BYTE = 107
-9068512x8                    BYTE = 98
-9068520x8                    BYTE = 112
-9068528x8                    BYTE = 115
 9068536x64           QWORD IndexEntryTimeInterval = 10000000
 9068600x32           DWORD MaximumPacketCount = 5
 9068632x32           DWORD IndexEntriesCount = 39
