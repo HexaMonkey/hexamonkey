@@ -780,6 +780,8 @@ Variant &Variant::operator +=(const Variant &other)
         } else {
             _data.ul += other._data.ul;
         }
+    } else {
+        clear();
     }
     return *this;
 }
@@ -801,6 +803,8 @@ Variant &Variant::operator -=(const Variant &other)
             }
             _data.l -= other._data.l;
         }
+    } else {
+        clear();
     }
     return *this;
 }
@@ -819,6 +823,8 @@ Variant &Variant::operator *=(const Variant &other)
         } else {
             _data.l *= other._data.l;
         }
+    } else {
+        clear();
     }
     return *this;
 }
@@ -850,6 +856,8 @@ Variant &Variant::operator /=(const Variant &other)
                 Log::error("Division by zero");
             }
         }
+    } else {
+        clear();
     }
     return *this;
 }
@@ -881,6 +889,8 @@ Variant &Variant::operator %=(const Variant &other)
                 Log::error("Division by zero");
             }
         }
+    } else {
+        clear();
     }
     return *this;
 }
@@ -902,6 +912,7 @@ Variant &Variant::operator ++()
             break;
 
         default:
+            clear();
             break;
     }
     return *this;
@@ -934,6 +945,7 @@ Variant &Variant::operator --()
             break;
 
         default:
+            clear();
             break;
     }
     return *this;
