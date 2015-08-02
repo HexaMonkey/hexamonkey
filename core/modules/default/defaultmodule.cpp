@@ -25,6 +25,7 @@
 #include "core/modules/default/bitparser.h"
 #include "core/modules/default/wordparser.h"
 #include "core/modules/default/floatparser.h"
+#include "core/modules/default/enumparser.h"
 
 #include "core/variable/variable.h"
 #include "core/util/strutil.h"
@@ -52,6 +53,7 @@ const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "
 const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
 
 const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"});
+const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"});
 
 const ObjectTypeTemplate DefaultModule::integer("int",{"size", "_base"});
 const ObjectTypeTemplate DefaultModule::uinteger("uint",{"size", "_base"});
@@ -66,6 +68,8 @@ const ObjectType DefaultModule::uint8(DefaultModule::uinteger(8));
 const ObjectType DefaultModule::uint16(DefaultModule::uinteger(16));
 const ObjectType DefaultModule::uint32(DefaultModule::uinteger(32));
 const ObjectType DefaultModule::uint64(DefaultModule::uinteger(64));
+
+const ObjectTypeTemplate DefaultModule::uuid("uuid");
 
 const ObjectTypeTemplate DefaultModule::fixedFloat("fixedFloat", {"integer","decimal"});
 const ObjectTypeTemplate DefaultModule::singleFloat("float");
@@ -166,6 +170,31 @@ bool DefaultModule::doLoad()
          return s;
     });
 
+    addTemplate(enumType);
+    addParser("Enum", []parserLambda
+    {
+        if (type.parameterSpecified(0)) {
+            auto parser = new EnumParser(object, module, type.parameterValue(0).toObjectType());
+            for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
+                parser->addElement(type.parameterValue(2*i+1), type.parameterValue(2*i+2));
+            }
+
+            return parser;
+        } else {
+            return nullptr;
+        }
+    });
+    setFixedSize("Enum", [this]fixedSizeLambda
+    {
+         if (type.parameterSpecified(0)) {
+             const ObjectType& childType = type.parameterValue(0).toObjectType();
+             const int64_t t = module.getFixedSize(childType);
+             return t;
+         } else {
+             return -1;
+         }
+    });
+
     addTemplate(integer);
     addParser("int", [this]parserLambda
     {
@@ -264,6 +293,12 @@ bool DefaultModule::doLoad()
     });
     setFixedSize("byte", 8);
 
+    addTemplate(uuid);
+    addParser("uuid", [this]parserLambda
+    {
+        return new UuidParser(object);
+    });
+    setFixedSize("uuid", 128);
 
     addTemplate(singleFloat);
     addParser("float", [this]parserLambda{return new SingleFloatParser(object);});

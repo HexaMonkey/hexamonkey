@@ -31,6 +31,7 @@ public:
     static const ObjectTypeTemplate tuple;
     static const ObjectTypeTemplate data;
     static const ObjectTypeTemplate structType;
+    static const ObjectTypeTemplate enumType;
 
     static const ObjectTypeTemplate integer;
     static const ObjectTypeTemplate uinteger;
@@ -45,6 +46,8 @@ public:
     static const ObjectType uint16;
     static const ObjectType uint32;
     static const ObjectType uint64;
+
+    static const ObjectTypeTemplate uuid;
 
     static const ObjectTypeTemplate fixedFloat;
     static const ObjectTypeTemplate singleFloat;

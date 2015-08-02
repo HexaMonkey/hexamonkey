@@ -44,6 +44,7 @@ SOURCES += \
     ../core/modules/default/intparser.cpp \
     ../core/modules/default/floatparser.cpp \
     ../core/modules/default/bitparser.cpp \
+    ../core/modules/default/enumparser.cpp \
     ../core/modules/ebml/ebmlsimpleparser.cpp \
     ../core/modules/ebml/ebmlmodule.cpp \
     ../core/modules/ebml/ebmlmasterparser.cpp \
@@ -116,6 +117,7 @@ HEADERS  += \
     ../core/modules/default/intparser.h \
     ../core/modules/default/floatparser.h \
     ../core/modules/default/bitparser.h \
+    ../core/modules/default/enumparser.h \
     ../core/modules/ebml/ebmlsimpleparser.h \
     ../core/modules/ebml/ebmlmodule.h \
     ../core/modules/ebml/ebmlmasterparser.h \

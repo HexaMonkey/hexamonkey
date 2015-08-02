@@ -34,7 +34,7 @@ class DefaultTestFile as File
     int(32) v320000000;
     int(32) vm320000000;
     int(64) v999999999999999999;
-    int(64) vm999999999999999999;
+    enum int(64) {0:0} vm999999999999999999;
     
     int(4) v1;
     int(4) vm1;
@@ -79,6 +79,16 @@ class DefaultTestFile as File
         uint(16) uint16;
         uint(32) uint32;
     } struct128;
+    
+    Data(64) padding;
+    
+    @endianness = "bigEndian";
+    
+    uuid id;
+    
+    @endianness = "littleEndian";
+    
+    uuid id;
 }
 
 class ArrayContainer extends Data(128)

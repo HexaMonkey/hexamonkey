@@ -108,6 +108,16 @@ void ContainerParser::addChild(Object *child, const std::string &name)
     }
 }
 
+Object *ContainerParser::readVariable(const ObjectType &type)
+{
+    Object* child = getVariable(type);
+    if (child != nullptr && child->size() == -1LL) {
+        child->parse();
+        child->setSize(child->_contentSize);
+    }
+    return child;
+}
+
 Object *ContainerParser::getVariable(const ObjectType &type)
 {
     return _module.handle(type, object().file(), &object());

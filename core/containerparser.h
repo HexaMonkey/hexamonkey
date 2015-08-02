@@ -47,9 +47,9 @@ public:
     void addChild(Object* child, const std::string& name);
 
     /**
-     * @brief Generate an \link Object object\endlink to be subsequently added (or not)
+     * @brief Generate an \link Object object\endlink not to be subsequently added
      */
-    Object* getVariable(const ObjectType& type);
+    Object* readVariable(const ObjectType& type);
 
     /**
      * @brief Generate an \link Object object\endlink and add it
@@ -73,6 +73,11 @@ protected:
     void setAutogrow();
 
 private:
+    /**
+     * @brief Generate an \link Object object\endlink to be subsequently added (or not)
+     */
+    Object* getVariable(const ObjectType& type);
+
     void throwChildError(const Object& child, ParsingException::Type type, const std::string reason) const;
 
     const Module& _module;

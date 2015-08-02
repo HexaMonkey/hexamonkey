@@ -20,8 +20,6 @@ addExtension mp4
 addExtension mov
 addExtension m4a
 
-import uuid
-
 class Mp4File as File
 {
 	@endianness = "bigEndian";

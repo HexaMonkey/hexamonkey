@@ -37,25 +37,8 @@ class UINT32(_base) extends uint(32, _base)
 class INT64(_base) extends int(64, _base)
 class UINT64(_base) extends uint(64, _base)
 
-
+class GUID extends uuid
 class FOURCC extends String(4)
-
-class GUID
-{
-	uint(32, 16) *;
-	uint(16, 16) *;
-	uint(16, 16) *;
-	BYTE *[8];
-	@value = %uppercase(%str(self[0], 16, 8)) + "-"
-	       + %uppercase(%str(self[1], 16, 4)) + "-"
-		   + %uppercase(%str(self[2], 16, 4)) + "-";
-	for(var i = 0; i < 8; ++i)
-	{
-		if(i==2)
-			@value += "-";
-		@value += %uppercase(%str(self[3][i], 16, 2));
-	}
-}
 
 class RECT 
 {
@@ -76,3 +59,18 @@ class REVERSED_FOURCC extends Tuple(BYTE(), 4)
 }
 
 class BITS(size) extends Bitset(size)
+
+class QWORD_DATE extends QWORD
+{
+    @attr[] = %formatDate(@value/10000000 - 11644473600);
+}
+
+class QWORD_DURATION extends QWORD
+{
+    @attr[] = %formatDuration(@value/10000000);
+}
+
+class QWORD_DURATION_MILLI extends QWORD
+{
+    @attr[] = %formatDuration(@value/1000);
+}

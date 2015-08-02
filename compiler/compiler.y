@@ -40,7 +40,7 @@
 
 %token IMPORT_TOKEN ADD_MAGIC_NUMBER_TOKEN ADD_EXTENSION_TOKEN ADD_SYNCBYTE_TOKEN SHOWCASED_TOKEN REMOVE_TOKEN
 
-%token STRUCT_TOKEN
+%token STRUCT_TOKEN ENUM_TOKEN
 
 %left ',' 
 %right SUBSCOPE_ASSIGN_TOKEN
@@ -216,6 +216,7 @@ type:
 explicit_type:
     identifier right_value_arguments {push_master(HMC_TYPE, 2);}
    |struct_header '{' struct_arguments '}' {push_master(HMC_TYPE, 2);}
+   |enum_header '{' enum_arguments '}' {push_master(HMC_ARGUMENTS,2);push_master(HMC_TYPE, 2);}
 ;
 
 right_value_arguments:
@@ -266,11 +267,21 @@ struct_declaration:
                                 push_master(HMC_RIGHT_VALUE,1);
                                 unstash(0);
 								}
-								
+					
 struct_arguments:
 	/*empty*/
    |struct_arguments struct_declaration ';' {push_master(HMC_ARGUMENTS,3);}
-   
+
+enum_header:
+    enum_type type_access {push_master(HMC_ARGUMENTS,1);}
+    
+enum_type:
+	ENUM_TOKEN {push_string(HMC_IDENTIFIER, "Enum");}
+    
+enum_arguments:
+	/*empty*/
+    right_value ':' right_value {push_master(HMC_ARGUMENTS,2);}
+   |enum_arguments ',' right_value ':' right_value  {push_master(HMC_ARGUMENTS,3);}
 	
 extension:
     /*empty*/ {push_master(HMC_EXTENSION,0);}

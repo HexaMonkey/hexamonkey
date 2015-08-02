@@ -120,4 +120,12 @@ private:
     Variant::Display display;
 };
 
+class UuidParser : public SimpleParser
+{
+public:
+    UuidParser(Object& object);
+protected:
+    void doParseHead();
+};
+
 #endif // INTPARSER_H

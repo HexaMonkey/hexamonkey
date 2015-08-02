@@ -17,6 +17,8 @@
 
 #include "core/modules/default/intparser.h"
 
+#include <sstream>
+
 Int8Parser::Int8Parser(Object &object, Variant::Display display) : SimpleParser(object), display(display)
 {
 }
@@ -230,4 +232,48 @@ void UIntXParser::doParseHead()
     Variant value(integer);
     value.setDisplayType(display);
     object().setValue(value);
+}
+
+
+UuidParser::UuidParser(Object &object) : SimpleParser(object)
+{
+}
+
+void UuidParser::doParseHead()
+{
+    object().setSize(128);
+
+    std::stringstream S;
+
+    int32_t i0;
+    int16_t i1;
+    int16_t i2;
+    int64_t i3;
+
+    if(object().endianness() == Object::bigEndian) {
+        object().file().read(reinterpret_cast<char* >(&i0), 32);
+        i0 = __builtin_bswap32(i0);
+
+        object().file().read(reinterpret_cast<char* >(&i1)+1, 8);
+        object().file().read(reinterpret_cast<char* >(&i1), 8);
+
+        object().file().read(reinterpret_cast<char* >(&i2)+1, 8);
+        object().file().read(reinterpret_cast<char* >(&i2), 8);
+    } else {
+        object().file().read(reinterpret_cast<char* >(&i0), 32);
+        object().file().read(reinterpret_cast<char* >(&i1), 16);
+        object().file().read(reinterpret_cast<char* >(&i2), 16);
+    }
+    //always big endian
+    object().file().read(reinterpret_cast<char* >(&i3), 64);
+    i3 = __builtin_bswap64(i3);
+
+    S<<std::hex<<std::setfill('0')<<std::uppercase
+     <<std::setw(8)<<i0<<"-"
+     <<std::setw(4)<<i1<<"-"
+     <<std::setw(4)<<i2<<"-"
+     <<std::setw(4)<<((i3>>48)&0xffff)<<"-"
+     <<std::setw(12)<<(i3&0xffffffffffffLL);
+
+    object().setValue(S.str());
 }
