@@ -30,21 +30,25 @@
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
-const ObjectTypeTemplate DefaultModule::file("File", std::vector<std::string>(), true);
+const ObjectTypeTemplate DefaultModule::file("File", std::vector<std::string>(), [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setVirtual(true);
+});
 
-const ObjectTypeTemplate DefaultModule::array("Array",{"elementType", "size", "_namePattern"}, false,
-                               []objectTypeAttributeLambda {
-                                   return type.parameterValue(0);
-                               });
+const ObjectTypeTemplate DefaultModule::array("Array",{"elementType", "size", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setElementTypeGenerator([]objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                         });
+});
 
-const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "_namePattern"}, false,
-                               []objectTypeAttributeLambda {
-                                   return type.parameterValue(0);
-                               },
-                               []objectTypeAttributeLambda {
-                                   return type.parameterValue(1);
-                               });
+const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setElementTypeGenerator([]objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                         });
 
+    typeTemplate.setElementCountGenerator([]objectTypeAttributeLambda {
+                                             return type.parameterValue(1);
+                                          });
+});
 const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
 
 const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"});

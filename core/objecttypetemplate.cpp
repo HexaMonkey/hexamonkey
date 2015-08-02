@@ -18,24 +18,22 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual,
-                                       const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator,
-                                       const ObjectTypeTemplate::AttributeGenerator &elementCountGenerator)
-    : ObjectTypeTemplate(name, parameterNames, isVirtual)
+
+
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name,
+                                       const std::vector<std::string> &parameterNames,
+                                       const std::function<void (ObjectTypeTemplate&)> initialization)
+    : ObjectTypeTemplate(name, parameterNames)
+
 {
-    setElementTypeGenerator(elementTypeGenerator);
-    setElementCountGenerator(elementCountGenerator);
+    initialization(*this);
 }
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual,
-                                       const ObjectTypeTemplate::AttributeGenerator &elementTypeGenerator)
-    : ObjectTypeTemplate(name, parameterNames, isVirtual)
-{
-    setElementTypeGenerator(elementTypeGenerator);
-}
-
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames, bool isVirtual)
-    :_name(name), _parametersNames(parameterNames), _attributeFlag(0), _virtual(isVirtual)
+ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
+    :_name(name),
+      _parametersNames(parameterNames),
+      _attributeFlag(0),
+      _virtual(false)
 
 {
     for(unsigned int i = 0; i < _parametersNames.size(); ++i)
@@ -44,14 +42,8 @@ ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vecto
     }
 }
 
-ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
-    :ObjectTypeTemplate(name, parameterNames, false)
-
-{
-}
-
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string& name)
-    : ObjectTypeTemplate(name, std::vector<std::string>(), false)
+    : ObjectTypeTemplate(name, std::vector<std::string>())
 {
 }
 

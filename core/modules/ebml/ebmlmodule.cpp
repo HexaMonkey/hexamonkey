@@ -29,7 +29,9 @@
 #include "core/util/strutil.h"
 
 const ObjectTypeTemplate EbmlModule::EBMLFile("EBMLFile");
-const ObjectTypeTemplate EbmlModule::EBMLElement("EBMLElement", {"id"}, true);
+const ObjectTypeTemplate EbmlModule::EBMLElement("EBMLElement", {"id"}, [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setVirtual(true);
+});
 const ObjectTypeTemplate EbmlModule::largeInteger("LargeInteger");
 const ObjectTypeTemplate EbmlModule::Date("Date");
 

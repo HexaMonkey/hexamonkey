@@ -40,13 +40,11 @@ class ObjectTypeTemplate
 public:
     typedef std::function<Variant (const ObjectType &)> AttributeGenerator;
 
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual,
-                       const AttributeGenerator& elementTypeGenerator,
-                       const AttributeGenerator& elementCountGenerator);
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual,
-                       const AttributeGenerator& elementTypeGenerator);
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames, bool isVirtual);
-    ObjectTypeTemplate(const std::string &name, const std::vector<std::string>& parameterNames);
+    ObjectTypeTemplate(const std::string &name,
+                       const std::vector<std::string>& parameterNames,
+                       const std::function<void (ObjectTypeTemplate&)> initialization);
+    ObjectTypeTemplate(const std::string &name,
+                       const std::vector<std::string>& parameterNames);
     ObjectTypeTemplate(const std::string &name);
 
     /**
