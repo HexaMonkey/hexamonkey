@@ -19,7 +19,7 @@ void TestParser::test_default()
 
 void TestParser::test_asf()
 {
-    QVERIFY(checkFile("test_asf.asf", 3, 30));
+    QVERIFY(checkFile("test_asf.asf", 3, 22));
 }
 
 void TestParser::test_avi()

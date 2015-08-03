@@ -17,15 +17,16 @@
 
 addMagicNumber 30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C
 addExtension asf
+addExtension wmv
+addExtension wma
 
 import microsoft
 
-class AsfFile as File
-{
-	@endianness = "littleEndian";
-	while(1) OBJECT *;
-}
+// Based on official ASF specification revision 01.20.05
 
+// 2. File format organization
+
+//// 2.1 Object definition
 virtual class OBJECT(Id) 
 {
 	GUID ObjectId;
@@ -35,6 +36,16 @@ virtual class OBJECT(Id)
 	@size = 8 * ObjectSize;
 }
 
+//// 2.2 Top-level structure
+class AsfFile as File
+{
+	@endianness = "littleEndian";
+	while(1) OBJECT *;
+}
+
+// 3. Top-level Header Object
+
+//// 3.1 Header Object
 class HeaderObject as OBJECT("75B22630-668E-11CF-A6D9-00AA0062CE6C")
 {
 	DWORD NumberOfHeaderObjects;
@@ -43,79 +54,7 @@ class HeaderObject as OBJECT("75B22630-668E-11CF-A6D9-00AA0062CE6C")
 	while(1) OBJECT *;
 }
 
-class DataObject as OBJECT("75B22636-668E-11CF-A6D9-00AA0062CE6C")
-{
-	GUID FileId;
-	QWORD TotalDataPackets;
-	WORD Reserved;
-	var packetSize = (@size - 400)/TotalDataPackets;
-	DataPacket(packetSize) data_packets[TotalDataPackets];
-}
-
-class SimpleIndexEntry
-{
-	DWORD PacketNumber;
-	WORD  PacketCount;
-}
-
-class SimpleIndexObject as OBJECT("33000890-E5B1-11CF-89F4-00A0C90349CB")
-{
-	GUID FileID;
-	QWORD IndexEntryTimeInterval;
-	DWORD MaximumPacketCount;
-	DWORD IndexEntriesCount;
-	SimpleIndexEntry entries[];
-}
-
-class IndexSpecifier
-{
-	WORD StreamNumber;
-	WORD IndexType;
-}
-
-class IndexBlockTemplate(EntryType)
-{
-	DWORD IndexEntryCount;
-	QWORD BlockPositions[@args.specifierCount];
-	(@args.EntryType) IndexEntries[IndexEntryCount];
-}
-
-class IndexBlock(count) extends IndexBlockTemplate(Tuple(DWORD, count))
-
-class MediaIndexBlock(count) extends IndexBlockTemplate(Tuple(DWORD, count))
-
-class TimecodeEntries(count) extends Data(%sizeof(DWORD)*(count+1))
-{
-	DWORD Timecode;
-	DWORD Offsets[@args.count];
-}
-
-class TimecodeIndexBlock(count) extends IndexBlockTemplate(TimecodeEntries(count))
-
-class IndexObjectTemplate extends OBJECT
-{
-	DWORD IndexEntryTimeInterval;
-	WORD  IndexSpecifiersCount;
-	DWORD IndexBlocksCount;
-	IndexSpecifier IndexSpecifiers[IndexSpecifiersCount];
-}
-
-class IndexObject extends IndexObjectTemplate as OBJECT("D6E229D3-35DA-11D1-9034-00A0C90349BE")
-{
-	IndexBlock(IndexSpecifiersCount) IndexBlocks[];
-}
-
-class MediaObjectIndexObject extends IndexObjectTemplate as OBJECT("FEB103F8-12AD-4C64-840F-2A1D2F7AD48C")
-{
-	MediaIndexBlock(IndexSpecifiersCount) IndexBlocks[];
-}
-
-class TimecodeIndexObject extends IndexObjectTemplate as OBJECT("3CB73FD0-0C4A-4803-953D-EDF7B6228F0C")
-{
-	TimecodeIndexBlock(IndexSpecifiersCount) IndexBlocks[];
-}
-
-
+//// 3.2 File Properties Object
 class FilePropertiesObject as OBJECT("8CABDCA1-A947-11CF-8EE4-00C00C205365")
 {
 	GUID  FileID;
@@ -134,6 +73,8 @@ class FilePropertiesObject as OBJECT("8CABDCA1-A947-11CF-8EE4-00C00C205365")
 	DWORD MaximumBitrate;
 }
 
+
+//// 3.3 Sream Properties Object
 class StreamPropertiesObject as OBJECT("B7DC0791-A9B7-11CF-8EE6-00C00C205365")
 {
 	enum GUID {
@@ -163,6 +104,8 @@ class StreamPropertiesObject as OBJECT("B7DC0791-A9B7-11CF-8EE6-00C00C205365")
 	ErrorCorrection(ErrorCorrectionType, ErrorCorrectionDataLength) ErrorCorrectionData;
 }
 
+
+//// 3.4 Header Extension Object
 class HeaderExtensionObject as OBJECT("5FBF03B5-A92E-11CF-8EE3-00C00C205365")
 {
 	enum GUID {
@@ -171,6 +114,14 @@ class HeaderExtensionObject as OBJECT("5FBF03B5-A92E-11CF-8EE3-00C00C205365")
 	WORD  ReservedField2;
 	DWORD HeaderExtensionDataSize;
 	while(1) OBJECT *;
+}
+
+//// 3.5 Codec List Object
+class CodecListObject as OBJECT("86D15240-311D-11D0-A3A4-00A0C90348F6")
+{
+	GUID  Reserved;
+	DWORD CodecEntriesCount;
+	CodecEntry CodecEntries[];
 }
 
 class CodecEntry
@@ -188,11 +139,17 @@ class CodecEntry
 	Data(CodecInformationLength<<3) CodecInformation;
 }
 
-class CodecListObject as OBJECT("86D15240-311D-11D0-A3A4-00A0C90348F6")
+
+//// 3.6 Script Command Object
+class ScriptCommandObject as OBJECT("1EFB1A30-0B62-11D0-A39B-00A0C90348F6")
 {
-	GUID  Reserved;
-	DWORD CodecEntriesCount;
-	CodecEntry CodecEntries[];
+	enum GUID {
+        "4B1ACBE3-100B-11D0-A39B-00A0C90348F6" : "Reserved 3"
+    }  Reserved;
+	WORD  CommandsCount;
+	WORD  CommandTypesCount;
+	CommandType CommandTypes[CommandTypesCount];
+	Command Commands[CommandsCount];
 }
 
 class CommandType
@@ -209,15 +166,17 @@ class Command
 	WString(CommandNameLength) CommandName;
 }
 
-class ScriptCommandObject as OBJECT("1EFB1A30-0B62-11D0-A39B-00A0C90348F6")
+//// 3.7 Marker Object
+class MarkerObject as OBJECT("F487CD01-A951-11CF-8EE6-00C00C205365")
 {
 	enum GUID {
-        "4B1ACBE3-100B-11D0-A39B-00A0C90348F6" : "Reserved 3"
+        "4CFEDB20-75F6-11CF-9C0F-00A0C90349CB" : "Reserved 4"
     }  Reserved;
-	WORD  CommandsCount;
-	WORD  CommandTypesCount;
-	CommandType CommandTypes[CommandTypesCount];
-	Command Commands[CommandsCount];
+	DWORD MarkersCount;
+	WORD  Reserved;
+	WORD  NameLength;
+	WString(NameLength/2) Name;
+	Marker Markers[];
 }
 
 class Marker
@@ -231,18 +190,7 @@ class Marker
 	WString(MarkerDescriptionLength) MarkerDescription;
 }
 
-class MarkerObject as OBJECT("F487CD01-A951-11CF-8EE6-00C00C205365")
-{
-	enum GUID {
-        "4CFEDB20-75F6-11CF-9C0F-00A0C90349CB" : "Reserved 4"
-    }  Reserved;
-	DWORD MarkersCount;
-	WORD  Reserved;
-	WORD  NameLength;
-	WString(NameLength/2) Name;
-	Marker Markers[];
-}
-
+//// 3.8 Bitrate Mutual Exclusion Object
 class BitrateMutualExclusionObject as OBJECT("D6E229DC-35DA-11D1-9034-00A0C90349BE")
 {
 	enum GUID {
@@ -254,6 +202,7 @@ class BitrateMutualExclusionObject as OBJECT("D6E229DC-35DA-11D1-9034-00A0C90349
 	WORD StreamNumbers[StreamNumbersCount];
 }
 
+//// 3.9 Error Correction Object
 class ErrorCorrectionObject as OBJECT("75B22635-668E-11CF-A6D9-00AA0062CE6C")
 {
 	enum GUID {
@@ -264,6 +213,7 @@ class ErrorCorrectionObject as OBJECT("75B22635-668E-11CF-A6D9-00AA0062CE6C")
 	ErrorCorrection(ErrorCorrectionType, ErrorCorrectionDataLength) ErrorCorrectionData;
 }
 
+//// 3.10 Content Description Object
 class ContentDescriptionObject as OBJECT("75B22633-668E-11CF-A6D9-00AA0062CE6C")
 {
 	WORD TitleLength;
@@ -271,7 +221,11 @@ class ContentDescriptionObject as OBJECT("75B22633-668E-11CF-A6D9-00AA0062CE6C")
 	WORD CopyrightLength;
 	WORD DescritionLength;
 	WORD RatingLength;
-    @size = @pos + 8*(TitleLength + AuthorLength + CopyrightLength + DescritionLength + RatingLength);
+    @size = @pos + 8*(TitleLength 
+	                + AuthorLength 
+					+ CopyrightLength 
+					+ DescritionLength 
+					+ RatingLength);
 	WString(TitleLength/2) Title;
 	WString(AuthorLength/2) Author;
 	WString(CopyrightLength/2) Copyright;
@@ -303,10 +257,18 @@ class ContentDescriptor
     @attr.value = DescriptorValue;
 }
 
+//// 3.11 Extended Content Description Object
 class ExtendedContentDescriptionObject as OBJECT("D2D0A440-E307-11D2-97F0-00A0C95EA850")
 {
 	WORD ContentDescriptorsCount;
 	ContentDescriptor ContentDescriptors[];
+}
+
+//// 3.12 Stream Bitrate Properties Object
+class StreamBitratePropertiesObject as OBJECT("7BF875CE-468D-11D1-8D82-006097C9A2B2")
+{
+	WORD BitrateRecordsCount;
+	BitrateRecord BitrateRecords[BitrateRecordsCount];
 }
 
 class BitrateRecord
@@ -315,12 +277,7 @@ class BitrateRecord
 	DWORD AverageBitrate;
 }
 
-class StreamBitratePropertiesObject as OBJECT("7BF875CE-468D-11D1-8D82-006097C9A2B2")
-{
-	WORD BitrateRecordsCount;
-	BitrateRecord BitrateRecords[BitrateRecordsCount];
-}
-
+//// 3.13 Content Branding Object
 class ContentBrandingObject as OBJECT("2211B3FA-BD23-11D2-B4B7-00A0C955FC6E")
 {
 	DWORD BannerImageType;
@@ -332,6 +289,7 @@ class ContentBrandingObject as OBJECT("2211B3FA-BD23-11D2-B4B7-00A0C955FC6E")
 	String(CopyrightURLLength) CopyrightURL;
 }
 
+//// 3.14 Content Encryption Object
 class ContentEncryptionObject as OBJECT("2211B3FB-BD23-11D2-B4B7-00A0C955FC6E")
 {
 	DWORD SecretDataLength;
@@ -344,12 +302,14 @@ class ContentEncryptionObject as OBJECT("2211B3FB-BD23-11D2-B4B7-00A0C955FC6E")
 	String(LicenseURLLength) LicenseURL;
 }
 
+//// 3.15 Extended Content Encryption Object
 class ExtendedContentEncryptionObject as OBJECT("298AE614-2622-4C17-B935-DAE07EE9289C")
 {
 	DWORD DataSize;
 	Data(8*DataSize)  Data;
 }
 
+//// 3.16 Digital Signature Object
 class DigitalSignatureObject as OBJECT("2211B3FC-BD23-11D2-B4B7-00A0C955FC6E")
 {
 	DWORD SignatureType;
@@ -357,34 +317,15 @@ class DigitalSignatureObject as OBJECT("2211B3FC-BD23-11D2-B4B7-00A0C955FC6E")
 	Data(8*SignatureDataLength)  SignatureData;
 }
 
+//// 3.17 Padding Object
 class PaddingObject as OBJECT("1806D474-CADF-4509-A4BA-9AABCB96AAE8")
 {
 	Data PaddingData;
 }
 
-class StreamName
-{
-	WORD LanguageIDIndex;
-	WORD StreamNameLength;
-	WString(StreamNameLength/2) StreamName;
-}
+// 4. Objects in the Header Extension Object
 
-class PayloadExtensionSystem
-{
-	enum GUID {
-        "399595EC-8667-4E2D-8FDB-98814CE76C1E" : "Timecode",
-        "E165EC0E-19ED-45D7-B4A7-25CBD1E28E9B" : "File Name",
-        "D590DC20-07BC-436C-9CF7-F3BBFBF1A4DC" : "Content Type",
-        "1B1EE554-F9EA-4BC8-821A-376B74E4C4B8" : "Pixel Aspect Ratio",
-        "C6BD9450-867F-4907-83A3-C77921B733AD" : "Sample Duration",
-        "6698B84E-0AFA-4330-AEB2-1C0A98D7A44D" : "Encryption Sample ID",
-        "00E1AF06-7BEC-11D1-A582-00C04FC29CFB" : "Degradable JPEG"
-    } ExtensionSystemID;
-	WORD  ExtensionDataSize;
-	DWORD ExtensionSystemInfoLength;
-	Data(ExtensionSystemInfoLength) ExtensionSystemInfo;
-}
-
+//// 4.1 Extended Stream Properties Object
 class ExtendedStreamPropertiesObject as OBJECT("14E6A5CB-C672-4332-8399-A96952065B5A")
 {
 	QWORD StartTime;
@@ -412,6 +353,30 @@ class ExtendedStreamPropertiesObject as OBJECT("14E6A5CB-C672-4332-8399-A9695206
 	while(1) OBJECT *;
 }
 
+class StreamName
+{
+	WORD LanguageIDIndex;
+	WORD StreamNameLength;
+	WString(StreamNameLength/2) StreamName;
+}
+
+class PayloadExtensionSystem
+{
+	enum GUID {
+        "399595EC-8667-4E2D-8FDB-98814CE76C1E" : "Timecode",
+        "E165EC0E-19ED-45D7-B4A7-25CBD1E28E9B" : "File Name",
+        "D590DC20-07BC-436C-9CF7-F3BBFBF1A4DC" : "Content Type",
+        "1B1EE554-F9EA-4BC8-821A-376B74E4C4B8" : "Pixel Aspect Ratio",
+        "C6BD9450-867F-4907-83A3-C77921B733AD" : "Sample Duration",
+        "6698B84E-0AFA-4330-AEB2-1C0A98D7A44D" : "Encryption Sample ID",
+        "00E1AF06-7BEC-11D1-A582-00C04FC29CFB" : "Degradable JPEG"
+    } ExtensionSystemID;
+	WORD  ExtensionDataSize;
+	DWORD ExtensionSystemInfoLength;
+	Data(ExtensionSystemInfoLength) ExtensionSystemInfo;
+}
+
+//// 4.2 Advanced Mutual Exclusion Object
 class AdvancedMutualExclusionObject as OBJECT("A08649CF-4775-4670-8A16-6E35357566CD")
 {
 	enum GUID {
@@ -423,13 +388,8 @@ class AdvancedMutualExclusionObject as OBJECT("A08649CF-4775-4670-8A16-6E3535756
 	WORD StreamNumbers[];
 }
 
-class Record
-{
-	WORD StreamCount;
-	@size = 16*(StreamCount+1);
-	WORD StreamNumbers[StreamCount];
-}
 
+//// 4.3 Group Mutual Exclusion Object
 class GroupMutualExclusionObject as OBJECT("D1465A40-5A79-4338-B71B-E36B8FD6C249")
 {
 	enum GUID {
@@ -438,7 +398,21 @@ class GroupMutualExclusionObject as OBJECT("D1465A40-5A79-4338-B71B-E36B8FD6C249
         "D6E22A02-35DA-11D1-9034-00A0C90349BE" : "Unknown"
     } ExclusionType;
 	WORD RecordsCount;
-	Record Records[];
+	ExclusionRecord Records[];
+}
+
+class ExclusionRecord
+{
+	WORD StreamCount;
+	@size = 16*(StreamCount+1);
+	WORD StreamNumbers[StreamCount];
+}
+
+//// 4.4 Stream Prioritization Object
+class StreamPrioritizationObject as OBJECT("D4FED15B-88D3-454F-81F0-ED5C45999E24")
+{
+	WORD PriorityRecordsCount;
+	PriorityRecord PriorityRecords[];
 }
 
 class PriorityRecord
@@ -447,12 +421,7 @@ class PriorityRecord
 	WORD Mandatory;
 }
 
-class StreamPrioritizationObject as OBJECT("D4FED15B-88D3-454F-81F0-ED5C45999E24")
-{
-	WORD PriorityRecordsCount;
-	PriorityRecord PriorityRecords[];
-}
-
+//// 4.5 Bandwidth Sharing Object
 class BandwidthSharingObject as OBJECT("A69609E6-517B-11D2-B6AF-00C04FD908E9")
 {
 	enum GUID {
@@ -465,16 +434,25 @@ class BandwidthSharingObject as OBJECT("A69609E6-517B-11D2-B6AF-00C04FD908E9")
 	WORD  StreamNumbers[StreamNumbersCount];
 }
 
+//// 4.6 Language List Object
+class LanguageListObject as OBJECT("7C4346A9-EFE0-4BFC-B229-393EDE415C85")
+{
+	WORD LanguageIDRecordsCount;
+	LanguageIDRecord LanguageIdRecords[];
+}
+
 class LanguageIDRecord
 {
 	BYTE LanguageIDLength;
 	WString(LanguageIDLength/2) LanguageID;
 }
 
-class LanguageListObject as OBJECT("7C4346A9-EFE0-4BFC-B229-393EDE415C85")
+//// 4.7 Metadata Object & 4.8 Metadata Library Object
+class MetadataObject as OBJECT("C5F8CBEA-5BAF-4877-8467-AA8C44FA4CCA"),
+      MetadataLibraryObject as OBJECT("44231C94-9498-49D1-A141-1D134E457054")
 {
-	WORD LanguageIDRecordsCount;
-	LanguageIDRecord LanguageIdRecords[];
+	WORD DescriptionRecordsCount;
+	DescriptionRecord DescriptionRecords[];
 }
 
 class DescriptionRecord
@@ -484,6 +462,8 @@ class DescriptionRecord
 	WORD  NameLength;
 	WORD  DataType;
 	DWORD DataLength;
+	@size = @pos + 8*NameLength + 8*DataLength;
+	
 	WString(NameLength/2) Name;
     @attr.name = Name;
 	
@@ -503,19 +483,7 @@ class DescriptionRecord
     @attr.value = DescriptorValue;
 }
 
-class MetadataObject as OBJECT("C5F8CBEA-5BAF-4877-8467-AA8C44FA4CCA"),
-      MetadataLibraryObject as OBJECT("44231C94-9498-49D1-A141-1D134E457054")
-{
-	WORD DescriptionRecordsCount;
-	DescriptionRecord DescriptionRecords[];
-}
-
-class IndexSpecifier
-{
-	WORD StreamNumber;
-	WORD IndexType;
-}
-
+//// 4.9 Index Parameters Object
 class IndexParametersObject as OBJECT("D6E229DF-35DA-11D1-9034-00A0C90349BE")
 {
 	DWORD IndexEntryTimeInterval;
@@ -523,6 +491,19 @@ class IndexParametersObject as OBJECT("D6E229DF-35DA-11D1-9034-00A0C90349BE")
 	IndexSpecifier IndexSpecifiers[];
 }
 
+class IndexSpecifier
+{
+	WORD StreamNumber;
+	enum WORD {
+		1 : "Nearest Past Data Packet",
+		2 : "Nearest Past Media Object",
+		3 : "Nearest Past Cleanpoint",
+		0xff : "Frame Number Offset"
+	} IndexType;
+}
+
+
+//// 4.10 Media Object Index Parameters & 4.11 Timecode Index Paramters Object
 class MediaObjectIndexParametersObject as OBJECT("6B203BAD-3F11-48E4-ACA8-D7613DE2CFA7"),
       TimecodeIndexParametersObject as OBJECT("F55E496D-9797-4B5D-8C8B-604DFE9BFB24")
 {
@@ -531,17 +512,18 @@ class MediaObjectIndexParametersObject as OBJECT("6B203BAD-3F11-48E4-ACA8-D7613D
 	IndexSpecifier IndexSpecifiers[];
 }
 
+//// 4.12 Compatibility Object
 class CompatibilityObject as OBJECT("26F18B5D-4584-47EC-9F5F-0E651F0452C9")
 {
 	BYTE Profile;
 	BYTE Mode;
 }
 
-class EncryptedObjectRecord
+//// 4.13 Advanced Content Encryption Object
+class AdvancedContentEncryptionObject as OBJECT("43058533-6981-49E6-9B74-AD12CB86D58C")
 {
-	WORD EncryptedObjectIDType;
-	WORD EncryptedObjectIDLength;
-	Data(EncryptedObjectIDLength<<3) EncryptedObjectID;
+	WORD ContentEncryptionRecordsCount;
+	ContentEncryptionRecord ContentEncryptionRecords[];
 }
 
 class ContentEncryptionRecord
@@ -554,16 +536,252 @@ class ContentEncryptionRecord
 	Data(DataSize<<3) Data;
 }
 
-class AdvancedContentEncryptionObject as OBJECT("43058533-6981-49E6-9B74-AD12CB86D58C")
+class EncryptedObjectRecord
 {
-	WORD ContentEncryptionRecordsCount;
-	ContentEncryptionRecord ContentEncryptionRecords[];
+	WORD EncryptedObjectIDType;
+	WORD EncryptedObjectIDLength;
+	@size = @pos + 8*EncryptedObjectIDLength;
+	
+	if (EncryptedObjectIDType == 0x0001) {
+		WORD EncryptedObjectID;
+	} else {
+		Data(8*EncryptedObjectIDLength) EncryptedObjectID;
+	}
 }
+
+
+// 5. Data Object
+
+//// 5.1 Data Object
+class DataObject as OBJECT("75B22636-668E-11CF-A6D9-00AA0062CE6C")
+{
+	GUID FileId;
+	QWORD TotalDataPackets;
+	WORD Reserved;
+	var packetSize = @rem/TotalDataPackets;
+	DataPacket(packetSize) data_packets[TotalDataPackets];
+}
+
+//// 5.2 Data packet definition
+class DataPacket(_size) extends Data(_size)
+{
+	////// 5.2.1 Error Correction Data
+	BITS(1) ErrorCorrectionPresent;
+	if(ErrorCorrectionPresent)
+	{
+		BITS(2) ErrorCorrectionLengthType;
+		BITS(1) OpaqueDataPresent;
+		BITS(4) ErrorCorrectionDataLength;
+		
+		BITS(4) Number;
+		enum BITS(4) {
+			0x0000 : "uncorrected",
+			0x0001 : "XOR data",
+			0x0010 : "Parity data"
+		} Type;
+		
+		BYTE Cycle;
+		
+		BITS(1) Reserved;
+	}
+	
+	////// 5.2.2 Payload Parsing Information
+	BITS(2) PacketLengthType;
+	BITS(2) PaddingLengthType;
+	BITS(2) SequenceType;
+	BITS(1) MultiplePayloadsPresent;
+	
+	BITS(2) StreamNumberLengthType;
+	BITS(2) MediaObjectNumberType;
+	BITS(2) OffsetIntoMediaObjectLengthType;
+	BITS(2) ReplicatedDataLengthType;
+	
+	// put types in context variables to be used when parsing payloads
+	@context.MediaObjectNumberType = %WORDTYPE(MediaObjectNumberType);
+	@context.OffsetIntoMediaObjectLengthType = %WORDTYPE(OffsetIntoMediaObjectLengthType);
+	@context.ReplicatedDataLengthType = %WORDTYPE(ReplicatedDataLengthType);
+	
+	(%WORDTYPE(PacketLengthType))  PacketLength;
+	(%WORDTYPE(SequenceType))      Sequence;
+	(%WORDTYPE(PaddingLengthType)) PaddingLength;
+	var paddingLength = PaddingLength ? 8*PaddingLength : 0;
+	DWORD SendTime;
+	WORD  Duration;
+	
+	if(MultiplePayloadsPresent)
+	{
+		////// 5.2.3.3 & 5.2.3.4 Multiple Payload
+		BITS(2) PayloadLengthType;
+		@context.PayloadLengthType = %WORDTYPE(PayloadLengthType);
+		
+		BITS(6) NumberOfPayloads;
+		MultiplePayloadData(NumberOfPayloads, @rem - paddingLength) Payloads;
+	}
+	else
+	{
+		SimplePayload(@rem - paddingLength) Payload;		
+	}
+	if (paddingLength) {
+		Data(paddingLength) Padding;
+	}
+}
+
+function WORDTYPE(const flags)
+{
+	if(flags == 0b00)
+		return null;
+	if(flags == 0b01)
+		return BYTE();
+	if(flags == 0b10)
+		return WORD();
+	if(flags == 0b11)
+		return DWORD();
+}
+
+////// 5.2.3 Payload data
+
+//////// 5.2.3.1 & 5.2.3.2 Single Payload
+class SimplePayload(_size) extends Data(_size)
+{
+	BITS(1)                                     KeyFrameBit;
+	BITS(7)                                     StreamNumber;
+	(@context.MediaObjectNumberType)           MediaObjectNumber;
+	(@context.OffsetIntoMediaObjectLengthType) OffsetIntoMediaObjectLength;
+	(@context.ReplicatedDataLengthType)        ReplicatedDataLength;
+	
+	if (ReplicatedDataLength == 1) { // compressed
+		DWORD      PresentationTimeDelta;
+		SubPayload SubPayloads[];
+	} else {
+		Data(8*ReplicatedDataLength) ReplicatedData;
+		Data                         PayloadData;
+	}
+}
+
+class SubPayload 
+{
+	BYTE DataLength;
+	Data(8*DataLength) Data;
+}
+
+//////// 5.2.3.3 & 5.2.3.4 Multiple payload
+class MultiplePayloadData(_count, _size) extends Data(_size) 
+	      with {elemType:MultiplePayload(), elemCount:_count}
+{
+	for (var i = 0, n = _count; i < n; ++i) {
+		MultiplePayload #;
+	}
+
+	if (@rem) {
+		Data padding;
+	}
+}
+
+class MultiplePayload
+{
+	BITS(1)                                     KeyFrameBit;
+	BITS(7)                                     StreamNumber;
+	(@context.MediaObjectNumberType)           MediaObjectNumber;
+	(@context.OffsetIntoMediaObjectLengthType) OffsetIntoMediaObjectLength;
+	(@context.ReplicatedDataLengthType)        ReplicatedDataLength;
+	if (ReplicatedDataLength == 1) {
+		DWORD                                PresentationTimeDelta;
+		(@context.PayloadLengthType)         PayloadLength;
+		Array(SubPayload(), 8*PayloadLength) SubPayloads;
+	} else {
+		if (ReplicatedDataLength) {
+			Data(8*ReplicatedDataLength)       ReplicatedData;
+		}
+		(@context.PayloadLengthType)       PayloadLength;
+		Data(8*PayloadLength)              PayloadData;
+	}
+}
+
+
+// 6. ASF top-level index objects
+
+//// 6.1 Simple Index Object
+class SimpleIndexObject as OBJECT("33000890-E5B1-11CF-89F4-00A0C90349CB")
+{
+	GUID FileID;
+	QWORD_DURATION IndexEntryTimeInterval;
+	DWORD MaximumPacketCount;
+	DWORD IndexEntriesCount;
+	
+	struct SimpleIndexEntry {
+		DWORD PacketNumber;
+		WORD  PacketCount;
+	} entries[IndexEntriesCount];
+}
+
+//// 6.2 Index Object
+class IndexBlock(_count)
+{
+	DWORD IndexEntryCount;
+	QWORD BlockPositions[_count];
+	DWORD IndexEntries[_count][IndexEntryCount];
+}
+
+class IndexObject as OBJECT("D6E229D3-35DA-11D1-9034-00A0C90349BE")
+{
+	DWORD IndexEntryTimeInterval;
+	WORD  IndexSpecifiersCount;
+	DWORD IndexBlocksCount;
+	
+	IndexSpecifier IndexSpecifiers[IndexSpecifiersCount];
+	IndexBlock(IndexSpecifiersCount) IndexBlocks[IndexBlocksCount];
+}
+
+//// 6.3 Media Object Index Object
+class MediaObjectIndexObject as OBJECT("FEB103F8-12AD-4C64-840F-2A1D2F7AD48C")
+{
+	DWORD IndexEntryCountInterval;
+	WORD  IndexSpecifiersCount;
+	DWORD IndexBlocksCount;
+	
+	IndexSpecifier IndexSpecifiers[IndexSpecifiersCount];
+	IndexBlock(IndexSpecifiersCount) IndexBlocks[IndexBlocksCount];
+}
+
+//// 6.4 Timecode Index Object
+class TimecodeIndexBlock(_count)
+{
+	DWORD IndexEntryCount;
+	WORD  TimecodeRange;
+	QWORD BlockPositions[_count];
+	
+	struct IndexEntry {
+		WORD  TimecodeRange;
+		DWORD Timecode;
+		DWORD UserDefinedBits;
+		DWORD Reserved;
+		DWORD Offsets[_count];
+	} IndexEntries[IndexEntryCount];
+}
+
+class TimecodeIndexObject as OBJECT("3CB73FD0-0C4A-4803-953D-EDF7B6228F0C")
+{
+	DWORD Reserved;
+	WORD  IndexSpecifiersCount;
+	DWORD IndexBlocksCount;
+	
+	IndexSpecifier IndexSpecifiers[IndexSpecifiersCount];
+	TimecodeIndexBlock(IndexSpecifiersCount) IndexBlocks[IndexBlocksCount];
+}
+
+// 9. Media Types
 
 virtual class Media(Id, size) extends Data(8*size)
 {
 }
 
+virtual class ErrorCorrection(Id, size) extends Data(8*size)
+{
+}
+
+class NoErrorCorrection as ErrorCorrection("20FB5700-5B55-11CF-A8FD-00805F5C442B")
+
+//// 9.1 Audio Media
 class AudioMedia as Media("F8699E40-5B4D-11CF-A8FD-00805F5C442B")
 {
 	WORD  CodecID;
@@ -574,6 +792,26 @@ class AudioMedia as Media("F8699E40-5B4D-11CF-A8FD-00805F5C442B")
 	WORD  BitsPerSample;
 	WORD  CodecSpecificDataSize;
 	Data(CodecSpecificDataSize<<3) CodecSpecificData;
+}
+
+////// 9.1.1 Spread Audio
+class SpreadAudio as ErrorCorrection("BFC3CD50-618F-11CF-8BB2-00AA00B4E220")
+{
+	BYTE Span;
+	WORD VirtualPacketLength;
+	WORD VirtualChunkLength;
+	WORD SilenceDataLength;
+	Data(SilenceDataLength<<3) SilenceData;
+}
+
+//// 9.2 Video media
+class VideoMedia as Media("BC19EFC0-5B4D-11CF-A8FD-00805F5C442B")
+{
+	DWORD EncodedImageWidth;
+	DWORD EncodedImageHeight;
+	BYTE  ReservedFlags;
+	WORD  FormatDataSize;
+	VideoFormatData *;
 }
 
 class VideoFormatData
@@ -593,17 +831,12 @@ class VideoFormatData
 	Data   CodecSpecificData;
 }
 
-class VideoMedia as Media("BC19EFC0-5B4D-11CF-A8FD-00805F5C442B")
-{
-	DWORD EncodedImageWidth;
-	DWORD EncodedImageHeight;
-	BYTE  ReservedFlags;
-	WORD  FormatDataSize;
-	VideoFormatData *;
-}
-
+//// 9.3 Command Media type
 class CommandMedia as Media("59DACFC0-59E6-11D0-A3AC-00A0C90348F6")
 
+//// 9.4 Image Media typede
+
+////// 9.4.1 JFIF/JPEG media type
 class JFIFMedia as Media("B61BE100-5B4E-11CF-A8FD-00805F5C442B")
 {
 	DWORD ImageWidth;
@@ -611,6 +844,7 @@ class JFIFMedia as Media("B61BE100-5B4E-11CF-A8FD-00805F5C442B")
 	DWORD Reserved;
 }
 
+////// 9.4.2 Degradable JPEG media type
 class DegradableJPEGMedia as Media("35907DE0-E415-11CF-A917-00805F5C442B")
 {
 	DWORD ImageWidth;
@@ -622,104 +856,29 @@ class DegradableJPEGMedia as Media("35907DE0-E415-11CF-A917-00805F5C442B")
 	Data(InterchangeDataLength<<3) InterchangeData;
 }
 
+//// 9.5 File transfer and binary media types
 class FileTransferMedia as Media("91BD222C-F21C-497A-8B6D-5AA86BFC0185"),
       BinaryMedia as Media("3AFB65E2-47EF-40F2-AC2C-70A90D71D343")
 {
 	GUID  MajorMediaType;
-	GUID  MediaSubtype;
+	enum GUID {
+		"776257D4-C627-41CB-8F81-7AC7FF1C40CC" : "Web Stream Media Subtype"
+	} MediaSubtype;
 	DWORD FixedSizeSamples;
 	DWORD TemporalCompression;
 	DWORD SampleSize;
-	GUID  FormatType;
+	enum GUID {
+		"DA1E6B13-8359-4050-B398-388E965BF00C" : "Web Stream Format"
+	} FormatType;
+	
 	DWORD FormatDataSize;
+	if (FormatType == "DA1E6B13-8359-4050-B398-388E965BF00C") {
+		WORD WebStreamFormatDataSize;
+		WORD FixedSampleHeaderSize;
+		WORD VersionNumber;
+		WORD Reserved;
+		
+	}
+	
 	Data(FormatDataSize<<3) FormatData; 
-}
-
-virtual class ErrorCorrection(Id, size) extends Data(8*size)
-{
-}
-
-class NoErrorCorrection as ErrorCorrection("20FB5700-5B55-11CF-A8FD-00805F5C442B")
-
-class AudioSpread as ErrorCorrection("BFC3CD50-618F-11CF-8BB2-00AA00B4E220")
-{
-	BYTE Span;
-	WORD VirtualPacketLength;
-	WORD VirtualChunkLength;
-	WORD SilenceDataLength;
-	Data(SilenceDataLength<<3) SilenceData;
-}
-
-function WORDTYPE(const flags)
-{
-	if(flags == 0b00)
-		return Data(0);
-	if(flags == 0b01)
-		return BYTE();
-	if(flags == 0b10)
-		return WORD();
-	if(flags == 0b11)
-		return DWORD();
-}
-
-class DataPacket(_size) extends Data(_size)
-{
-	BITS(1) ErrorCorrectionPresent;
-	if(ErrorCorrectionPresent)
-	{
-		BITS(2) ErrorCorrectionLengthType;
-		BITS(1) OpaqueDataPresent;
-		BITS(4) ErrorCorrectionDataLength;
-		
-		BITS(4) Number;
-		BITS(4) Type;
-		
-		BYTE Cycle;
-		
-		BITS(1) Reserved;
-	}
-	BITS(2) PacketLengthType;
-	BITS(2) PaddingLengthType;
-	BITS(2) SequenceType;
-	BITS(1) MultiplePayloadsPresent;
-	
-	BITS(2) StreamNumberLengthType;
-	BITS(2) MediaObjectNumberType;
-	BITS(2) OffsetIntoMediaObjectLengthType;
-	BITS(2) ReplicatedDataLengthType;
-	
-	(%WORDTYPE(PacketLengthType))  PacketLength;
-	(%WORDTYPE(SequenceType))      Sequence;
-	(%WORDTYPE(PaddingLengthType)) PaddingLength;
-	DWORD SendTime;
-	WORD  Duration;
-	
-	if(MultiplePayloadsPresent)
-	{
-		BITS(2) PayloadLengthType;
-		BITS(6) NumberOfPayloads;
-		Payload Payloads[NumberOfPayloads];
-	}
-	else
-	{
-		BYTE StreamNumber;
-		(%WORDTYPE(MediaObjectNumberType))           MediaObjectNumber;
-		(%WORDTYPE(OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
-		(%WORDTYPE(ReplicatedDataLengthType))        ReplicatedDataLength;
-		Data(ReplicatedDataLength<<3) ReplicatedDataLength;
-		Payload(@size-@pos-(PaddingLength<<3)) Payload;
-		Data Padding;
-	}
-}
-
-class MPayload
-{
-	BYTE StreamNumber;
-	(%WORDTYPE(@parent.@parent.MediaObjectNumberType))           MediaObjectNumber;
-	(%WORDTYPE(@parent.@parent.OffsetIntoMediaObjectLengthType)) OffsetIntoMediaObjectLength;
-	(%WORDTYPE(@parent.@parent.ReplicatedDataLengthType))        ReplicatedDataLength;
-	Data(ReplicatedDataLength<<3) ReplicatedData;
-	(%WORDTYPE(@parent.@parent.PayloadLengthType)) PayloadLength;
-	//@size = 8*PayloadLength;
-	//Data PayloadData;
 }

@@ -50,7 +50,7 @@
 2176x16                      WORD BitsPerSample = 16
 2192x16                      WORD CodecSpecificDataSize = 10
 2208x80                      Data CodecSpecificData 
-2288x64                  AudioSpread ErrorCorrectionData 
+2288x64                  SpreadAudio ErrorCorrectionData 
 2288x8                       BYTE Span = 1
 2296x16                      WORD VirtualPacketLength = 558
 2312x16                      WORD VirtualChunkLength = 558
@@ -136,7 +136,7 @@
 5819x1                       BITS(1) OpaqueDataPresent = 0
 5820x4                       BITS(4) ErrorCorrectionDataLength = 2
 5824x4                       BITS(4) Number = 0
-5828x4                       BITS(4) Type = 0
+5828x4                       Enum(BITS(4)) Type = 0
 5832x8                       BYTE Cycle = 0
 5840x1                       BITS(1) Reserved = 0
 5841x2                       BITS(2) PacketLengthType = 0
@@ -147,23 +147,36 @@
 5850x2                       BITS(2) MediaObjectNumberType = 1
 5852x2                       BITS(2) OffsetIntoMediaObjectLengthType = 3
 5854x2                       BITS(2) ReplicatedDataLengthType = 1
-5856x0                       Data PacketLength 
-5856x0                       Data Sequence 
-5856x0                       Data PaddingLength 
 5856x32                      DWORD SendTime = 0
 5888x16                      WORD Duration = 100
 5904x2                       BITS(2) PayloadLengthType = 2
 5906x6                       BITS(6) NumberOfPayloads = 2
-5912x0                       Tuple(, 2) Payloads 
-5912x0                            
-5912x0                            
+5912x25504                   MultiplePayloadData Payloads 
+5912x4600                        MultiplePayload 
+5912x1                               BITS(1) KeyFrameBit = 0
+5913x7                               BITS(7) StreamNumber = 1
+5920x8                               BYTE MediaObjectNumber = 1
+5928x32                              DWORD OffsetIntoMediaObjectLength = 0
+5960x8                               BYTE ReplicatedDataLength = 8
+5968x64                              Data ReplicatedData 
+6032x16                              WORD PayloadLength = 558
+6048x4464                            Data PayloadData 
+10512x20904                      MultiplePayload 
+10512x1                              BITS(1) KeyFrameBit = 1
+10513x7                              BITS(7) StreamNumber = 2
+10520x8                              BYTE MediaObjectNumber = 1
+10528x32                             DWORD OffsetIntoMediaObjectLength = 0
+10560x8                              BYTE ReplicatedDataLength = 8
+10568x64                             Data ReplicatedData 
+10632x16                             WORD PayloadLength = 2596
+10648x20768                          Data PayloadData 
 31416x25600              DataPacket 
 31416x1                      BITS(1) ErrorCorrectionPresent = 1
 31417x2                      BITS(2) ErrorCorrectionLengthType = 0
 31419x1                      BITS(1) OpaqueDataPresent = 0
 31420x4                      BITS(4) ErrorCorrectionDataLength = 2
 31424x4                      BITS(4) Number = 0
-31428x4                      BITS(4) Type = 0
+31428x4                      Enum(BITS(4)) Type = 0
 31432x8                      BYTE Cycle = 0
 31440x1                      BITS(1) Reserved = 0
 31441x2                      BITS(2) PacketLengthType = 0
@@ -174,23 +187,36 @@
 31450x2                      BITS(2) MediaObjectNumberType = 1
 31452x2                      BITS(2) OffsetIntoMediaObjectLengthType = 3
 31454x2                      BITS(2) ReplicatedDataLengthType = 1
-31456x0                      Data PacketLength 
-31456x0                      Data Sequence 
-31456x0                      Data PaddingLength 
 31456x32                     DWORD SendTime = 100
 31488x16                     WORD Duration = 100
 31504x2                      BITS(2) PayloadLengthType = 2
 31506x6                      BITS(6) NumberOfPayloads = 2
-31512x0                      Tuple(, 2) Payloads 
-31512x0                           
-31512x0                           
+31512x25504                  MultiplePayloadData Payloads 
+31512x4600                       MultiplePayload 
+31512x1                              BITS(1) KeyFrameBit = 0
+31513x7                              BITS(7) StreamNumber = 1
+31520x8                              BYTE MediaObjectNumber = 2
+31528x32                             DWORD OffsetIntoMediaObjectLength = 0
+31560x8                              BYTE ReplicatedDataLength = 8
+31568x64                             Data ReplicatedData 
+31632x16                             WORD PayloadLength = 558
+31648x4464                           Data PayloadData 
+36112x20904                      MultiplePayload 
+36112x1                              BITS(1) KeyFrameBit = 1
+36113x7                              BITS(7) StreamNumber = 2
+36120x8                              BYTE MediaObjectNumber = 1
+36128x32                             DWORD OffsetIntoMediaObjectLength = 2596
+36160x8                              BYTE ReplicatedDataLength = 8
+36168x64                             Data ReplicatedData 
+36232x16                             WORD PayloadLength = 2596
+36248x20768                          Data PayloadData 
 57016x25600              DataPacket 
 57016x1                      BITS(1) ErrorCorrectionPresent = 1
 57017x2                      BITS(2) ErrorCorrectionLengthType = 0
 57019x1                      BITS(1) OpaqueDataPresent = 0
 57020x4                      BITS(4) ErrorCorrectionDataLength = 2
 57024x4                      BITS(4) Number = 0
-57028x4                      BITS(4) Type = 0
+57028x4                      Enum(BITS(4)) Type = 0
 57032x8                      BYTE Cycle = 0
 57040x1                      BITS(1) Reserved = 0
 57041x2                      BITS(2) PacketLengthType = 0
@@ -201,24 +227,45 @@
 57050x2                      BITS(2) MediaObjectNumberType = 1
 57052x2                      BITS(2) OffsetIntoMediaObjectLengthType = 3
 57054x2                      BITS(2) ReplicatedDataLengthType = 1
-57056x0                      Data PacketLength 
-57056x0                      Data Sequence 
-57056x0                      Data PaddingLength 
 57056x32                     DWORD SendTime = 200
 57088x16                     WORD Duration = 100
 57104x2                      BITS(2) PayloadLengthType = 2
 57106x6                      BITS(6) NumberOfPayloads = 3
-57112x0                      Tuple(, 3) Payloads 
-57112x0                           
-57112x0                           
-57112x0                           
+57112x25504                  MultiplePayloadData Payloads 
+57112x4600                       MultiplePayload 
+57112x1                              BITS(1) KeyFrameBit = 0
+57113x7                              BITS(7) StreamNumber = 1
+57120x8                              BYTE MediaObjectNumber = 3
+57128x32                             DWORD OffsetIntoMediaObjectLength = 0
+57160x8                              BYTE ReplicatedDataLength = 8
+57168x64                             Data ReplicatedData 
+57232x16                             WORD PayloadLength = 558
+57248x4464                           Data PayloadData 
+61712x19080                      MultiplePayload 
+61712x1                              BITS(1) KeyFrameBit = 1
+61713x7                              BITS(7) StreamNumber = 2
+61720x8                              BYTE MediaObjectNumber = 1
+61728x32                             DWORD OffsetIntoMediaObjectLength = 5192
+61760x8                              BYTE ReplicatedDataLength = 8
+61768x64                             Data ReplicatedData 
+61832x16                             WORD PayloadLength = 2368
+61848x18944                          Data PayloadData 
+80792x1824                       MultiplePayload 
+80792x1                              BITS(1) KeyFrameBit = 0
+80793x7                              BITS(7) StreamNumber = 2
+80800x8                              BYTE MediaObjectNumber = 2
+80808x32                             DWORD OffsetIntoMediaObjectLength = 0
+80840x8                              BYTE ReplicatedDataLength = 8
+80848x64                             Data ReplicatedData 
+80912x16                             WORD PayloadLength = 211
+80928x1688                           Data PayloadData 
 82616x25600              DataPacket 
 82616x1                      BITS(1) ErrorCorrectionPresent = 1
 82617x2                      BITS(2) ErrorCorrectionLengthType = 0
 82619x1                      BITS(1) OpaqueDataPresent = 0
 82620x4                      BITS(4) ErrorCorrectionDataLength = 2
 82624x4                      BITS(4) Number = 0
-82628x4                      BITS(4) Type = 0
+82628x4                      Enum(BITS(4)) Type = 0
 82632x8                      BYTE Cycle = 0
 82640x1                      BITS(1) Reserved = 0
 82641x2                      BITS(2) PacketLengthType = 0
@@ -229,25 +276,25 @@
 82650x2                      BITS(2) MediaObjectNumberType = 1
 82652x2                      BITS(2) OffsetIntoMediaObjectLengthType = 3
 82654x2                      BITS(2) ReplicatedDataLengthType = 1
-82656x0                      Data PacketLength 
-82656x0                      Data Sequence 
 82656x8                      BYTE PaddingLength = 2
 82664x32                     DWORD SendTime = 300
 82696x16                     WORD Duration = 100
-82712x8                      BYTE StreamNumber = 2
-82720x8                      BYTE MediaObjectNumber = 2
-82728x32                     DWORD OffsetIntoMediaObjectLength = 211
-82760x8                      BYTE ReplicatedDataLength = 8
-82768x64                     Data ReplicatedDataLength 
-82832x0                       Payload 
-82832x25384                  Data Padding 
+82712x25488                  SimplePayload Payload 
+82712x1                          BITS(1) KeyFrameBit = 0
+82713x7                          BITS(7) StreamNumber = 2
+82720x8                          BYTE MediaObjectNumber = 2
+82728x32                         DWORD OffsetIntoMediaObjectLength = 211
+82760x8                          BYTE ReplicatedDataLength = 8
+82768x64                         Data ReplicatedData 
+82832x25368                      Data PayloadData 
+108200x16                    Data Padding 
 108216x25600             DataPacket 
 108216x1                     BITS(1) ErrorCorrectionPresent = 1
 108217x2                     BITS(2) ErrorCorrectionLengthType = 0
 108219x1                     BITS(1) OpaqueDataPresent = 0
 108220x4                     BITS(4) ErrorCorrectionDataLength = 2
 108224x4                     BITS(4) Number = 0
-108228x4                     BITS(4) Type = 0
+108228x4                     Enum(BITS(4)) Type = 0
 108232x8                     BYTE Cycle = 0
 108240x1                     BITS(1) Reserved = 0
 108241x2                     BITS(2) PacketLengthType = 0
@@ -258,24 +305,45 @@
 108250x2                     BITS(2) MediaObjectNumberType = 1
 108252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 108254x2                     BITS(2) ReplicatedDataLengthType = 1
-108256x0                     Data PacketLength 
-108256x0                     Data Sequence 
-108256x0                     Data PaddingLength 
 108256x32                    DWORD SendTime = 400
 108288x16                    WORD Duration = 100
 108304x2                     BITS(2) PayloadLengthType = 2
 108306x6                     BITS(6) NumberOfPayloads = 3
-108312x0                     Tuple(, 3) Payloads 
-108312x0                          
-108312x0                          
-108312x0                          
+108312x25504                 MultiplePayloadData Payloads 
+108312x4600                      MultiplePayload 
+108312x1                             BITS(1) KeyFrameBit = 0
+108313x7                             BITS(7) StreamNumber = 1
+108320x8                             BYTE MediaObjectNumber = 4
+108328x32                            DWORD OffsetIntoMediaObjectLength = 0
+108360x8                             BYTE ReplicatedDataLength = 8
+108368x64                            Data ReplicatedData 
+108432x16                            WORD PayloadLength = 558
+108448x4464                          Data PayloadData 
+112912x5592                      MultiplePayload 
+112912x1                             BITS(1) KeyFrameBit = 0
+112913x7                             BITS(7) StreamNumber = 2
+112920x8                             BYTE MediaObjectNumber = 2
+112928x32                            DWORD OffsetIntoMediaObjectLength = 3382
+112960x8                             BYTE ReplicatedDataLength = 8
+112968x64                            Data ReplicatedData 
+113032x16                            WORD PayloadLength = 682
+113048x5456                          Data PayloadData 
+118504x15312                     MultiplePayload 
+118504x1                             BITS(1) KeyFrameBit = 0
+118505x7                             BITS(7) StreamNumber = 2
+118512x8                             BYTE MediaObjectNumber = 3
+118520x32                            DWORD OffsetIntoMediaObjectLength = 0
+118552x8                             BYTE ReplicatedDataLength = 8
+118560x64                            Data ReplicatedData 
+118624x16                            WORD PayloadLength = 1897
+118640x15176                         Data PayloadData 
 133816x25600             DataPacket 
 133816x1                     BITS(1) ErrorCorrectionPresent = 1
 133817x2                     BITS(2) ErrorCorrectionLengthType = 0
 133819x1                     BITS(1) OpaqueDataPresent = 0
 133820x4                     BITS(4) ErrorCorrectionDataLength = 2
 133824x4                     BITS(4) Number = 0
-133828x4                     BITS(4) Type = 0
+133828x4                     Enum(BITS(4)) Type = 0
 133832x8                     BYTE Cycle = 0
 133840x1                     BITS(1) Reserved = 0
 133841x2                     BITS(2) PacketLengthType = 0
@@ -286,24 +354,45 @@
 133850x2                     BITS(2) MediaObjectNumberType = 1
 133852x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 133854x2                     BITS(2) ReplicatedDataLengthType = 1
-133856x0                     Data PacketLength 
-133856x0                     Data Sequence 
-133856x0                     Data PaddingLength 
 133856x32                    DWORD SendTime = 500
 133888x16                    WORD Duration = 100
 133904x2                     BITS(2) PayloadLengthType = 2
 133906x6                     BITS(6) NumberOfPayloads = 3
-133912x0                     Tuple(, 3) Payloads 
-133912x0                          
-133912x0                          
-133912x0                          
+133912x25504                 MultiplePayloadData Payloads 
+133912x4600                      MultiplePayload 
+133912x1                             BITS(1) KeyFrameBit = 0
+133913x7                             BITS(7) StreamNumber = 1
+133920x8                             BYTE MediaObjectNumber = 5
+133928x32                            DWORD OffsetIntoMediaObjectLength = 0
+133960x8                             BYTE ReplicatedDataLength = 8
+133968x64                            Data ReplicatedData 
+134032x16                            WORD PayloadLength = 558
+134048x4464                          Data PayloadData 
+138512x13528                     MultiplePayload 
+138512x1                             BITS(1) KeyFrameBit = 0
+138513x7                             BITS(7) StreamNumber = 2
+138520x8                             BYTE MediaObjectNumber = 3
+138528x32                            DWORD OffsetIntoMediaObjectLength = 1897
+138560x8                             BYTE ReplicatedDataLength = 8
+138568x64                            Data ReplicatedData 
+138632x16                            WORD PayloadLength = 1674
+138648x13392                         Data PayloadData 
+152040x7376                      MultiplePayload 
+152040x1                             BITS(1) KeyFrameBit = 0
+152041x7                             BITS(7) StreamNumber = 2
+152048x8                             BYTE MediaObjectNumber = 4
+152056x32                            DWORD OffsetIntoMediaObjectLength = 0
+152088x8                             BYTE ReplicatedDataLength = 8
+152096x64                            Data ReplicatedData 
+152160x16                            WORD PayloadLength = 905
+152176x7240                          Data PayloadData 
 159416x25600             DataPacket 
 159416x1                     BITS(1) ErrorCorrectionPresent = 1
 159417x2                     BITS(2) ErrorCorrectionLengthType = 0
 159419x1                     BITS(1) OpaqueDataPresent = 0
 159420x4                     BITS(4) ErrorCorrectionDataLength = 2
 159424x4                     BITS(4) Number = 0
-159428x4                     BITS(4) Type = 0
+159428x4                     Enum(BITS(4)) Type = 0
 159432x8                     BYTE Cycle = 0
 159440x1                     BITS(1) Reserved = 0
 159441x2                     BITS(2) PacketLengthType = 0
@@ -314,23 +403,36 @@
 159450x2                     BITS(2) MediaObjectNumberType = 1
 159452x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 159454x2                     BITS(2) ReplicatedDataLengthType = 1
-159456x0                     Data PacketLength 
-159456x0                     Data Sequence 
-159456x0                     Data PaddingLength 
 159456x32                    DWORD SendTime = 600
 159488x16                    WORD Duration = 100
 159504x2                     BITS(2) PayloadLengthType = 2
 159506x6                     BITS(6) NumberOfPayloads = 2
-159512x0                     Tuple(, 2) Payloads 
-159512x0                          
-159512x0                          
+159512x25504                 MultiplePayloadData Payloads 
+159512x3808                      MultiplePayload 
+159512x1                             BITS(1) KeyFrameBit = 0
+159513x7                             BITS(7) StreamNumber = 2
+159520x8                             BYTE MediaObjectNumber = 4
+159528x32                            DWORD OffsetIntoMediaObjectLength = 905
+159560x8                             BYTE ReplicatedDataLength = 8
+159568x64                            Data ReplicatedData 
+159632x16                            WORD PayloadLength = 459
+159648x3672                          Data PayloadData 
+163320x21696                     MultiplePayload 
+163320x1                             BITS(1) KeyFrameBit = 0
+163321x7                             BITS(7) StreamNumber = 2
+163328x8                             BYTE MediaObjectNumber = 5
+163336x32                            DWORD OffsetIntoMediaObjectLength = 0
+163368x8                             BYTE ReplicatedDataLength = 8
+163376x64                            Data ReplicatedData 
+163440x16                            WORD PayloadLength = 2695
+163456x21560                         Data PayloadData 
 185016x25600             DataPacket 
 185016x1                     BITS(1) ErrorCorrectionPresent = 1
 185017x2                     BITS(2) ErrorCorrectionLengthType = 0
 185019x1                     BITS(1) OpaqueDataPresent = 0
 185020x4                     BITS(4) ErrorCorrectionDataLength = 2
 185024x4                     BITS(4) Number = 0
-185028x4                     BITS(4) Type = 0
+185028x4                     Enum(BITS(4)) Type = 0
 185032x8                     BYTE Cycle = 0
 185040x1                     BITS(1) Reserved = 0
 185041x2                     BITS(2) PacketLengthType = 0
@@ -341,25 +443,54 @@
 185050x2                     BITS(2) MediaObjectNumberType = 1
 185052x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 185054x2                     BITS(2) ReplicatedDataLengthType = 1
-185056x0                     Data PacketLength 
-185056x0                     Data Sequence 
-185056x0                     Data PaddingLength 
 185056x32                    DWORD SendTime = 700
 185088x16                    WORD Duration = 100
 185104x2                     BITS(2) PayloadLengthType = 2
 185106x6                     BITS(6) NumberOfPayloads = 4
-185112x0                     Tuple(, 4) Payloads 
-185112x0                          
-185112x0                          
-185112x0                          
-185112x0                          
+185112x25504                 MultiplePayloadData Payloads 
+185112x4600                      MultiplePayload 
+185112x1                             BITS(1) KeyFrameBit = 0
+185113x7                             BITS(7) StreamNumber = 1
+185120x8                             BYTE MediaObjectNumber = 6
+185128x32                            DWORD OffsetIntoMediaObjectLength = 0
+185160x8                             BYTE ReplicatedDataLength = 8
+185168x64                            Data ReplicatedData 
+185232x16                            WORD PayloadLength = 558
+185248x4464                          Data PayloadData 
+189712x584                       MultiplePayload 
+189712x1                             BITS(1) KeyFrameBit = 0
+189713x7                             BITS(7) StreamNumber = 2
+189720x8                             BYTE MediaObjectNumber = 5
+189728x32                            DWORD OffsetIntoMediaObjectLength = 2695
+189760x8                             BYTE ReplicatedDataLength = 8
+189768x64                            Data ReplicatedData 
+189832x16                            WORD PayloadLength = 56
+189848x448                           Data PayloadData 
+190296x17008                     MultiplePayload 
+190296x1                             BITS(1) KeyFrameBit = 0
+190297x7                             BITS(7) StreamNumber = 2
+190304x8                             BYTE MediaObjectNumber = 6
+190312x32                            DWORD OffsetIntoMediaObjectLength = 0
+190344x8                             BYTE ReplicatedDataLength = 8
+190352x64                            Data ReplicatedData 
+190416x16                            WORD PayloadLength = 2109
+190432x16872                         Data PayloadData 
+207304x3312                      MultiplePayload 
+207304x1                             BITS(1) KeyFrameBit = 0
+207305x7                             BITS(7) StreamNumber = 2
+207312x8                             BYTE MediaObjectNumber = 7
+207320x32                            DWORD OffsetIntoMediaObjectLength = 0
+207352x8                             BYTE ReplicatedDataLength = 8
+207360x64                            Data ReplicatedData 
+207424x16                            WORD PayloadLength = 397
+207440x3176                          Data PayloadData 
 210616x25600             DataPacket 
 210616x1                     BITS(1) ErrorCorrectionPresent = 1
 210617x2                     BITS(2) ErrorCorrectionLengthType = 0
 210619x1                     BITS(1) OpaqueDataPresent = 0
 210620x4                     BITS(4) ErrorCorrectionDataLength = 2
 210624x4                     BITS(4) Number = 0
-210628x4                     BITS(4) Type = 0
+210628x4                     Enum(BITS(4)) Type = 0
 210632x8                     BYTE Cycle = 0
 210640x1                     BITS(1) Reserved = 0
 210641x2                     BITS(2) PacketLengthType = 0
@@ -370,25 +501,54 @@
 210650x2                     BITS(2) MediaObjectNumberType = 1
 210652x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 210654x2                     BITS(2) ReplicatedDataLengthType = 1
-210656x0                     Data PacketLength 
-210656x0                     Data Sequence 
-210656x0                     Data PaddingLength 
 210656x32                    DWORD SendTime = 800
 210688x16                    WORD Duration = 100
 210704x2                     BITS(2) PayloadLengthType = 2
 210706x6                     BITS(6) NumberOfPayloads = 4
-210712x0                     Tuple(, 4) Payloads 
-210712x0                          
-210712x0                          
-210712x0                          
-210712x0                          
+210712x25504                 MultiplePayloadData Payloads 
+210712x4600                      MultiplePayload 
+210712x1                             BITS(1) KeyFrameBit = 0
+210713x7                             BITS(7) StreamNumber = 1
+210720x8                             BYTE MediaObjectNumber = 7
+210728x32                            DWORD OffsetIntoMediaObjectLength = 0
+210760x8                             BYTE ReplicatedDataLength = 8
+210768x64                            Data ReplicatedData 
+210832x16                            WORD PayloadLength = 558
+210848x4464                          Data PayloadData 
+215312x7904                      MultiplePayload 
+215312x1                             BITS(1) KeyFrameBit = 0
+215313x7                             BITS(7) StreamNumber = 2
+215320x8                             BYTE MediaObjectNumber = 7
+215328x32                            DWORD OffsetIntoMediaObjectLength = 397
+215360x8                             BYTE ReplicatedDataLength = 8
+215368x64                            Data ReplicatedData 
+215432x16                            WORD PayloadLength = 971
+215448x7768                          Data PayloadData 
+223216x10288                     MultiplePayload 
+223216x1                             BITS(1) KeyFrameBit = 0
+223217x7                             BITS(7) StreamNumber = 2
+223224x8                             BYTE MediaObjectNumber = 8
+223232x32                            DWORD OffsetIntoMediaObjectLength = 0
+223264x8                             BYTE ReplicatedDataLength = 8
+223272x64                            Data ReplicatedData 
+223336x16                            WORD PayloadLength = 1269
+223352x10152                         Data PayloadData 
+233504x2712                      MultiplePayload 
+233504x1                             BITS(1) KeyFrameBit = 0
+233505x7                             BITS(7) StreamNumber = 2
+233512x8                             BYTE MediaObjectNumber = 9
+233520x32                            DWORD OffsetIntoMediaObjectLength = 0
+233552x8                             BYTE ReplicatedDataLength = 8
+233560x64                            Data ReplicatedData 
+233624x16                            WORD PayloadLength = 322
+233640x2576                          Data PayloadData 
 236216x25600             DataPacket 
 236216x1                     BITS(1) ErrorCorrectionPresent = 1
 236217x2                     BITS(2) ErrorCorrectionLengthType = 0
 236219x1                     BITS(1) OpaqueDataPresent = 0
 236220x4                     BITS(4) ErrorCorrectionDataLength = 2
 236224x4                     BITS(4) Number = 0
-236228x4                     BITS(4) Type = 0
+236228x4                     Enum(BITS(4)) Type = 0
 236232x8                     BYTE Cycle = 0
 236240x1                     BITS(1) Reserved = 0
 236241x2                     BITS(2) PacketLengthType = 0
@@ -399,25 +559,54 @@
 236250x2                     BITS(2) MediaObjectNumberType = 1
 236252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 236254x2                     BITS(2) ReplicatedDataLengthType = 1
-236256x0                     Data PacketLength 
-236256x0                     Data Sequence 
-236256x0                     Data PaddingLength 
 236256x32                    DWORD SendTime = 900
 236288x16                    WORD Duration = 100
 236304x2                     BITS(2) PayloadLengthType = 2
 236306x6                     BITS(6) NumberOfPayloads = 4
-236312x0                     Tuple(, 4) Payloads 
-236312x0                          
-236312x0                          
-236312x0                          
-236312x0                          
+236312x25504                 MultiplePayloadData Payloads 
+236312x4600                      MultiplePayload 
+236312x1                             BITS(1) KeyFrameBit = 0
+236313x7                             BITS(7) StreamNumber = 1
+236320x8                             BYTE MediaObjectNumber = 8
+236328x32                            DWORD OffsetIntoMediaObjectLength = 0
+236360x8                             BYTE ReplicatedDataLength = 8
+236368x64                            Data ReplicatedData 
+236432x16                            WORD PayloadLength = 558
+236448x4464                          Data PayloadData 
+240912x9008                      MultiplePayload 
+240912x1                             BITS(1) KeyFrameBit = 0
+240913x7                             BITS(7) StreamNumber = 2
+240920x8                             BYTE MediaObjectNumber = 9
+240928x32                            DWORD OffsetIntoMediaObjectLength = 322
+240960x8                             BYTE ReplicatedDataLength = 8
+240968x64                            Data ReplicatedData 
+241032x16                            WORD PayloadLength = 1109
+241048x8872                          Data PayloadData 
+249920x8520                      MultiplePayload 
+249920x1                             BITS(1) KeyFrameBit = 0
+249921x7                             BITS(7) StreamNumber = 2
+249928x8                             BYTE MediaObjectNumber = 10
+249936x32                            DWORD OffsetIntoMediaObjectLength = 0
+249968x8                             BYTE ReplicatedDataLength = 8
+249976x64                            Data ReplicatedData 
+250040x16                            WORD PayloadLength = 1048
+250056x8384                          Data PayloadData 
+258440x3376                      MultiplePayload 
+258440x1                             BITS(1) KeyFrameBit = 0
+258441x7                             BITS(7) StreamNumber = 2
+258448x8                             BYTE MediaObjectNumber = 11
+258456x32                            DWORD OffsetIntoMediaObjectLength = 0
+258488x8                             BYTE ReplicatedDataLength = 8
+258496x64                            Data ReplicatedData 
+258560x16                            WORD PayloadLength = 405
+258576x3240                          Data PayloadData 
 261816x25600             DataPacket 
 261816x1                     BITS(1) ErrorCorrectionPresent = 1
 261817x2                     BITS(2) ErrorCorrectionLengthType = 0
 261819x1                     BITS(1) OpaqueDataPresent = 0
 261820x4                     BITS(4) ErrorCorrectionDataLength = 2
 261824x4                     BITS(4) Number = 0
-261828x4                     BITS(4) Type = 0
+261828x4                     Enum(BITS(4)) Type = 0
 261832x8                     BYTE Cycle = 0
 261840x1                     BITS(1) Reserved = 0
 261841x2                     BITS(2) PacketLengthType = 0
@@ -428,24 +617,45 @@
 261850x2                     BITS(2) MediaObjectNumberType = 1
 261852x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 261854x2                     BITS(2) ReplicatedDataLengthType = 1
-261856x0                     Data PacketLength 
-261856x0                     Data Sequence 
-261856x0                     Data PaddingLength 
 261856x32                    DWORD SendTime = 1000
 261888x16                    WORD Duration = 100
 261904x2                     BITS(2) PayloadLengthType = 2
 261906x6                     BITS(6) NumberOfPayloads = 3
-261912x0                     Tuple(, 3) Payloads 
-261912x0                          
-261912x0                          
-261912x0                          
+261912x25504                 MultiplePayloadData Payloads 
+261912x9104                      MultiplePayload 
+261912x1                             BITS(1) KeyFrameBit = 0
+261913x7                             BITS(7) StreamNumber = 2
+261920x8                             BYTE MediaObjectNumber = 11
+261928x32                            DWORD OffsetIntoMediaObjectLength = 405
+261960x8                             BYTE ReplicatedDataLength = 8
+261968x64                            Data ReplicatedData 
+262032x16                            WORD PayloadLength = 1121
+262048x8968                          Data PayloadData 
+271016x11912                     MultiplePayload 
+271016x1                             BITS(1) KeyFrameBit = 0
+271017x7                             BITS(7) StreamNumber = 2
+271024x8                             BYTE MediaObjectNumber = 12
+271032x32                            DWORD OffsetIntoMediaObjectLength = 0
+271064x8                             BYTE ReplicatedDataLength = 8
+271072x64                            Data ReplicatedData 
+271136x16                            WORD PayloadLength = 1472
+271152x11776                         Data PayloadData 
+282928x4488                      MultiplePayload 
+282928x1                             BITS(1) KeyFrameBit = 0
+282929x7                             BITS(7) StreamNumber = 2
+282936x8                             BYTE MediaObjectNumber = 13
+282944x32                            DWORD OffsetIntoMediaObjectLength = 0
+282976x8                             BYTE ReplicatedDataLength = 8
+282984x64                            Data ReplicatedData 
+283048x16                            WORD PayloadLength = 544
+283064x4352                          Data PayloadData 
 287416x25600             DataPacket 
 287416x1                     BITS(1) ErrorCorrectionPresent = 1
 287417x2                     BITS(2) ErrorCorrectionLengthType = 0
 287419x1                     BITS(1) OpaqueDataPresent = 0
 287420x4                     BITS(4) ErrorCorrectionDataLength = 2
 287424x4                     BITS(4) Number = 0
-287428x4                     BITS(4) Type = 0
+287428x4                     Enum(BITS(4)) Type = 0
 287432x8                     BYTE Cycle = 0
 287440x1                     BITS(1) Reserved = 0
 287441x2                     BITS(2) PacketLengthType = 0
@@ -456,25 +666,54 @@
 287450x2                     BITS(2) MediaObjectNumberType = 1
 287452x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 287454x2                     BITS(2) ReplicatedDataLengthType = 1
-287456x0                     Data PacketLength 
-287456x0                     Data Sequence 
-287456x0                     Data PaddingLength 
 287456x32                    DWORD SendTime = 1100
 287488x16                    WORD Duration = 100
 287504x2                     BITS(2) PayloadLengthType = 2
 287506x6                     BITS(6) NumberOfPayloads = 4
-287512x0                     Tuple(, 4) Payloads 
-287512x0                          
-287512x0                          
-287512x0                          
-287512x0                          
+287512x25504                 MultiplePayloadData Payloads 
+287512x4600                      MultiplePayload 
+287512x1                             BITS(1) KeyFrameBit = 0
+287513x7                             BITS(7) StreamNumber = 1
+287520x8                             BYTE MediaObjectNumber = 9
+287528x32                            DWORD OffsetIntoMediaObjectLength = 0
+287560x8                             BYTE ReplicatedDataLength = 8
+287568x64                            Data ReplicatedData 
+287632x16                            WORD PayloadLength = 558
+287648x4464                          Data PayloadData 
+292112x2448                      MultiplePayload 
+292112x1                             BITS(1) KeyFrameBit = 0
+292113x7                             BITS(7) StreamNumber = 2
+292120x8                             BYTE MediaObjectNumber = 13
+292128x32                            DWORD OffsetIntoMediaObjectLength = 544
+292160x8                             BYTE ReplicatedDataLength = 8
+292168x64                            Data ReplicatedData 
+292232x16                            WORD PayloadLength = 289
+292248x2312                          Data PayloadData 
+294560x17336                     MultiplePayload 
+294560x1                             BITS(1) KeyFrameBit = 0
+294561x7                             BITS(7) StreamNumber = 2
+294568x8                             BYTE MediaObjectNumber = 14
+294576x32                            DWORD OffsetIntoMediaObjectLength = 0
+294608x8                             BYTE ReplicatedDataLength = 8
+294616x64                            Data ReplicatedData 
+294680x16                            WORD PayloadLength = 2150
+294696x17200                         Data PayloadData 
+311896x1120                      MultiplePayload 
+311896x1                             BITS(1) KeyFrameBit = 0
+311897x7                             BITS(7) StreamNumber = 2
+311904x8                             BYTE MediaObjectNumber = 15
+311912x32                            DWORD OffsetIntoMediaObjectLength = 0
+311944x8                             BYTE ReplicatedDataLength = 8
+311952x64                            Data ReplicatedData 
+312016x16                            WORD PayloadLength = 123
+312032x984                           Data PayloadData 
 313016x25600             DataPacket 
 313016x1                     BITS(1) ErrorCorrectionPresent = 1
 313017x2                     BITS(2) ErrorCorrectionLengthType = 0
 313019x1                     BITS(1) OpaqueDataPresent = 0
 313020x4                     BITS(4) ErrorCorrectionDataLength = 2
 313024x4                     BITS(4) Number = 0
-313028x4                     BITS(4) Type = 0
+313028x4                     Enum(BITS(4)) Type = 0
 313032x8                     BYTE Cycle = 0
 313040x1                     BITS(1) Reserved = 0
 313041x2                     BITS(2) PacketLengthType = 0
@@ -485,24 +724,45 @@
 313050x2                     BITS(2) MediaObjectNumberType = 1
 313052x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 313054x2                     BITS(2) ReplicatedDataLengthType = 1
-313056x0                     Data PacketLength 
-313056x0                     Data Sequence 
-313056x0                     Data PaddingLength 
 313056x32                    DWORD SendTime = 1200
 313088x16                    WORD Duration = 100
 313104x2                     BITS(2) PayloadLengthType = 2
 313106x6                     BITS(6) NumberOfPayloads = 3
-313112x0                     Tuple(, 3) Payloads 
-313112x0                          
-313112x0                          
-313112x0                          
+313112x25504                 MultiplePayloadData Payloads 
+313112x4600                      MultiplePayload 
+313112x1                             BITS(1) KeyFrameBit = 0
+313113x7                             BITS(7) StreamNumber = 1
+313120x8                             BYTE MediaObjectNumber = 10
+313128x32                            DWORD OffsetIntoMediaObjectLength = 0
+313160x8                             BYTE ReplicatedDataLength = 8
+313168x64                            Data ReplicatedData 
+313232x16                            WORD PayloadLength = 558
+313248x4464                          Data PayloadData 
+317712x11272                     MultiplePayload 
+317712x1                             BITS(1) KeyFrameBit = 0
+317713x7                             BITS(7) StreamNumber = 2
+317720x8                             BYTE MediaObjectNumber = 15
+317728x32                            DWORD OffsetIntoMediaObjectLength = 123
+317760x8                             BYTE ReplicatedDataLength = 8
+317768x64                            Data ReplicatedData 
+317832x16                            WORD PayloadLength = 1392
+317848x11136                         Data PayloadData 
+328984x9632                      MultiplePayload 
+328984x1                             BITS(1) KeyFrameBit = 1
+328985x7                             BITS(7) StreamNumber = 2
+328992x8                             BYTE MediaObjectNumber = 16
+329000x32                            DWORD OffsetIntoMediaObjectLength = 0
+329032x8                             BYTE ReplicatedDataLength = 8
+329040x64                            Data ReplicatedData 
+329104x16                            WORD PayloadLength = 1187
+329120x9496                          Data PayloadData 
 338616x25600             DataPacket 
 338616x1                     BITS(1) ErrorCorrectionPresent = 1
 338617x2                     BITS(2) ErrorCorrectionLengthType = 0
 338619x1                     BITS(1) OpaqueDataPresent = 0
 338620x4                     BITS(4) ErrorCorrectionDataLength = 2
 338624x4                     BITS(4) Number = 0
-338628x4                     BITS(4) Type = 0
+338628x4                     Enum(BITS(4)) Type = 0
 338632x8                     BYTE Cycle = 0
 338640x1                     BITS(1) Reserved = 0
 338641x2                     BITS(2) PacketLengthType = 0
@@ -513,23 +773,36 @@
 338650x2                     BITS(2) MediaObjectNumberType = 1
 338652x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 338654x2                     BITS(2) ReplicatedDataLengthType = 1
-338656x0                     Data PacketLength 
-338656x0                     Data Sequence 
-338656x0                     Data PaddingLength 
 338656x32                    DWORD SendTime = 1300
 338688x16                    WORD Duration = 100
 338704x2                     BITS(2) PayloadLengthType = 2
 338706x6                     BITS(6) NumberOfPayloads = 2
-338712x0                     Tuple(, 2) Payloads 
-338712x0                          
-338712x0                          
+338712x25504                 MultiplePayloadData Payloads 
+338712x4600                      MultiplePayload 
+338712x1                             BITS(1) KeyFrameBit = 0
+338713x7                             BITS(7) StreamNumber = 1
+338720x8                             BYTE MediaObjectNumber = 11
+338728x32                            DWORD OffsetIntoMediaObjectLength = 0
+338760x8                             BYTE ReplicatedDataLength = 8
+338768x64                            Data ReplicatedData 
+338832x16                            WORD PayloadLength = 558
+338848x4464                          Data PayloadData 
+343312x20904                     MultiplePayload 
+343312x1                             BITS(1) KeyFrameBit = 1
+343313x7                             BITS(7) StreamNumber = 2
+343320x8                             BYTE MediaObjectNumber = 16
+343328x32                            DWORD OffsetIntoMediaObjectLength = 1187
+343360x8                             BYTE ReplicatedDataLength = 8
+343368x64                            Data ReplicatedData 
+343432x16                            WORD PayloadLength = 2596
+343448x20768                         Data PayloadData 
 364216x25600             DataPacket 
 364216x1                     BITS(1) ErrorCorrectionPresent = 1
 364217x2                     BITS(2) ErrorCorrectionLengthType = 0
 364219x1                     BITS(1) OpaqueDataPresent = 0
 364220x4                     BITS(4) ErrorCorrectionDataLength = 2
 364224x4                     BITS(4) Number = 0
-364228x4                     BITS(4) Type = 0
+364228x4                     Enum(BITS(4)) Type = 0
 364232x8                     BYTE Cycle = 0
 364240x1                     BITS(1) Reserved = 0
 364241x2                     BITS(2) PacketLengthType = 0
@@ -540,24 +813,45 @@
 364250x2                     BITS(2) MediaObjectNumberType = 1
 364252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 364254x2                     BITS(2) ReplicatedDataLengthType = 1
-364256x0                     Data PacketLength 
-364256x0                     Data Sequence 
-364256x0                     Data PaddingLength 
 364256x32                    DWORD SendTime = 1400
 364288x16                    WORD Duration = 100
 364304x2                     BITS(2) PayloadLengthType = 2
 364306x6                     BITS(6) NumberOfPayloads = 3
-364312x0                     Tuple(, 3) Payloads 
-364312x0                          
-364312x0                          
-364312x0                          
+364312x25504                 MultiplePayloadData Payloads 
+364312x11080                     MultiplePayload 
+364312x1                             BITS(1) KeyFrameBit = 1
+364313x7                             BITS(7) StreamNumber = 2
+364320x8                             BYTE MediaObjectNumber = 16
+364328x32                            DWORD OffsetIntoMediaObjectLength = 3783
+364360x8                             BYTE ReplicatedDataLength = 8
+364368x64                            Data ReplicatedData 
+364432x16                            WORD PayloadLength = 1368
+364448x10944                         Data PayloadData 
+375392x14024                     MultiplePayload 
+375392x1                             BITS(1) KeyFrameBit = 0
+375393x7                             BITS(7) StreamNumber = 2
+375400x8                             BYTE MediaObjectNumber = 17
+375408x32                            DWORD OffsetIntoMediaObjectLength = 0
+375440x8                             BYTE ReplicatedDataLength = 8
+375448x64                            Data ReplicatedData 
+375512x16                            WORD PayloadLength = 1736
+375528x13888                         Data PayloadData 
+389416x400                       MultiplePayload 
+389416x1                             BITS(1) KeyFrameBit = 0
+389417x7                             BITS(7) StreamNumber = 2
+389424x8                             BYTE MediaObjectNumber = 18
+389432x32                            DWORD OffsetIntoMediaObjectLength = 0
+389464x8                             BYTE ReplicatedDataLength = 8
+389472x64                            Data ReplicatedData 
+389536x16                            WORD PayloadLength = 33
+389552x264                           Data PayloadData 
 389816x25600             DataPacket 
 389816x1                     BITS(1) ErrorCorrectionPresent = 1
 389817x2                     BITS(2) ErrorCorrectionLengthType = 0
 389819x1                     BITS(1) OpaqueDataPresent = 0
 389820x4                     BITS(4) ErrorCorrectionDataLength = 2
 389824x4                     BITS(4) Number = 0
-389828x4                     BITS(4) Type = 0
+389828x4                     Enum(BITS(4)) Type = 0
 389832x8                     BYTE Cycle = 0
 389840x1                     BITS(1) Reserved = 0
 389841x2                     BITS(2) PacketLengthType = 0
@@ -568,25 +862,54 @@
 389850x2                     BITS(2) MediaObjectNumberType = 1
 389852x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 389854x2                     BITS(2) ReplicatedDataLengthType = 1
-389856x0                     Data PacketLength 
-389856x0                     Data Sequence 
-389856x0                     Data PaddingLength 
 389856x32                    DWORD SendTime = 1500
 389888x16                    WORD Duration = 100
 389904x2                     BITS(2) PayloadLengthType = 2
 389906x6                     BITS(6) NumberOfPayloads = 4
-389912x0                     Tuple(, 4) Payloads 
-389912x0                          
-389912x0                          
-389912x0                          
-389912x0                          
+389912x25504                 MultiplePayloadData Payloads 
+389912x4600                      MultiplePayload 
+389912x1                             BITS(1) KeyFrameBit = 0
+389913x7                             BITS(7) StreamNumber = 1
+389920x8                             BYTE MediaObjectNumber = 12
+389928x32                            DWORD OffsetIntoMediaObjectLength = 0
+389960x8                             BYTE ReplicatedDataLength = 8
+389968x64                            Data ReplicatedData 
+390032x16                            WORD PayloadLength = 558
+390048x4464                          Data PayloadData 
+394512x11560                     MultiplePayload 
+394512x1                             BITS(1) KeyFrameBit = 0
+394513x7                             BITS(7) StreamNumber = 2
+394520x8                             BYTE MediaObjectNumber = 18
+394528x32                            DWORD OffsetIntoMediaObjectLength = 33
+394560x8                             BYTE ReplicatedDataLength = 8
+394568x64                            Data ReplicatedData 
+394632x16                            WORD PayloadLength = 1428
+394648x11424                         Data PayloadData 
+406072x7944                      MultiplePayload 
+406072x1                             BITS(1) KeyFrameBit = 0
+406073x7                             BITS(7) StreamNumber = 2
+406080x8                             BYTE MediaObjectNumber = 19
+406088x32                            DWORD OffsetIntoMediaObjectLength = 0
+406120x8                             BYTE ReplicatedDataLength = 8
+406128x64                            Data ReplicatedData 
+406192x16                            WORD PayloadLength = 976
+406208x7808                          Data PayloadData 
+414016x1400                      MultiplePayload 
+414016x1                             BITS(1) KeyFrameBit = 0
+414017x7                             BITS(7) StreamNumber = 2
+414024x8                             BYTE MediaObjectNumber = 20
+414032x32                            DWORD OffsetIntoMediaObjectLength = 0
+414064x8                             BYTE ReplicatedDataLength = 8
+414072x64                            Data ReplicatedData 
+414136x16                            WORD PayloadLength = 158
+414152x1264                          Data PayloadData 
 415416x25600             DataPacket 
 415416x1                     BITS(1) ErrorCorrectionPresent = 1
 415417x2                     BITS(2) ErrorCorrectionLengthType = 0
 415419x1                     BITS(1) OpaqueDataPresent = 0
 415420x4                     BITS(4) ErrorCorrectionDataLength = 2
 415424x4                     BITS(4) Number = 0
-415428x4                     BITS(4) Type = 0
+415428x4                     Enum(BITS(4)) Type = 0
 415432x8                     BYTE Cycle = 0
 415440x1                     BITS(1) Reserved = 0
 415441x2                     BITS(2) PacketLengthType = 0
@@ -597,24 +920,45 @@
 415450x2                     BITS(2) MediaObjectNumberType = 1
 415452x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 415454x2                     BITS(2) ReplicatedDataLengthType = 1
-415456x0                     Data PacketLength 
-415456x0                     Data Sequence 
-415456x0                     Data PaddingLength 
 415456x32                    DWORD SendTime = 1600
 415488x16                    WORD Duration = 100
 415504x2                     BITS(2) PayloadLengthType = 2
 415506x6                     BITS(6) NumberOfPayloads = 3
-415512x0                     Tuple(, 3) Payloads 
-415512x0                          
-415512x0                          
-415512x0                          
+415512x25504                 MultiplePayloadData Payloads 
+415512x4600                      MultiplePayload 
+415512x1                             BITS(1) KeyFrameBit = 0
+415513x7                             BITS(7) StreamNumber = 1
+415520x8                             BYTE MediaObjectNumber = 13
+415528x32                            DWORD OffsetIntoMediaObjectLength = 0
+415560x8                             BYTE ReplicatedDataLength = 8
+415568x64                            Data ReplicatedData 
+415632x16                            WORD PayloadLength = 558
+415648x4464                          Data PayloadData 
+420112x13688                     MultiplePayload 
+420112x1                             BITS(1) KeyFrameBit = 0
+420113x7                             BITS(7) StreamNumber = 2
+420120x8                             BYTE MediaObjectNumber = 20
+420128x32                            DWORD OffsetIntoMediaObjectLength = 158
+420160x8                             BYTE ReplicatedDataLength = 8
+420168x64                            Data ReplicatedData 
+420232x16                            WORD PayloadLength = 1694
+420248x13552                         Data PayloadData 
+433800x7216                      MultiplePayload 
+433800x1                             BITS(1) KeyFrameBit = 0
+433801x7                             BITS(7) StreamNumber = 2
+433808x8                             BYTE MediaObjectNumber = 21
+433816x32                            DWORD OffsetIntoMediaObjectLength = 0
+433848x8                             BYTE ReplicatedDataLength = 8
+433856x64                            Data ReplicatedData 
+433920x16                            WORD PayloadLength = 885
+433936x7080                          Data PayloadData 
 441016x25600             DataPacket 
 441016x1                     BITS(1) ErrorCorrectionPresent = 1
 441017x2                     BITS(2) ErrorCorrectionLengthType = 0
 441019x1                     BITS(1) OpaqueDataPresent = 0
 441020x4                     BITS(4) ErrorCorrectionDataLength = 2
 441024x4                     BITS(4) Number = 0
-441028x4                     BITS(4) Type = 0
+441028x4                     Enum(BITS(4)) Type = 0
 441032x8                     BYTE Cycle = 0
 441040x1                     BITS(1) Reserved = 0
 441041x2                     BITS(2) PacketLengthType = 0
@@ -625,24 +969,45 @@
 441050x2                     BITS(2) MediaObjectNumberType = 1
 441052x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 441054x2                     BITS(2) ReplicatedDataLengthType = 1
-441056x0                     Data PacketLength 
-441056x0                     Data Sequence 
-441056x0                     Data PaddingLength 
 441056x32                    DWORD SendTime = 1700
 441088x16                    WORD Duration = 100
 441104x2                     BITS(2) PayloadLengthType = 2
 441106x6                     BITS(6) NumberOfPayloads = 3
-441112x0                     Tuple(, 3) Payloads 
-441112x0                          
-441112x0                          
-441112x0                          
+441112x25504                 MultiplePayloadData Payloads 
+441112x6216                      MultiplePayload 
+441112x1                             BITS(1) KeyFrameBit = 0
+441113x7                             BITS(7) StreamNumber = 2
+441120x8                             BYTE MediaObjectNumber = 21
+441128x32                            DWORD OffsetIntoMediaObjectLength = 885
+441160x8                             BYTE ReplicatedDataLength = 8
+441168x64                            Data ReplicatedData 
+441232x16                            WORD PayloadLength = 760
+441248x6080                          Data PayloadData 
+447328x8264                      MultiplePayload 
+447328x1                             BITS(1) KeyFrameBit = 0
+447329x7                             BITS(7) StreamNumber = 2
+447336x8                             BYTE MediaObjectNumber = 22
+447344x32                            DWORD OffsetIntoMediaObjectLength = 0
+447376x8                             BYTE ReplicatedDataLength = 8
+447384x64                            Data ReplicatedData 
+447448x16                            WORD PayloadLength = 1016
+447464x8128                          Data PayloadData 
+455592x11024                     MultiplePayload 
+455592x1                             BITS(1) KeyFrameBit = 0
+455593x7                             BITS(7) StreamNumber = 2
+455600x8                             BYTE MediaObjectNumber = 23
+455608x32                            DWORD OffsetIntoMediaObjectLength = 0
+455640x8                             BYTE ReplicatedDataLength = 8
+455648x64                            Data ReplicatedData 
+455712x16                            WORD PayloadLength = 1361
+455728x10888                         Data PayloadData 
 466616x25600             DataPacket 
 466616x1                     BITS(1) ErrorCorrectionPresent = 1
 466617x2                     BITS(2) ErrorCorrectionLengthType = 0
 466619x1                     BITS(1) OpaqueDataPresent = 0
 466620x4                     BITS(4) ErrorCorrectionDataLength = 2
 466624x4                     BITS(4) Number = 0
-466628x4                     BITS(4) Type = 0
+466628x4                     Enum(BITS(4)) Type = 0
 466632x8                     BYTE Cycle = 0
 466640x1                     BITS(1) Reserved = 0
 466641x2                     BITS(2) PacketLengthType = 0
@@ -653,24 +1018,45 @@
 466650x2                     BITS(2) MediaObjectNumberType = 1
 466652x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 466654x2                     BITS(2) ReplicatedDataLengthType = 1
-466656x0                     Data PacketLength 
-466656x0                     Data Sequence 
-466656x0                     Data PaddingLength 
 466656x32                    DWORD SendTime = 1800
 466688x16                    WORD Duration = 100
 466704x2                     BITS(2) PayloadLengthType = 2
 466706x6                     BITS(6) NumberOfPayloads = 3
-466712x0                     Tuple(, 3) Payloads 
-466712x0                          
-466712x0                          
-466712x0                          
+466712x25504                 MultiplePayloadData Payloads 
+466712x4600                      MultiplePayload 
+466712x1                             BITS(1) KeyFrameBit = 0
+466713x7                             BITS(7) StreamNumber = 1
+466720x8                             BYTE MediaObjectNumber = 14
+466728x32                            DWORD OffsetIntoMediaObjectLength = 0
+466760x8                             BYTE ReplicatedDataLength = 8
+466768x64                            Data ReplicatedData 
+466832x16                            WORD PayloadLength = 558
+466848x4464                          Data PayloadData 
+471312x6976                      MultiplePayload 
+471312x1                             BITS(1) KeyFrameBit = 0
+471313x7                             BITS(7) StreamNumber = 2
+471320x8                             BYTE MediaObjectNumber = 23
+471328x32                            DWORD OffsetIntoMediaObjectLength = 1361
+471360x8                             BYTE ReplicatedDataLength = 8
+471368x64                            Data ReplicatedData 
+471432x16                            WORD PayloadLength = 855
+471448x6840                          Data PayloadData 
+478288x13928                     MultiplePayload 
+478288x1                             BITS(1) KeyFrameBit = 0
+478289x7                             BITS(7) StreamNumber = 2
+478296x8                             BYTE MediaObjectNumber = 24
+478304x32                            DWORD OffsetIntoMediaObjectLength = 0
+478336x8                             BYTE ReplicatedDataLength = 8
+478344x64                            Data ReplicatedData 
+478408x16                            WORD PayloadLength = 1724
+478424x13792                         Data PayloadData 
 492216x25600             DataPacket 
 492216x1                     BITS(1) ErrorCorrectionPresent = 1
 492217x2                     BITS(2) ErrorCorrectionLengthType = 0
 492219x1                     BITS(1) OpaqueDataPresent = 0
 492220x4                     BITS(4) ErrorCorrectionDataLength = 2
 492224x4                     BITS(4) Number = 0
-492228x4                     BITS(4) Type = 0
+492228x4                     Enum(BITS(4)) Type = 0
 492232x8                     BYTE Cycle = 0
 492240x1                     BITS(1) Reserved = 0
 492241x2                     BITS(2) PacketLengthType = 0
@@ -681,25 +1067,54 @@
 492250x2                     BITS(2) MediaObjectNumberType = 1
 492252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 492254x2                     BITS(2) ReplicatedDataLengthType = 1
-492256x0                     Data PacketLength 
-492256x0                     Data Sequence 
-492256x0                     Data PaddingLength 
 492256x32                    DWORD SendTime = 1900
 492288x16                    WORD Duration = 100
 492304x2                     BITS(2) PayloadLengthType = 2
 492306x6                     BITS(6) NumberOfPayloads = 4
-492312x0                     Tuple(, 4) Payloads 
-492312x0                          
-492312x0                          
-492312x0                          
-492312x0                          
+492312x25504                 MultiplePayloadData Payloads 
+492312x4600                      MultiplePayload 
+492312x1                             BITS(1) KeyFrameBit = 0
+492313x7                             BITS(7) StreamNumber = 1
+492320x8                             BYTE MediaObjectNumber = 15
+492328x32                            DWORD OffsetIntoMediaObjectLength = 0
+492360x8                             BYTE ReplicatedDataLength = 8
+492368x64                            Data ReplicatedData 
+492432x16                            WORD PayloadLength = 558
+492448x4464                          Data PayloadData 
+496912x312                       MultiplePayload 
+496912x1                             BITS(1) KeyFrameBit = 0
+496913x7                             BITS(7) StreamNumber = 2
+496920x8                             BYTE MediaObjectNumber = 24
+496928x32                            DWORD OffsetIntoMediaObjectLength = 1724
+496960x8                             BYTE ReplicatedDataLength = 8
+496968x64                            Data ReplicatedData 
+497032x16                            WORD PayloadLength = 22
+497048x176                           Data PayloadData 
+497224x14520                     MultiplePayload 
+497224x1                             BITS(1) KeyFrameBit = 0
+497225x7                             BITS(7) StreamNumber = 2
+497232x8                             BYTE MediaObjectNumber = 25
+497240x32                            DWORD OffsetIntoMediaObjectLength = 0
+497272x8                             BYTE ReplicatedDataLength = 8
+497280x64                            Data ReplicatedData 
+497344x16                            WORD PayloadLength = 1798
+497360x14384                         Data PayloadData 
+511744x6072                      MultiplePayload 
+511744x1                             BITS(1) KeyFrameBit = 0
+511745x7                             BITS(7) StreamNumber = 2
+511752x8                             BYTE MediaObjectNumber = 26
+511760x32                            DWORD OffsetIntoMediaObjectLength = 0
+511792x8                             BYTE ReplicatedDataLength = 8
+511800x64                            Data ReplicatedData 
+511864x16                            WORD PayloadLength = 742
+511880x5936                          Data PayloadData 
 517816x25600             DataPacket 
 517816x1                     BITS(1) ErrorCorrectionPresent = 1
 517817x2                     BITS(2) ErrorCorrectionLengthType = 0
 517819x1                     BITS(1) OpaqueDataPresent = 0
 517820x4                     BITS(4) ErrorCorrectionDataLength = 2
 517824x4                     BITS(4) Number = 0
-517828x4                     BITS(4) Type = 0
+517828x4                     Enum(BITS(4)) Type = 0
 517832x8                     BYTE Cycle = 0
 517840x1                     BITS(1) Reserved = 0
 517841x2                     BITS(2) PacketLengthType = 0
@@ -710,25 +1125,54 @@
 517850x2                     BITS(2) MediaObjectNumberType = 1
 517852x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 517854x2                     BITS(2) ReplicatedDataLengthType = 1
-517856x0                     Data PacketLength 
-517856x0                     Data Sequence 
-517856x0                     Data PaddingLength 
 517856x32                    DWORD SendTime = 2000
 517888x16                    WORD Duration = 100
 517904x2                     BITS(2) PayloadLengthType = 2
 517906x6                     BITS(6) NumberOfPayloads = 4
-517912x0                     Tuple(, 4) Payloads 
-517912x0                          
-517912x0                          
-517912x0                          
-517912x0                          
+517912x25504                 MultiplePayloadData Payloads 
+517912x4600                      MultiplePayload 
+517912x1                             BITS(1) KeyFrameBit = 0
+517913x7                             BITS(7) StreamNumber = 1
+517920x8                             BYTE MediaObjectNumber = 16
+517928x32                            DWORD OffsetIntoMediaObjectLength = 0
+517960x8                             BYTE ReplicatedDataLength = 8
+517968x64                            Data ReplicatedData 
+518032x16                            WORD PayloadLength = 558
+518048x4464                          Data PayloadData 
+522512x6248                      MultiplePayload 
+522512x1                             BITS(1) KeyFrameBit = 0
+522513x7                             BITS(7) StreamNumber = 2
+522520x8                             BYTE MediaObjectNumber = 26
+522528x32                            DWORD OffsetIntoMediaObjectLength = 742
+522560x8                             BYTE ReplicatedDataLength = 8
+522568x64                            Data ReplicatedData 
+522632x16                            WORD PayloadLength = 764
+522648x6112                          Data PayloadData 
+528760x13408                     MultiplePayload 
+528760x1                             BITS(1) KeyFrameBit = 0
+528761x7                             BITS(7) StreamNumber = 2
+528768x8                             BYTE MediaObjectNumber = 27
+528776x32                            DWORD OffsetIntoMediaObjectLength = 0
+528808x8                             BYTE ReplicatedDataLength = 8
+528816x64                            Data ReplicatedData 
+528880x16                            WORD PayloadLength = 1659
+528896x13272                         Data PayloadData 
+542168x1248                      MultiplePayload 
+542168x1                             BITS(1) KeyFrameBit = 0
+542169x7                             BITS(7) StreamNumber = 2
+542176x8                             BYTE MediaObjectNumber = 28
+542184x32                            DWORD OffsetIntoMediaObjectLength = 0
+542216x8                             BYTE ReplicatedDataLength = 8
+542224x64                            Data ReplicatedData 
+542288x16                            WORD PayloadLength = 139
+542304x1112                          Data PayloadData 
 543416x25600             DataPacket 
 543416x1                     BITS(1) ErrorCorrectionPresent = 1
 543417x2                     BITS(2) ErrorCorrectionLengthType = 0
 543419x1                     BITS(1) OpaqueDataPresent = 0
 543420x4                     BITS(4) ErrorCorrectionDataLength = 2
 543424x4                     BITS(4) Number = 0
-543428x4                     BITS(4) Type = 0
+543428x4                     Enum(BITS(4)) Type = 0
 543432x8                     BYTE Cycle = 0
 543440x1                     BITS(1) Reserved = 0
 543441x2                     BITS(2) PacketLengthType = 0
@@ -739,245 +1183,46 @@
 543450x2                     BITS(2) MediaObjectNumberType = 1
 543452x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
 543454x2                     BITS(2) ReplicatedDataLengthType = 1
-543456x0                     Data PacketLength 
-543456x0                     Data Sequence 
-543456x0                     Data PaddingLength 
 543456x32                    DWORD SendTime = 2100
 543488x16                    WORD Duration = 100
 543504x2                     BITS(2) PayloadLengthType = 2
 543506x6                     BITS(6) NumberOfPayloads = 3
-543512x0                     Tuple(, 3) Payloads 
-543512x0                          
-543512x0                          
-543512x0                          
-569016x25600             DataPacket 
-569016x1                     BITS(1) ErrorCorrectionPresent = 1
-569017x2                     BITS(2) ErrorCorrectionLengthType = 0
-569019x1                     BITS(1) OpaqueDataPresent = 0
-569020x4                     BITS(4) ErrorCorrectionDataLength = 2
-569024x4                     BITS(4) Number = 0
-569028x4                     BITS(4) Type = 0
-569032x8                     BYTE Cycle = 0
-569040x1                     BITS(1) Reserved = 0
-569041x2                     BITS(2) PacketLengthType = 0
-569043x2                     BITS(2) PaddingLengthType = 0
-569045x2                     BITS(2) SequenceType = 0
-569047x1                     BITS(1) MultiplePayloadsPresent = 1
-569048x2                     BITS(2) StreamNumberLengthType = 1
-569050x2                     BITS(2) MediaObjectNumberType = 1
-569052x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-569054x2                     BITS(2) ReplicatedDataLengthType = 1
-569056x0                     Data PacketLength 
-569056x0                     Data Sequence 
-569056x0                     Data PaddingLength 
-569056x32                    DWORD SendTime = 2200
-569088x16                    WORD Duration = 100
-569104x2                     BITS(2) PayloadLengthType = 2
-569106x6                     BITS(6) NumberOfPayloads = 3
-569112x0                     Tuple(, 3) Payloads 
-569112x0                          
-569112x0                          
-569112x0                          
-594616x25600             DataPacket 
-594616x1                     BITS(1) ErrorCorrectionPresent = 1
-594617x2                     BITS(2) ErrorCorrectionLengthType = 0
-594619x1                     BITS(1) OpaqueDataPresent = 0
-594620x4                     BITS(4) ErrorCorrectionDataLength = 2
-594624x4                     BITS(4) Number = 0
-594628x4                     BITS(4) Type = 0
-594632x8                     BYTE Cycle = 0
-594640x1                     BITS(1) Reserved = 0
-594641x2                     BITS(2) PacketLengthType = 0
-594643x2                     BITS(2) PaddingLengthType = 0
-594645x2                     BITS(2) SequenceType = 0
-594647x1                     BITS(1) MultiplePayloadsPresent = 1
-594648x2                     BITS(2) StreamNumberLengthType = 1
-594650x2                     BITS(2) MediaObjectNumberType = 1
-594652x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-594654x2                     BITS(2) ReplicatedDataLengthType = 1
-594656x0                     Data PacketLength 
-594656x0                     Data Sequence 
-594656x0                     Data PaddingLength 
-594656x32                    DWORD SendTime = 2300
-594688x16                    WORD Duration = 100
-594704x2                     BITS(2) PayloadLengthType = 2
-594706x6                     BITS(6) NumberOfPayloads = 2
-594712x0                     Tuple(, 2) Payloads 
-594712x0                          
-594712x0                          
-620216x25600             DataPacket 
-620216x1                     BITS(1) ErrorCorrectionPresent = 1
-620217x2                     BITS(2) ErrorCorrectionLengthType = 0
-620219x1                     BITS(1) OpaqueDataPresent = 0
-620220x4                     BITS(4) ErrorCorrectionDataLength = 2
-620224x4                     BITS(4) Number = 0
-620228x4                     BITS(4) Type = 0
-620232x8                     BYTE Cycle = 0
-620240x1                     BITS(1) Reserved = 0
-620241x2                     BITS(2) PacketLengthType = 0
-620243x2                     BITS(2) PaddingLengthType = 0
-620245x2                     BITS(2) SequenceType = 0
-620247x1                     BITS(1) MultiplePayloadsPresent = 1
-620248x2                     BITS(2) StreamNumberLengthType = 1
-620250x2                     BITS(2) MediaObjectNumberType = 1
-620252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-620254x2                     BITS(2) ReplicatedDataLengthType = 1
-620256x0                     Data PacketLength 
-620256x0                     Data Sequence 
-620256x0                     Data PaddingLength 
-620256x32                    DWORD SendTime = 2400
-620288x16                    WORD Duration = 100
-620304x2                     BITS(2) PayloadLengthType = 2
-620306x6                     BITS(6) NumberOfPayloads = 3
-620312x0                     Tuple(, 3) Payloads 
-620312x0                          
-620312x0                          
-620312x0                          
-645816x25600             DataPacket 
-645816x1                     BITS(1) ErrorCorrectionPresent = 1
-645817x2                     BITS(2) ErrorCorrectionLengthType = 0
-645819x1                     BITS(1) OpaqueDataPresent = 0
-645820x4                     BITS(4) ErrorCorrectionDataLength = 2
-645824x4                     BITS(4) Number = 0
-645828x4                     BITS(4) Type = 0
-645832x8                     BYTE Cycle = 0
-645840x1                     BITS(1) Reserved = 0
-645841x2                     BITS(2) PacketLengthType = 0
-645843x2                     BITS(2) PaddingLengthType = 0
-645845x2                     BITS(2) SequenceType = 0
-645847x1                     BITS(1) MultiplePayloadsPresent = 1
-645848x2                     BITS(2) StreamNumberLengthType = 1
-645850x2                     BITS(2) MediaObjectNumberType = 1
-645852x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-645854x2                     BITS(2) ReplicatedDataLengthType = 1
-645856x0                     Data PacketLength 
-645856x0                     Data Sequence 
-645856x0                     Data PaddingLength 
-645856x32                    DWORD SendTime = 2500
-645888x16                    WORD Duration = 100
-645904x2                     BITS(2) PayloadLengthType = 2
-645906x6                     BITS(6) NumberOfPayloads = 3
-645912x0                     Tuple(, 3) Payloads 
-645912x0                          
-645912x0                          
-645912x0                          
-671416x25600             DataPacket 
-671416x1                     BITS(1) ErrorCorrectionPresent = 1
-671417x2                     BITS(2) ErrorCorrectionLengthType = 0
-671419x1                     BITS(1) OpaqueDataPresent = 0
-671420x4                     BITS(4) ErrorCorrectionDataLength = 2
-671424x4                     BITS(4) Number = 0
-671428x4                     BITS(4) Type = 0
-671432x8                     BYTE Cycle = 0
-671440x1                     BITS(1) Reserved = 0
-671441x2                     BITS(2) PacketLengthType = 0
-671443x2                     BITS(2) PaddingLengthType = 0
-671445x2                     BITS(2) SequenceType = 0
-671447x1                     BITS(1) MultiplePayloadsPresent = 1
-671448x2                     BITS(2) StreamNumberLengthType = 1
-671450x2                     BITS(2) MediaObjectNumberType = 1
-671452x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-671454x2                     BITS(2) ReplicatedDataLengthType = 1
-671456x0                     Data PacketLength 
-671456x0                     Data Sequence 
-671456x0                     Data PaddingLength 
-671456x32                    DWORD SendTime = 2600
-671488x16                    WORD Duration = 100
-671504x2                     BITS(2) PayloadLengthType = 2
-671506x6                     BITS(6) NumberOfPayloads = 2
-671512x0                     Tuple(, 2) Payloads 
-671512x0                          
-671512x0                          
-697016x25600             DataPacket 
-697016x1                     BITS(1) ErrorCorrectionPresent = 1
-697017x2                     BITS(2) ErrorCorrectionLengthType = 0
-697019x1                     BITS(1) OpaqueDataPresent = 0
-697020x4                     BITS(4) ErrorCorrectionDataLength = 2
-697024x4                     BITS(4) Number = 0
-697028x4                     BITS(4) Type = 0
-697032x8                     BYTE Cycle = 0
-697040x1                     BITS(1) Reserved = 0
-697041x2                     BITS(2) PacketLengthType = 0
-697043x2                     BITS(2) PaddingLengthType = 0
-697045x2                     BITS(2) SequenceType = 0
-697047x1                     BITS(1) MultiplePayloadsPresent = 1
-697048x2                     BITS(2) StreamNumberLengthType = 1
-697050x2                     BITS(2) MediaObjectNumberType = 1
-697052x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-697054x2                     BITS(2) ReplicatedDataLengthType = 1
-697056x0                     Data PacketLength 
-697056x0                     Data Sequence 
-697056x0                     Data PaddingLength 
-697056x32                    DWORD SendTime = 2700
-697088x16                    WORD Duration = 100
-697104x2                     BITS(2) PayloadLengthType = 2
-697106x6                     BITS(6) NumberOfPayloads = 2
-697112x0                     Tuple(, 2) Payloads 
-697112x0                          
-697112x0                          
-722616x25600             DataPacket 
-722616x1                     BITS(1) ErrorCorrectionPresent = 1
-722617x2                     BITS(2) ErrorCorrectionLengthType = 0
-722619x1                     BITS(1) OpaqueDataPresent = 0
-722620x4                     BITS(4) ErrorCorrectionDataLength = 2
-722624x4                     BITS(4) Number = 0
-722628x4                     BITS(4) Type = 0
-722632x8                     BYTE Cycle = 0
-722640x1                     BITS(1) Reserved = 0
-722641x2                     BITS(2) PacketLengthType = 0
-722643x2                     BITS(2) PaddingLengthType = 0
-722645x2                     BITS(2) SequenceType = 0
-722647x1                     BITS(1) MultiplePayloadsPresent = 1
-722648x2                     BITS(2) StreamNumberLengthType = 1
-722650x2                     BITS(2) MediaObjectNumberType = 1
-722652x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-722654x2                     BITS(2) ReplicatedDataLengthType = 1
-722656x0                     Data PacketLength 
-722656x0                     Data Sequence 
-722656x0                     Data PaddingLength 
-722656x32                    DWORD SendTime = 2800
-722688x16                    WORD Duration = 100
-722704x2                     BITS(2) PayloadLengthType = 2
-722706x6                     BITS(6) NumberOfPayloads = 2
-722712x0                     Tuple(, 2) Payloads 
-722712x0                          
-722712x0                          
-748216x25600             DataPacket 
-748216x1                     BITS(1) ErrorCorrectionPresent = 1
-748217x2                     BITS(2) ErrorCorrectionLengthType = 0
-748219x1                     BITS(1) OpaqueDataPresent = 0
-748220x4                     BITS(4) ErrorCorrectionDataLength = 2
-748224x4                     BITS(4) Number = 0
-748228x4                     BITS(4) Type = 0
-748232x8                     BYTE Cycle = 0
-748240x1                     BITS(1) Reserved = 0
-748241x2                     BITS(2) PacketLengthType = 0
-748243x2                     BITS(2) PaddingLengthType = 0
-748245x2                     BITS(2) SequenceType = 0
-748247x1                     BITS(1) MultiplePayloadsPresent = 1
-748248x2                     BITS(2) StreamNumberLengthType = 1
-748250x2                     BITS(2) MediaObjectNumberType = 1
-748252x2                     BITS(2) OffsetIntoMediaObjectLengthType = 3
-748254x2                     BITS(2) ReplicatedDataLengthType = 1
-748256x0                     Data PacketLength 
-748256x0                     Data Sequence 
-748256x0                     Data PaddingLength 
-748256x32                    DWORD SendTime = 2900
-748288x16                    WORD Duration = 100
-748304x2                     BITS(2) PayloadLengthType = 2
-748306x6                     BITS(6) NumberOfPayloads = 3
-748312x0                     Tuple(, 3) Payloads 
-748312x0                          
-748312x0                          
-748312x0                          
+543512x25504                 MultiplePayloadData Payloads 
+543512x10248                     MultiplePayload 
+543512x1                             BITS(1) KeyFrameBit = 0
+543513x7                             BITS(7) StreamNumber = 2
+543520x8                             BYTE MediaObjectNumber = 28
+543528x32                            DWORD OffsetIntoMediaObjectLength = 139
+543560x8                             BYTE ReplicatedDataLength = 8
+543568x64                            Data ReplicatedData 
+543632x16                            WORD PayloadLength = 1264
+543648x10112                         Data PayloadData 
+553760x12144                     MultiplePayload 
+553760x1                             BITS(1) KeyFrameBit = 0
+553761x7                             BITS(7) StreamNumber = 2
+553768x8                             BYTE MediaObjectNumber = 29
+553776x32                            DWORD OffsetIntoMediaObjectLength = 0
+553808x8                             BYTE ReplicatedDataLength = 8
+553816x64                            Data ReplicatedData 
+553880x16                            WORD PayloadLength = 1501
+553896x12008                         Data PayloadData 
+565904x3112                      MultiplePayload 
+565904x1                             BITS(1) KeyFrameBit = 0
+565905x7                             BITS(7) StreamNumber = 2
+565912x8                             BYTE MediaObjectNumber = 30
+565920x32                            DWORD OffsetIntoMediaObjectLength = 0
+565952x8                             BYTE ReplicatedDataLength = 8
+565960x64                            Data ReplicatedData 
+566024x16                            WORD PayloadLength = 372
+566040x2976                          Data PayloadData 
 9068216x2320     SimpleIndexObject 
 9068216x128          GUID ObjectId = "33000890-E5B1-11CF-89F4-00A0C90349CB"
 9068344x64           QWORD ObjectSize = 290
 9068408x128          GUID FileID = "00000000-0032-0000-2036-34206B627073"
-9068536x64           QWORD IndexEntryTimeInterval = 10000000
+9068536x64           QWORD_DURATION IndexEntryTimeInterval = 10000000
 9068600x32           DWORD MaximumPacketCount = 5
 9068632x32           DWORD IndexEntriesCount = 39
-9068664x1872         Array(SimpleIndexEntry) entries 
+9068664x1872         Tuple(SimpleIndexEntry, 39) entries 
 9068664x48               SimpleIndexEntry 
 9068664x32                   DWORD PacketNumber = 0
 9068696x16                   WORD PacketCount = 3
@@ -1044,27 +1289,3 @@
 9069672x48               SimpleIndexEntry 
 9069672x32                   DWORD PacketNumber = 174
 9069704x16                   WORD PacketCount = 2
-9069720x48               SimpleIndexEntry 
-9069720x32                   DWORD PacketNumber = 183
-9069752x16                   WORD PacketCount = 3
-9069768x48               SimpleIndexEntry 
-9069768x32                   DWORD PacketNumber = 194
-9069800x16                   WORD PacketCount = 3
-9069816x48               SimpleIndexEntry 
-9069816x32                   DWORD PacketNumber = 205
-9069848x16                   WORD PacketCount = 2
-9069864x48               SimpleIndexEntry 
-9069864x32                   DWORD PacketNumber = 214
-9069896x16                   WORD PacketCount = 3
-9069912x48               SimpleIndexEntry 
-9069912x32                   DWORD PacketNumber = 226
-9069944x16                   WORD PacketCount = 2
-9069960x48               SimpleIndexEntry 
-9069960x32                   DWORD PacketNumber = 234
-9069992x16                   WORD PacketCount = 3
-9070008x48               SimpleIndexEntry 
-9070008x32                   DWORD PacketNumber = 244
-9070040x16                   WORD PacketCount = 3
-9070056x48               SimpleIndexEntry 
-9070056x32                   DWORD PacketNumber = 253
-9070088x16                   WORD PacketCount = 3
