@@ -52,7 +52,12 @@ const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "
 });
 const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
 
-const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"});
+const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"}, [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setNameGenerator([]objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                         });
+});
+
 const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"});
 
 const ObjectTypeTemplate DefaultModule::integer("int",{"size", "_base"});

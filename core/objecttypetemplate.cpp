@@ -18,6 +18,9 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
+const uint8_t ObjectTypeTemplate::_nameAttribute = 0x1;
+const uint8_t ObjectTypeTemplate::_elementTypeAttribute = 0x2;
+const uint8_t ObjectTypeTemplate::_elementCountAttribute = 0x4;
 
 
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name,
@@ -85,6 +88,22 @@ bool ObjectTypeTemplate::isNull() const
 void ObjectTypeTemplate::addParameter(const std::string& parameterName)
 {
     _parametersNames.push_back(parameterName);
+}
+
+void ObjectTypeTemplate::setNameGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
+{
+    _attributeFlag |= _nameAttribute;
+    _nameGenerator = generator;
+}
+
+bool ObjectTypeTemplate::hasNameGenerator() const
+{
+    return _attributeFlag & _nameAttribute;
+}
+
+const ObjectTypeTemplate::AttributeGenerator& ObjectTypeTemplate::nameGenerator() const
+{
+    return _nameGenerator;
 }
 
 void ObjectTypeTemplate::setElementTypeGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)

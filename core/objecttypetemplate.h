@@ -102,6 +102,10 @@ public:
         return type;
     }
 
+    void setNameGenerator(const AttributeGenerator& generator);
+    bool hasNameGenerator() const;
+    const AttributeGenerator &nameGenerator() const;
+
     void setElementTypeGenerator(const AttributeGenerator& generator);
     bool hasElementTypeGenerator() const;
     const AttributeGenerator &elementTypeGenerator() const;
@@ -121,9 +125,12 @@ private:
     std::vector<std::string>   _parametersNames;
     std::unordered_map<std::string, int> _parametersNumbers;
 
-    const static uint8_t _elementTypeAttribute = 0x1;
-    const static uint8_t _elementCountAttribute = 0x2;
+    const static uint8_t _nameAttribute;
+    const static uint8_t _elementTypeAttribute;
+    const static uint8_t _elementCountAttribute;
+
     uint8_t _attributeFlag;
+    AttributeGenerator _nameGenerator;
     AttributeGenerator _elementTypeGenerator;
     AttributeGenerator _elementCountGenerator;
 

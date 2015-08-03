@@ -69,7 +69,15 @@ void ObjectType::setParameter(size_t index, const Variant &value)
 const std::string &ObjectType::name() const
 {
     if (_name.isValueless()) {
+        if (typeTemplate().hasNameGenerator()) {
+            const Variant nameValue = typeTemplate().nameGenerator()(*this);
+            if (!nameValue.isValueless()) {
+                return nameValue.toString();
+            }
+        }
+
         return typeTemplate().name();
+
     } else {
         return _name.toString();
     }
