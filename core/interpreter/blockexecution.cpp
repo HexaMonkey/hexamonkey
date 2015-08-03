@@ -200,20 +200,24 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
 {
     if(hasParser())
     {
-        ObjectType type = eval.rightValue(declaration.node(0)).value().toObjectType();
+        const Variant typeValue = eval.rightValue(declaration.node(0)).value();
 
-        const Program& nameProgram = declaration.node(1);
+        if (!typeValue.isValueless()) {
+            const ObjectType type = typeValue.toObjectType();
 
-        std::string name = nameProgram.tag() == HMC_IDENTIFIER ?
-                               nameProgram.payload().toString()
-                             : eval.rightValue(nameProgram).value().toString();
+            const Program& nameProgram = declaration.node(1);
+
+            std::string name = nameProgram.tag() == HMC_IDENTIFIER ?
+                                   nameProgram.payload().toString()
+                                 : eval.rightValue(nameProgram).value().toString();
 #ifdef EXECUTION_TRACE
-        std::stringstream S;
-        S<<"Declaration "<<type<<" "<<name;
-        std::cerr<<S.str()<<std::endl;
+            std::stringstream S;
+            S<<"Declaration "<<type<<" "<<name;
+            std::cerr<<S.str()<<std::endl;
 #endif
-        if (parser().addVariable(type, name) != nullptr) {
-            --parseQuota;
+            if (parser().addVariable(type, name) != nullptr) {
+                --parseQuota;
+            }
         }
     }
     ++current;
