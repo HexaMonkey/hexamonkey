@@ -1021,6 +1021,11 @@ class FragTimeDurationBox extends FullBox as Box("uuid", "6D1D9B05-42D5-44E6-80E
     int(size) frag_duration;
 }
 
+class XMPBox as Box("uuid", "BE7ACFCB-97A9-42E8-9C71-999491E3AFAC")
+{
+	String payload;
+}
+
 class bit(size) extends Bitset(size)
 class string(size) extends String(size)
 
