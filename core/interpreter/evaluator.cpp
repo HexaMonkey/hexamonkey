@@ -151,7 +151,7 @@ ObjectType Evaluator::type(const Program &program) const
     ObjectType type(parentTemplate);
     if(type.isNull())
     {
-        Log::error("Type not found", name);
+        Log::error("Type not found ", name);
         return type;
     }
 
