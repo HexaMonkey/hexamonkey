@@ -17,19 +17,759 @@
 
 addMagicNumber 49 44 33
 
-class ID3File as File
+class MP3File as File
 {
 	@endianness = "bigEndian";
+	ID3v2Tag *;
+}
+
+//////////////////////////////////////////////////////////////////
+//            ID3 tag version 2.4.0 - Main Structure            //
+//////////////////////////////////////////////////////////////////
+
+// 3.   ID3v2 overview
+
+class ID3v2Tag
+{
+	ID3v2Header _header;
+	@size = @pos + 8*_header.size;
+	---
+	if (_header.extendedHeader) {
+		ID3v2ExtendedHeader _extendedHeader;
+	}
 	
+	ID3v2Frames _frames;
+}
+
+class ID3v2Frames(_size) extends Data(_size)
+{
+	while (1) {
+		ID3v2Frame *;
+		
+		if (self[].FrameID == "") {
+			break;
+		}
+	}
+}
+
+//// 3.1.   ID3v2 header
+
+class ID3v2Header 
+{
 	String(3) magic;
 	uint(8) major;
 	uint(8) minor;
-	uint(8) flags;
-	SynchSafeInteger size;
+	uint(1,2) unsynchronisation;
+	uint(1,2) extendedHeader;
+	uint(1,2) experimentalIndicator;
+	uint(1,2) footerPresent;
+	uint(4,2) reserved;
+	SynchSafeInteger(32) size;
 }
 
-class SynchSafeInteger
+//// 3.2. Extended header
+
+class ID3v2ExtendedHeader
 {
-	String(4) data;
-	@value = %str(data[0] << 21 | data[1] << 14 | data[2] << 7 |  data[3]);
+	SynchSafeInteger(32) size;
+	@size = 8*size;
+	uint(8) numberOfFlagBytes;
+	uint(1) reserved;
+	uint(1) tagIsAnUpdate;
+	uint(1) CRCDataPresent;
+	uint(1) tagRestrictions;
+	
 }
+
+class ExtendedHeaderFlag
+{
+	uint(8) dataLength;
+	@size = @pos + 8 * (dataLength);
+}
+
+class TagIsAnUpdateFlag extends ExtendedHeaderFlag
+
+class CRCDataPresentFlag extends ExtendedHeaderFlag
+{
+	SynchSafeInteger(40) totalFrameCRC;
+}
+
+class TagRestrictionsFlag extends ExtendedHeaderFlag
+{
+	enum uint(2, 2) {
+		0b00 : "No more than 128 frames and 1MB total tag size",
+		0b01 : "No more than 64 frames and 128 KB total tag size",
+		0b10 : "No more than 32 frames and 40 KB total tag size",
+		0b11 : "No more than 32 frames and 4 KB total tag size"
+	} tagSizeRestrictions;
+	
+	enum uint(1, 2) {
+		0b0 : "No restrictions",
+		0b1 : "Only ISO-8859-1 or UTF-8"
+	} textEncodingRestrictions;
+	
+	enum uint(2, 2) {
+		0b00 : "No restrictions",
+		0b01 : "No string longer than 1024 chars",
+		0b10 : "No string longer than 128 chars",
+		0b11 : "No string longer than 30 chars"
+	} textFieldSizeRestrctions;
+	
+	enum uint(1, 2) {
+		0b0 : "No restrictions",
+		0b1 : "Image are encoded only with PNG or JPEG"
+	} imageEncodingRestrictions;
+	
+	enum uint(2, 2) {
+		0b00 : "No restrictions",
+		0b01 : "All images are 256x256 pixels or less",
+		0b10 : "All images are 64x64 pixels or less",
+		0b11 : "All images are exactily 64x64 pixels"
+	} imageSizeRestrictions;
+}
+
+// 4.   ID3v2 frame overview
+
+virtual class ID3v2Frame(id)
+{
+	String(4) FrameID;
+	@args.id = FrameID;
+	if (FrameID != "") {
+		SynchSafeInteger(32) Size;
+		@size = 8*Size + 80;
+		
+		FrameStatusFlags _;
+		FrameFormatFlags _;
+	}
+}
+
+class TextEncoding extends enum uint(8, 16) {
+	0x00 : "ISO-8859-1",
+    0x01 : "UTF-16",
+    0x02 : "UTF-16BE",
+    0x03 : "UTF-8"
+}
+
+class EncodedString(encoding, size)
+{
+	if (encoding == 0x01 || encoding == 0x02) {
+		if (size >= 0) {
+			WString(size/2) _string;
+		} else {
+			WString _string;
+		}
+	} else {
+		if (size >= 0) {
+			String(size) _string;
+		} else {
+			String _string;
+		}
+	}
+	@value = _string;
+}
+
+//// 4.1.   Frame header flags
+
+////// 4.1.1. Frame status flags
+
+class FrameStatusFlags extends uint(8,2)
+{
+	@pos = 0;
+	
+	uint(1,2) reserved;
+	enum uint(1,2) {
+		0b0 : "Frame should be preserved",
+		0b1 : "Frame should be discarded"
+	} tagAlterPreservation;
+	
+	enum uint(1,2) {
+		0b0 : "Frame should be preserved",
+		0b1 : "Frame should be discarded"
+	} fileAlterPreservation;
+	
+	uint(1,2) readOnly;
+	uint(4) reserved;
+}
+
+////// 4.1.2. Frame format flags
+
+class FrameFormatFlags extends uint(8,2)
+{
+	uint(1,2) reserved;
+	enum(uint(1,2)) {
+		0b0 : "Frame does not contain group information",
+		0b1 : "Frame contains group information"
+	} groupingIdentity;
+	
+	uint(2,2) reserved;
+	enum(uint(1,2)) {
+		0b0 : "Frame is not compressed",
+		0b1 : "Frame is compressed using zlib deflate method"
+	} compression;
+	
+	uint(1,2) encrypted;
+	uint(1,2) unsynchronised;
+	uint(1,2) dataLengthIndicator;
+}
+
+
+// 6.   Unsynchronisation
+
+//// 6.2.   Synchsafe integers
+
+class SynchSafeInteger(count) extends uint(count)
+{
+	var mask = 0x7f;
+	var newValue = 0;
+	for (var i = 0, n = count/8; i < n; ++i) {
+		newValue |= (@value & mask) >> i;
+		mask <<= 8;
+	}
+	@value = newValue;
+}
+
+//////////////////////////////////////////////////////////////////
+//            ID3 tag version 2.4.0 - Native Frames             //
+//////////////////////////////////////////////////////////////////
+
+// 4.1.   Unique file identifier
+
+class UniqueFileIdentifier as ID3v2Frame("UFID")
+{
+	String ownerIdentifier;
+	Data identifier;
+}
+
+// 4.2.   Text information frames
+
+class TextFrame extends ID3v2Frame
+{
+	TextEncoding textEncoding;
+	EncodedString(textEncoding, @rem/8) payload; 
+}
+
+//// 4.2.1.   Identification frames
+
+class ContentGroupFrame extends TextFrame as ID3v2Frame("TIT1")
+class TitleFrame extends TextFrame as ID3v2Frame("TIT2")
+class SubtitleFrame extends TextFrame as ID3v2Frame("TIT3")
+class AlbumFrame extends TextFrame as ID3v2Frame("TALB")
+class OriginalAlbumFrame extends TextFrame as ID3v2Frame("TOAL")
+class TrackNumberFrame extends TextFrame as ID3v2Frame("TRCK")
+class PartOfASetFrame extends TextFrame as ID3v2Frame("TPOS")
+class SetSubtitleFrame extends TextFrame as ID3v2Frame("TSST")
+class ISRCFrame extends TextFrame as ID3v2Frame("TSRC")
+
+//// 4.2.2.   Involved persons frames
+
+class ArtistFrame extends TextFrame as ID3v2Frame("TPE1")
+class BandFrame extends TextFrame as ID3v2Frame("TPE2")
+class ConductorFrame extends TextFrame as ID3v2Frame("TPE3")
+class InterpretedByFrame extends TextFrame as ID3v2Frame("TPE4")
+class OriginalArtistFrame extends TextFrame as ID3v2Frame("TOPE")
+class LyricistFrame extends TextFrame as ID3v2Frame("TEXT")
+class OriginalLyricistName extends TextFrame as ID3v2Frame("TOLY")
+class ComposerFrame extends TextFrame as ID3v2Frame("TCOM")
+class MusicianCreditsListFrame extends TextFrame as ID3v2Frame("TMCL")
+class InvolvedPeopleListFrame extends TextFrame as ID3v2Frame("TIPL")
+class EncodedByFrame extends TextFrame as ID3v2Frame("TENC")
+
+//// 4.2.3.   Derived and subjective properties frames
+
+class BPMFrame extends TextFrame as ID3v2Frame("TBPM")
+class LengthFrame extends TextFrame as ID3v2Frame("TLEN")
+class InitialKeyFrame extends TextFrame as ID3v2Frame("TKEY")
+class LanguageFrame extends TextFrame as ID3v2Frame("TLAN")
+class ContentTypeFrame extends TextFrame as ID3v2Frame("TCON")
+class FileTypeFrame extends TextFrame as ID3v2Frame("TFLT")
+class MediaTypeFrame extends TextFrame as ID3v2Frame("TMED")
+class ModdFrame extends TextFrame as ID3v2Frame("TMOO")
+
+//// 4.2.4.   Rights and license frames
+
+class CopyRightMessageFrame extends TextFrame as ID3v2Frame("TCOP")
+class ProducedNoticeFrame extends TextFrame as ID3v2Frame("TPRO")
+class PublishedFrame extends TextFrame as ID3v2Frame("TPUB")
+class FileOwnerFrame extends TextFrame as ID3v2Frame("TOWN")
+class InternetRadioStationNameFrame extends TextFrame as ID3v2Frame("TRSO")
+
+//// 4.2.5.   Other text frames
+
+class OriginalFrame extends TextFrame as ID3v2Frame("TOFN")
+class PlaylistDelayFrame extends TextFrame as ID3v2Frame("TDLY")
+class EncodingTimeFrame extends TextFrame as ID3v2Frame("TDEN")
+class OrignalReleaseTimeFrame extends TextFrame as ID3v2Frame("TDOR")
+class RecordingTimeFrame extends TextFrame as ID3v2Frame("TDRC")
+class ReleaseTimeFrame extends TextFrame as ID3v2Frame("TDRL")
+class TaggingTimeFrame extends TextFrame as ID3v2Frame("TDTG")
+class UsedForEncodingFrame extends TextFrame as ID3v2Frame("TSSE")
+class AlbumSortOrderFrame extends TextFrame as ID3v2Frame("TSOA")
+class PerformerSortOrderFrame extends TextFrame as ID3v2Frame("TSOP")
+class TitleSortOrderFrame extends TextFrame as ID3v2Frame("TSOT")
+
+//// 4.2.6.   User defined text information frame
+
+class UserDefinedTextInformationFrame as ID3v2Frame("TXXX")
+{
+	TextEncoding textEncoding;
+	EncodedString(textEncoding) Description;
+	EncodedString(textEncoding, @rem/8) Value;
+}
+
+// 4.3.   URL link frames
+
+class URLFrame extends ID3v2Frame
+{
+	String(@rem/8) URL; 
+}
+
+//// 4.3.1.   URL link frames - details
+
+class CommercialURLFrame extends URLFrame as ID3v2Frame("WCOM")
+class CopyrightURLFrame extends URLFrame as ID3v2Frame("WCOP")
+class OfficialAudioFileWebpageFrame extends URLFrame as ID3v2Frame("WOAF")
+class OfficialArtistWebpageFrame extends URLFrame as ID3v2Frame("WOAR")
+class OfficialInternetRadioStationHomepageFrame extends URLFrame as ID3v2Frame("WORS")
+class PaymentURLFrame extends URLFrame as ID3v2Frame("WPAY")
+class PublishersOfficialWebpageFrame extends URLFrame as ID3v2Frame("WPUB")
+
+//// 4.3.2.   User defined URL link frame
+
+class UserDefinedURLInformationFrame as ID3v2Frame("WXXX")
+{
+	TextEncoding textEncoding;
+	EncodedString(textEncoding) Description;
+	EncodedString(textEncoding, @rem/8) URL;
+}
+
+// 4.4.   Music CD identifier
+
+class MusicCDIdentifier as ID3v2Frame("MCDI")
+{
+	Data CDTOC;
+}
+
+// 4.5.   Event timing codes
+
+class EventTimingCodes as ID3v2Frame("ETCO")
+{
+	TimestampFormat timestampFormat;
+	
+	EventTimingEntry entries[];
+}
+
+class TimestampFormat extends enum uint(8, 16) {
+		0x01 : "Absolute time, 32 bit sized, using MPEG frames as unit",
+		0x02 : "Absolute time, 32 bit sized, using milliseconds as unit"
+	}
+
+
+class EventTimingEntry
+{
+	do {
+		enum uint(8, 16) {
+			0x00 : "padding (has no meaning)",
+			0x01 : "end of initial silence",
+			0x02 : "intro start",
+			0x03 : "main part start",
+			0x04 : "outro start",
+			0x05 : "outro end",
+			0x06 : "verse start",
+			0x07 : "refrain start",
+			0x08 : "interlude start",
+			0x09 : "theme start",
+			0x0A : "variation start",
+			0x0B : "key change",
+			0x0C : "time change",
+			0x0D : "momentary unwanted noise (Snap, Crackle & Pop)",
+			0x0E : "sustained noise",
+			0x0F : "sustained noise end",
+			0x10 : "intro end",
+			0x11 : "main part end",
+			0x12 : "verse end",
+			0x13 : "refrain end",
+			0x14 : "theme end",
+			0x15 : "profanity",
+			0x16 : "profanity end",
+			0xE0 : "not predefined synch 0",
+			0xE1 : "not predefined synch 1",
+			0xE2 : "not predefined synch 2",
+			0xE3 : "not predefined synch 3",
+			0xE4 : "not predefined synch 4",
+			0xE5 : "not predefined synch 5",
+			0xE6 : "not predefined synch 6",
+			0xE7 : "not predefined synch 7",
+			0xE8 : "not predefined synch 8",
+			0xE9 : "not predefined synch 9",
+			0xEA : "not predefined synch A",
+			0xEB : "not predefined synch B",
+			0xEC : "not predefined synch C",
+			0xED : "not predefined synch D",
+			0xEE : "not predefined synch E",
+			0xEF : "not predefined synch F",
+			0xFD : "audio end (start of silence)",
+			0xFE : "audio file ends",
+			0xFF : "one more byte of events follows"
+		} typeOfEvent;
+	} while (typeOfEvent == 0xFF)
+		
+	uint(32) timestamp;
+}
+
+// 4.6.   MPEG location lookup table
+
+class MPEGLocationLookupTableFrame as ID3v2Frame("MLLT")
+{
+	uint(16) MPEGFramesBetweenReference;
+	uint(48) bytesBetweenReference;
+	uint(48) millisecondsBetweenReference;
+	uint(8)  bitsForBytesDeviation;
+	uint(8)  bitsForMillisecondsDeviation;
+	
+	struct DeviationEntry {
+		uint(bitsForBytesDeviation) deviationInBytes;
+		uint(bitsForMillisecondsDeviation) deviationInMilliseconds;
+	} entries[];
+}
+
+// 4.7.   Synchronised tempo codes
+
+class SynchronisedTempoCodesFrame as ID3v2Frame("SYTC")
+{
+	TimestampFormat timestampFormat;
+	
+	Data tempoData;
+}
+
+// 4.8. Unsynchronised lyrics/text transcription
+
+class UnsynchronisedLyricsTranscriptionFrame as ID3v2Frame("USLT")
+{
+	TextEncoding textEncoding;
+	String(3) language;
+	EncodedString(textEncoding) contentDescriptor;
+	EncodedString(textEncoding, @rem/8) lyrics;
+}
+
+// 4.9. Synchronised lyrics/text transcription
+
+class SynchronisedLyricsTranscriptionFrame as ID3v2Frame("SYLT")
+{
+	TextEncoding textEncoding;
+	String(3) language;
+	TimestampFormat timestampFormat;
+	enum uint(8, 16) {
+		0x00 : "other",
+		0x01 : "lyrics",
+		0x02 : "text transcription",
+		0x03 : "movement/part name",
+		0x04 : "events",
+		0x05 : "chord",
+		0x06 : "trivia/'pop up' information",
+		0x07 : "URLs to webpages",
+		0x08 : "URLs to images"
+	} contentType;
+	
+	EncodedString(textEncoding) contentDescriptor;
+	struct Syllable {
+		EncodedString(textEncoding) payload;
+		TimestampFormat timestampFormat;
+	} lyrics[];
+}
+
+// 4.10.   Comments
+
+class CommentFrame as ID3v2Frame("COMM")
+{
+	TextEncoding textEncoding;
+	String(3) language;
+	EncodedString(textEncoding) shortContentDescription;
+	EncodedString(textEncoding, @rem/8) actualText;
+}
+
+// 4.11.   Relative volume adjustment (2)
+
+class RelativeVolumeAdjustmentFrame as ID3v2Frame("RVA2")
+{
+	String Identification;
+	RelativeVolumeAdjustmentEntry entries[];
+}
+
+class RelativeVolumeAdjustmentEntry 
+{
+	enum uint(8, 16) {
+		0x00 : "Other",
+		0x01 : "Master volume",
+		0x02 : "Front right",
+		0x03 : "Front left",
+		0x04 : "Back right",
+		0x05 : "Back left",
+		0x06 : "Front centre",
+		0x07 : "Back centre",
+		0x08 : "Subwoofer"
+	} typeOfChannel;
+	
+	VolumeAdjustment volumeAdjustement;
+	
+	uint(8) bitsRepresentingPeak;
+	if (bitsRepresentingPeak % 8 != 0) {
+		Data(bitsRepresentingPeak - (bitsRepresentingPeak % 8)) padding;
+	}
+	Data(bitsRepresentingPeak) peak;
+}
+
+class VolumeAdjustment extends int(16)
+{
+	@value /= 512.0;
+	@attr["unit"] = "Db";
+}
+
+// 4.12.   Equalisation (2)
+
+class EqualisationFrame as ID3v2Frame("EQU2")
+{
+	enum uint(8, 16) {
+		0x00 : "Band",
+		0x01 : "Linear"
+	} interpolationMethod;
+	String identification;
+	
+	struct EqualisationEntry {
+		Frenquency frequency;
+		VolumeAdjustment volumeAdjustement;
+	} entries[];
+}
+
+class Frenquency extends uint(16)
+{
+	@value *= 0.5;
+	@attr["unit"] = "Hz";
+}
+
+// 4.13.   Reverb
+
+class ReverbFrame as ID3v2Frame("RVRB")
+{
+	uint(16) reverbLeft;
+	uint(16) reverbRight;
+	uint(8)  reverbBouncesLeft;
+	uint(8)  reverbBouncesRight;
+	uint(8)  reverbFeedbackLeftToLeft;
+	uint(8)  reverbFeedbackLeftToRight;
+	uint(8)  reverbFeedbackRightToRight;
+	uint(8)  reverbFeedbackRightToLeft;
+	uint(8)  premixLeftToRight;
+	uint(8)  premixRightToLeft;
+}
+
+// 4.14.   Attached picture
+
+class AttachedPictureFrame as ID3v2Frame("APIC")
+{
+	TextEncoding textEncoding;
+	String MIMEType;
+	enum uint(8) {
+		0x00 : "Other",
+		0x01 : "32x32 pixels 'file icon' (PNG only)",
+		0x02 : "Other file icon",
+		0x03 : "Cover (front)",
+		0x04 : "Cover (back)",
+		0x05 : "Leaflet page",
+		0x06 : "Media (e.g. label side of CD)",
+		0x07 : "Lead artist/lead performer/soloist",
+		0x08 : "Artist/performer",
+		0x09 : "Conductor",
+		0x0A : "Band/Orchestra",
+		0x0B : "Composer",
+		0x0C : "Lyricist/text writer",
+		0x0D : "Recording Location",
+		0x0E : "During recording",
+		0x0F : "During performance",
+		0x10 : "Movie/video screen capture",
+		0x11 : "A bright coloured fish",
+		0x12 : "Illustration",
+		0x13 : "Band/artist logotype",
+		0x14 : "Publisher/Studio logotype"
+	} pictureType;
+	
+	EncodedString(textEncoding) description;
+	Data pictureData;
+}
+
+// 4.15.   General encapsulated object
+
+class GeneralEncapsulatedObjectFrame as ID3v2Frame("GEOB")
+{
+	TextEncoding textEncoding;
+	String MIMEType;
+	String Filename;
+	EncodedString(textEncoding) contentDescription;
+	Data encapsulatedObject;
+}
+
+// 4.16.   Play counter
+
+class PlayCounterFrame as ID3v2Frame("PCNT")
+{
+	uint(@rem) Counter;
+}
+
+// 4.17.   Popularimeter
+
+class Popularimeter as ID3v2Frame("POPM")
+{
+	String emailToUser;
+	uint(8) Rating;
+	uint(@rem) Counter;
+}
+
+// 4.18.   Recommended buffer size
+
+class BufferSizeFrame as ID3v2Frame("RBUF")
+{
+	uint(48) bufferSize;
+	uint(8)  embeddedInfoFlag;
+	uint(32) offsetToNextFlag;
+}
+
+// 4.19.   Audio encryption
+
+class AudioEncryptionFrame as ID3v2Frame("AENC")
+{
+	String ownerIdentifier;
+	uint(16) previewStart;
+	uint(16) previewLength;
+	Data encryptionInfo;
+}
+
+// 4.20. Linked information
+
+class LinkedInformationFrame as ID3v2Frame("LINK")
+{
+	String(4)      frameIdentifier;
+	String         URL;
+	String(@rem/8) IDAndAdditinalData;
+}
+
+// 4.21. Position synchronisation frame
+
+class PositionSynchronisationFrame as ID3v2Frame("POSS")
+{
+	TimestampFormat timestampFormat;
+	uint(@rem) Position;
+}
+
+// 4.22.   Terms of use frame
+
+class TermsOfUseFrame as ID3v2Frame("USER")
+{
+	TextEncoding textEncoding;
+	String(3) language;
+	EncodedString(textEncoding, @rem/8) text;
+}
+
+// 4.23.   Ownership frame
+
+class OwnershipFrame as ID3v2Frame("OWNE")
+{
+	TextEncoding textEncoding;
+	String pricePaid;
+	String(8) dateOfPurcharse;
+	EncodedString(textEncoding, @rem/8) seller;
+}
+
+// 4.24.   Commercial frame
+
+class CommercialFrame as ID3v2Frame("COMR")
+{
+	TextEncoding textEncoding;
+	String priceString;
+	String(8) validUntil;
+	String contactURL;
+	enum uint(8) {
+		0x00 : "Other",
+        0x01 : "Standard CD album with other songs",
+        0x02 : "Compressed audio on CD",
+        0x03 : "File over the Internet",
+        0x04 : "Stream over the Internet",
+        0x05 : "As note sheets",
+        0x06 : "As note sheets in a book with other sheets",
+        0x07 : "Music on other media",
+        0x08 : "Non-musical merchandise"
+	} receivedAs;
+	EncodedString(textEncoding) nameOfSeller;
+	EncodedString(textEncoding) description;
+	String pictureMimeType;
+	Data sellerLogo;
+}
+
+// 4.25.   Encryption method registration
+
+class EncryptionMethodRegistrationFrame as ID3v2Frame("ENCR")
+{
+	String ownerIdentifier;
+	uint(8) methodSymbol;
+	Data encryptionData;
+}
+
+// 4.26.   Group identification registration
+
+class GroupIdentificationRegistrationFrame as ID3v2Frame("GRID")
+{
+	String ownerIdentifier;
+	uint(8) groupSymbol;
+	Data groupDependentData;
+}
+
+// 4.27.   Private frame
+
+class PrivateFrame as ID3v2Frame("PRIV")
+{
+	String ownerIdentifier;
+	Data privateData;
+}
+
+// 4.28.   Signature frame
+
+class SignatureFrame as ID3v2Frame("SIGN")
+{
+	uint(8) groupSymbol;
+	Data signature;
+}
+
+// 4.29.   Seek frame
+
+class SeekFrame as ID3v2Frame("SEEK")
+{
+	uint(32) mimimumOffsetToNextTag;
+}
+
+// 4.30.   Audio seek point index
+
+class AudioSeekPointIndex as ID3v2Frame("ASPI")
+{
+	uint(32) indexedDataStart;
+	uint(32) indexedDataLength;
+	uint(16) numberOfIndexPoints;
+	uint(8) bitsPerIndexPoints;
+	uint(bitsPerIndexPoints) fractionsAtIndex[];
+}
+
+
+//////////////////////////////////////////////////////////////////
+//           Unofficial Frames Seen in the Wild                 //
+//////////////////////////////////////////////////////////////////
+
+class ReplayGainAdjustmentFrame as ID3v2Frame("RGAD")
+{
+	uint(32) peakAmplitude;
+    uint(16) radioReplayGainAdjustment;
+    uint(16) audiophileReplayGainAdjustment;
+}
+
+class iTunesComplationFlagFrame extends TextFrame as ID3v2Frame("TCMP")
+class AlbumArtistSortFrame extends TextFrame as ID3v2Frame("TSO2")
+class ComposerSortFrame extends TextFrame as ID3v2Frame("TSOC")
+class YearFrame extends TextFrame as ID3v2Frame("TYER")
+class DateFrame extends TextFrame as ID3v2Frame("TDAT")
+class StudioFrame extends TextFrame as ID3v2Frame("TSTU")
