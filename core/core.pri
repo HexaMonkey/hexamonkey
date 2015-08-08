@@ -21,8 +21,6 @@ SOURCES += \
     ../core/formatdetector/formatdetector.cpp \
     ../core/formatdetector/extensionformatdetector.cpp \
     ../core/formatdetector/compositeformatdetector.cpp \
-    ../core/variable/variablepath.cpp \
-    ../core/variable/variable.cpp \
     ../core/interpreter/program.cpp \
     ../core/interpreter/programloader.cpp \
     ../core/interpreter/fromfileparser.cpp \
@@ -63,6 +61,7 @@ SOURCES += \
     ../core/util/osutil.cpp \
     ../core/variable/variable.cpp \
     ../core/variable/variablecollector.cpp \
+    ../core/variable/commonvariable.cpp \
     ../core/variable/localscope.cpp \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
@@ -71,6 +70,7 @@ SOURCES += \
     ../core/variable/objectscope.cpp \
     ../core/variable/arrayscope.cpp \
     ../core/variable/mapscope.cpp \
+    ../core/variable/variablepath.cpp \
     ../core/modulesetup.cpp \
     ../core/parsingexception.cpp
 
@@ -95,8 +95,6 @@ HEADERS  += \
     ../core/formatdetector/formatdetector.h \
     ../core/formatdetector/extensionformatdetector.h \
     ../core/formatdetector/compositeformatdetector.h \
-    ../core/variable/variablepath.h \
-    ../core/variable/variable.h \
     ../core/interpreter/program.h \
     ../core/interpreter/programloader.h \
     ../core/interpreter/fromfileparser.h \
@@ -143,7 +141,9 @@ HEADERS  += \
     ../core/util/rapidxml/rapidxml.hpp \
     ../compiler/model.h \
     ../core/variable/variable.h \
+    ../core/variable/variablepath.h \
     ../core/variable/variablecollector.h \
+    ../core/variable/commonvariable.h \
     ../core/variable/localscope.h \
     ../core/variable/objectcontext.h \
     ../core/variable/objectattributes.h \
