@@ -61,7 +61,8 @@ SOURCES += \
     ../core/util/csvreader.cpp \
     ../core/util/bitutil.cpp \
     ../core/util/osutil.cpp \
-    ../core/variable/commonvariable.cpp \
+    ../core/variable/variable.cpp \
+    ../core/variable/variablecollector.cpp \
     ../core/variable/localscope.cpp \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
@@ -141,7 +142,8 @@ HEADERS  += \
     ../core/util/rapidxml/rapidxml_iterators.hpp \
     ../core/util/rapidxml/rapidxml.hpp \
     ../compiler/model.h \
-    ../core/variable/commonvariable.h \
+    ../core/variable/variable.h \
+    ../core/variable/variablecollector.h \
     ../core/variable/localscope.h \
     ../core/variable/objectcontext.h \
     ../core/variable/objectattributes.h \
@@ -153,4 +155,5 @@ HEADERS  += \
     ../core/varianthash.h \
     ../core/modulesetup.h \
     ../core/parsingexception.h
+
 

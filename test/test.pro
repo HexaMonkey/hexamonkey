@@ -23,7 +23,8 @@ HEADERS += \
 	test_util.h \
         test_parser.h \
         ../gui/qtmodulesetup.h \
-        ../gui/qtprogramloader.h
+        ../gui/qtprogramloader.h \
+    test_variable.h
 
 SOURCES += \
 	main.cpp \
@@ -32,4 +33,5 @@ SOURCES += \
 	test_util.cpp \
         test_parser.cpp \
         ../gui/qtmodulesetup.cpp \
-        ../gui/qtprogramloader.cpp
+        ../gui/qtprogramloader.cpp \
+    test_variable.cpp

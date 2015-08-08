@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include "core/variant.h"
 #include "core/variable/variablepath.h"
@@ -158,6 +159,7 @@ class VariableImplementation
 {
 public:
     virtual ~VariableImplementation();
+    virtual void collect(const std::function<void(VariableImplementation*)>& addAccessible);
 protected:
     friend class Variable;
 

@@ -243,6 +243,9 @@ void VariableImplementation::doRemoveField(const Variant &key)
     Log::warning("Trying to remove a field ", key," on a variable that doesn't support removal");
 }
 
+void VariableImplementation::collect(const std::function<void(VariableImplementation *)> &/*addAccessible*/)
+{
+}
 
 Variant UndefinedVariableImplementation::doGetValue()
 {
