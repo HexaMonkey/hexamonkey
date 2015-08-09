@@ -1,6 +1,7 @@
 #include "test_parser.h"
 
 #include "core/modules/default/defaultmodule.h"
+#include "core/variable/variablecollector.h"
 
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
@@ -82,6 +83,8 @@ void TestParser::test_zip()
 
 bool TestParser::checkFile(const std::string &fileName, int depth, int width, const std::string &moduleKey)
 {
+    VariableCollector collector;
+
     Log::info("Checking ", fileName);
 
     RealFile file;
@@ -96,7 +99,7 @@ bool TestParser::checkFile(const std::string &fileName, int depth, int width, co
     ModuleLoader& moduleLoader = moduleSetup.moduleLoader();
     const Module& module = moduleKey.empty() ? moduleLoader.getModule(file) : moduleLoader.getModule(moduleKey);
 
-    Object* object = module.handle(DefaultModule::file, file);
+    Object* object = module.handleFile(DefaultModule::file, file, collector);
 
     if (!object) {
         return false;

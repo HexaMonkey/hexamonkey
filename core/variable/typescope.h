@@ -14,6 +14,8 @@ class ObjectType;
 class AbstractTypeScope : public VariableImplementation
 {
 protected:
+    AbstractTypeScope(VariableCollector& collector);
+
     virtual Variant doGetValue() override;
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
 
@@ -27,8 +29,8 @@ protected:
 class TypeScope : public AbstractTypeScope
 {
 public:
-    TypeScope(ObjectType& type, bool modifiable);
-    TypeScope(const ObjectType& type);
+    TypeScope(VariableCollector& collector, ObjectType& type, bool modifiable);
+    TypeScope(VariableCollector& collector, const ObjectType& type);
 protected:
     virtual ObjectType* modifiableType() override;
     virtual const ObjectType& constType() override;

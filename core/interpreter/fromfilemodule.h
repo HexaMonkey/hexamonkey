@@ -66,8 +66,8 @@ private:
 
     int64_t guessSize(const Program& instructions) const;
 
-    static std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly);
-    static void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false);
+    std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly) const;
+    void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false) const;
 
     bool checkHeaderOnlyVar(const Program& line) const;
     Program::const_iterator headerEnd(const std::string& name) const;
@@ -87,7 +87,9 @@ private:
     mutable std::unordered_map<std::string, Program::const_iterator> _headerEnd;
     mutable std::unordered_map<std::string, bool> _needTailParsing;
 
-    Evaluator eval;
+    mutable VariableCollector _collector;
+    Variable _scope;
+    Evaluator _evaluator;
 
 };
 

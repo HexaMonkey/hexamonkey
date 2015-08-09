@@ -22,6 +22,7 @@
 #include "core/interpreter/programloader.h"
 #include "core/variable/variable.h"
 #include "core/variable/objectscope.h"
+#include "core/variable/variablecollector.h"
 
 Filter::Filter(const ProgramLoader& programLoader): _programLoader(programLoader)
 {
@@ -60,8 +61,11 @@ bool Filter::operator()(Object& object)
 {
     if(_expression != "") {
         Variable objectVariable = object.variable();
+        VariableCollectionGuard collectionGuard(objectVariable.collector());
+
         objectVariable.setConstant();
-        return Evaluator(objectVariable).rightValue(_program).value().toBool();
+        const bool result = Evaluator(objectVariable).rightValue(_program).value().toBool();
+        return result;
     } else {
         return true;
     }

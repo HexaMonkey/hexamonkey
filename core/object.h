@@ -82,6 +82,8 @@ class Object
             bool _isAvailable;
         };
 
+        ~Object();
+
         /** @brief Access the file associated. */
         File& file();
 
@@ -296,11 +298,19 @@ class Object
         Endianness endianness() const;
         void setEndianness(const Endianness &endianness);
 
+        inline VariableCollector& collector() {
+            return _collector;
+        }
+
+        inline const VariableCollector& collector() const {
+            return _collector;
+        }
+
     private:
         friend class Module;
         friend class ContainerParser;
 
-        Object(File& file, std::streampos beginningPos, Object* parent);
+        Object(File& file, std::streampos beginningPos, Object* parent, VariableCollector& collector);
 
         void parse();
         void parseBody();
@@ -345,6 +355,8 @@ class Object
         Endianness _endianness;
 
         std::shared_ptr<Parser> _toBeAddedParser;
+
+        VariableCollector& _collector;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

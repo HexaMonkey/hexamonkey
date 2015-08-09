@@ -10,26 +10,14 @@
 #include "core/variable/mapscope.h"
 
 const Variant emptyString("");
-Variable emptyScope;
 const Module emptyModule;
 
-Evaluator::Evaluator()
-    : scope(emptyScope),
-      module(emptyModule)
-{
-    UNUSED(hmcElemNames);
-}
 
 Evaluator::Evaluator(const Variable &scope)
     : scope(scope),
       module(emptyModule)
 {
-}
-
-Evaluator::Evaluator(const Module &module)
-    : scope(emptyScope),
-      module(module)
-{
+    UNUSED(hmcElemNames);
 }
 
 Evaluator::Evaluator(const Variable& scope, const Module &module)
@@ -92,22 +80,22 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
         case HMC_UINT_CONSTANT:
         case HMC_STRING_CONSTANT:
         case HMC_FLOAT_CONSTANT:
-            return Variable::copy(first.payload());
+            return collector().copy(first.payload());
 
         case HMC_NULL_CONSTANT:
-            return Variable::null();
+            return collector().null();
 
         case HMC_UNDEFINED_CONSTANT:
             return Variable();
 
         case HMC_EMPTY_STRING_CONSTANT:
-            return Variable::copy(emptyString);
+            return collector().copy(emptyString);
 
         case HMC_VARIABLE:
             return variable(first, modifiable, createIfNeeded);
 
         case HMC_TYPE:
-            return Variable::copy(type(first));
+            return collector().copy(type(first));
 
         case HMC_ARRAY_SCOPE:
             return arrayScope(first);
@@ -166,18 +154,23 @@ ObjectType Evaluator::type(const Program &program) const
     return type;
 }
 
+VariableCollector &Evaluator::collector() const
+{
+    return scope.collector();
+}
+
 Variable Evaluator::unaryOperation(int op, const Variable& a) const
 {
     switch(op)
     {
         case HMC_NOT_OP:
-            return Variable::copy(!a.value());
+            return collector().copy(!a.value());
 
         case HMC_BITWISE_NOT_OP:
-            return Variable::copy(~a.value());
+            return collector().copy(~a.value());
 
         case HMC_OPP_OP:
-            return Variable::copy(-a.value());;
+            return collector().copy(-a.value());;
 
         case HMC_PRE_INC_OP:
             a.setValue(a.value()+1);
@@ -190,7 +183,7 @@ Variable Evaluator::unaryOperation(int op, const Variable& a) const
         case HMC_SUF_INC_OP:
         {
             const Variant& value = a.value();
-            Variable aCopy = Variable::copy(value);
+            Variable aCopy = collector().copy(value);
             a.setValue(value + 1);
             return aCopy;
         }
@@ -198,7 +191,7 @@ Variable Evaluator::unaryOperation(int op, const Variable& a) const
         case HMC_SUF_DEC_OP:
         {
             const Variant& value = a.value();
-            Variable aCopy = Variable::copy(value);
+            Variable aCopy = collector().copy(value);
             a.setValue(value - 1);
             return aCopy;
         }
@@ -258,58 +251,58 @@ Variable Evaluator::binaryOperation(int op, const Variable& a, const Variable& b
             return a;
 
         case HMC_OR_OP:
-            return Variable::copy(a.value() || b.value());
+            return collector().copy(a.value() || b.value());
 
         case HMC_AND_OP:
-            return Variable::copy(a.value() && b.value());
+            return collector().copy(a.value() && b.value());
 
         case HMC_BITWISE_OR_OP:
-            return Variable::copy(a.value() | b.value());
+            return collector().copy(a.value() | b.value());
 
         case HMC_BITWISE_XOR_OP:
-            return Variable::copy(a.value() ^ b.value());
+            return collector().copy(a.value() ^ b.value());
 
         case HMC_BITWISE_AND_OP:
-            return Variable::copy(a.value() & b.value());
+            return collector().copy(a.value() & b.value());
 
         case HMC_EQ_OP:
-            return Variable::copy(a.value() == b.value());
+            return collector().copy(a.value() == b.value());
 
         case HMC_NE_OP:
-            return Variable::copy(a.value() != b.value());
+            return collector().copy(a.value() != b.value());
 
         case HMC_GE_OP:
-            return Variable::copy(a.value() >= b.value());
+            return collector().copy(a.value() >= b.value());
 
         case HMC_GT_OP:
-            return Variable::copy(a.value() > b.value());
+            return collector().copy(a.value() > b.value());
 
         case HMC_LE_OP:
-            return Variable::copy(a.value() <= b.value());
+            return collector().copy(a.value() <= b.value());
 
         case HMC_LT_OP:
-            return Variable::copy(a.value() < b.value());
+            return collector().copy(a.value() < b.value());
 
         case HMC_RIGHT_OP:
-            return Variable::copy(a.value() >> b.value());
+            return collector().copy(a.value() >> b.value());
 
         case HMC_LEFT_OP:
-            return Variable::copy(a.value() << b.value());
+            return collector().copy(a.value() << b.value());
 
         case HMC_ADD_OP:
-            return Variable::copy(a.value() + b.value());
+            return collector().copy(a.value() + b.value());
 
         case HMC_SUB_OP:
-            return Variable::copy(a.value() - b.value());
+            return collector().copy(a.value() - b.value());
 
         case HMC_MUL_OP:
-            return Variable::copy(a.value() * b.value());
+            return collector().copy(a.value() * b.value());
 
         case HMC_DIV_OP:
-            return Variable::copy(a.value() / b.value());
+            return collector().copy(a.value() / b.value());
 
         case HMC_MOD_OP:
-            return Variable::copy(a.value() % b.value());
+            return collector().copy(a.value() % b.value());
 
         default:
             break;
@@ -323,9 +316,9 @@ Variable Evaluator::ternaryOperation(int op, const Variable& a, const Variable& 
     {
         case HMC_TERNARY_OP:
             if(a.value().toBool())
-                return Variable::copy(b.value());
+                return collector().copy(b.value());
             else
-                return Variable::copy(c.value());
+                return collector().copy(c.value());
 
         default:
             break;
@@ -341,7 +334,7 @@ Variable Evaluator::function(const Program &program) const
     const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
     const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
 
-    FunctionScope* functionScope = new FunctionScope;
+    FunctionScope* functionScope = new FunctionScope(collector());
     unsigned int size = parametersNames.size();
     size_t i = 0;
     for(Program argument:arguments)
@@ -362,7 +355,7 @@ Variable Evaluator::function(const Program &program) const
 
     while (i < parametersDefaults.size())
     {
-        functionScope->addNamedParameter(Variable::constRef(parametersDefaults[i]), parametersNames[i]);
+        functionScope->addNamedParameter(collector().constRef(parametersDefaults[i]), parametersNames[i]);
         ++i;
     }
 
@@ -391,7 +384,7 @@ Variable Evaluator::assignField(const Program &pathProgram, const Program &right
 
 Variable Evaluator::arrayScope(const Program &program) const
 {
-    ArrayScope* arrayScope = new ArrayScope;
+    ArrayScope* arrayScope = new ArrayScope(collector());
     for (const Program& item : program) {
         arrayScope->addField(rightValue(item));
     }
@@ -401,7 +394,7 @@ Variable Evaluator::arrayScope(const Program &program) const
 
 Variable Evaluator::mapScope(const Program &program) const
 {
-    MapScope* mapScope = new MapScope;
+    MapScope* mapScope = new MapScope(collector());
     for (const Program& item : program) {
         mapScope->setField(item[0].payload(), rightValue(item[1], true));
     }

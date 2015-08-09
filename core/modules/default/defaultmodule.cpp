@@ -28,6 +28,7 @@
 #include "core/modules/default/enumparser.h"
 
 #include "core/variable/variable.h"
+#include "core/variable/variablecollector.h"
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
@@ -394,7 +395,7 @@ bool DefaultModule::doLoad()
         const ObjectType& type = scope.field(0).value().toObjectType();
         int64_t size = module.getFixedSize(type);
         if(size != -1)
-            return Variable::copy(size);
+            return scope.collector().copy(size);
         else
             return Variable();
 
@@ -412,7 +413,7 @@ bool DefaultModule::doLoad()
         {
             Variant newValue = value.toInteger();
             newValue.setDisplayBase(base);
-            return Variable::copy(newValue);
+            return scope.collector().copy(newValue);
         }
         else if(value.canConvertTo(Variant::stringType))
         {
@@ -422,7 +423,7 @@ bool DefaultModule::doLoad()
             if(!(S>>i).fail()) {
                 Variant newValue = i;
                 newValue.setDisplayBase(base);
-                return Variable::copy(newValue);
+                return scope.collector().copy(newValue);
             }
         }
         return Variable();
@@ -440,7 +441,7 @@ bool DefaultModule::doLoad()
         {
             Variant newValue = value.toDouble();
             newValue.setDisplayBase(base);
-            return Variable::copy(newValue);
+            return scope.collector().copy(newValue);
         }
         else if(value.canConvertTo(Variant::stringType))
         {
@@ -450,7 +451,7 @@ bool DefaultModule::doLoad()
             if(!(S>>d).fail()) {
                 Variant newValue = d;
                 newValue.setDisplayBase(base);
-                return Variable::copy(newValue);
+                return scope.collector().copy(newValue);
             }
         }
         return Variable();
@@ -466,7 +467,7 @@ bool DefaultModule::doLoad()
         S<<std::setbase(scope.field(1).value().toInteger())<<std::setw(scope.field(2).value().toInteger())<<std::setfill('0');
         scope.field(0).value().display(S, false);
         const std::string& s = S.str();
-        return Variable::copy(s);
+        return scope.collector().copy(s);
     });
 
     addFunction("fromAscii",
@@ -477,7 +478,7 @@ bool DefaultModule::doLoad()
     {
         const char ch = scope.field(0).value().toInteger();
         const std::string s(1, ch);
-        return Variable::copy(s);
+        return scope.collector().copy(s);
     });
 
     addFunction("toAscii",
@@ -490,7 +491,7 @@ bool DefaultModule::doLoad()
         if(str.empty())
             return Variable();
         else
-            return Variable::copy(str[0]);
+            return scope.collector().copy(str[0]);
     });
 
     addFunction("uppercase",
@@ -501,7 +502,7 @@ bool DefaultModule::doLoad()
     {
         std::string str = toStr(scope.field(0).value());
         std::transform(str.begin(), str.end(),str.begin(), ::toupper);
-        return Variable::copy(str);
+        return scope.collector().copy(str);
     });
 
     addFunction("lowercase",
@@ -512,7 +513,7 @@ bool DefaultModule::doLoad()
     {
         std::string str = toStr(scope.field(0).value());
         std::transform(str.begin(), str.end(),str.begin(), ::tolower);
-        return Variable::copy(str);
+        return scope.collector().copy(str);
     });
 
     addFunction("popCount",
@@ -522,7 +523,7 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         uint64_t word = scope.field(0).value().toUnsignedInteger();
-        return Variable::copy(popCount(word));
+        return scope.collector().copy(popCount(word));
     });
 
     addFunction("formatDate",
@@ -532,7 +533,7 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         uint64_t secs = scope.field(0).value().toUnsignedInteger();
-        return Variable::copy(formatDate(secs));
+        return scope.collector().copy(formatDate(secs));
     });
 
     addFunction("formatDuration",
@@ -542,7 +543,7 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         uint64_t secs = scope.field(0).value().toUnsignedInteger();
-        return Variable::copy(formatDuration(secs));
+        return scope.collector().copy(formatDuration(secs));
     });
 
     addFunction("substr",
@@ -570,9 +571,9 @@ bool DefaultModule::doLoad()
             if(start < str.size())
             {
                 if(start+size < str.size())
-                    return Variable::copy(str.substr(start, size));
+                    return scope.collector().copy(str.substr(start, size));
                 else
-                    return Variable::copy(str.substr(start));
+                    return scope.collector().copy(str.substr(start));
             }
         }
 

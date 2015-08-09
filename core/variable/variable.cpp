@@ -18,20 +18,24 @@
 #include "core/variant.h"
 #include "core/variable/variable.h"
 #include "core/variable/commonvariable.h"
+#include "core/variable/variablecollector.h"
 #include "core/log/logmanager.h"
 
 const Variant undefinedVariant;
 const Variant nullVariant = Variant::null();
 
-
 class UndefinedVariableImplementation : public VariableImplementation
 {
 protected:
-    virtual Variant doGetValue() override;
+    virtual Variant doGetValue() override {
+        return undefinedVariant;
+    }
 };
 
+UndefinedVariableImplementation undefinedVariableImplementation;
+
 Variable::Variable()
-    :_implementation(new UndefinedVariableImplementation),
+    :_implementation(&undefinedVariableImplementation),
      _tag(Variable::Tag::undefined)
 {
 }
@@ -41,6 +45,68 @@ Variable::Variable(VariableImplementation *implementation, bool modifiable)
       _tag(modifiable ? Variable::Tag::modifiable : Variable::Tag::constant)
 
 {
+    implementation->collector().registerVariable(implementation);
+}
+
+Variable::Variable(const Variable &variable)
+    : _implementation(variable._implementation),
+      _tag(variable._tag)
+{
+    if (_tag != Tag::undefined) {
+        _implementation->collector().addDirectlyAccessible(_implementation);
+    }
+}
+
+Variable::Variable(Variable &&variable)
+    : _implementation(variable._implementation),
+      _tag(variable._tag)
+{
+    variable._tag = Tag::undefined;
+}
+
+Variable::Variable(const VariableMemory &variable)
+    : _implementation(variable._implementation),
+      _tag(variable._tag)
+{
+    if (_tag != Tag::undefined) {
+        _implementation->collector().addDirectlyAccessible(_implementation);
+    }
+}
+
+Variable::~Variable()
+{
+    if (_tag != Tag::undefined) {
+        _implementation->collector().removeDirectlyAccessible(_implementation);
+    }
+}
+
+Variable &Variable::operator =(const Variable& rhs)
+{
+    if (_tag != Tag::undefined) {
+        _implementation->collector().removeDirectlyAccessible(_implementation);
+    }
+
+    _implementation = rhs._implementation;
+    _tag = rhs._tag;
+
+    if (_tag != Tag::undefined) {
+        _implementation->collector().addDirectlyAccessible(_implementation);
+    }
+
+    return *this;
+}
+
+Variable &Variable::operator =(Variable &&rhs)
+{
+    if (_tag != Tag::undefined) {
+        _implementation->collector().removeDirectlyAccessible(_implementation);
+    }
+
+    _implementation = rhs._implementation;
+    _tag = rhs._tag;
+    rhs._tag = Tag::undefined;
+
+    return *this;
 }
 
 Variant Variable::value() const
@@ -170,48 +236,27 @@ bool Variable::isDefined() const
     return _tag != Tag::undefined;
 }
 
-void Variable::inPlaceCopy(bool modifiable)
+VariableCollector &Variable::collector() const
 {
-    _tag = modifiable ? Tag::modifiable : Tag::constant;
-    _implementation.reset(new OwningVariableImplementation(value()));
+    return _implementation->collector();
 }
 
-Variable Variable::copy(const Variant &value, bool modifiable)
+
+
+void swap(Variable &first, Variable &second)
 {
-    return Variable(new OwningVariableImplementation(value), modifiable);
+    // enable ADL (not necessary in our case, but good practice)
+    using std::swap;
+
+    // by swapping the members of two classes,
+    // the two classes are effectively swapped
+    swap(first._implementation, second._implementation);
+    swap(first._tag, second._tag);
 }
 
-Variable Variable::ref(Variant &value, bool modifiable)
+VariableImplementation::VariableImplementation(VariableCollector &variableCollector)
+    : _collector(&variableCollector)
 {
-    return Variable(new RefVariableImplementation(value), modifiable);
-}
-
-Variable Variable::refIfNotNull(Variant *value, bool modifiable)
-{
-    if (value != nullptr) {
-        return Variable(new RefVariableImplementation(*value), modifiable);
-    } else {
-        return Variable();
-    }
-}
-
-Variable Variable::constRef(const Variant &value)
-{
-    return Variable(new ConstRefVariableImplementation(value), false);
-}
-
-Variable Variable::constRefIfNotNull(const Variant *value)
-{
-    if (value != nullptr) {
-        return Variable(new ConstRefVariableImplementation(*value), false);
-    } else {
-        return Variable();
-    }
-}
-
-Variable Variable::null()
-{
-    return Variable(new OwningVariableImplementation(nullVariant), true);
 }
 
 VariableImplementation::~VariableImplementation()
@@ -243,11 +288,24 @@ void VariableImplementation::doRemoveField(const Variant &key)
     Log::warning("Trying to remove a field ", key," on a variable that doesn't support removal");
 }
 
-void VariableImplementation::collect(const std::function<void(VariableImplementation *)> &/*addAccessible*/)
+VariableImplementation::VariableImplementation()
+    : _collector(nullptr)
 {
 }
 
-Variant UndefinedVariableImplementation::doGetValue()
+void VariableImplementation::collect(const std::function<void(VariableMemory &)> &/*addAccessible*/)
 {
-    return undefinedVariant;
+}
+
+
+VariableMemory::VariableMemory()
+    : _implementation(&undefinedVariableImplementation),
+      _tag(Variable::Tag::undefined)
+{
+}
+
+VariableMemory::VariableMemory(const Variable &variable)
+    : _implementation(variable._implementation),
+      _tag(variable._tag)
+{
 }

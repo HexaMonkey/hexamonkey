@@ -2,9 +2,10 @@
 
 #include "core/object.h"
 #include "core/log/logmanager.h"
+#include "core/variable/variablecollector.h"
 
 ObjectContext::ObjectContext(Object &object)
-    : _object(object)
+    : VariableImplementation(object.collector()), _object(object)
 {
 }
 
@@ -36,7 +37,7 @@ Variable ObjectContext::field(const std::string &key, bool createIfNeeded)
     }
 
     if (createIfNeeded) {
-        return _fields[key] = Variable::null();
+        return _fields[key] = collector().null();
     } else {
         return Variable();
     }
@@ -82,4 +83,11 @@ void ObjectContext::doRemoveField(const Variant &key)
     }
 
     removeField(key.toString());
+}
+
+void ObjectContext::collect(const std::function<void(VariableMemory&)>& addAccessible)
+{
+    for (auto& entry : _fields) {
+        addAccessible(entry.second);
+    }
 }

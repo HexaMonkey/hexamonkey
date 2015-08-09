@@ -21,10 +21,11 @@ protected:
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
     virtual void doSetField(const Variant &key, const Variable &variable) override;
     virtual void doRemoveField(const Variant &key) override;
+    void collect(const std::function<void (VariableMemory&)> &addAccessible) override;
 
 private:
     Object& _object;
-    std::unordered_map<std::string, Variable> _fields;
+    std::unordered_map<std::string, VariableMemory> _fields;
 };
 
 #endif // OBJECTCONTEXT_H

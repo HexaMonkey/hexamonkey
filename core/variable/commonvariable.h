@@ -20,13 +20,15 @@
 
 #include "core/variable/variable.h"
 
+class VariableCollector;
+
 /**
  * @brief Basic variable implentation owning a \link Variant value\endlink by copy
  */
 class OwningVariableImplementation : public VariableImplementation
 {
 public:
-    OwningVariableImplementation(Variant value);
+    OwningVariableImplementation(VariableCollector& variableCollector, Variant value);
 protected:
     virtual void doSetValue(const Variant& value) override;
     virtual Variant doGetValue() override;
@@ -40,7 +42,7 @@ private:
 class RefVariableImplementation : public VariableImplementation
 {
 public:
-    RefVariableImplementation(Variant& value);
+    RefVariableImplementation(VariableCollector &variableCollector, Variant& value);
 protected:
     virtual void doSetValue(const Variant& value) override;
     virtual Variant doGetValue() override;
@@ -54,7 +56,7 @@ private:
 class ConstRefVariableImplementation : public VariableImplementation
 {
 public:
-    ConstRefVariableImplementation(const Variant& value);
+    ConstRefVariableImplementation(VariableCollector &variableCollector, const Variant& value);
 protected:
     virtual Variant doGetValue() override;
 private:

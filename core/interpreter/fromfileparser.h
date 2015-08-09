@@ -44,17 +44,18 @@ private:
     virtual bool doParseSome(int hint) final;
     virtual void doParseTail() final;
     virtual bool doNeedTailParsing() final;
+    virtual void doClean() final;
 
     Object& _object;
 
-    Variable _scope;
+    std::unique_ptr<Variable> _scope;
 
     Program::const_iterator _headerEnd;
 
-    Evaluator _evaluator;
+    std::unique_ptr<Evaluator> _evaluator;
 
-    BlockExecution _bodyExecution;
-    BlockExecution _tailExecution;
+    std::unique_ptr<BlockExecution> _bodyExecution;
+    std::unique_ptr<BlockExecution> _tailExecution;
 
     bool _needTailParsing;
 };

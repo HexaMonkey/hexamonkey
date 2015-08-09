@@ -27,8 +27,10 @@ Parser::Parser(Object& object)
       _parsed(false),
       _tailParsed(false),
       _hasHead(true),
-      _hasTail(true)
+      _hasTail(true),
+      _isClean(false)
 {
+
 }
 
 void Parser::parseHead()
@@ -131,6 +133,14 @@ const ObjectType &Parser::constType() const
     }
 }
 
+void Parser::clean()
+{
+    if (!_isClean) {
+        _isClean = true;
+        doClean();
+    }
+}
+
 int64_t Parser::availableSize() const
 {
     if(_object.file().good()) {
@@ -193,6 +203,10 @@ void Parser::doParseTail()
 bool Parser::doNeedTailParsing()
 {
     return false;
+}
+
+void Parser::doClean()
+{
 }
 
 void Parser::setHeadParsed()

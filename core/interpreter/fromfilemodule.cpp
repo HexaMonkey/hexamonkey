@@ -25,6 +25,7 @@
 #include "core/variable/functionscope.h"
 #include "core/variable/localscope.h"
 #include "core/variable/typescope.h"
+#include "core/variable/variablecollector.h"
 #include "core/util/fileutil.h"
 #include "core/util/unused.h"
 
@@ -45,8 +46,9 @@ const std::vector<bool> emptyParameterModifiables;
 const std::vector<Variant> emptyParameterDefaults;
 
 FromFileModule::FromFileModule(Program program)
-    :_program(program),
-      eval(*this)
+    : _program(program),
+      _scope(_collector.null()),
+      _evaluator(_scope, *this)
 {
     UNUSED(hmcElemNames);
 }
@@ -124,6 +126,8 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
 
     if(!type.typeTemplate().isVirtual() && module.getFather(type).isNull())
     {
+        VariableCollectionGuard guard(_collector);
+
         int64_t size = guessSize(definition);
         if(size>=0)
         {
@@ -256,7 +260,8 @@ void FromFileModule::nameScan(Program& declarations)
                 Program program = typeAttribute.node(1);
                 auto generator = [this, program]objectTypeAttributeLambda
                 {
-                    return Evaluator(Variable(new TypeScope(type), false), *this).rightValue(program).value();
+                    VariableCollectionGuard guard(_collector);
+                    return Evaluator(Variable(new TypeScope(_collector, type), false), *this).rightValue(program).value();
                 };
 
                 if (name == "elemType") {
@@ -314,7 +319,8 @@ void FromFileModule::loadExtensions(Program &classDeclarations)
            Program program = extension.node(0);
            setExtension(childTemplate,[this, program](const ObjectType& type)
            {
-               return Evaluator(Variable(new TypeScope(type), false), *this).type(program);
+               VariableCollectionGuard guard(_collector);
+               return Evaluator(Variable(new TypeScope(_collector, type), false), *this).type(program);
            });
 #ifdef LOAD_TRACE
            std::cerr<<"    "<<childTemplate<<" extends "<<program.node(0).payload()<<"(...)"<<std::endl;
@@ -332,6 +338,8 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
     std::cerr<<"Load specifications :"<<std::endl;
 #endif
 
+    VariableCollectionGuard guard(_collector);
+
     for(Program classDeclaration : classDeclarations)
     {
         if(classDeclaration.tag() == HMC_CLASS_DECLARATION)
@@ -339,7 +347,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
             ObjectType child = getTemplate(classDeclaration.node(0).node(0).node(0).payload().toString())();
             for(Program type : classDeclaration.node(0).node(2))
             {
-                ObjectType parent(eval.type(type));
+                ObjectType parent(_evaluator.type(type));
                 setSpecification(parent, child);
 #ifdef LOAD_TRACE
         std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
@@ -348,8 +356,8 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
         }
         else if(classDeclaration.tag() == HMC_FORWARD)
         {
-            ObjectType parent(eval.type(classDeclaration.node(0)));
-            ObjectType child(eval.type(classDeclaration.node(1)));
+            ObjectType parent(_evaluator.type(classDeclaration.node(0)));
+            ObjectType child(_evaluator.type(classDeclaration.node(1)));
             setSpecification(parent, child);
 #ifdef LOAD_TRACE
         std::cerr<<"    "<<child<<" specifies "<<parent<<std::endl;
@@ -395,7 +403,7 @@ int64_t FromFileModule::guessSize(const Program &instructions) const
                 if(!variableDependencies(line.node(0),false).empty())
                     return HM_UNKNOWN_SIZE;
 
-                ObjectType type = eval.rightValue(line.node(0)).value().toObjectType();
+                ObjectType type = _evaluator.rightValue(line.node(0)).value().toObjectType();
                 if(type.isNull())
                     return HM_UNKNOWN_SIZE;
 
@@ -508,7 +516,7 @@ FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescript
     {
         parameterNames.push_back(argument.node(1).payload().toString());
         parameterModifiables.push_back(argument.node(0).payload().toBool());
-        parameterDefaults.push_back(eval.rightValue(argument.node(2)).value());
+        parameterDefaults.push_back(_evaluator.rightValue(argument.node(2)).value());
     }
 
     auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);
@@ -527,7 +535,7 @@ bool FromFileModule::hasParser(const ObjectType &type) const
 }
 
 
-void FromFileModule::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors, bool areVariablesModified)
+void FromFileModule::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors, bool areVariablesModified) const
 {
     switch(instructions.tag())
     {
@@ -573,7 +581,7 @@ void FromFileModule::buildDependencies(const Program &instructions, bool modific
 
         case HMC_VARIABLE:
             if (!modificationOnly || areVariablesModified) {
-                descriptors.insert(Evaluator().variablePath(instructions));
+                descriptors.insert(_evaluator.variablePath(instructions));
             }
             break;
 
@@ -607,9 +615,10 @@ bool FromFileModule::checkHeaderOnlyVar(const Program &line) const
 }
 
 
-std::set<VariablePath> FromFileModule::variableDependencies(const Program &instructions, bool modificationOnly)
+std::set<VariablePath> FromFileModule::variableDependencies(const Program &instructions, bool modificationOnly) const
 {
     std::set<VariablePath> dependencies;
+    VariableCollectionGuard guard(_collector);
     buildDependencies(instructions, modificationOnly, dependencies);
     return dependencies;
 }

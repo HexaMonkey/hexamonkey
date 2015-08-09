@@ -3,8 +3,16 @@
 #include "core/log/logmanager.h"
 
 LocalScope::LocalScope(const Variable &context)
-    : _context(context)
+    : VariableImplementation(context.collector()), _context(context)
 {
+}
+
+void LocalScope::collect(const std::function<void (VariableMemory &)> &addAccessible)
+{
+    addAccessible(_context);
+    for (auto& entry : _fields) {
+        addAccessible(entry.second);
+    }
 }
 
 Variable LocalScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
@@ -16,7 +24,7 @@ Variable LocalScope::doGetField(const Variant &key, bool modifiable, bool create
         }
     }
 
-    return _context.field(key, modifiable, createIfNeeded);
+    return Variable(_context).field(key, modifiable, createIfNeeded);
 }
 
 void LocalScope::doSetField(const Variant &key, const Variable &variable)

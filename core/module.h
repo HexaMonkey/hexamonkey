@@ -120,11 +120,13 @@ public:
      */
     void setSpecification(const ObjectType& parent, const ObjectType& child);
 
+
+    Object* handleFile(const ObjectType &type, File& file, VariableCollector& collector) const;
     /**
      * @brief Create an object beginning at the current position of the file and add the appropriate \link Parser
      * parsers\endlink according to the inheritance structure for the type
      */
-    Object* handle(const ObjectType& type, File& file, Object* parent = nullptr) const;
+    Object* handle(const ObjectType& type, Object& parent) const;
 
     /**
      * @brief Check if the type can be handled by the \link Module module\endlink or any of the imported one.
@@ -276,7 +278,7 @@ private:
     void addParsers(Object& data, const ObjectType &type, const Module& fromModule, const ObjectType &lastType = ObjectType()) const;
     void addParsersRecursive(Object& object, const ObjectType &type, const Module& fromModule, const ObjectType &lastType) const;
 
-    Object* handle(const ObjectType& type, File& file, Object *parent, const Module& fromModule) const;
+    Object* handle(const ObjectType& type, File& file, Object *parent, VariableCollector& collector, const Module& fromModule) const;
 
     Variable executeFunction(const std::string& name, const Variable &params, const Module& fromModule) const;
 

@@ -96,6 +96,8 @@ public:
     ObjectType *modifiableType();
     const ObjectType& constType() const;
 
+    void clean();
+
 protected:
     Parser(Object& object);
 
@@ -156,6 +158,8 @@ protected:
      */
     virtual bool doNeedTailParsing();
 
+
+    virtual void doClean();
 private:
     friend class SimpleParser;
     friend class ContainerParser;
@@ -175,6 +179,8 @@ private:
     bool _tailParsed;
     bool _hasHead;
     bool _hasTail;
+
+    bool _isClean;
 };
 
 /**

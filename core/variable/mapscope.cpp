@@ -2,6 +2,13 @@
 
 #include "core/log/logmanager.h"
 
+#include "core/variable/variablecollector.h"
+
+MapScope::MapScope(VariableCollector &collector)
+    : VariableImplementation(collector)
+{
+}
+
 Variable MapScope::field(const Variant &key) const
 {
     auto it = _fields.find(key);
@@ -21,7 +28,7 @@ Variable MapScope::field(const Variant &key, bool createIfNeeded)
         return it->second;
     } else {
         if (createIfNeeded) {
-            return _fields[key] = Variable::null();
+            return _fields[key] = collector().null();
         } else {
             return Variable();
         }
@@ -41,4 +48,11 @@ Variable MapScope::doGetField(const Variant &key, bool /*modifiable*/, bool crea
 void MapScope::doSetField(const Variant &key, const Variable &variable)
 {
     setField(key, variable);
+}
+
+void MapScope::collect(const std::function<void(VariableMemory&)>& addAccessible)
+{
+    for (auto& entry : _fields) {
+        addAccessible(entry.second);
+    }
 }

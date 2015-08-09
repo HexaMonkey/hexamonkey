@@ -16,9 +16,10 @@
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "commonvariable.h"
+#include "core/variable/variable.h"
 
-OwningVariableImplementation::OwningVariableImplementation(Variant value)
-    : _value(value)
+OwningVariableImplementation::OwningVariableImplementation(VariableCollector &variableCollector, Variant value)
+    : VariableImplementation(variableCollector), _value(value)
 {
 }
 
@@ -33,8 +34,8 @@ Variant OwningVariableImplementation::doGetValue()
 }
 
 
-RefVariableImplementation::RefVariableImplementation(Variant& value)
-    : _value(value)
+RefVariableImplementation::RefVariableImplementation(VariableCollector &variableCollector, Variant& value)
+    : VariableImplementation(variableCollector), _value(value)
 {
 }
 
@@ -48,8 +49,8 @@ Variant RefVariableImplementation::doGetValue()
     return _value;
 }
 
-ConstRefVariableImplementation::ConstRefVariableImplementation(const Variant& value)
-    : _value(value)
+ConstRefVariableImplementation::ConstRefVariableImplementation(VariableCollector &variableCollector, const Variant& value)
+    : VariableImplementation(variableCollector), _value(value)
 {
 }
 

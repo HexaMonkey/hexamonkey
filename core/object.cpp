@@ -30,7 +30,7 @@
 
 #define BUFFER_SIZE 1048576
 
-Object::Object(File& file, std::streampos beginningPos, Object *parent) :
+Object::Object(File& file, std::streampos beginningPos, Object *parent, VariableCollector &collector) :
     _file(file),
     _beginningPos(beginningPos),
     _size(-1),
@@ -48,7 +48,8 @@ Object::Object(File& file, std::streampos beginningPos, Object *parent) :
     _context(nullptr),
     _attributes(nullptr),
     _valid(true),
-    _endianness(parent ? parent->_endianness : bigEndian)
+    _endianness(parent ? parent->_endianness : bigEndian),
+    _collector(collector)
 {
 }
 
@@ -310,7 +311,7 @@ const Variable &Object::contextVariable(bool createIfNeeded)
 const Variable &Object::attributesVariable(bool createIfNeeded)
 {
     if (_attributes == nullptr && createIfNeeded) {
-        _attributes = new ObjectAttributes;
+        _attributes = new ObjectAttributes(collector());
         _attributesVariable = Variable((VariableImplementation *) _attributes, true);
     }
 
@@ -421,7 +422,7 @@ void Object::removeLinkTo()
 ObjectAttributes *Object::attributes(bool createIfNeeded)
 {
     if (_attributes == nullptr && createIfNeeded) {
-        _attributes = new ObjectAttributes;
+        _attributes = new ObjectAttributes(collector());
         _attributesVariable = Variable((VariableImplementation *) _attributes, true);
     }
 
@@ -487,6 +488,7 @@ void Object::parseTail()
             if (_valid) {
                 parser->parseTail();
             }
+            parser->clean();
             parser.reset();
         }
     }
@@ -586,6 +588,18 @@ void Object::setName(const std::string &name)
 File &Object::file()
 {
     return _file;
+}
+
+Object::~Object()
+{
+    for(auto& parser : _parsers)
+    {
+        if(parser)
+        {
+            parser->clean();
+            parser.reset();
+        }
+    }
 }
 
 const File &Object::file() const

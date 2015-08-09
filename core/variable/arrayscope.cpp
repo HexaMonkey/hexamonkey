@@ -1,6 +1,7 @@
 #include "arrayscope.h"
 
 #include "core/log/logmanager.h"
+#include "core/variable/variablecollector.h"
 
 #include <unordered_map>
 
@@ -10,17 +11,16 @@ const std::unordered_map<std::string, int> reserved = {
     {"@count", A_COUNT}
 };
 
+ArrayScope::ArrayScope(VariableCollector &collector) : VariableImplementation(collector)
+{
+}
+
 void ArrayScope::addField(const Variable &variable)
 {
-    _fields.push_back(variable);
+    _fields.emplace_back(variable);
 }
 
-Variable &ArrayScope::field(size_t index)
-{
-    return _fields[index];
-}
-
-const Variable &ArrayScope::field(size_t index) const
+Variable ArrayScope::field(size_t index) const
 {
     return _fields[index];
 }
@@ -34,7 +34,7 @@ Variable ArrayScope::doGetField(const Variant &key, bool /*modifiable*/, bool cr
 {
     if (key.isValueless()) {
         if (createIfNeeded) {
-            addField(Variable::null());
+            addField(collector().null());
             return _fields.back();
         } else if (_fields.size() > 0) {
             return _fields.back();
@@ -46,7 +46,7 @@ Variable ArrayScope::doGetField(const Variant &key, bool /*modifiable*/, bool cr
         if (index >= 0) {
             if (createIfNeeded) {
                 while (index >= _fields.size()) {
-                    addField(Variable::null());
+                    addField(collector().null());
                 }
                 return _fields[index];
             } else if (index < _fields.size()) {
@@ -71,7 +71,7 @@ Variable ArrayScope::doGetField(const Variant &key, bool /*modifiable*/, bool cr
             } else {
                 switch (it->second) {
                     case A_COUNT:
-                        return Variable::copy(_fields.size(), false);
+                        return collector().copy(_fields.size(), false);
 
                     default:
                         return Variable();
@@ -100,7 +100,7 @@ void ArrayScope::doSetField(const Variant &key, const Variable &variable)
         if (index >= 0) {
 
             while (index > _fields.size()) {
-                addField(Variable::null());
+                addField(collector().null());
             }
 
             if (index >= _fields.size()) {
@@ -114,5 +114,12 @@ void ArrayScope::doSetField(const Variant &key, const Variable &variable)
         }
     } else {
         Log::error("Invalid index type for array");
+    }
+}
+
+void ArrayScope::collect(const std::function<void(VariableMemory&)>& addAccessible)
+{
+    for (auto& variableMemory : _fields) {
+        addAccessible(variableMemory);
     }
 }

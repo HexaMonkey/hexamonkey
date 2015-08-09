@@ -24,7 +24,7 @@
 #include "core/object.h"
 #include "core/module.h"
 #include "core/variable/variablepath.h"
-
+#include "core/variable/variablecollector.h"
 /**
  * @brief Node of the abstract syntaxing tree of an HMDL file
  *
@@ -42,9 +42,13 @@ class Program
 
         File& file();
         Object& setFileObject(Object* fileObject);
+        VariableCollector& collector() {
+            return _collector;
+        }
 
         RealFile _file;
         std::unique_ptr<Object> _fileObject;
+        VariableCollector _collector;
     };
 
     template<class It>

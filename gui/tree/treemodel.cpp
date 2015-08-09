@@ -59,7 +59,7 @@ QModelIndex TreeModel::addFile(File* file, const Module& module)
     beginInsertRows(QModelIndex(),0,0);
 
     TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem, file));
-    item.setObjectMemory(module.handle(DefaultModule::file(), item.file()));
+    item.setObjectMemory(module.handleFile(DefaultModule::file(), item.file(), item.collector()));
 
     QModelIndex itemIndex = index(realRowCount(QModelIndex())-1, 0, QModelIndex());
 
@@ -310,6 +310,8 @@ void TreeModel::populate(const QModelIndex &index, unsigned int nominalCount, un
         if (!item.synchronising()) {
             item.setSynchronising(true);
             threadQueue->add([&object, nominalCount, minCount, maxTries] {
+                VariableCollectionGuard guard(object.collector());
+
                 int minNumberOfChildren = object.numberOfChildren() + minCount;
 
                 for (unsigned int tries = 0;
@@ -404,6 +406,8 @@ int TreeModel::findItemChildByFilePosition(const QModelIndex &index, qint64 byte
             resultCallback(result);
         } else {
             threadQueue->add([object, bitPos] {
+                VariableCollectionGuard guard(object->collector());
+
                 Object* currentObject = object;
                 while (true) {
                     if (currentObject->parsed() && currentObject->numberOfChildren() == 0) {

@@ -1,6 +1,12 @@
 #include "objectattributes.h"
 
 #include "core/log/logmanager.h"
+#include "core/variable/variablecollector.h"
+
+ObjectAttributes::ObjectAttributes(VariableCollector &collector)
+    : VariableImplementation(collector)
+{
+}
 
 Variant& ObjectAttributes::addNumbered()
 {
@@ -66,10 +72,10 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool /*modifiable*/, b
 {
     if (key.isValueless()) {
         if (createIfNeeded) {
-            return Variable::ref(addNumbered());
+            return collector().ref(addNumbered());
         } else {
             if (_numberedFields.size() > 0) {
-                return Variable::constRef(_numberedFields.back());
+                return collector().constRef(_numberedFields.back());
             } else {
                 return Variable();
             }
@@ -81,9 +87,9 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool /*modifiable*/, b
                 while (number >= _numberedFields.size()) {
                     addNumbered();
                 }
-                return Variable::ref(_numberedFields[number]);
+                return collector().ref(_numberedFields[number]);
             } else if (number < _numberedFields.size()) {
-                return Variable::ref(_numberedFields[number]);
+                return collector().ref(_numberedFields[number]);
             } else {
                 return Variable();
             }
@@ -97,9 +103,9 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool /*modifiable*/, b
         const std::string& name = key.toString();
         auto it = _namedFields.find(name);
         if (it != _namedFields.end()) {
-            return Variable::ref(it->second);
+            return collector().ref(it->second);
         } else if (createIfNeeded){
-            return Variable::refIfNotNull(addNamed(name));
+            return collector().refIfNotNull(addNamed(name));
         } else {
             return Variable();
         }

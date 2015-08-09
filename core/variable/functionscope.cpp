@@ -2,6 +2,10 @@
 
 #include "core/log/logmanager.h"
 
+FunctionScope::FunctionScope(VariableCollector &collector) : VariableImplementation(collector)
+{
+}
+
 void FunctionScope::addParameter(const Variable& variable)
 {
     _fields.push_back(variable);

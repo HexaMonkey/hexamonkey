@@ -1,14 +1,22 @@
 #include "variablecollector.h"
 #include "core/variable/variable.h"
+#include "core/log/logmanager.h"
 
 #include <algorithm>
 
+Variant VariableCollector::nullVariant = Variant::null();
+
 VariableCollector::VariableCollector()
+    : _destroying(false)
 {
 }
 
 VariableCollector::~VariableCollector()
 {
+    _destroying = true;
+    if (!_directlyAccessible.empty()) {
+        Log::warning("Destroying variable collector while there are still directly accessible variables");
+    }
     for (auto it = _accessibility.begin(); it != _accessibility.end(); ++it)
     {
         delete it->first;
@@ -17,6 +25,8 @@ VariableCollector::~VariableCollector()
 
 void VariableCollector::collect()
 {
+    compact();
+
     size_t i = 0;
     size_t originalSize = _directlyAccessible.size();
 
@@ -31,11 +41,14 @@ void VariableCollector::collect()
         }
 
         do {
-            _directlyAccessible[i]->collect([this] (VariableImplementation* variable) {
-                auto& isAccessible = _accessibility[variable];
-                if (!isAccessible) {
-                    isAccessible = true;
-                    _directlyAccessible.push_back(variable);
+            _directlyAccessible[i]->collect([this] (VariableMemory& variable) {
+                if (variable._tag != Variable::Tag::undefined) {
+                    VariableImplementation* implementation = variable._implementation;
+                    auto& isAccessible = _accessibility[implementation];
+                    if (!isAccessible) {
+                        isAccessible = true;
+                        _directlyAccessible.push_back(implementation);
+                    }
                 }
             });
             ++i;
@@ -57,23 +70,12 @@ void VariableCollector::collect()
     }
 }
 
-void VariableCollector::registerVariable(VariableImplementation *variable)
-{
-    _accessibility.emplace(std::make_pair(variable, false));
-}
-
-
-void VariableCollector::pushDirectlyAccessible(VariableImplementation *variable)
-{
-    _directlyAccessible.push_back(variable);
-}
-
-void VariableCollector::popDirectlyAccessible(VariableImplementation *variable)
+void VariableCollector::removeDirectlyAccessible(VariableImplementation *variable)
 {
     auto rit = _directlyAccessible.rbegin();
     auto rend = _directlyAccessible.rend();
 
-    if (rit != rend) {
+    if (rit != rend && !_destroying) {
         if (*rit == variable) {
             ++rit;
             while (rit != rend && *rit == nullptr) {
@@ -111,4 +113,15 @@ void VariableCollector::compact()
     }
 
     _directlyAccessible.resize(newSize);
+}
+
+
+VariableCollectionGuard::VariableCollectionGuard(VariableCollector &collector)
+    : _collector(collector)
+{
+}
+
+VariableCollectionGuard::~VariableCollectionGuard()
+{
+    _collector.collect();
 }

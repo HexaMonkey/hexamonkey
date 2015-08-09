@@ -2,6 +2,7 @@
 #include "core/objecttypetemplate.h"
 #include "core/parser.h"
 #include "core/log/logmanager.h"
+#include "core/variable/variablecollector.h"
 
 #include "core/variable/typescope.h"
 
@@ -20,7 +21,11 @@ const std::unordered_map<std::string, int> reserved = {
 class TypeNameVariableImplementation : public VariableImplementation
 {
 public:
-    TypeNameVariableImplementation(ObjectType& type) : _type(type) {}
+    TypeNameVariableImplementation(VariableCollector& collector, ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type) {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -41,7 +46,12 @@ private:
 class ConstTypeNameVariableImplementation : public VariableImplementation
 {
 public:
-    ConstTypeNameVariableImplementation(const ObjectType& type) : _type(type) {}
+    ConstTypeNameVariableImplementation(VariableCollector& collector, const ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type)
+    {
+
+    }
 
 protected:
     virtual Variant doGetValue() override {
@@ -54,7 +64,12 @@ private:
 class TypeElementTypeVariableImplementation : public VariableImplementation
 {
 public:
-    TypeElementTypeVariableImplementation(ObjectType& type) : _type(type) {}
+    TypeElementTypeVariableImplementation(VariableCollector& collector, ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -75,7 +90,12 @@ private:
 class ConstTypeElementTypeVariableImplementation : public VariableImplementation
 {
 public:
-    ConstTypeElementTypeVariableImplementation(const ObjectType& type) : _type(type) {}
+    ConstTypeElementTypeVariableImplementation(VariableCollector& collector, const ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type)
+    {
+
+    }
 
 protected:
     virtual Variant doGetValue() override {
@@ -88,7 +108,12 @@ private:
 class TypeElementCountVariableImplementation : public VariableImplementation
 {
 public:
-    TypeElementCountVariableImplementation(ObjectType& type) : _type(type) {}
+    TypeElementCountVariableImplementation(VariableCollector& collector, ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -109,7 +134,9 @@ private:
 class ConstTypeElementCountVariableImplementation : public VariableImplementation
 {
 public:
-    ConstTypeElementCountVariableImplementation(const ObjectType& type) : _type(type) {}
+    ConstTypeElementCountVariableImplementation(VariableCollector& collector, const ObjectType& type)
+        : VariableImplementation(collector),
+          _type(type) {}
 
 protected:
     virtual Variant doGetValue() override {
@@ -118,6 +145,11 @@ protected:
 private:
     const ObjectType& _type;
 };
+
+AbstractTypeScope::AbstractTypeScope(VariableCollector &collector)
+    : VariableImplementation(collector)
+{
+}
 
 Variant AbstractTypeScope::doGetValue()
 {
@@ -158,27 +190,27 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
 
             switch(tag) {
             case A_COUNT:
-                return Variable::copy(numberOfParameters, false);
+                return collector().copy(numberOfParameters, false);
 
             case A_ELEMENT_TYPE:
                 if (mType != nullptr) {
-                    return Variable(new TypeElementTypeVariableImplementation(*mType), true);
+                    return Variable(new TypeElementTypeVariableImplementation(collector(), *mType), true);
                 } else {
-                    return Variable(new ConstTypeElementTypeVariableImplementation(cType), false);
+                    return Variable(new ConstTypeElementTypeVariableImplementation(collector(), cType), false);
                 }
 
             case A_ELEMENT_COUNT:
                 if (mType != nullptr) {
-                    return Variable(new TypeElementCountVariableImplementation(*mType), true);
+                    return Variable(new TypeElementCountVariableImplementation(collector(), *mType), true);
                 } else {
-                    return Variable(new ConstTypeElementCountVariableImplementation(cType), false);
+                    return Variable(new ConstTypeElementCountVariableImplementation(collector(), cType), false);
                 }
 
             case A_NAME:
                 if (mType != nullptr) {
-                    return Variable(new TypeNameVariableImplementation(*mType), true);
+                    return Variable(new TypeNameVariableImplementation(collector(), *mType), true);
                 } else {
-                    return Variable(new ConstTypeNameVariableImplementation(cType), false);
+                    return Variable(new ConstTypeNameVariableImplementation(collector(), cType), false);
                 }
             }
 
@@ -203,23 +235,25 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
 
     if (parameterIndex != -1) {
         if(mType) {
-            return Variable::ref(mType->parameterValue(parameterIndex));
+            return collector().ref(mType->parameterValue(parameterIndex));
         } else {
-            return Variable::copy(cType.parameterValue(parameterIndex));
+            return collector().copy(cType.parameterValue(parameterIndex));
         }
     } else {
         return Variable();
     }
 }
 
-TypeScope::TypeScope(ObjectType &type, bool modifiable)
-    : _type(modifiable? &type : nullptr),
+TypeScope::TypeScope(VariableCollector& collector, ObjectType &type, bool modifiable)
+    : AbstractTypeScope(collector),
+      _type(modifiable? &type : nullptr),
       _constType(type)
 {
 }
 
-TypeScope::TypeScope(const ObjectType &type)
-    : _type(nullptr),
+TypeScope::TypeScope(VariableCollector& collector, const ObjectType &type)
+    : AbstractTypeScope(collector),
+      _type(nullptr),
       _constType(type)
 {
 }
@@ -235,7 +269,8 @@ const ObjectType &TypeScope::constType()
 }
 
 ParserTypeScope::ParserTypeScope(std::shared_ptr<Parser> parser)
-    : _parser(parser)
+    : AbstractTypeScope(parser->object().collector()),
+      _parser(parser)
 {
 }
 

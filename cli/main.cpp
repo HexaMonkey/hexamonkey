@@ -27,6 +27,7 @@
 #include "core/modulesetup.h"
 #include "core/util/fileutil.h"
 #include "core/util/osutil.h"
+#include "core/variable/variablecollector.h"
 
 
 #if defined(PLATFORM_WIN32)
@@ -187,10 +188,12 @@ int main(int argc, char *argv[])
     }
     else
     {
+        VariableCollector collector;
+
         const Module& module = moduleLoader.getModule(file);
 
         std::vector<Object*> objs;
-        objs.push_back(module.handle(DefaultModule::file, file));
+        objs.push_back(module.handleFile(DefaultModule::file, file, collector));
 
 
         Object*child = nullptr;

@@ -8,17 +8,19 @@
 class ArrayScope : public VariableImplementation
 {
 public:
+    ArrayScope(VariableCollector& collector);
+
     void addField(const Variable& variable);
-    Variable& field(size_t index);
-    const Variable &field(size_t index) const;
+    Variable field(size_t index) const;
     size_t fieldCount() const;
 
 protected:
-    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded);
-    virtual void doSetField(const Variant &key, const Variable &variable);
+    virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
+    virtual void doSetField(const Variant &key, const Variable &variable) override;
+    virtual void collect(const std::function<void(VariableMemory&)>& addAccessible) override;
 
 private:
-    std::vector<Variable> _fields;
+    std::vector<VariableMemory> _fields;
 };
 
 #endif // ARRAYSCOPE_H

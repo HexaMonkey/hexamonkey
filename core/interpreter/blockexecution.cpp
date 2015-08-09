@@ -183,6 +183,11 @@ Variable BlockExecution::returnValue()
     return _returnValue;
 }
 
+VariableCollector &BlockExecution::collector() const
+{
+    return scope.collector();
+}
+
 void BlockExecution::setSubBlock(Program program, bool loop)
 {
     subBlock.reset(new BlockExecution(program, eval, scope, _parser));
@@ -229,9 +234,9 @@ void BlockExecution::handleLocalDeclarations(const Program &declarations)
 
         Variable value;
         if (declaration.size() >= 2) {
-            value = Variable::copy(eval.rightValue(declaration.node(1)).value());
+            value = collector().copy(eval.rightValue(declaration.node(1)).value());
         } else {
-            value = Variable::null();
+            value = collector().null();
         }
 
         scope.setField(declaration.node(0).payload(), value);

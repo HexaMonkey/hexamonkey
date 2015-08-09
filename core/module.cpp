@@ -21,6 +21,7 @@
 #include "core/util/iterutil.h"
 #include "core/parser.h"
 #include "core/log/logmanager.h"
+#include "core/modules/default/defaultmodule.h"
 
 const std::vector<std::string> emptyParameterNames;
 const std::vector<bool> emptyParameterModifiables;
@@ -192,9 +193,14 @@ void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
     _automaticSpecifications.insert(std::make_pair(parentPtr, child));
 }
 
-Object* Module::handle(const ObjectType& type, File& file, Object *parent) const
+Object* Module::handleFile(const ObjectType& type, File &file, VariableCollector &collector) const
 {
-    return handle(type, file, parent, *this);
+    return handle(type, file, nullptr, collector, *this);
+}
+
+Object* Module::handle(const ObjectType& type, Object &parent) const
+{
+    return handle(type, parent.file(), &parent, parent.collector(), *this);
 }
 
 
@@ -225,15 +231,15 @@ const Module *Module::handler(const ObjectType &type) const
     return nullptr;
 }
 
-Object* Module::handle(const ObjectType& type, File& file, Object* parent, const Module& fromModule) const
+Object* Module::handle(const ObjectType& type, File& file, Object* parent, VariableCollector &collector, const Module& fromModule) const
 {
     Object* object;
 
     if(parent != nullptr) {
-        object = new Object(file, parent->beginningPos() + parent->pos(), parent);
+        object = new Object(file, parent->beginningPos() + parent->pos(), parent, collector);
         parent->_lastChild = object;
     } else {
-        object = new Object(file, 0, nullptr);
+        object = new Object(file, 0, nullptr, collector);
     }
 
     addParsers(*object, type, fromModule);

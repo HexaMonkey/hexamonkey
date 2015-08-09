@@ -13,9 +13,7 @@ class Program;
 class Evaluator
 {
 public:
-    Evaluator();
     Evaluator(const Variable& scope);
-    Evaluator(const Module &module);
     Evaluator(const Variable& scope, const Module& module);
 
     /**
@@ -34,6 +32,8 @@ public:
      */
     ObjectType type(const Program& program) const;
 private:
+    VariableCollector& collector() const;
+
     Variable unaryOperation(int op, const Variable& a) const;
     Variable binaryOperation(int op, const Variable& a, const Variable& b) const;
     Variable ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const;

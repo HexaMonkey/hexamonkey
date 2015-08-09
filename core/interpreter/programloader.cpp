@@ -118,7 +118,7 @@ Program ProgramLoader::fromHMC(const std::string &path) const
     File& file = memory.file();
     file.setPath(path);
 
-    Object& fileObject = memory.setFileObject(_module.handle(DefaultModule::file(), file));
+    Object& fileObject = memory.setFileObject(_module.handleFile(DefaultModule::file(), file, memory.collector()));
     fileObject.explore(1);
 
     if(fileObject.numberOfChildren() >= 2)

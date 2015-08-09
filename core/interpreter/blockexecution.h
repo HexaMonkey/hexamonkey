@@ -86,6 +86,8 @@ public:
     Variable returnValue();
 
 private:
+    VariableCollector& collector() const;
+
     bool hasParser();
     ContainerParser& parser();
 

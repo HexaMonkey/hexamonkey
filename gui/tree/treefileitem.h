@@ -18,10 +18,14 @@ public:
 
     void setObjectMemory(Object *object);
     File& file();
+    inline VariableCollector& collector() {
+        return _collector;
+    }
 
 private:
-    std::unique_ptr<Object> _objectMemory;
+    VariableCollector _collector;
     std::unique_ptr<File>   _file;
+    std::unique_ptr<Object> _objectMemory;
 };
 
 #endif // TREEFILEITEM_H

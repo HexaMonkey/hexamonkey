@@ -120,7 +120,7 @@ Object *ContainerParser::readVariable(const ObjectType &type)
 
 Object *ContainerParser::getVariable(const ObjectType &type)
 {
-    return _module.handle(type, object().file(), &object());
+    return _module.handle(type, object());
 }
 
 Object *ContainerParser::addVariable(const ObjectType &type)

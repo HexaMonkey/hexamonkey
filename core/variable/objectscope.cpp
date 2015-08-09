@@ -5,6 +5,7 @@
 #include "core/object.h"
 
 #include "core/variable/typescope.h"
+#include "core/variable/variablecollector.h"
 #include "core/objecttypetemplate.h"
 
 #define A_SIZE 0
@@ -23,6 +24,7 @@
 #define A_ENDIANNESS 13
 #define A_ABS_POS 14
 #define A_TYPE 15
+#define A_ARGS 16
 
 const std::unordered_map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -41,12 +43,15 @@ const std::unordered_map<std::string, int> reserved = {
     {"@endianness",       A_ENDIANNESS},
     {"@absPos",           A_ABS_POS},
     {"@type",             A_TYPE},
+    {"@args",             A_ARGS}
 };
 
 class ObjectPosVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectPosVariableImplementation(Object& object) : _object(object) {}
+    ObjectPosVariableImplementation(Object& object)
+        : VariableImplementation(object.collector()),
+          _object(object) {}
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -67,7 +72,12 @@ private:
 class ObjectAbsPosVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectAbsPosVariableImplementation(Object& object) : _object(object) {}
+    ObjectAbsPosVariableImplementation(Object& object)
+        : VariableImplementation(object.collector()),
+          _object(object)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -88,7 +98,12 @@ private:
 class ObjectSizeVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectSizeVariableImplementation(Object& object) : _object(object) {}
+    ObjectSizeVariableImplementation(Object& object)
+        : VariableImplementation(object.collector()),
+          _object(object)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -109,7 +124,12 @@ private:
 class ObjectLinkToVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectLinkToVariableImplementation(Object& object) : _object(object) {}
+    ObjectLinkToVariableImplementation(Object& object)
+        : VariableImplementation(object.collector()),
+          _object(object)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -132,7 +152,12 @@ private:
 class ObjectEndiannessVariableImplementation : public VariableImplementation
 {
 public:
-    ObjectEndiannessVariableImplementation(Object& object) : _object(object) {}
+    ObjectEndiannessVariableImplementation(Object& object)
+        : VariableImplementation(object.collector()),
+          _object(object)
+    {
+
+    }
 
 protected:
     virtual void doSetValue(const Variant& value) override {
@@ -171,12 +196,15 @@ private:
 
 
 ObjectScope::ObjectScope(Object &object)
-    : _object(object)
+    : VariableImplementation(object.collector()),
+      _object(object)
 {
 }
 
 ObjectScope::ObjectScope(Object &object, const std::shared_ptr<Parser> &parser)
-    :_object(object), _parser(parser)
+    : VariableImplementation(object.collector()),
+      _object(object),
+      _parser(parser)
 {
 }
 
@@ -211,7 +239,7 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                         return Variable(new ObjectSizeVariableImplementation(_object), true);
 
                     case A_VALUE:
-                        return Variable::ref(_object.value());
+                        return collector().ref(_object.value());
 
                     case A_PARENT:
                     {
@@ -228,7 +256,7 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                         return _object.root().variable();
 
                     case A_RANK:
-                        return Variable::copy(_object.rank());
+                        return collector().copy(_object.rank());
 
                     case A_POS:
                         return Variable(new ObjectPosVariableImplementation(_object), true);
@@ -237,14 +265,14 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                         return Variable(new ObjectAbsPosVariableImplementation(_object), true);
 
                     case A_REM:
-                        return Variable::copy(_object.size() - _object.pos());
+                        return collector().copy(_object.size() - _object.pos());
 
                     case A_NUMBER_OF_CHILDREN:
                         _object.explore(1);
-                        return Variable::copy(_object.numberOfChildren());
+                        return collector().copy(_object.numberOfChildren());
 
                     case A_BEGINNING_POS:
-                        return Variable::copy((long long) _object.beginningPos());
+                        return collector().copy((long long) _object.beginningPos());
 
                     case A_LINK_TO:
                         return Variable(new ObjectLinkToVariableImplementation(_object), true);
@@ -262,7 +290,14 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                         return Variable(new ObjectEndiannessVariableImplementation(_object), true);
 
                     case A_TYPE:
-                        return Variable(new TypeScope(_object.type()), false);
+                        return Variable(new TypeScope(collector(), _object.type()), false);
+
+                    case A_ARGS:
+                        if (_parser) {
+                            return Variable(new ParserTypeScope(_parser), true);
+                        } else {
+                            return Variable();
+                        }
 
                     default:
                         return Variable();
@@ -277,7 +312,7 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                     const ObjectType& type = _parser->constType();
                     int parameterIndex = type.typeTemplate().parameterNumber(name);
                     if (parameterIndex != -1) {
-                        return Variable::copy(type.parameterValue(parameterIndex));
+                        return collector().copy(type.parameterValue(parameterIndex));
                     } else {
                         return Variable();
                     }
