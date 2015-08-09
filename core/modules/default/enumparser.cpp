@@ -5,7 +5,7 @@
 #include "core/variable/objectattributes.h"
 
 EnumParser::EnumParser(Object& object, const Module& module, const ObjectType &type)
-    :ContainerParser(object, module), _type(type)
+    :ContainerParser(object, module), _enumType(type)
 {
     setNoTail();
 }
@@ -17,7 +17,7 @@ void EnumParser::addElement(const Variant &key, const Variant &value)
 
 void EnumParser::doParseHead()
 {
-    std::unique_ptr<Object> childPtr(readVariable(_type));
+    std::unique_ptr<Object> childPtr(readVariable(_enumType));
     Object& child = *childPtr;
 
     const Variant& value = child.value();

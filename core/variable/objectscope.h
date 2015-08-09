@@ -12,15 +12,18 @@ class ObjectScope : public VariableImplementation
 {
 public:
     ObjectScope(Object& object);
-    ObjectScope(Object& object, const std::shared_ptr<Parser>& parser);
+    ObjectScope(Object& object, Parser& parser);
 
+    virtual void collect(const std::function<void (VariableMemory &)> &addAccessible) override;
+protected:
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
     virtual void doSetValue(const Variant &value) override;
     virtual Variant doGetValue() override;
 
 private:
     Object& _object;
-    std::shared_ptr<Parser> _parser;
+    std::shared_ptr< std::pair<bool, ObjectType> > _sharedType;
+    VariableMemory _parserScope;
 };
 
 #endif // OBJECTSCOPEIMPLEMENTATION_H

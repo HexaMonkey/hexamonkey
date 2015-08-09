@@ -96,7 +96,7 @@ public:
     ObjectType *modifiableType();
     const ObjectType& constType() const;
 
-    void clean();
+    std::shared_ptr< std::pair<bool, ObjectType> > sharedType() const;
 
 protected:
     Parser(Object& object);
@@ -158,8 +158,6 @@ protected:
      */
     virtual bool doNeedTailParsing();
 
-
-    virtual void doClean();
 private:
     friend class SimpleParser;
     friend class ContainerParser;
@@ -167,7 +165,7 @@ private:
     friend class ParserTypeScope;
 
     Object& _object;
-    std::unique_ptr<ObjectType> _type;
+    std::shared_ptr< std::pair<bool, ObjectType> > _sharedType;
 
     bool lockObject();
     void unlockObject();
@@ -179,8 +177,6 @@ private:
     bool _tailParsed;
     bool _hasHead;
     bool _hasTail;
-
-    bool _isClean;
 };
 
 /**

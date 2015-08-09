@@ -23,12 +23,12 @@ ObjectType errorType;
 
 Parser::Parser(Object& object)
     : _object(object),
+      _sharedType(new std::pair<bool, ObjectType>(false, ObjectType())),
       _headParsed(false),
       _parsed(false),
       _tailParsed(false),
       _hasHead(true),
-      _hasTail(true),
-      _isClean(false)
+      _hasTail(true)
 {
 
 }
@@ -127,18 +127,15 @@ ObjectType *Parser::modifiableType()
 const ObjectType &Parser::constType() const
 {
     if (_headParsed) {
-        return *_type;
+        return _sharedType->second;
     } else {
         return object().type();
     }
 }
 
-void Parser::clean()
+std::shared_ptr<std::pair<bool, ObjectType> > Parser::sharedType() const
 {
-    if (!_isClean) {
-        _isClean = true;
-        doClean();
-    }
+    return _sharedType;
 }
 
 int64_t Parser::availableSize() const
@@ -205,15 +202,12 @@ bool Parser::doNeedTailParsing()
     return false;
 }
 
-void Parser::doClean()
-{
-}
-
 void Parser::setHeadParsed()
 {
     if (!_headParsed) {
-        _type.reset(new ObjectType(object().type()));
         _headParsed = true;
+        _sharedType->first = true;
+        _sharedType->second = object().type();
     }
 }
 

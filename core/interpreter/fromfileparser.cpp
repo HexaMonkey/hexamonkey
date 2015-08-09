@@ -21,16 +21,17 @@
 #include "core/interpreter/programloader.h"
 #include "core/variable/localscope.h"
 #include "core/variable/typescope.h"
+#include "core/variable/objectscope.h"
 #include "core/util/unused.h"
 
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
     : ContainerParser(object, module),
       _object(object),
-      _scope(new Variable(new LocalScope(object.parserVariableToBeAdded(this)), true)),
+      _scope(new LocalScope(Variable(new ObjectScope(object, *this), true)), true),
       _headerEnd(headerEnd),
-      _evaluator(new Evaluator(*_scope, module)),
-      _bodyExecution(new BlockExecution(classDefinition.node(0),*_evaluator, *_scope, this)),
-      _tailExecution(new BlockExecution(classDefinition.node(1), *_evaluator, *_scope, this)),
+      _evaluator(_scope, module),
+      _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
+      _tailExecution(classDefinition.node(1), _evaluator, _scope, this),
       _needTailParsing(needTailParsing)
 {
     UNUSED(hmcElemNames);
@@ -39,7 +40,7 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
 
     if (module.getFixedSize(constType()) == -1 && headerEnd == bodyBlock.begin()) {
         setHeadParsed();
-        if(_bodyExecution->done()) {
+        if(_bodyExecution.done()) {
             setParsed();
         }
     }
@@ -57,41 +58,32 @@ void FromFileParser::doParseHead()
         object().setSize(fixedSize);
     }
 
-    _bodyExecution->execute(_headerEnd);
-    if(_bodyExecution->done()) {
+    _bodyExecution.execute(_headerEnd);
+    if(_bodyExecution.done()) {
         setParsed();
     }
 }
 
 void FromFileParser::doParse()
 {
-    _bodyExecution->execute();
+    _bodyExecution.execute();
 }
 
 bool FromFileParser::doParseSome(int hint)
 {
     size_t parseQuota = hint;
-    _bodyExecution->execute(parseQuota);
-    if(_bodyExecution->done())
+    _bodyExecution.execute(parseQuota);
+    if(_bodyExecution.done())
         return true;
     return false;
 }
 
 void FromFileParser::doParseTail()
 {
-    _tailExecution->execute();
+    _tailExecution.execute();
 }
 
 bool FromFileParser::doNeedTailParsing()
 {
     return _needTailParsing;
 }
-
-void FromFileParser::doClean()
-{
-    _tailExecution.reset();
-    _bodyExecution.reset();
-    _evaluator.reset();
-    _scope.reset();
-}
-

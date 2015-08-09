@@ -242,44 +242,6 @@ void Object::dumpStreamToFile(const std::string &path)
     dumpStream(out);
 }
 
-Variable Object::parserVariable(Parser *parser)
-{
-    for (const std::shared_ptr<Parser> aParser : _parsers) {
-        if (aParser.get() == parser) {
-            return Variable(new ObjectScope(*this, aParser), true);
-        }
-    }
-    Log::error("Could not get parser variable");
-    return Variable();
-}
-
-Variable Object::parserTypeScope(Parser *parser)
-{
-    for (const std::shared_ptr<Parser> aParser : _parsers) {
-        if (aParser.get() == parser) {
-            return Variable(new ParserTypeScope(aParser), true);
-        }
-    }
-    Log::error("Could not get parser type variable");
-    return Variable();
-}
-
-Variable Object::parserVariableToBeAdded(Parser *parser)
-{
-    if (!_toBeAddedParser) {
-        _toBeAddedParser.reset(parser);
-    }
-    return Variable(new ObjectScope(*this, _toBeAddedParser), true);
-}
-
-Variable Object::parserTypeScopeToBeAdded(Parser *parser)
-{
-    if (!_toBeAddedParser) {
-        _toBeAddedParser.reset(parser);
-    }
-    return Variable(new ParserTypeScope(_toBeAddedParser), true);
-}
-
 const Variable &Object::variable()
 {
     if (!_variable.isDefined()) {
@@ -488,7 +450,6 @@ void Object::parseTail()
             if (_valid) {
                 parser->parseTail();
             }
-            parser->clean();
             parser.reset();
         }
     }
@@ -590,18 +551,6 @@ File &Object::file()
     return _file;
 }
 
-Object::~Object()
-{
-    for(auto& parser : _parsers)
-    {
-        if(parser)
-        {
-            parser->clean();
-            parser.reset();
-        }
-    }
-}
-
 const File &Object::file() const
 {
     return _file;
@@ -678,12 +627,7 @@ void Object::addParser(Parser *parser)
             parseBody();
             parser->parseHead();
         }
-        if (_toBeAddedParser) {
-            _parsers.push_back(_toBeAddedParser);
-            _toBeAddedParser.reset();
-        } else {
-            _parsers.push_back(std::shared_ptr<Parser>(parser));
-        }
+        _parsers.emplace_back(parser);
     }
 }
 
@@ -721,7 +665,7 @@ bool Object::parsed()
     for(int i = _parsers.size() - 1; i >= 0; --i)
     {
         auto& parser = _parsers[i];
-        if(parser && !parser->tailParsed())
+        if (parser && !parser->tailParsed())
         {
             return false;
         }

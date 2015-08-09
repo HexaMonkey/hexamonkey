@@ -201,14 +201,20 @@ ObjectScope::ObjectScope(Object &object)
 {
 }
 
-ObjectScope::ObjectScope(Object &object, const std::shared_ptr<Parser> &parser)
+ObjectScope::ObjectScope(Object &object, Parser &parser)
     : VariableImplementation(object.collector()),
       _object(object),
-      _parser(parser)
+      _sharedType(parser.sharedType()),
+      _parserScope(Variable(new ParserTypeScope(parser), true))
 {
 }
 
-Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
+void ObjectScope::collect(const std::function<void (VariableMemory &)> &addAccessible)
+{
+    addAccessible(_parserScope);
+}
+
+Variable ObjectScope::doGetField(const Variant &key, bool /*modifiable*/, bool createIfNeeded)
 {
     if (key.isValueless()) {
 
@@ -293,23 +299,21 @@ Variable ObjectScope::doGetField(const Variant &key, bool modifiable, bool creat
                         return Variable(new TypeScope(collector(), _object.type()), false);
 
                     case A_ARGS:
-                        if (_parser) {
-                            return Variable(new ParserTypeScope(_parser), true);
-                        } else {
-                            return Variable();
-                        }
+                        return _parserScope;
 
                     default:
                         return Variable();
                 }
             }
         } else {
-            if (_parser) {
+            if (_sharedType) {
                 Object* elem = _object.lookUp(name, false);
                 if (elem != nullptr) {
                     return elem->variable();
                 } else {
-                    const ObjectType& type = _parser->constType();
+                    const ObjectType& type = _sharedType->first ?
+                                                 _sharedType->second
+                                               : _object.type();
                     int parameterIndex = type.typeTemplate().parameterNumber(name);
                     if (parameterIndex != -1) {
                         return collector().copy(type.parameterValue(parameterIndex));

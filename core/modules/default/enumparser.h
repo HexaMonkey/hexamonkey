@@ -13,7 +13,7 @@ protected:
     void doParseHead();
 
 private:
-    ObjectType _type;
+    ObjectType _enumType;
     std::vector< std::pair<Variant, Variant> > _elements;
 };
 

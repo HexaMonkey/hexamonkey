@@ -143,7 +143,7 @@ void Module::addParsers(Object &object, const ObjectType &type, const Module &fr
     addParsersRecursive(object, type, fromModule, lastType);
 
     const auto& parsers = object._parsers;
-    if (std::any_of(parsers.begin(), parsers.end(), [](const std::shared_ptr<Parser>& parser) {
+    if (std::any_of(parsers.begin(), parsers.end(), [](const std::unique_ptr<Parser>& parser) {
         if (parser) {
             return parser->needTailParsing();
         } else {

@@ -268,18 +268,28 @@ const ObjectType &TypeScope::constType()
     return _constType;
 }
 
-ParserTypeScope::ParserTypeScope(std::shared_ptr<Parser> parser)
-    : AbstractTypeScope(parser->object().collector()),
-      _parser(parser)
+ParserTypeScope::ParserTypeScope(Parser& parser)
+    : AbstractTypeScope(parser.object().collector()),
+      _object(parser.object()),
+      _sharedType(parser.sharedType())
 {
 }
 
 ObjectType *ParserTypeScope::modifiableType()
 {
-    return _parser->modifiableType();
+    if (_sharedType->first) {
+        Log::error("Cannot modify parser type's once it has been parsed");
+        return nullptr;
+    } else {
+        return &_object.type();
+    }
 }
 
 const ObjectType &ParserTypeScope::constType()
 {
-    return _parser->constType();
+    if (_sharedType->first) {
+        return _sharedType->second;
+    } else {
+        return _object.type();
+    }
 }
