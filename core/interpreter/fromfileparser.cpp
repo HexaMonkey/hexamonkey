@@ -27,7 +27,8 @@
 FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
     : ContainerParser(object, module),
       _object(object),
-      _scope(new LocalScope(Variable(new ObjectScope(object, *this), true)), true),
+      _sharedAccess(new ContainerParser*(this)),
+      _scope(new LocalScope(Variable(new ObjectScope(_sharedAccess), true)), true),
       _headerEnd(headerEnd),
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
@@ -49,6 +50,11 @@ FromFileParser::FromFileParser(Object &object, const Module &module, Program cla
     if (tailProgram.begin() == tailProgram.end()) {
         setNoTail();
     }
+}
+
+FromFileParser::~FromFileParser()
+{
+    *_sharedAccess = nullptr;
 }
 
 void FromFileParser::doParseHead()

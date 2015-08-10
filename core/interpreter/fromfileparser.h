@@ -37,6 +37,7 @@ class FromFileParser : public ContainerParser
 {
 public:
     FromFileParser(Object& object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing);
+    ~FromFileParser();
 
 private:
     virtual void doParseHead() final;
@@ -46,6 +47,8 @@ private:
     virtual bool doNeedTailParsing() final;
 
     Object& _object;
+
+    std::shared_ptr<ContainerParser*> _sharedAccess;
 
     Variable _scope;
 

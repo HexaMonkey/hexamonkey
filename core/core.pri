@@ -66,6 +66,7 @@ SOURCES += \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
     ../core/variable/functionscope.cpp \
+    ../core/variable/parserscope.cpp \
     ../core/variable/typescope.cpp \
     ../core/variable/objectscope.cpp \
     ../core/variable/arrayscope.cpp \
@@ -73,6 +74,7 @@ SOURCES += \
     ../core/variable/variablepath.cpp \
     ../core/modulesetup.cpp \
     ../core/parsingexception.cpp
+    
 
 HEADERS  += \ 
     ../core/variant.h\
@@ -152,6 +154,7 @@ HEADERS  += \
     ../core/variable/objectscope.h \
     ../core/variable/arrayscope.h \
     ../core/variable/mapscope.h \
+    ../core/variable/parserscope.h \
     ../core/varianthash.h \
     ../core/modulesetup.h \
     ../core/parsingexception.h

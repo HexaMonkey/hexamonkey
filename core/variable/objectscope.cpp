@@ -7,6 +7,7 @@
 #include "core/variable/typescope.h"
 #include "core/variable/variablecollector.h"
 #include "core/objecttypetemplate.h"
+#include "core/variable/parserscope.h"
 
 #define A_SIZE 0
 #define A_PARENT 1
@@ -25,6 +26,7 @@
 #define A_ABS_POS 14
 #define A_TYPE 15
 #define A_ARGS 16
+#define A_PARSER 17
 
 const std::unordered_map<std::string, int> reserved = {
     {"@size",             A_SIZE},
@@ -43,7 +45,8 @@ const std::unordered_map<std::string, int> reserved = {
     {"@endianness",       A_ENDIANNESS},
     {"@absPos",           A_ABS_POS},
     {"@type",             A_TYPE},
-    {"@args",             A_ARGS}
+    {"@args",             A_ARGS},
+    {"@parser",           A_PARSER}
 };
 
 class ObjectPosVariableImplementation : public VariableImplementation
@@ -201,15 +204,16 @@ ObjectScope::ObjectScope(Object &object)
 {
 }
 
-ObjectScope::ObjectScope(Object &object, Parser &parser)
-    : VariableImplementation(object.collector()),
-      _object(object),
-      _sharedType(parser.sharedType()),
-      _parserScope(Variable(new ParserTypeScope(parser), true))
+ObjectScope::ObjectScope(std::shared_ptr<ContainerParser *> sharedParserAccess)
+    : VariableImplementation((*sharedParserAccess)->object().collector()),
+      _object((*sharedParserAccess)->object()),
+      _sharedType((*sharedParserAccess)->sharedType()),
+      _sharedParserAccess(sharedParserAccess),
+      _parserScope(Variable(new ParserTypeScope(**sharedParserAccess), true))
 {
 }
 
-void ObjectScope::collect(const std::function<void (VariableMemory &)> &addAccessible)
+void ObjectScope::collect(const VariableAdder &addAccessible)
 {
     addAccessible(_parserScope);
 }
@@ -300,6 +304,13 @@ Variable ObjectScope::doGetField(const Variant &key, bool /*modifiable*/, bool c
 
                     case A_ARGS:
                         return _parserScope;
+
+                    case A_PARSER:
+                        if (_sharedParserAccess) {
+                            return Variable(new ParserScope(collector(), _sharedParserAccess), false);
+                        } else {
+                            return Variable();
+                        }
 
                     default:
                         return Variable();

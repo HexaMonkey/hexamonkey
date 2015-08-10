@@ -7,7 +7,7 @@ LocalScope::LocalScope(const Variable &context)
 {
 }
 
-void LocalScope::collect(const std::function<void (VariableMemory &)> &addAccessible)
+void LocalScope::collect(const VariableAdder &addAccessible)
 {
     addAccessible(_context);
     for (auto& entry : _fields) {
