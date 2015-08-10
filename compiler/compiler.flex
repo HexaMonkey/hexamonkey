@@ -107,7 +107,9 @@ extern int line_number;
 "addSyncbyte"       {return ADD_SYNCBYTE_TOKEN;}
 
 "struct"    {return STRUCT_TOKEN;}
-"enum"    {return ENUM_TOKEN;}
+"enum"      {return ENUM_TOKEN;}
+
+"=>"        {return ASSOC_TOKEN;}       
 
 {L}{DL}* {yylval.s = strdup(yytext); return IDENT;} 
 "@"{L}{DL}* {yylval.s = strdup(yytext); return A_IDENT;} 

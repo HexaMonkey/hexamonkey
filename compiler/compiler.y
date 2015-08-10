@@ -42,6 +42,8 @@
 
 %token STRUCT_TOKEN ENUM_TOKEN
 
+%token ASSOC_TOKEN
+
 %left ',' 
 %right SUBSCOPE_ASSIGN_TOKEN
 %right '=' RIGHT_ASSIGN_TOKEN LEFT_ASSIGN_TOKEN ADD_ASSIGN_TOKEN SUB_ASSIGN_TOKEN MUL_ASSIGN_TOKEN DIV_ASSIGN_TOKEN MOD_ASSIGN_TOKEN AND_ASSIGN_TOKEN XOR_ASSIGN_TOKEN OR_ASSIGN_TOKEN
@@ -462,6 +464,7 @@ right_value:
     |variable                                    {push_master(HMC_RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(HMC_RIGHT_VALUE, 1);}
     |function_identifier right_value_arguments   {push_master(HMC_FUNCTION_EVALUATION, 2);push_master(HMC_RIGHT_VALUE, 1);}
+    |right_value ':' method_arguments            {push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
 	|variable SUBSCOPE_ASSIGN_TOKEN right_value  {push_master(HMC_FIELD_ASSIGN, 2);push_master(HMC_RIGHT_VALUE, 1);}
 	|'[' array_items ']'                         {push_master(HMC_RIGHT_VALUE, 1);}
 	|'{' map_items '}'                           {push_master(HMC_RIGHT_VALUE, 1);}
@@ -527,6 +530,52 @@ field_assignment:
 remove:
 	REMOVE_TOKEN variable {push_master(HMC_REMOVE, 1);}
 
+method_arguments:
+    /*empty*/                                       {push_master(HMC_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+   |right_value                                     {push_master(HMC_ARGUMENTS, 1);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+   |'('')'                                          {push_master(HMC_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+   |'('method_arguments1')'                         {}
+
+method_arguments1:
+     right_value_argument_list                      {push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+    |method_arguments2                              {stash(0);stash(0);stash(0);
+                                                     push_master(HMC_ARGUMENTS, 0);
+                                                     unstash(0);unstash(0);unstash(0);}
+    |right_value_argument_list','method_arguments2  {}
+         
+method_arguments2:
+     '*' right_value                                {push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+    |method_arguments3                              {stash(0);stash(0);
+                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                     unstash(0);unstash(0);}
+    |'*' right_value','method_arguments3            {}
+
+method_arguments3:
+     keyword_argument_list                          {push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
+    |'*' '*' right_value                            {stash(0);
+                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                     unstash(0);}
+    |keyword_argument_list',' '*' '*' right_value   {}
+    
+keyword_argument:
+    identifier ASSOC_TOKEN right_value              {push_master(HMC_KEYWORD_ARGUMENT, 2);}
+         
+keyword_argument_list:
+    keyword_argument                                {push_master(HMC_KEYWORD_ARGUMENTS, 1);}
+   |keyword_argument_list',' keyword_argument       {push_master(HMC_KEYWORD_ARGUMENTS, 2);}
+         
 conditional_statement:
     if_token '(' right_value ')' execution_block {push_master(HMC_EXECUTION_BLOCK,0); push_master(HMC_CONDITIONAL_STATEMENT,4);}
    |if_token '(' right_value ')' execution_block ELSE_TOKEN execution_block{push_master(HMC_CONDITIONAL_STATEMENT,4);}
