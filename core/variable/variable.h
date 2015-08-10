@@ -21,13 +21,22 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include <unordered_map>
 
 #include "core/variant.h"
 #include "core/variable/variablepath.h"
 
+#define variableLambda (const VariableArgs& args, const VariableKeywordArgs& kwargs) ->Variable
+
+class Variable;
 class VariableImplementation;
 class VariableCollector;
 class VariableMemory;
+
+typedef std::vector<Variable> VariableArgs;
+typedef std::unordered_map<std::string, Variable> VariableKeywordArgs;
+typedef std::function<Variable(const VariableArgs&, const VariableKeywordArgs&)> VariableLambda;
+typedef std::function<void (VariableMemory &)> VariableAdder;
 
 /**
  * @brief Accesser (getter and setter) for a value
@@ -105,6 +114,12 @@ public:
      */
     void removeField(const VariablePath &path) const;
 
+
+    /**
+     * @brief call as function
+     */
+    Variable call(const VariableArgs& args, const VariableKeywordArgs& kwargs) const;
+
     /**
      * @brief Set the variable as constant which prevents modification of the value
      */
@@ -141,6 +156,9 @@ public:
 private:
     friend class Variable;
     friend class VariableCollector;
+
+    VariableMemory(VariableImplementation* implementation); /*=>*/ friend class VariableImplementation;
+
     VariableImplementation* _implementation;
     Variable::Tag _tag;
 
@@ -163,6 +181,8 @@ protected:
     }
     friend class Variable;
 
+    VariableMemory memory();
+
     virtual Variant doGetValue();
     virtual void doSetValue(const Variant& value);
 
@@ -170,6 +190,7 @@ protected:
     virtual void doSetField(const Variant& key, const Variable& variable);
     virtual void doRemoveField(const Variant& key);
 
+    virtual Variable doCall(const VariableArgs &args, const VariableKeywordArgs &kwargs);
 private:
     VariableImplementation(); /* <--- */ friend class UndefinedVariableImplementation;
 

@@ -58,3 +58,21 @@ Variant ConstRefVariableImplementation::doGetValue()
 {
     return _value;
 }
+
+
+LambdaVariableImplementation::LambdaVariableImplementation(VariableCollector &variableCollector, const VariableLambda &lambda, const VariableMemory& bound)
+    : VariableImplementation(variableCollector),
+      _lambda(lambda),
+      _bound(bound)
+{
+}
+
+void LambdaVariableImplementation::collect(const VariableAdder &addAccessible)
+{
+    addAccessible(_bound);
+}
+
+Variable LambdaVariableImplementation::doCall(const VariableArgs &args, const VariableKeywordArgs &kwargs)
+{
+    return _lambda(args, kwargs);
+}

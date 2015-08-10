@@ -42,6 +42,7 @@ private:
     Variable assignField(const Program& path, const Program& rightValue) const;
     Variable arrayScope(const Program& program) const;
     Variable mapScope(const Program& program) const;
+    Variable methodEvaluation(const Program& program) const;
 
     const Variable& scope;
     const Module& module;

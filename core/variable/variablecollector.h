@@ -77,9 +77,14 @@ public:
     /**
      * @brief Construct a \link Variable variable\endlink owning a null value
      */
-    Variable null()
+    inline Variable null()
     {
         return Variable(new OwningVariableImplementation(*this, nullVariant), true);
+    }
+
+    inline Variable lambda(const VariableLambda& lambda, const VariableMemory memory = VariableMemory())
+    {
+        return Variable(new LambdaVariableImplementation(*this, lambda, memory));
     }
 
 

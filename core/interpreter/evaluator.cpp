@@ -102,6 +102,10 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
         case HMC_MAP_SCOPE:
             return mapScope(first);
+
+        case HMC_METHOD_EVALUATION:
+            return methodEvaluation(first);
+
     }
     return Variable();
 }
@@ -400,4 +404,19 @@ Variable Evaluator::mapScope(const Program &program) const
     }
 
     return Variable(mapScope, true);
+}
+
+Variable Evaluator::methodEvaluation(const Program &program) const
+{
+    VariableArgs args;
+    for (const auto& arg : program.node(1)) {
+        args.emplace_back(rightValue(arg));
+    }
+
+    VariableKeywordArgs kwargs;
+    for (const auto& entry : program.node(3)) {
+        kwargs[entry.node(0).payload().toString()] = rightValue(entry.node(1));
+    }
+
+    return rightValue(program.node(0)).call(args, kwargs);
 }

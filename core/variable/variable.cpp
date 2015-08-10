@@ -224,6 +224,11 @@ void Variable::removeField(const VariablePath &path) const
     }
 }
 
+Variable Variable::call(const VariableArgs &args, const VariableKeywordArgs &kwargs) const
+{
+    return _implementation->doCall(args, kwargs);
+}
+
 void Variable::setConstant()
 {
     if (_tag == Tag::modifiable) {
@@ -253,6 +258,26 @@ void swap(Variable &first, Variable &second)
     swap(first._implementation, second._implementation);
     swap(first._tag, second._tag);
 }
+
+
+VariableMemory::VariableMemory()
+    : _implementation(&undefinedVariableImplementation),
+      _tag(Variable::Tag::undefined)
+{
+}
+
+VariableMemory::VariableMemory(const Variable &variable)
+    : _implementation(variable._implementation),
+      _tag(variable._tag)
+{
+}
+
+VariableMemory::VariableMemory(VariableImplementation *implementation)
+    : _implementation(implementation),
+      _tag(implementation == &undefinedVariableImplementation ? Variable::Tag::undefined : Variable::Tag::modifiable)
+{
+}
+
 
 VariableImplementation::VariableImplementation(VariableCollector &variableCollector)
     : _collector(&variableCollector)
@@ -288,6 +313,12 @@ void VariableImplementation::doRemoveField(const Variant &key)
     Log::warning("Trying to remove a field ", key," on a variable that doesn't support removal");
 }
 
+Variable VariableImplementation::doCall(const VariableArgs &/*args*/, const VariableKeywordArgs &/*kwargs*/)
+{
+    Log::warning("Trying call a variable that cannot be called");
+    return Variable();
+}
+
 VariableImplementation::VariableImplementation()
     : _collector(nullptr)
 {
@@ -297,15 +328,8 @@ void VariableImplementation::collect(const std::function<void(VariableMemory &)>
 {
 }
 
-
-VariableMemory::VariableMemory()
-    : _implementation(&undefinedVariableImplementation),
-      _tag(Variable::Tag::undefined)
+VariableMemory VariableImplementation::memory()
 {
+    return VariableMemory(this);
 }
 
-VariableMemory::VariableMemory(const Variable &variable)
-    : _implementation(variable._implementation),
-      _tag(variable._tag)
-{
-}
