@@ -1,0 +1,25 @@
+
+
+class FindTestFile as File
+{
+    var notFound = @parser.findBytePattern:("fa af fa");
+    if (notFound != -1) {
+        uint(8) error;
+    }
+    
+    Found("aa bb") *;
+    uint(16) aabb;
+    
+    Found("aa bb|00 cc dd") *;
+    uint(24) ccdd;
+    Found("ad | 00 cc dd | a0 0b & f0 0f") *;
+    uint(16) aabb;
+}
+
+class Found(pattern)
+{
+    var size = @parser.findBytePattern:(pattern);
+    if (size != -1) {
+        @size = size;
+    }
+}

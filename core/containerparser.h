@@ -61,6 +61,13 @@ public:
      */
     Object* addVariable(const ObjectType& type, const std::string& name);
 
+    /**
+     * @brief find a byte pattern and seek to first occurence
+     * @param pattern
+     * @return true if found
+     */
+    int64_t findBytePattern(const std::string& pattern);
+
     const Module& module() const;
 
 protected:
@@ -79,6 +86,9 @@ private:
     Object* getVariable(const ObjectType& type);
 
     void throwChildError(const Object& child, ParsingException::Type type, const std::string reason) const;
+
+    static void parseBytePattern(const std::string& pattern, std::vector<std::vector<unsigned char> > &byteList,
+    std::vector<std::vector<unsigned char> > &maskList);
 
     const Module& _module;
     bool _autogrow;

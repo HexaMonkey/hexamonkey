@@ -18,6 +18,11 @@ void TestParser::test_default()
     QVERIFY(checkFile("test_default.bin", -1, -1, "test_default"));
 }
 
+void TestParser::test_find()
+{
+    QVERIFY(checkFile("test_find.bin", -1, -1, "test_find"));
+}
+
 void TestParser::test_asf()
 {
     QVERIFY(checkFile("test_asf.asf", 3, 22));

@@ -1,0 +1,7 @@
+0x104        FindTestFile 
+0x40             Found("aa bb") 
+40x16            uint(16) aabb = 43707
+56x8             Found("aa bb|00 cc dd") 
+64x24            uint(24) ccdd = 52445
+88x0             Found("ad | 00 cc dd | a0 0b & f0 0f") 
+88x16            uint(16) aabb = 43707

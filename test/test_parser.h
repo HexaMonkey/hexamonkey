@@ -16,6 +16,7 @@ public:
 
 private slots:
     void test_default();
+    void test_find();
 
     void test_asf();
     void test_avi();
