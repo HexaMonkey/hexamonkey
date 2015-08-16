@@ -18,7 +18,7 @@ namespace std
             std::size_t result;
             switch (value._type & Variant::typeMask) {
                 case Variant::integerType:
-                    if (value._data.l) {
+                    if (value._data.l >= 0) {
                         result = std::hash<unsigned long long>()(value._data.ul);
                     } else {
                         result = std::hash<long long>()(value._data.l);
@@ -31,11 +31,10 @@ namespace std
 
                 case Variant::floatingType:
                 {
-                    long long converted = (long long) value._data.f;
-                    if ((double) converted == value._data.f) {
-                        result = std::hash<long long>()(converted);
+                    if (value._data.f >= 0) {
+                        result = std::hash<long long>()((long long) value._data.f);
                     } else {
-                        result = std::hash<double>()(value._data.f);
+                        result = std::hash<unsigned long long>()((unsigned long long) value._data.f);
                     }
                     break;
                 }
