@@ -15,14 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-addMagicNumber 49 44 33
-
-class MP3File as File
-{
-	@endianness = "bigEndian";
-	ID3v2Tag *;
-}
-
 //////////////////////////////////////////////////////////////////
 //            ID3 tag version 2.4.0 - Main Structure            //
 //////////////////////////////////////////////////////////////////
@@ -217,15 +209,13 @@ class FrameFormatFlags extends uint(8,2)
 
 //// 6.2.   Synchsafe integers
 
-class SynchSafeInteger(count) extends uint(count)
+class SynchSafeInteger(count) extends Data(count)
 {
-	var mask = 0x7f;
-	var newValue = 0;
-	for (var i = 0, n = count/8; i < n; ++i) {
-		newValue |= (@value & mask) >> i;
-		mask <<= 8;
+	var value = 0;
+	for (var i = count/8 - 1; i >= 0; --i) {
+		value |= (@parser.read:(uint(8)) & 0x7f) << (7*i);
 	}
-	@value = newValue;
+	@value = value;
 }
 
 //////////////////////////////////////////////////////////////////

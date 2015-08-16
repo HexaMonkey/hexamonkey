@@ -1,0 +1,153 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+// http://mpgedit.org/mpgedit/mpeg_format/MP3Format.html
+// http://id3.org/mp3Frame
+
+addMagicNumber 49 44 33
+
+import id3
+
+class MP3File as File
+{
+	@endianness = "bigEndian";
+    
+    while (1) {
+        var sync = @parser.peek:(uint(16));
+        if ((sync & 0xffe0) == 0xffe0) {
+            MP3Frame *;
+        } else {
+            var id3Tag = @parser.peek:(String(3));
+            if (id3Tag == "ID3") {
+                ID3v2Tag *;
+            } else {
+                UnknownData(@rem) *;
+            }
+        }
+    }
+}
+
+class UnknownData(_maxSize)
+{
+    var patternPos = @parser.findBytePattern:("ffe0&ffe0|49 44 33");
+    %log(patternPos);
+    if (patternPos != -1) {
+        @size = patternPos;
+    } else {
+        @size = _maxSize;
+    }
+}
+
+class MP3Frame()
+{
+    MP3Header _header;
+    
+    var bitrate = _header.bitrateIndex.@attr.bitrate;
+    var sampleRate = _header.samplingRateFrequencyIndex.@attr.frequency;
+    @size = 8*((144000 * bitrate / sampleRate) + _header.paddingBit);
+    
+    MP3AudioData _data;
+}
+
+class MP3Header
+{
+    uint(11, 2) frameSync;
+    
+    enum uint(2) {
+        0b00 : "MPEG Version 2.5",
+        0b01 : "reserved",
+        0b10 : "MPEG Version 2",
+        0b11 : "MPEG Version 1"
+    }  mpegAudioVersion;
+    
+    enum uint(2) {
+        0b00 : "reserved",
+        0b01 : "Layer III",
+        0b10 : "Layer II",
+        0b11 : "Layer I"
+    } layerDescription;
+    
+    uint(1)  protectionBit;
+    BitrateIndex(mpegAudioVersion, layerDescription)  bitrateIndex;
+    SamplingRateFrequencyIndex(mpegAudioVersion)  samplingRateFrequencyIndex;
+    uint(1)  paddingBit;
+    uint(1)  privateBit;
+    
+    enum uint(2) {
+        0b00 : "Stereo",
+        0b01 : "Joint stereo",
+        0b10 : "Dual channel",
+        0b11 : "Single channel"
+    }  channelMode;
+    
+    uint(2) modeExtension;
+    
+    uint(1) copyrightBit;
+    uint(1) originalHomeBit;
+    
+    enum uint(2) {
+        0b00 : "none",
+        0b01 : "50/15ms",
+        0b11 : "CCITT j.17"
+    } emphasis;
+}
+
+class MP3AudioData(_size) extends Data(_size)
+
+class BitrateIndex(_version, _layer) extends uint(4)
+{
+    if (@global.BitrateIndexMap == undefined) {
+        @global.BitrateIndexMap := {
+        //                0    1    2    3    4    5    6    7    8    9    a    b    c    d    e     f
+            "V1,L1" : [null,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, null],
+            "V1,L2" : [null,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, null],
+            "V1,L3" : [null,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, null],
+            "V2,L1" : [null,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, null],
+            "V2,L2" : [null,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, null],
+            "V2,L3" : [null,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, null]
+        };
+    }
+    
+    var key = "";
+    if (_version == 0b11) {
+        key += "V1";
+    } else if (_version == 0b10 || _version == 0b00) {
+        key += "V2";
+    }
+    if (_layer == 0b11) {
+        key += ",L1";
+    } else if (_layer == 0b10) {
+        key += ",L2";
+    } else if (_layer == 0b01) {
+        key += ",L3";
+    }
+    
+    @attr.bitrate = @global.BitrateIndexMap[key][@value];
+}
+
+class SamplingRateFrequencyIndex(_version) extends uint(2)
+{
+    if (@global.SamplingRateFrequencyMap == undefined) {
+        @global.SamplingRateFrequencyMap := {
+            0b11 : [44100, 48000, 32000, null],
+            0b10 : [22050, 24000, 16000, null],
+            0b00 : [11025, 12000,  8000, null]
+        };
+    }
+    
+    @attr.frequency = @global.SamplingRateFrequencyMap[_version][@value];
+}
