@@ -69,8 +69,9 @@ void ObjectType::setParameter(size_t index, const Variant &value)
 const std::string &ObjectType::name() const
 {
     if (_name.isValueless()) {
-        if (typeTemplate().hasNameGenerator()) {
-            const Variant nameValue = typeTemplate().nameGenerator()(*this);
+        const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::name;
+        if (typeTemplate().hasAttributeGenerator(attribute)) {
+            const Variant nameValue = typeTemplate().attributeGenerator(attribute)(*this);
             if (!nameValue.isValueless()) {
                 return nameValue.toString();
             }
@@ -86,6 +87,16 @@ const std::string &ObjectType::name() const
 void ObjectType::setName(const std::string &name)
 {
     _name.setValue(name);
+}
+
+bool ObjectType::hasDisplayMode() const
+{
+    return !vDisplayMode().isValueless();
+}
+
+const std::string &ObjectType::displayMode() const
+{
+    return vDisplayMode().toString();
 }
 
 const ObjectType& ObjectType::importParameters(const ObjectType& other)
@@ -183,22 +194,35 @@ ObjectType& ObjectType::operator =(ObjectType other)
 
 const Variant &ObjectType::vElementType() const
 {
+    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementType;
     if (_elementType.isValueless()
             && _typeTemplate
-            && _typeTemplate->hasElementTypeGenerator()) {
-        _elementType.setValue(typeTemplate().elementTypeGenerator()(*this));
+            && _typeTemplate->hasAttributeGenerator(attribute)) {
+        _elementType.setValue(typeTemplate().attributeGenerator(attribute)(*this));
     }
     return _elementType;
 }
 
 const Variant &ObjectType::vElementCount() const
 {
+    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementCount;
     if (_elementCount.isValueless()
             && _typeTemplate
-            && _typeTemplate->hasElementCountGenerator()) {
-        _elementCount.setValue(typeTemplate().elementCountGenerator()(*this));
+            && _typeTemplate->hasAttributeGenerator(attribute)) {
+        _elementCount.setValue(typeTemplate().attributeGenerator(attribute)(*this));
     }
     return _elementCount;
+}
+
+const Variant &ObjectType::vDisplayMode() const
+{
+    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayMode;
+    if (_displayMode.isValueless()
+            && _typeTemplate
+            && _typeTemplate->hasAttributeGenerator(attribute)) {
+        _displayMode.setValue(typeTemplate().attributeGenerator(attribute)(*this));
+    }
+    return _displayMode;
 }
 
 bool operator==(const ObjectType& a, const ObjectType& b)

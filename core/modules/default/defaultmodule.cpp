@@ -37,26 +37,30 @@ const ObjectTypeTemplate DefaultModule::file("File", std::vector<std::string>(),
 });
 
 const ObjectTypeTemplate DefaultModule::array("Array",{"elementType", "size", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setElementTypeGenerator([]objectTypeAttributeLambda {
+    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
+                                       []objectTypeAttributeLambda {
                                              return type.parameterValue(0);
-                                         });
+                                       });
 });
 
 const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setElementTypeGenerator([]objectTypeAttributeLambda {
+    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
+                                       []objectTypeAttributeLambda {
                                              return type.parameterValue(0);
-                                         });
+                                       });
 
-    typeTemplate.setElementCountGenerator([]objectTypeAttributeLambda {
+    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementCount,
+                                       []objectTypeAttributeLambda {
                                              return type.parameterValue(1);
-                                          });
+                                       });
 });
 const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
 
 const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setNameGenerator([]objectTypeAttributeLambda {
+    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
+                                       []objectTypeAttributeLambda {
                                              return type.parameterValue(0);
-                                         });
+                                       });
 });
 
 const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"});

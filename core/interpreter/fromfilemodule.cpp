@@ -231,6 +231,13 @@ void FromFileModule::loadImports(Program &imports, std::vector<std::string> &for
     }
 }
 
+std::unordered_map<std::string, ObjectTypeTemplate::Attribute> _attributes = {
+    {"elemType", ObjectTypeTemplate::Attribute::elementType},
+    {"elemCount", ObjectTypeTemplate::Attribute::elementCount},
+    {"name", ObjectTypeTemplate::Attribute::name},
+    {"displayMode", ObjectTypeTemplate::Attribute::displayMode}
+};
+
 void FromFileModule::nameScan(Program& declarations)
 {
 #ifdef LOAD_TRACE
@@ -264,10 +271,9 @@ void FromFileModule::nameScan(Program& declarations)
                     return Evaluator(Variable(new TypeScope(_collector, type), false), *this).rightValue(program).value();
                 };
 
-                if (name == "elemType") {
-                    objectTypeTemplate.setElementTypeGenerator(generator);
-                } else if (name == "elemCount") {
-                    objectTypeTemplate.setElementCountGenerator(generator);
+                auto it = _attributes.find(name);
+                if (it != _attributes.end()) {
+                    objectTypeTemplate.setAttributeGenerator(it->second, generator);
                 }
             }
 

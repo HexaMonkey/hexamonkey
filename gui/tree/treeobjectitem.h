@@ -67,6 +67,7 @@ protected:
 
 private:
    void doLoad() const override;
+   bool isBitsetDisplay() const;
    Object* _object;
    int64_t _index;
    Filter filter;

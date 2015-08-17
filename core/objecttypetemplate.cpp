@@ -90,52 +90,26 @@ void ObjectTypeTemplate::addParameter(const std::string& parameterName)
     _parametersNames.push_back(parameterName);
 }
 
-void ObjectTypeTemplate::setNameGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
+void ObjectTypeTemplate::setAttributeGenerator(ObjectTypeTemplate::Attribute attribute, const ObjectTypeTemplate::AttributeGenerator &generator)
 {
-    _attributeFlag |= _nameAttribute;
-    _nameGenerator = generator;
+    const uint8_t attributeIndex = (uint8_t) attribute;
+    _attributeFlag |= 1<<attributeIndex;
+    if (attributeIndex >= _attributeGenerators.size()) {
+        _attributeGenerators.resize(attributeIndex + 1);
+    }
+    _attributeGenerators[attributeIndex] = generator;
 }
 
-bool ObjectTypeTemplate::hasNameGenerator() const
+bool ObjectTypeTemplate::hasAttributeGenerator(Attribute attribute) const
 {
-    return _attributeFlag & _nameAttribute;
+    const uint8_t attributeIndex = (uint8_t) attribute;
+    return _attributeFlag & (1<<attributeIndex);
 }
 
-const ObjectTypeTemplate::AttributeGenerator& ObjectTypeTemplate::nameGenerator() const
+const ObjectTypeTemplate::AttributeGenerator &ObjectTypeTemplate::attributeGenerator(ObjectTypeTemplate::Attribute attribute) const
 {
-    return _nameGenerator;
-}
-
-void ObjectTypeTemplate::setElementTypeGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
-{
-    _attributeFlag |= _elementTypeAttribute;
-    _elementTypeGenerator = generator;
-}
-
-bool ObjectTypeTemplate::hasElementTypeGenerator() const
-{
-    return _attributeFlag & _elementTypeAttribute;
-}
-
-const ObjectTypeTemplate::AttributeGenerator& ObjectTypeTemplate::elementTypeGenerator() const
-{
-    return _elementTypeGenerator;
-}
-
-void ObjectTypeTemplate::setElementCountGenerator(const ObjectTypeTemplate::AttributeGenerator &generator)
-{
-    _attributeFlag |= _elementCountAttribute;
-    _elementCountGenerator = generator;
-}
-
-bool ObjectTypeTemplate::hasElementCountGenerator() const
-{
-    return _attributeFlag & _elementCountAttribute;
-}
-
-const ObjectTypeTemplate::AttributeGenerator &ObjectTypeTemplate::elementCountGenerator() const
-{
-    return _elementCountGenerator;
+    const uint8_t attributeIndex = (uint8_t) attribute;
+    return _attributeGenerators[attributeIndex];
 }
 
 bool ObjectTypeTemplate::isVirtual() const

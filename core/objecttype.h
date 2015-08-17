@@ -131,6 +131,11 @@ public:
     size_t elementCount() const;
     void setElementCount(long long count);
 
+    /**
+     * @brief display mode
+     */
+    bool hasDisplayMode() const;
+    const std::string& displayMode() const;
 
     /**
      * @brief Output a representation of the \link ObjectType type\endlink into a stream
@@ -159,12 +164,14 @@ public:
 private:
     const Variant& vElementType() const;
     const Variant& vElementCount() const;
+    const Variant& vDisplayMode() const;
 
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
     Variant _name;
     mutable Variant _elementType;
     mutable Variant _elementCount;
+    mutable Variant _displayMode;
 
     bool _virtual;
 

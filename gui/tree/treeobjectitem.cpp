@@ -139,14 +139,44 @@ void TreeObjectItem::setObject(Object &object)
     _object = &object;
 }
 
+const std::string openMono = "<font face=\"Monaco,Lucia Console,DejaVu Sans Mono,Courier 10 Pitch,Nimbus Mono L,Courier New,Courier,monospace\" size=\"0\">";
+
 void TreeObjectItem::doLoad() const
 {
     std::stringstream showcasePadding;
     {
 
         std::stringstream S;
-        if(object().name() == "#")
-        {
+
+        if (isBitsetDisplay()) {
+            S << openMono;
+            const Object& parent = *object().parent();
+            int64_t pos = object().beginningPos() - parent.beginningPos();
+            int64_t size = object().size();
+            int64_t parentSize = parent.size();
+
+            uint64_t value = object().value().toUnsignedInteger();
+            for (int64_t i = 0; i  < parentSize; ++i) {
+                if (i!=0) {
+                    if (i%8 == 0) {
+                        S << "&nbsp;";
+                    } else if (i%4 == 0){
+                        S << "</font><font size=\"0\">&thinsp;</font>"<<openMono;
+                    }
+                }
+                if (i < pos || i >= pos + size) {
+                    S << ".";
+                } else {
+                    S << ((value >> (pos + size - i - 1)) & 1);
+                }
+            }
+
+            S << "</font>";
+
+            S << " ";
+            displayName(S, object().name());
+
+        } else if (object().name() == "#") {
             std::string rank = toStr(object().rank());
             S << "[";
             S << "<span style=\"color:#000080;\">";
@@ -222,6 +252,18 @@ void TreeObjectItem::doLoad() const
         S << "</span>";
         itemData()[2] = S.str().c_str();
     }
+}
+
+bool TreeObjectItem::isBitsetDisplay() const
+{
+    Object* parent = object().parent();
+    if (parent) {
+        const ObjectType& parentType = parent->type();
+        if (parentType.hasDisplayMode() && parentType.displayMode() == "bitset") {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type)

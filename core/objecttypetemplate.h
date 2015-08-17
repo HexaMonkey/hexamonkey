@@ -38,6 +38,13 @@
 class ObjectTypeTemplate
 {
 public:
+    enum class Attribute{
+        name = 0,
+        elementType = 1,
+        elementCount = 2,
+        displayMode = 3
+    };
+
     typedef std::function<Variant (const ObjectType &)> AttributeGenerator;
 
     ObjectTypeTemplate(const std::string &name,
@@ -102,17 +109,9 @@ public:
         return type;
     }
 
-    void setNameGenerator(const AttributeGenerator& generator);
-    bool hasNameGenerator() const;
-    const AttributeGenerator &nameGenerator() const;
-
-    void setElementTypeGenerator(const AttributeGenerator& generator);
-    bool hasElementTypeGenerator() const;
-    const AttributeGenerator &elementTypeGenerator() const;
-
-    void setElementCountGenerator(const AttributeGenerator& generator);
-    bool hasElementCountGenerator() const;
-    const AttributeGenerator &elementCountGenerator() const;
+    void setAttributeGenerator(Attribute attribute, const AttributeGenerator& generator);
+    bool hasAttributeGenerator(Attribute attribute) const;
+    const AttributeGenerator &attributeGenerator(Attribute attribute) const;
 
     bool isVirtual() const;
     void setVirtual(bool value);
@@ -130,9 +129,12 @@ private:
     const static uint8_t _elementCountAttribute;
 
     uint8_t _attributeFlag;
+    std::vector<AttributeGenerator> _attributeGenerators;
+
     AttributeGenerator _nameGenerator;
     AttributeGenerator _elementTypeGenerator;
     AttributeGenerator _elementCountGenerator;
+
 
     bool _virtual;
 

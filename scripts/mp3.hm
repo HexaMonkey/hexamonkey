@@ -43,7 +43,7 @@ class MP3File as File
 
 class UnknownData(_maxSize)
 {
-    var patternPos = @parser.findBytePattern:("ffe0&ffe0|49 44 33");
+    var patternPos = @parser.findBytePattern:("ff e0 & ff e0|49 44 33");
     %log(patternPos);
     if (patternPos != -1) {
         @size = patternPos;
@@ -63,7 +63,7 @@ class MP3Frame()
     MP3AudioData _data;
 }
 
-class MP3Header
+class MP3Header with {displayMode : "bitset"}
 {
     uint(11, 2) frameSync;
     
