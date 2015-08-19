@@ -20,6 +20,8 @@
 
 addMagicNumber 49 44 33
 
+addExtension mp3
+
 import id3
 
 class MP3File as File
@@ -34,6 +36,8 @@ class MP3File as File
             var id3Tag = @parser.peek:(String(3));
             if (id3Tag == "ID3") {
                 ID3v2Tag *;
+            } if (id3Tag == "TAG") {
+                ID3v1Tag *;
             } else {
                 UnknownData(@rem) *;
             }
@@ -43,7 +47,7 @@ class MP3File as File
 
 class UnknownData(_maxSize)
 {
-    var patternPos = @parser.findBytePattern:("ff e0 & ff e0|49 44 33");
+    var patternPos = @parser.findBytePattern:("ff e0 & ff e0 | 49 44 33 | 55 41 47");
     %log(patternPos);
     if (patternPos != -1) {
         @size = patternPos;
