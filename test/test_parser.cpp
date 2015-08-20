@@ -66,6 +66,11 @@ void TestParser::test_messagepack()
     QVERIFY(checkFile("test_msgpack.msgpack"));
 }
 
+void TestParser::test_mp3()
+{
+    QVERIFY(checkFile("test_mp3.mp3", -1, 15));
+}
+
 void TestParser::test_mp4()
 {
     QVERIFY(checkFile("test_mp4.mp4", -1, 20));

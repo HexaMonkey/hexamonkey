@@ -1,0 +1,498 @@
+0x2743360    MP3File 
+0x1327184        ID3v2Tag 
+0x80                 ID3v2Header 
+0x24                     String(3) magic = "ID3"
+24x8                     uint(8) major = 4
+32x8                     uint(8) minor = 0
+40x1                     uint(1) unsynchronisation = 0
+41x1                     uint(1) extendedHeader = 0
+42x1                     uint(1) experimentalIndicator = 0
+43x1                     uint(1) footerPresent = 0
+44x4                     uint(4) reserved = 0
+48x32                    SynchSafeInteger(32) size = 165888
+80x1327104           ID3v2Frames 
+80x536                   TitleFrame 
+80x32                        String(4) FrameID = "TIT2"
+112x32                       SynchSafeInteger(32) Size = 57
+144x8                        FrameStatusFlags = 0
+144x1                            uint(1) reserved = 0
+145x1                            Enum(uint(1)) tagAlterPreservation = 0
+146x1                            Enum(uint(1)) fileAlterPreservation = 0
+147x1                            uint(1) readOnly = 0
+148x4                            uint(4) reserved = 0
+152x8                        FrameFormatFlags = 0
+152x1                            uint(1) reserved = 0
+153x1                            Enum(uint(1)) groupingIdentity = 0
+154x2                            uint(2) reserved = 0
+156x1                            Enum(uint(1)) compression = 0
+157x1                            uint(1) encrypted = 0
+158x1                            uint(1) unsynchronised = 0
+159x1                            uint(1) dataLengthIndicator = 0
+160x8                        TextEncoding textEncoding = 3
+168x448                      EncodedString(3, 56) payload = "Dvorak - Serenade for Strings Op22 in E Major larghetto"
+168x448                          String(56) = "Dvorak - Serenade for Strings Op22 in E Major larghetto"
+616x288                  ArtistFrame 
+616x32                       String(4) FrameID = "TPE1"
+648x32                       SynchSafeInteger(32) Size = 26
+680x8                        FrameStatusFlags = 0
+680x1                            uint(1) reserved = 0
+681x1                            Enum(uint(1)) tagAlterPreservation = 0
+682x1                            Enum(uint(1)) fileAlterPreservation = 0
+683x1                            uint(1) readOnly = 0
+684x4                            uint(4) reserved = 0
+688x8                        FrameFormatFlags = 0
+688x1                            uint(1) reserved = 0
+689x1                            Enum(uint(1)) groupingIdentity = 0
+690x2                            uint(2) reserved = 0
+692x1                            Enum(uint(1)) compression = 0
+693x1                            uint(1) encrypted = 0
+694x1                            uint(1) unsynchronised = 0
+695x1                            uint(1) dataLengthIndicator = 0
+696x8                        TextEncoding textEncoding = 3
+704x200                      EncodedString(3, 25) payload = "Advent Chamber Orchestra"
+704x200                          String(25) = "Advent Chamber Orchestra"
+904x104                  TrackNumberFrame 
+904x32                       String(4) FrameID = "TRCK"
+936x32                       SynchSafeInteger(32) Size = 3
+968x8                        FrameStatusFlags = 0
+968x1                            uint(1) reserved = 0
+969x1                            Enum(uint(1)) tagAlterPreservation = 0
+970x1                            Enum(uint(1)) fileAlterPreservation = 0
+971x1                            uint(1) readOnly = 0
+972x4                            uint(4) reserved = 0
+976x8                        FrameFormatFlags = 0
+976x1                            uint(1) reserved = 0
+977x1                            Enum(uint(1)) groupingIdentity = 0
+978x2                            uint(2) reserved = 0
+980x1                            Enum(uint(1)) compression = 0
+981x1                            uint(1) encrypted = 0
+982x1                            uint(1) unsynchronised = 0
+983x1                            uint(1) dataLengthIndicator = 0
+984x8                        TextEncoding textEncoding = 3
+992x16                       EncodedString(3, 2) payload = "5"
+992x16                           String(2) = "5"
+1008x424                 AlbumFrame 
+1008x32                      String(4) FrameID = "TALB"
+1040x32                      SynchSafeInteger(32) Size = 43
+1072x8                       FrameStatusFlags = 0
+1072x1                           uint(1) reserved = 0
+1073x1                           Enum(uint(1)) tagAlterPreservation = 0
+1074x1                           Enum(uint(1)) fileAlterPreservation = 0
+1075x1                           uint(1) readOnly = 0
+1076x4                           uint(4) reserved = 0
+1080x8                       FrameFormatFlags = 0
+1080x1                           uint(1) reserved = 0
+1081x1                           Enum(uint(1)) groupingIdentity = 0
+1082x2                           uint(2) reserved = 0
+1084x1                           Enum(uint(1)) compression = 0
+1085x1                           uint(1) encrypted = 0
+1086x1                           uint(1) unsynchronised = 0
+1087x1                           uint(1) dataLengthIndicator = 0
+1088x8                       TextEncoding textEncoding = 3
+1096x336                     EncodedString(3, 42) payload = "Selections from the November 2006 Concert"
+1096x336                         String(42) = "Selections from the November 2006 Concert"
+1432x248                 RecordingTimeFrame 
+1432x32                      String(4) FrameID = "TDRC"
+1464x32                      SynchSafeInteger(32) Size = 21
+1496x8                       FrameStatusFlags = 0
+1496x1                           uint(1) reserved = 0
+1497x1                           Enum(uint(1)) tagAlterPreservation = 0
+1498x1                           Enum(uint(1)) fileAlterPreservation = 0
+1499x1                           uint(1) readOnly = 0
+1500x4                           uint(4) reserved = 0
+1504x8                       FrameFormatFlags = 0
+1504x1                           uint(1) reserved = 0
+1505x1                           Enum(uint(1)) groupingIdentity = 0
+1506x2                           uint(2) reserved = 0
+1508x1                           Enum(uint(1)) compression = 0
+1509x1                           uint(1) encrypted = 0
+1510x1                           uint(1) unsynchronised = 0
+1511x1                           uint(1) dataLengthIndicator = 0
+1512x8                       TextEncoding textEncoding = 3
+1520x160                     EncodedString(3, 20) payload = "2012-09-27T17:44:37"
+1520x160                         String(20) = "2012-09-27T17:44:37"
+1680x168                 ContentTypeFrame 
+1680x32                      String(4) FrameID = "TCON"
+1712x32                      SynchSafeInteger(32) Size = 11
+1744x8                       FrameStatusFlags = 0
+1744x1                           uint(1) reserved = 0
+1745x1                           Enum(uint(1)) tagAlterPreservation = 0
+1746x1                           Enum(uint(1)) fileAlterPreservation = 0
+1747x1                           uint(1) readOnly = 0
+1748x4                           uint(4) reserved = 0
+1752x8                       FrameFormatFlags = 0
+1752x1                           uint(1) reserved = 0
+1753x1                           Enum(uint(1)) groupingIdentity = 0
+1754x2                           uint(2) reserved = 0
+1756x1                           Enum(uint(1)) compression = 0
+1757x1                           uint(1) encrypted = 0
+1758x1                           uint(1) unsynchronised = 0
+1759x1                           uint(1) dataLengthIndicator = 0
+1760x8                       TextEncoding textEncoding = 3
+1768x80                      EncodedString(3, 10) payload = "Classical"
+1768x80                          String(10) = "Classical"
+1848x832                 CopyRightMessageFrame 
+1848x32                      String(4) FrameID = "TCOP"
+1880x32                      SynchSafeInteger(32) Size = 94
+1912x8                       FrameStatusFlags = 0
+1912x1                           uint(1) reserved = 0
+1913x1                           Enum(uint(1)) tagAlterPreservation = 0
+1914x1                           Enum(uint(1)) fileAlterPreservation = 0
+1915x1                           uint(1) readOnly = 0
+1916x4                           uint(4) reserved = 0
+1920x8                       FrameFormatFlags = 0
+1920x1                           uint(1) reserved = 0
+1921x1                           Enum(uint(1)) groupingIdentity = 0
+1922x2                           uint(2) reserved = 0
+1924x1                           Enum(uint(1)) compression = 0
+1925x1                           uint(1) encrypted = 0
+1926x1                           uint(1) unsynchronised = 0
+1927x1                           uint(1) dataLengthIndicator = 0
+1928x8                       TextEncoding textEncoding = 3
+1936x744                     EncodedString(3, 93) payload = "Attribution-Share Alike 3.0 United States: http://creativecommons.org/licenses/by-sa/3.0/us/"
+1936x744                         String(93) = "Attribution-Share Alike 3.0 United States: http://creativecommons.org/licenses/by-sa/3.0/us/"
+2680x248                 DateFrame 
+2680x32                      String(4) FrameID = "TDAT"
+2712x32                      SynchSafeInteger(32) Size = 21
+2744x8                       FrameStatusFlags = 0
+2744x1                           uint(1) reserved = 0
+2745x1                           Enum(uint(1)) tagAlterPreservation = 0
+2746x1                           Enum(uint(1)) fileAlterPreservation = 0
+2747x1                           uint(1) readOnly = 0
+2748x4                           uint(4) reserved = 0
+2752x8                       FrameFormatFlags = 0
+2752x1                           uint(1) reserved = 0
+2753x1                           Enum(uint(1)) groupingIdentity = 0
+2754x2                           uint(2) reserved = 0
+2756x1                           Enum(uint(1)) compression = 0
+2757x1                           uint(1) encrypted = 0
+2758x1                           uint(1) unsynchronised = 0
+2759x1                           uint(1) dataLengthIndicator = 0
+2760x8                       TextEncoding textEncoding = 3
+2768x160                     EncodedString(3, 20) payload = "2012-09-27 17:44:37"
+2768x160                         String(20) = "2012-09-27 17:44:37"
+2928x3056                CommentFrame 
+2928x32                      String(4) FrameID = "COMM"
+2960x32                      SynchSafeInteger(32) Size = 372
+2992x8                       FrameStatusFlags = 0
+2992x1                           uint(1) reserved = 0
+2993x1                           Enum(uint(1)) tagAlterPreservation = 0
+2994x1                           Enum(uint(1)) fileAlterPreservation = 0
+2995x1                           uint(1) readOnly = 0
+2996x4                           uint(4) reserved = 0
+3000x8                       FrameFormatFlags = 0
+3000x1                           uint(1) reserved = 0
+3001x1                           Enum(uint(1)) groupingIdentity = 0
+3002x2                           uint(2) reserved = 0
+3004x1                           Enum(uint(1)) compression = 0
+3005x1                           uint(1) encrypted = 0
+3006x1                           uint(1) unsynchronised = 0
+3007x1                           uint(1) dataLengthIndicator = 0
+3008x8                       TextEncoding textEncoding = 0
+3016x24                      String(3) language = "eng"
+3040x8                       EncodedString(0) shortContentDescription = ""
+3040x8                           String = ""
+3048x2936                    EncodedString(0, 367) actualText = "URL: http://freemusicarchive.org/music/Advent_Chamber_Orchestra/Selections_from_the_November_2006_Concert/Advent_Chamber_Orchestra_-_05_-_Dvorak_-_Serenade_for_Strings_Opus_22_in_E_Major_larghetto
+Comments: http://freemusicarchive.org/
+Curator: Oddio Overplay
+Copyright: Attribution-Share Alike 3.0 United States: http://creativecommons.org/licenses/by-sa/3.0/us/"
+3048x2936                        String(367) = "URL: http://freemusicarchive.org/music/Advent_Chamber_Orchestra/Selections_from_the_November_2006_Concert/Advent_Chamber_Orchestra_-_05_-_Dvorak_-_Serenade_for_Strings_Opus_22_in_E_Major_larghetto
+Comments: http://freemusicarchive.org/
+Curator: Oddio Overplay
+Copyright: Attribution-Share Alike 3.0 United States: http://creativecommons.org/licenses/by-sa/3.0/us/"
+5984x288                 BandFrame 
+5984x32                      String(4) FrameID = "TPE2"
+6016x32                      SynchSafeInteger(32) Size = 26
+6048x8                       FrameStatusFlags = 0
+6048x1                           uint(1) reserved = 0
+6049x1                           Enum(uint(1)) tagAlterPreservation = 0
+6050x1                           Enum(uint(1)) fileAlterPreservation = 0
+6051x1                           uint(1) readOnly = 0
+6052x4                           uint(4) reserved = 0
+6056x8                       FrameFormatFlags = 0
+6056x1                           uint(1) reserved = 0
+6057x1                           Enum(uint(1)) groupingIdentity = 0
+6058x2                           uint(2) reserved = 0
+6060x1                           Enum(uint(1)) compression = 0
+6061x1                           uint(1) encrypted = 0
+6062x1                           uint(1) unsynchronised = 0
+6063x1                           uint(1) dataLengthIndicator = 0
+6064x8                       TextEncoding textEncoding = 3
+6072x200                     EncodedString(3, 25) payload = "Advent Chamber Orchestra"
+6072x200                         String(25) = "Advent Chamber Orchestra"
+6272x1318064             AttachedPictureFrame 
+6272x32                      String(4) FrameID = "APIC"
+6304x32                      SynchSafeInteger(32) Size = 164748
+6336x8                       FrameStatusFlags = 0
+6336x1                           uint(1) reserved = 0
+6337x1                           Enum(uint(1)) tagAlterPreservation = 0
+6338x1                           Enum(uint(1)) fileAlterPreservation = 0
+6339x1                           uint(1) readOnly = 0
+6340x4                           uint(4) reserved = 0
+6344x8                       FrameFormatFlags = 0
+6344x1                           uint(1) reserved = 0
+6345x1                           Enum(uint(1)) groupingIdentity = 0
+6346x2                           uint(2) reserved = 0
+6348x1                           Enum(uint(1)) compression = 0
+6349x1                           uint(1) encrypted = 0
+6350x1                           uint(1) unsynchronised = 0
+6351x1                           uint(1) dataLengthIndicator = 0
+6352x8                       TextEncoding textEncoding = 3
+6360x88                      String MIMEType = "image/jpeg"
+6448x8                       Enum(uint(8)) pictureType = 0
+6456x152                     EncodedString(3) description = "november06_290.jpg"
+6456x152                         String = "november06_290.jpg"
+6608x1317728                 Data pictureData 
+1324336x32               ID3v2Frame("") 
+1324336x32                   String(4) FrameID = ""
+1327184x1415152  MP3Frames 
+1327184x6688         MP3Frame 
+1327184x32               MP3Header 
+1327184x11                   uint(11) frameSync = 2047
+1327195x2                    Enum(uint(2)) mpegAudioVersion = 3
+1327197x2                    Enum(uint(2)) layerDescription = 1
+1327199x1                    uint(1) protectionBit = 1
+1327200x4                    BitrateIndex bitrateIndex = 13
+1327204x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1327206x1                    uint(1) paddingBit = 1
+1327207x1                    uint(1) privateBit = 0
+1327208x2                    Enum(uint(2)) channelMode = 0
+1327210x2                    uint(2) modeExtension = 0
+1327212x1                    uint(1) copyrightBit = 0
+1327213x1                    uint(1) originalHomeBit = 1
+1327214x2                    Enum(uint(2)) emphasis = 0
+1327216x6656             MP3AudioData 
+1333872x6688         MP3Frame 
+1333872x32               MP3Header 
+1333872x11                   uint(11) frameSync = 2047
+1333883x2                    Enum(uint(2)) mpegAudioVersion = 3
+1333885x2                    Enum(uint(2)) layerDescription = 1
+1333887x1                    uint(1) protectionBit = 1
+1333888x4                    BitrateIndex bitrateIndex = 13
+1333892x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1333894x1                    uint(1) paddingBit = 1
+1333895x1                    uint(1) privateBit = 0
+1333896x2                    Enum(uint(2)) channelMode = 0
+1333898x2                    uint(2) modeExtension = 0
+1333900x1                    uint(1) copyrightBit = 0
+1333901x1                    uint(1) originalHomeBit = 1
+1333902x2                    Enum(uint(2)) emphasis = 0
+1333904x6656             MP3AudioData 
+1340560x6688         MP3Frame 
+1340560x32               MP3Header 
+1340560x11                   uint(11) frameSync = 2047
+1340571x2                    Enum(uint(2)) mpegAudioVersion = 3
+1340573x2                    Enum(uint(2)) layerDescription = 1
+1340575x1                    uint(1) protectionBit = 1
+1340576x4                    BitrateIndex bitrateIndex = 13
+1340580x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1340582x1                    uint(1) paddingBit = 1
+1340583x1                    uint(1) privateBit = 0
+1340584x2                    Enum(uint(2)) channelMode = 0
+1340586x2                    uint(2) modeExtension = 0
+1340588x1                    uint(1) copyrightBit = 0
+1340589x1                    uint(1) originalHomeBit = 1
+1340590x2                    Enum(uint(2)) emphasis = 0
+1340592x6656             MP3AudioData 
+1347248x6688         MP3Frame 
+1347248x32               MP3Header 
+1347248x11                   uint(11) frameSync = 2047
+1347259x2                    Enum(uint(2)) mpegAudioVersion = 3
+1347261x2                    Enum(uint(2)) layerDescription = 1
+1347263x1                    uint(1) protectionBit = 1
+1347264x4                    BitrateIndex bitrateIndex = 13
+1347268x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1347270x1                    uint(1) paddingBit = 1
+1347271x1                    uint(1) privateBit = 0
+1347272x2                    Enum(uint(2)) channelMode = 0
+1347274x2                    uint(2) modeExtension = 0
+1347276x1                    uint(1) copyrightBit = 0
+1347277x1                    uint(1) originalHomeBit = 1
+1347278x2                    Enum(uint(2)) emphasis = 0
+1347280x6656             MP3AudioData 
+1353936x6688         MP3Frame 
+1353936x32               MP3Header 
+1353936x11                   uint(11) frameSync = 2047
+1353947x2                    Enum(uint(2)) mpegAudioVersion = 3
+1353949x2                    Enum(uint(2)) layerDescription = 1
+1353951x1                    uint(1) protectionBit = 1
+1353952x4                    BitrateIndex bitrateIndex = 13
+1353956x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1353958x1                    uint(1) paddingBit = 1
+1353959x1                    uint(1) privateBit = 0
+1353960x2                    Enum(uint(2)) channelMode = 0
+1353962x2                    uint(2) modeExtension = 0
+1353964x1                    uint(1) copyrightBit = 0
+1353965x1                    uint(1) originalHomeBit = 1
+1353966x2                    Enum(uint(2)) emphasis = 0
+1353968x6656             MP3AudioData 
+1360624x6688         MP3Frame 
+1360624x32               MP3Header 
+1360624x11                   uint(11) frameSync = 2047
+1360635x2                    Enum(uint(2)) mpegAudioVersion = 3
+1360637x2                    Enum(uint(2)) layerDescription = 1
+1360639x1                    uint(1) protectionBit = 1
+1360640x4                    BitrateIndex bitrateIndex = 13
+1360644x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1360646x1                    uint(1) paddingBit = 1
+1360647x1                    uint(1) privateBit = 0
+1360648x2                    Enum(uint(2)) channelMode = 0
+1360650x2                    uint(2) modeExtension = 0
+1360652x1                    uint(1) copyrightBit = 0
+1360653x1                    uint(1) originalHomeBit = 1
+1360654x2                    Enum(uint(2)) emphasis = 0
+1360656x6656             MP3AudioData 
+1367312x6688         MP3Frame 
+1367312x32               MP3Header 
+1367312x11                   uint(11) frameSync = 2047
+1367323x2                    Enum(uint(2)) mpegAudioVersion = 3
+1367325x2                    Enum(uint(2)) layerDescription = 1
+1367327x1                    uint(1) protectionBit = 1
+1367328x4                    BitrateIndex bitrateIndex = 13
+1367332x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1367334x1                    uint(1) paddingBit = 1
+1367335x1                    uint(1) privateBit = 0
+1367336x2                    Enum(uint(2)) channelMode = 0
+1367338x2                    uint(2) modeExtension = 0
+1367340x1                    uint(1) copyrightBit = 0
+1367341x1                    uint(1) originalHomeBit = 1
+1367342x2                    Enum(uint(2)) emphasis = 0
+1367344x6656             MP3AudioData 
+1374000x6688         MP3Frame 
+1374000x32               MP3Header 
+1374000x11                   uint(11) frameSync = 2047
+1374011x2                    Enum(uint(2)) mpegAudioVersion = 3
+1374013x2                    Enum(uint(2)) layerDescription = 1
+1374015x1                    uint(1) protectionBit = 1
+1374016x4                    BitrateIndex bitrateIndex = 13
+1374020x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1374022x1                    uint(1) paddingBit = 1
+1374023x1                    uint(1) privateBit = 0
+1374024x2                    Enum(uint(2)) channelMode = 0
+1374026x2                    uint(2) modeExtension = 0
+1374028x1                    uint(1) copyrightBit = 0
+1374029x1                    uint(1) originalHomeBit = 1
+1374030x2                    Enum(uint(2)) emphasis = 0
+1374032x6656             MP3AudioData 
+1380688x6688         MP3Frame 
+1380688x32               MP3Header 
+1380688x11                   uint(11) frameSync = 2047
+1380699x2                    Enum(uint(2)) mpegAudioVersion = 3
+1380701x2                    Enum(uint(2)) layerDescription = 1
+1380703x1                    uint(1) protectionBit = 1
+1380704x4                    BitrateIndex bitrateIndex = 13
+1380708x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1380710x1                    uint(1) paddingBit = 1
+1380711x1                    uint(1) privateBit = 0
+1380712x2                    Enum(uint(2)) channelMode = 0
+1380714x2                    uint(2) modeExtension = 0
+1380716x1                    uint(1) copyrightBit = 0
+1380717x1                    uint(1) originalHomeBit = 1
+1380718x2                    Enum(uint(2)) emphasis = 0
+1380720x6656             MP3AudioData 
+1387376x6688         MP3Frame 
+1387376x32               MP3Header 
+1387376x11                   uint(11) frameSync = 2047
+1387387x2                    Enum(uint(2)) mpegAudioVersion = 3
+1387389x2                    Enum(uint(2)) layerDescription = 1
+1387391x1                    uint(1) protectionBit = 1
+1387392x4                    BitrateIndex bitrateIndex = 13
+1387396x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1387398x1                    uint(1) paddingBit = 1
+1387399x1                    uint(1) privateBit = 0
+1387400x2                    Enum(uint(2)) channelMode = 0
+1387402x2                    uint(2) modeExtension = 0
+1387404x1                    uint(1) copyrightBit = 0
+1387405x1                    uint(1) originalHomeBit = 1
+1387406x2                    Enum(uint(2)) emphasis = 0
+1387408x6656             MP3AudioData 
+1394064x6688         MP3Frame 
+1394064x32               MP3Header 
+1394064x11                   uint(11) frameSync = 2047
+1394075x2                    Enum(uint(2)) mpegAudioVersion = 3
+1394077x2                    Enum(uint(2)) layerDescription = 1
+1394079x1                    uint(1) protectionBit = 1
+1394080x4                    BitrateIndex bitrateIndex = 13
+1394084x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1394086x1                    uint(1) paddingBit = 1
+1394087x1                    uint(1) privateBit = 0
+1394088x2                    Enum(uint(2)) channelMode = 0
+1394090x2                    uint(2) modeExtension = 0
+1394092x1                    uint(1) copyrightBit = 0
+1394093x1                    uint(1) originalHomeBit = 1
+1394094x2                    Enum(uint(2)) emphasis = 0
+1394096x6656             MP3AudioData 
+1400752x6680         MP3Frame 
+1400752x32               MP3Header 
+1400752x11                   uint(11) frameSync = 2047
+1400763x2                    Enum(uint(2)) mpegAudioVersion = 3
+1400765x2                    Enum(uint(2)) layerDescription = 1
+1400767x1                    uint(1) protectionBit = 1
+1400768x4                    BitrateIndex bitrateIndex = 13
+1400772x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1400774x1                    uint(1) paddingBit = 0
+1400775x1                    uint(1) privateBit = 0
+1400776x2                    Enum(uint(2)) channelMode = 0
+1400778x2                    uint(2) modeExtension = 0
+1400780x1                    uint(1) copyrightBit = 0
+1400781x1                    uint(1) originalHomeBit = 1
+1400782x2                    Enum(uint(2)) emphasis = 0
+1400784x6648             MP3AudioData 
+1407432x6688         MP3Frame 
+1407432x32               MP3Header 
+1407432x11                   uint(11) frameSync = 2047
+1407443x2                    Enum(uint(2)) mpegAudioVersion = 3
+1407445x2                    Enum(uint(2)) layerDescription = 1
+1407447x1                    uint(1) protectionBit = 1
+1407448x4                    BitrateIndex bitrateIndex = 13
+1407452x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1407454x1                    uint(1) paddingBit = 1
+1407455x1                    uint(1) privateBit = 0
+1407456x2                    Enum(uint(2)) channelMode = 0
+1407458x2                    uint(2) modeExtension = 0
+1407460x1                    uint(1) copyrightBit = 0
+1407461x1                    uint(1) originalHomeBit = 1
+1407462x2                    Enum(uint(2)) emphasis = 0
+1407464x6656             MP3AudioData 
+1414120x6688         MP3Frame 
+1414120x32               MP3Header 
+1414120x11                   uint(11) frameSync = 2047
+1414131x2                    Enum(uint(2)) mpegAudioVersion = 3
+1414133x2                    Enum(uint(2)) layerDescription = 1
+1414135x1                    uint(1) protectionBit = 1
+1414136x4                    BitrateIndex bitrateIndex = 13
+1414140x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1414142x1                    uint(1) paddingBit = 1
+1414143x1                    uint(1) privateBit = 0
+1414144x2                    Enum(uint(2)) channelMode = 0
+1414146x2                    uint(2) modeExtension = 0
+1414148x1                    uint(1) copyrightBit = 0
+1414149x1                    uint(1) originalHomeBit = 1
+1414150x2                    Enum(uint(2)) emphasis = 0
+1414152x6656             MP3AudioData 
+1420808x6688         MP3Frame 
+1420808x32               MP3Header 
+1420808x11                   uint(11) frameSync = 2047
+1420819x2                    Enum(uint(2)) mpegAudioVersion = 3
+1420821x2                    Enum(uint(2)) layerDescription = 1
+1420823x1                    uint(1) protectionBit = 1
+1420824x4                    BitrateIndex bitrateIndex = 13
+1420828x2                    SamplingRateFrequencyIndex samplingRateFrequencyIndex = 0
+1420830x1                    uint(1) paddingBit = 1
+1420831x1                    uint(1) privateBit = 0
+1420832x2                    Enum(uint(2)) channelMode = 0
+1420834x2                    uint(2) modeExtension = 0
+1420836x1                    uint(1) copyrightBit = 0
+1420837x1                    uint(1) originalHomeBit = 1
+1420838x2                    Enum(uint(2)) emphasis = 0
+1420840x6656             MP3AudioData 
+2742336x1024     ID3v1Tag 
+2742336x24           String(3) magic = "TAG"
+2742360x240          String(30) songTitle = "Dvorak - Serenade for Strings "
+2742600x240          String(30) artist = "Advent Chamber Orchestra"
+2742840x240          String(30) album = "Selections from the November 2"
+2743080x32           String(4) year = "2012"
+2743112x224          String(28) comment = ""
+2743336x8            uint(8) zeroByte = 0
+2743344x8            uint(8) track = 5
+2743352x8            ID3v1Genre genre = 32
