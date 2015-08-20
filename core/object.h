@@ -122,7 +122,7 @@ class Object
         /** @brief Move the \link file() file\endlink current position to the ending position of the
          *  last child.
          */
-        void seekObjectEnd();
+        void seekObjectEnd(std::streamoff offset = 0);
 
         /**
          * @brief Use the parsers to add the children of the object

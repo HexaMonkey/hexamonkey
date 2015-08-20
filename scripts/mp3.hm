@@ -28,31 +28,54 @@ class MP3File as File
 {
 	@endianness = "bigEndian";
     
-    while (1) {
-        var sync = @parser.peek:(uint(16));
-        if ((sync & 0xffe0) == 0xffe0) {
-            MP3Frame *;
+    // look for id3v2 tag at the beginning
+    var id3v2Check = @parser.peek:(String(3));
+    if (id3v2Check == "ID3") {
+        ID3v2Tag *;
+    }
+    
+    // look for id3v1 tag at the end
+    var id3v1Offset = @rem - %sizeof(ID3v1Tag());
+    var id3v1Check = @parser.peek:(String(3), id3v1Offset);
+    if (id3v1Check == "TAG") {
+        MP3Frames(id3v1Offset) *;
+        ID3v1Tag *;
+    } else {
+        // look for extended id3v1
+        var id3v1ExtOffset = @rem - %sizeof(ID3v1ExtendedTag());
+        var id3v1ExtCheck = @parser.peek:(String(4), id3v1ExtOffset);
+        if (id3v1ExtCheck == "TAG+") {
+            MP3Frames(id3v1ExtOffset) *;
+            ID3v1Tag *;
         } else {
-            var id3Tag = @parser.peek:(String(3));
-            if (id3Tag == "ID3") {
+            // look for id3v2.4 at the end
+            var id3v2Check = @parser.peek:(String(3), @rem - %sizeOf(ID3v2Header()));
+            if (id3v2Check == "3DI") {
+                var id3v2Size = 8*(@parser.peek:(SynchsafeInteger(32), @rem - 32));
+                MP3Frames(@rem - id3v2Size) *;
                 ID3v2Tag *;
-            } else if (id3Tag == "TAG") {
-                ID3v1Tag *;
             } else {
-                UnknownData(@rem) *;
+                MP3Frames *;
             }
         }
     }
 }
 
-class UnknownData(_maxSize)
+class MP3Frames(_size) extends Data(_size) with {elemType : MP3Frame()}
 {
-    var patternPos = @parser.findBytePattern:("ff e0 & ff e0 | 49 44 33 | 55 41 47");
-    %log(patternPos);
-    if (patternPos != -1) {
-        @size = patternPos;
-    } else {
-        @size = _maxSize;
+    while (1) {
+        var sync = @parser.peek:(uint(16));
+        if ((sync & 0xffe0) == 0xffe0) {
+            MP3Frame #;
+        } else {
+            // if sync lost then resync
+            var patternPos = @parser.findBytePattern:("ff e0 & ff e0");
+            if (patternPos == -1 || patternPos > @size) {
+                break;
+            } else {
+                @pos = patternPos;
+            }
+        }
     }
 }
 

@@ -49,7 +49,7 @@ public:
     /**
      * @brief Generate an \link Object object\endlink not to be subsequently added
      */
-    Object* readVariable(const ObjectType& type);
+    Object* readVariable(const ObjectType& type, std::streamoff offset = 0);
 
     /**
      * @brief Generate an \link Object object\endlink and add it
@@ -83,7 +83,7 @@ private:
     /**
      * @brief Generate an \link Object object\endlink to be subsequently added (or not)
      */
-    Object* getVariable(const ObjectType& type);
+    Object* getVariable(const ObjectType& type, std::streamoff offset = 0);
 
     void throwChildError(const Object& child, ParsingException::Type type, const std::string reason) const;
 

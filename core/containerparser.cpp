@@ -108,9 +108,9 @@ void ContainerParser::addChild(Object *child, const std::string &name)
     }
 }
 
-Object *ContainerParser::readVariable(const ObjectType &type)
+Object *ContainerParser::readVariable(const ObjectType &type, std::streamoff offset)
 {
-    Object* child = getVariable(type);
+    Object* child = getVariable(type, offset);
     if (child != nullptr && child->size() == -1LL) {
         child->parse();
         child->setSize(child->_contentSize);
@@ -118,9 +118,9 @@ Object *ContainerParser::readVariable(const ObjectType &type)
     return child;
 }
 
-Object *ContainerParser::getVariable(const ObjectType &type)
+Object *ContainerParser::getVariable(const ObjectType &type, std::streamoff offset)
 {
-    object().seekObjectEnd();
+    object().seekObjectEnd(offset);
     return _module.handle(type, object());
 }
 

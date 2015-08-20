@@ -32,11 +32,13 @@ Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /
                 case A_PEEK:
                 return collector().lambda(
                     [this](const VariableArgs& args, const VariableKeywordArgs&) ->Variable {
-                    if (parser()) {
+                    if (parser() && args.size() >= 1) {
                         Variant typeArg = args[0].value();
+
                         if (typeArg.type() == Variant::objectType) {
+                            std::streamoff offset = args.size() > 1 ? args[1].value().toInteger() : 0;
                             const ObjectType& type = typeArg.toObjectType();
-                            std::unique_ptr<Object> child(parser()->readVariable(type));
+                            std::unique_ptr<Object> child(parser()->readVariable(type, offset));
                             if (child) {
                                 return collector().copy(child->value());
                             }

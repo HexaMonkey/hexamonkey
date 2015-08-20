@@ -306,9 +306,9 @@ void Object::seekEnd()
     _file.seekg(_beginningPos, std::ios::beg);
 }
 
-void Object::seekObjectEnd()
+void Object::seekObjectEnd(std::streamoff offset)
 {
-    _file.seekg(_beginningPos+static_cast<std::streamoff>(_pos), std::ios::beg);
+    _file.seekg(_beginningPos+static_cast<std::streamoff>(_pos)+offset, std::ios::beg);
 }
 
 std::streamoff Object::pos() const

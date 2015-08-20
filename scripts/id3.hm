@@ -23,7 +23,14 @@ class ID3v1Tag
     String(30) artist;
     String(30) album;
     String(4)  year;
-    String(30) comment;
+    if ((@parser.peek:(uint(8), 28*8)) == 0) {
+        String(28) comment;        
+        uint(8) zeroByte;
+        uint(8) track;
+    } else {
+        String(30) comment;
+    }
+    
     ID3v1Genre genre;
 }
 
@@ -184,6 +191,27 @@ class ID3v1Genre extends uint(8)
     }
     
     @attr[] = genreList[@value];
+}
+
+
+class ID3v1TagExtended
+{
+    String(4)  magic;
+    String(60) songTitle;
+    String(60) artist;
+    String(60) album;
+    
+    enum uint(8) {
+        0 : "unset",
+        1 : "slow",
+        2 : "medium",
+        3 : "fast",
+        4 : "hardcore"
+    }          speed;
+    
+    String(30) genre;
+    String(6)  startTime;
+    String(6)  endTime;
 }
 
 //////////////////////////////////////////////////////////////////
