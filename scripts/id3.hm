@@ -349,6 +349,21 @@ virtual class ID3v2Frame(id)
 	}
 }
 
+/* deprecated v2.2 */
+
+virtual class ID3v2OldFrame(id)
+{
+	String(3) FrameID;
+	@args.id = FrameID;
+	if (FrameID != "") {
+		SynchSafeInteger(24) Size;
+		@size = 8*Size + @pos;
+	}
+}
+
+
+/* Text encoding */
+
 class TextEncoding extends enum uint(8, 16) {
 	0x00 : "ISO-8859-1",
     0x01 : "UTF-16",
@@ -438,7 +453,8 @@ class SynchSafeInteger(count) extends Data(count)
 
 //// 4.1.   Unique file identifier
 
-class UniqueFileIdentifier as ID3v2Frame("UFID")
+class UniqueFileIdentifier as ID3v2Frame("UFID"),
+      UniqueFileIdentifierOld as ID3v2OldFrame("UFI")
 {
 	String ownerIdentifier;
 	Data identifier;
@@ -446,7 +462,8 @@ class UniqueFileIdentifier as ID3v2Frame("UFID")
 
 //// 4.2.   Text information frames
 
-class TextFrame extends ID3v2Frame
+class TextFrame extends ID3v2Frame,
+      TextOldFrame extends ID3v2OldFrame
 {
 	TextEncoding textEncoding;
 	EncodedString(textEncoding, @rem/8) payload; 
@@ -464,6 +481,16 @@ class PartOfASetFrame extends TextFrame as ID3v2Frame("TPOS")
 class SetSubtitleFrame extends TextFrame as ID3v2Frame("TSST")
 class ISRCFrame extends TextFrame as ID3v2Frame("TSRC")
 
+/* deprecated v2.2 */
+class ContentGroupOldFrame extends TextOldFrame as ID3v2OldFrame("TT1")
+class TitleOldFrame extends TextOldFrame as ID3v2OldFrame("TT2")
+class SubtitleOldFrame extends TextOldFrame as ID3v2OldFrame("TT3")
+class AlbumOldFrame extends TextOldFrame as ID3v2OldFrame("TAL")
+class PartOfASetOldFrame extends TextOldFrame as ID3v2OldFrame("TPA")
+class TrackNumberOldFrame extends TextOldFrame as ID3v2OldFrame("TRK")
+class ISRCOldFrame extends TextOldFrame as ID3v2OldFrame("TRC")
+
+
 //// 4.2.2.   Involved persons frames
 
 class ArtistFrame extends TextFrame as ID3v2Frame("TPE1")
@@ -475,8 +502,23 @@ class LyricistFrame extends TextFrame as ID3v2Frame("TEXT")
 class OriginalLyricistName extends TextFrame as ID3v2Frame("TOLY")
 class ComposerFrame extends TextFrame as ID3v2Frame("TCOM")
 class MusicianCreditsListFrame extends TextFrame as ID3v2Frame("TMCL")
-class InvolvedPeopleListFrame extends TextFrame as ID3v2Frame("TIPL")
+class InvolvedPeopleList2Frame extends TextFrame as ID3v2Frame("TIPL")
 class EncodedByFrame extends TextFrame as ID3v2Frame("TENC")
+
+/* deprecated v2.3 */
+class InvolvedPeopleListFrame extends TextFrame as ID3v2OldFrame("IPLS")
+
+/* deprecated v2.2 */
+class ArtistOldFrame extends TextOldFrame as ID3v2OldFrame("TP1")
+class BandOldFrame extends TextOldFrame as ID3v2OldFrame("TP2")
+class ConductorOldFrame extends TextOldFrame as ID3v2OldFrame("TP3")
+class InterpretedByOldFrame extends TextOldFrame as ID3v2OldFrame("TP4")
+class OriginalArtistOldFrame extends TextOldFrame as ID3v2OldFrame("TOA")
+class LyricistOldFrame extends TextOldFrame as ID3v2OldFrame("TXT")
+class ComposerOldFrame extends TextOldFrame as ID3v2OldFrame("TCM")
+class InvolvedPeopleListOldFrame extends TextOldFrame as ID3v2OldFrame("IPL")
+class OriginalAlbumOldFrame extends TextOldFrame as ID3v2OldFrame("TOT")
+
 
 //// 4.2.3.   Derived and subjective properties frames
 
@@ -489,6 +531,20 @@ class FileTypeFrame extends TextFrame as ID3v2Frame("TFLT")
 class MediaTypeFrame extends TextFrame as ID3v2Frame("TMED")
 class ModdFrame extends TextFrame as ID3v2Frame("TMOO")
 
+/* deprecated v2.2 */
+
+class BPMOldFrame extends TextOldFrame as ID3v2OldFrame("TBP")
+class LengthOldFrame extends TextOldFrame as ID3v2OldFrame("TLE")
+class InitialKeyOldFrame extends TextOldFrame as ID3v2OldFrame("TKE")
+class LanguageOldFrame extends TextOldFrame as ID3v2OldFrame("TLA")
+class ContentTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TCO")
+class FileTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TFT")
+class MediaTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TMT")
+class SizeOldFrame extends TextOldFrame as ID3v2OldFrame("TSI")
+class PlaylistDelayOldFrame extends TextOldFrame as ID3v2OldFrame("TDY")
+
+
+
 //// 4.2.4.   Rights and license frames
 
 class CopyRightMessageFrame extends TextFrame as ID3v2Frame("TCOP")
@@ -496,6 +552,15 @@ class ProducedNoticeFrame extends TextFrame as ID3v2Frame("TPRO")
 class PublishedFrame extends TextFrame as ID3v2Frame("TPUB")
 class FileOwnerFrame extends TextFrame as ID3v2Frame("TOWN")
 class InternetRadioStationNameFrame extends TextFrame as ID3v2Frame("TRSO")
+
+/* deprecated v2.2 */
+
+class CopyRightMessageOldFrame extends TextOldFrame as ID3v2OldFrame("TCR")
+class PublishedOldFrame extends TextOldFrame as ID3v2OldFrame("TPB")
+class EncodedByOldFrame extends TextOldFrame as ID3v2OldFrame("TEN")
+class SoftwareOldFrame extends TextOldFrame as ID3v2OldFrame("TSS")
+
+
 
 //// 4.2.5.   Other text frames
 
@@ -511,21 +576,47 @@ class AlbumSortOrderFrame extends TextFrame as ID3v2Frame("TSOA")
 class PerformerSortOrderFrame extends TextFrame as ID3v2Frame("TSOP")
 class TitleSortOrderFrame extends TextFrame as ID3v2Frame("TSOT")
 
+/* deprecated v2.3 */
+
+class YearFrame extends TextFrame as ID3v2Frame("TYER")
+class DateFrame extends TextFrame as ID3v2Frame("TDAT")
+class TimeFrame extends TextFrame as ID3v2Frame("TIME")
+class RecordingTimeFrame extends TextFrame as ID3v2Frame("TRDA")
+class OriginalYearFrame extends TextFrame as ID3v2Frame("TORY")
+class SizeFrame extends TextFrame as ID3v2Frame("TSIZE")
+
+/* deprecated v2.2 */
+
+class OriginalFilenameOldFrame extends TextOldFrame as ID3v2OldFrame("TOF")
+class YearOldFrame extends TextOldFrame as ID3v2OldFrame("TYE")
+class DateOldFrame extends TextOldFrame as ID3v2OldFrame("TDA")
+class TimeOldFrame extends TextOldFrame as ID3v2OldFrame("TIM")
+class RecordingTimeOldFrame extends TextOldFrame as ID3v2OldFrame("TRD")
+class OriginalYearOldFrame extends TextOldFrame as ID3v2OldFrame("TOR")
+
+
+
 //// 4.2.6.   User defined text information frame
 
-class UserDefinedTextFrame as ID3v2Frame("TXXX")
+class UserDefinedTextFrame as ID3v2Frame("TXXX"),
+      UserDefinedTextOldFrame as ID3v2OldFrame("TXX")
 {
 	TextEncoding textEncoding;
 	EncodedString(textEncoding) Description;
 	EncodedString(textEncoding, @rem/8) Value;
 }
 
+
+
 //// 4.3.   URL link frames
 
-class URLFrame extends ID3v2Frame
+class URLFrame extends ID3v2Frame,
+      URLOldFrame extends ID3v2OldFrame
 {
 	String(@rem/8) URL; 
 }
+
+
 
 //// 4.3.1.   URL link frames - details
 
@@ -537,9 +628,19 @@ class OfficialInternetRadioStationHomepageFrame extends URLFrame as ID3v2Frame("
 class PaymentURLFrame extends URLFrame as ID3v2Frame("WPAY")
 class PublishersOfficialWebpageFrame extends URLFrame as ID3v2Frame("WPUB")
 
+/* deprecated v2.2 */
+
+class CommercialURLOldFrame extends URLOldFrame as ID3v2OldFrame("WCM")
+class CopyrightURLOldFrame extends URLOldFrame as ID3v2OldFrame("WCP")
+class OfficialAudioFileWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAF")
+class OfficialArtistWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAR")
+class OfficialAudioSourceWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAS")
+class PublishersOfficialWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WPB")
+
 //// 4.3.2.   User defined URL link frame
 
-class UserDefinedURLFrame as ID3v2Frame("WXXX")
+class UserDefinedURLFrame as ID3v2Frame("WXXX"),
+      UserDefinedURLOldFrame as ID3v2OldFrame("WXX")
 {
 	TextEncoding textEncoding;
 	EncodedString(textEncoding) Description;
@@ -700,8 +801,7 @@ class CommentFrame as ID3v2Frame("COMM"),
 
 //// 4.11.   Relative volume adjustment (2)
 
-class RelativeVolumeAdjustmentFrame as ID3v2Frame("RVA2"),
-      RelativeVolumeAdjustmentOldFrame as ID3v2OldFrame("RVA")
+class RelativeVolumeAdjustment2Frame as ID3v2Frame("RVA2")
 {
 	String Identification;
 	RelativeVolumeAdjustmentEntry entries[];
@@ -732,14 +832,58 @@ class RelativeVolumeAdjustmentEntry
 
 class VolumeAdjustment extends int(16)
 {
-	@value /= 512.0;
-	@attr["unit"] = "Db";
+	@attr[] = (@value / 512.0)+" Db";
+}
+
+/* depreacted v2.3 */
+
+class RelativeVolumeAdjustmentFrame as ID3v2Frame("RVAD"),
+      RelativeVolumeAdjustmentOldFrame as ID3v2OldFrame("RVA")
+{
+    RVAIncrementDecrement incrementDecrement;
+    uint(8)               bitsUsedForVolumeDesc;
+    
+    var volumeDescSize = bitsUsedForVolumeDesc;
+    if (volumeDescSize % 8 != 0) {
+        volumeDescSize += 8 - (volumeDescSize % 8);
+    }
+    uint(volumeDescSize)  relativeVolumeChangeRight;
+    uint(volumeDescSize)  relativeVolumeChangeLeft;
+    uint(volumeDescSize)  peakVolumeRight;
+    uint(volumeDescSize)  peakVolumeLeft;
+    
+    if (@rem) {
+        uint(volumeDescSize) relativeVolumeChangeRightBack;
+        uint(volumeDescSize) relativeVolumeChangeLeftBack;
+        uint(volumeDescSize) peakVolumeRightBack;
+        uint(volumeDescSize) peakVolumeLeftBack;
+        
+        if (@rem) {
+            uint(volumeDescSize) relativeVolumeChangeCenter;
+            uint(volumeDescSize) peakVolumeCenter;
+            
+            if (@rem) {
+                uint(volumeDescSize) relativeVolumeChangeCenter;
+                uint(volumeDescSize) peakVolumeCenter;
+            }
+        }
+    }
+}
+
+class RVAIncrementDecrement with {displayMode:"bitset"}
+{
+    uint(2) reserved;
+    uint(1) bass;
+    uint(1) center;
+    uint(1) leftBack;
+    uint(1) rightBack;
+    uint(1) left;
+    uint(1) right;
 }
 
 //// 4.12.   Equalisation (2)
 
-class EqualisationFrame as ID3v2Frame("EQU2"),
-      EqualisationOldFrame as ID3v2OldFrame("EQU")
+class Equalisation2Frame as ID3v2Frame("EQU2")
 {
 	enum uint(8, 16) {
 		0x00 : "Band",
@@ -748,15 +892,28 @@ class EqualisationFrame as ID3v2Frame("EQU2"),
 	String identification;
 	
 	struct EqualisationEntry {
-		Frenquency frequency;
+		Frenquency2 frequency;
 		VolumeAdjustment volumeAdjustement;
 	} entries[];
 }
 
-class Frenquency extends uint(16)
+class Frenquency2 extends uint(16)
 {
-	@value *= 0.5;
-	@attr["unit"] = "Hz";
+	@attr[] = (@value*0.5)+" Hz";
+}
+
+/* deprecated v2.3 */
+
+class EqualisationFrame as ID3v2Frame("EQUA"),
+      EqualisationOldFrame as ID3v2OldFrame("EQU")
+{
+	uint(8) adjustmentBits;
+    
+    struct EqualisationEntry {
+        uint(1) incrementDecrement;
+		uint(15) frequency;
+		uint(adjustmentBits) adjustement;
+	} entries[];
 }
 
 //// 4.13.   Reverb
@@ -782,6 +939,40 @@ class AttachedPictureFrame as ID3v2Frame("APIC")
 {
 	TextEncoding textEncoding;
 	String MIMEType;
+	enum uint(8) {
+		0x00 : "Other",
+		0x01 : "32x32 pixels 'file icon' (PNG only)",
+		0x02 : "Other file icon",
+		0x03 : "Cover (front)",
+		0x04 : "Cover (back)",
+		0x05 : "Leaflet page",
+		0x06 : "Media (e.g. label side of CD)",
+		0x07 : "Lead artist/lead performer/soloist",
+		0x08 : "Artist/performer",
+		0x09 : "Conductor",
+		0x0A : "Band/Orchestra",
+		0x0B : "Composer",
+		0x0C : "Lyricist/text writer",
+		0x0D : "Recording Location",
+		0x0E : "During recording",
+		0x0F : "During performance",
+		0x10 : "Movie/video screen capture",
+		0x11 : "A bright coloured fish",
+		0x12 : "Illustration",
+		0x13 : "Band/artist logotype",
+		0x14 : "Publisher/Studio logotype"
+	} pictureType;
+	
+	EncodedString(textEncoding) description;
+	Data pictureData;
+}
+
+/* deprecated v2.2 */
+
+class AttachedPictureOldFrame as ID3v2OldFrame("PIC")
+{
+	TextEncoding textEncoding;
+	String(3) imageFormat;
 	enum uint(8) {
 		0x00 : "Other",
 		0x01 : "32x32 pixels 'file icon' (PNG only)",
@@ -859,6 +1050,15 @@ class AudioEncryptionFrame as ID3v2Frame("AENC"),
 	uint(16) previewStart;
 	uint(16) previewLength;
 	Data encryptionInfo;
+}
+
+/* deprecated encrypted metaframe v2.2 */
+
+class EncryptedMetaFrame as ID3v2OldFrame("CRM")
+{
+    String ownerIdentifier;
+    String content;
+    Data   encryptedDatablock;
 }
 
 //// 4.20. Linked information
@@ -990,154 +1190,4 @@ class ReplayGainAdjustmentFrame as ID3v2Frame("RGAD")
 class iTunesComplationFlagFrame extends TextFrame as ID3v2Frame("TCMP")
 class AlbumArtistSortFrame extends TextFrame as ID3v2Frame("TSO2")
 class ComposerSortFrame extends TextFrame as ID3v2Frame("TSOC")
-class YearFrame extends TextFrame as ID3v2Frame("TYER")
-class DateFrame extends TextFrame as ID3v2Frame("TDAT")
 class StudioFrame extends TextFrame as ID3v2Frame("TSTU")
-
-//////////////////////////////////////////////////////////////////
-//            ID3 tag version 2.2.0 - Main Structure            //
-//////////////////////////////////////////////////////////////////
-
-//// 3.2.   ID3v2 frames overview
-
-virtual class ID3v2OldFrame(id)
-{
-	String(3) FrameID;
-	@args.id = FrameID;
-	if (FrameID != "") {
-		SynchSafeInteger(24) Size;
-		@size = 8*Size + @pos;
-	}
-}
-
-// 4.   Declared ID3v2 frames
-
-//// 4.1.   Unique file identifier
-
-class UniqueFileIdentifierOld as ID3v2OldFrame("UFI")
-{
-    String ownerIdentifier;
-    Data   identifier;
-}
-
-//// 4.2.   Text information frames
-
-class TextOldFrame extends ID3v2OldFrame
-{
-	TextEncoding textEncoding;
-	EncodedString(textEncoding, @rem/8) payload; 
-}
-
-////// 4.2.1   Text information frames
-
-class ContentGroupOldFrame extends TextOldFrame as ID3v2OldFrame("TT1")
-class TitleOldFrame extends TextOldFrame as ID3v2OldFrame("TT2")
-class SubtitleOldFrame extends TextOldFrame as ID3v2OldFrame("TT3")
-class ArtistOldFrame extends TextOldFrame as ID3v2OldFrame("TP1")
-class BandOldFrame extends TextOldFrame as ID3v2OldFrame("TP2")
-class ConductorOldFrame extends TextOldFrame as ID3v2OldFrame("TP3")
-class InterpretedByOldFrame extends TextOldFrame as ID3v2OldFrame("TP4")
-class ComposerOldFrame extends TextOldFrame as ID3v2OldFrame("TCM")
-class LyricistOldFrame extends TextOldFrame as ID3v2OldFrame("TXT")
-class LanguageOldFrame extends TextOldFrame as ID3v2OldFrame("TLA")
-class ContentTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TCO")
-class AlbumOldFrame extends TextOldFrame as ID3v2OldFrame("TAL")
-class PartOfASetOldFrame extends TextOldFrame as ID3v2OldFrame("TPA")
-class TrackNumberOldFrame extends TextOldFrame as ID3v2OldFrame("TRK")
-class ISRCOldFrame extends TextOldFrame as ID3v2OldFrame("TRC")
-class YearOldFrame extends TextOldFrame as ID3v2OldFrame("TYE")
-class DateOldFrame extends TextOldFrame as ID3v2OldFrame("TDA")
-class TitleOldFrame extends TextOldFrame as ID3v2OldFrame("TIM")
-class RecordingTimeOldFrame extends TextOldFrame as ID3v2OldFrame("TRD")
-class MediaTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TMT")
-class FileTypeOldFrame extends TextOldFrame as ID3v2OldFrame("TFT")
-class BPMOldFrame extends TextOldFrame as ID3v2OldFrame("TBP")
-class CopyRightMessageOldFrame extends TextOldFrame as ID3v2OldFrame("TCR")
-class PublishedOldFrame extends TextOldFrame as ID3v2OldFrame("TPB")
-class EncodedByOldFrame extends TextOldFrame as ID3v2OldFrame("TEN")
-class SoftwareOldFrame extends TextOldFrame as ID3v2OldFrame("TSS")
-class OriginalOldFrame extends TextOldFrame as ID3v2OldFrame("TOF")
-class LengthOldFrame extends TextOldFrame as ID3v2OldFrame("TLE")
-class SizeOldFrame extends TextOldFrame as ID3v2OldFrame("TSI")
-class PlaylistDelayOldFrame extends TextOldFrame as ID3v2OldFrame("TDY")
-class InitialKeyOldFrame extends TextOldFrame as ID3v2OldFrame("TKE")
-class OriginalAlbumOldFrame extends TextOldFrame as ID3v2OldFrame("TOT")
-class OriginalArtistOldFrame extends TextOldFrame as ID3v2OldFrame("TOA")
-class OriginalYearOldFrame extends TextOldFrame as ID3v2OldFrame("TOR")
-
-////// 4.2.2.   User defined text information frame
-
-class UserDefinedTextOldFrame as ID3v2OldFrame("TXX")
-{
-    TextEncoding textEncoding;
-	EncodedString(textEncoding) description; 
-    EncodedString(textEncoding, @rem/8) value; 
-}
-
-//// 4.3.   URL link frames
-
-class URLOldFrame extends ID3v2OldFrame
-{
-	String(@rem/8) URL; 
-}
-
-//// 4.3.1.   URL link frames - details
-
-class OfficialAudioFileWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAF")
-class OfficialArtistWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAR")
-class OfficialAudioSourceWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WAS")
-class CommercialURLOldFrame extends URLOldFrame as ID3v2OldFrame("WCM")
-class CopyrightURLOldFrame extends URLOldFrame as ID3v2OldFrame("WCP")
-class PublishersOfficialWebpageOldFrame extends URLOldFrame as ID3v2OldFrame("WPB")
-
-//// 4.3.2.   User defined URL link frame
-
-class UserDefinedURLOldFrame as ID3v2OldFrame("WXX")
-{
-	TextEncoding textEncoding;
-	EncodedString(textEncoding) Description;
-	EncodedString(textEncoding, @rem/8) URL;
-}
-
-//// 4.4.   Involved people list
-
-class InvolvedPeopleListOldFrame as ID3v2OldFrame("IPL")
-{
-	TextEncoding textEncoding;
-	EncodedString(textEncoding, @rem/8) peopleList;
-}
-
-
-//// 4.15   Attached picture
-
-class AttachedPictureOldFrame as ID3v2OldFrame("PIC")
-{
-	TextEncoding textEncoding;
-	String(3) imageFormat;
-	enum uint(8) {
-		0x00 : "Other",
-		0x01 : "32x32 pixels 'file icon' (PNG only)",
-		0x02 : "Other file icon",
-		0x03 : "Cover (front)",
-		0x04 : "Cover (back)",
-		0x05 : "Leaflet page",
-		0x06 : "Media (e.g. label side of CD)",
-		0x07 : "Lead artist/lead performer/soloist",
-		0x08 : "Artist/performer",
-		0x09 : "Conductor",
-		0x0A : "Band/Orchestra",
-		0x0B : "Composer",
-		0x0C : "Lyricist/text writer",
-		0x0D : "Recording Location",
-		0x0E : "During recording",
-		0x0F : "During performance",
-		0x10 : "Movie/video screen capture",
-		0x11 : "A bright coloured fish",
-		0x12 : "Illustration",
-		0x13 : "Band/artist logotype",
-		0x14 : "Publisher/Studio logotype"
-	} pictureType;
-	
-	EncodedString(textEncoding) description;
-	Data pictureData;
-}
