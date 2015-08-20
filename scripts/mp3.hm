@@ -36,7 +36,7 @@ class MP3File as File
             var id3Tag = @parser.peek:(String(3));
             if (id3Tag == "ID3") {
                 ID3v2Tag *;
-            } if (id3Tag == "TAG") {
+            } else if (id3Tag == "TAG") {
                 ID3v1Tag *;
             } else {
                 UnknownData(@rem) *;
