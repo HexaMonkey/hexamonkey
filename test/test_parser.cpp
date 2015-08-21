@@ -76,6 +76,11 @@ void TestParser::test_mp4()
     QVERIFY(checkFile("test_mp4.mp4", -1, 20));
 }
 
+void TestParser::test_ogg()
+{
+    QVERIFY(checkFile("test_ogg.ogg", -1, 10));
+}
+
 void TestParser::test_sqlite()
 {
     QVERIFY(checkFile("test_sqlite.sqlite"));

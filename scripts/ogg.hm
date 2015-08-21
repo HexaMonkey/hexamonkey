@@ -1,0 +1,92 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+// http://mpgedit.org/mpgedit/mpeg_format/MP3Format.html
+// http://id3.org/mp3Frame
+
+addMagicNumber 4F 67 67 53
+
+//addExtension ogg 
+addExtension ogv 
+addExtension oga 
+addExtension ogx 
+addExtension ogm 
+addExtension spx 
+addExtension opus 
+addExtension flac 
+addExtension drc
+
+import id3
+
+class OggFile as File
+{
+    @endianness = "littleEndian";
+
+    while (1) {
+        var magic = @parser.peek:(String(4));
+        if (magic == "OggS") {
+            OggPage #;
+        } else {
+            // if sync lost then resync
+            var patternPos = @parser.findBytePattern:("4f 67 67 53");
+            if (patternPos == -1 || patternPos > @size) {
+                break;
+            } else {
+                @pos = patternPos;
+            }
+        }
+    }
+}
+
+class OggPage
+{
+    String(4)   capturePattern;
+    uint(8)     version;
+    HeaderFlags headerType;
+    uint(64)    granulePosition;
+    uint(32)    bitstreamSerialNumber;
+    uint(32)    pageSequenceNumber;
+    uint(32,16) checksum;
+    uint(8)     pageSegments;
+    uint(8)     segmentsTable[pageSegments];
+    
+    var bodySize = 0;
+    for (var i = 0; i < pageSegments; ++i) {
+        bodySize += 8*segmentsTable[i];
+    }
+    
+    OggPageBody(bodySize) *;
+}
+
+class HeaderFlags with {displayMode : "bitset"}
+{
+    uint(5) reserved;
+    uint(1) EOS;
+    uint(1) BOS;
+    uint(1) continuation;
+}
+
+class OggPageBody(_size) extends Data(_size)
+{
+    segmentsTable := @parent.segmentsTable;
+    var pageSegments = @parent.pageSegments;
+    
+    for (var i = 0; i < pageSegments; ++i) {
+        Data(8*segmentsTable[i]) segment;
+    }
+}
+
