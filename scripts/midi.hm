@@ -132,7 +132,8 @@ class MidiKey extends uint(8)
 
 class PolyphonicKeyPressedEvent as MidiEvent(0xA)
 {
-    uint(8) key;
+    MidiKey key;
+    @attr[] = key.@attr[];
     uint(8) pressure;
 }
 
