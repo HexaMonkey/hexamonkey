@@ -26,6 +26,7 @@ private slots:
     void test_pe();
     void test_png();
     void test_messagepack();
+    void test_midi();
     void test_mp3();
     void test_mp4();
     void test_ogg();

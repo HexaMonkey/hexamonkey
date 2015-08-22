@@ -1,0 +1,258 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 4D 54 68 64
+addExtension mid
+addExtension midi
+
+class MidiFile as File,
+      MidiData(_size) extends Data(_size)
+{
+	@endianness = "bigEndian";
+
+	while(1) MidiChunk *;
+}
+
+virtual class MidiChunk(type, extended_type)
+{
+    String(4) type;
+	uint(32) size;
+	@size = @pos + 8*size;
+	@args.type = type;
+}
+
+class Division extends Data(16) with {displayMode:"bitset"}
+{
+    uint(1) type;
+    if (type) {
+        int(7)   minusFramesPerSecond;
+        uint(8)  ticksPerFrame;
+    } else {
+        uint(15) ticksPerQuarterNote;
+    }
+}
+
+class VariableLengthQuantity
+{
+    @value = 0;
+    do {
+        var byte = @parser.read:uint(8);
+        @value = (@value << 8) | byte;
+    } while (byte & 0x80)
+    @size = @pos;
+}
+
+class MidiHeader as MidiChunk("MThd")
+{
+    uint(16) format;
+    uint(16) tracks;
+    Division division;
+}
+
+class MidiTrack as MidiChunk("MTrk")
+{
+    Array(TrackEvent(), -1, "track%") events;
+}
+
+virtual class TrackEvent(type)
+{
+    VariableLengthQuantity deltaTime;
+
+    var byte = @parser.peek:uint(8);
+    if (byte == 0xff) {
+        @args.type = "meta";
+    } else if (byte == 0xf0) {
+        @args.type = "sysex";
+    } else if (byte == 0xf7) {
+        @args.type = "excape";
+    } else {
+        @args.type = "midi";
+    }
+}
+
+class MidiEvent(type) as TrackEvent("midi")
+{
+    uint(4) type;
+    uint(4) channel;
+    @args.type = type;
+}
+
+class NoteOffEvent as MidiEvent(0x8)
+{
+    MidiKey key;
+    @attr[] = key.@attr[];
+    uint(8) velocity;
+}
+
+class NoteOnEvent as MidiEvent(0x9)
+{
+    MidiKey key;
+    @attr[] = key.@attr[];
+    uint(8) velocity;
+}
+
+class MidiKey extends uint(8)
+{
+    keys := @global.midiKeys;
+    if (keys == undefined) {
+        keys := @global.midiKeys := [
+            "C",
+            "C#",
+            "D",
+            "D#",
+            "E",
+            "D",
+            "D#",
+            "F",
+            "F#",
+            "A",
+            "A#",
+            "B"
+        ];
+    }
+
+    var key = keys[@value % 12];
+    var octave = (@value / 12) - 2;
+    @attr[] = key+octave;
+}
+
+class PolyphonicKeyPressedEvent as MidiEvent(0xA)
+{
+    uint(8) key;
+    uint(8) pressure;
+}
+
+class ControllerChangeEvent as MidiEvent(0xB)
+{
+    enum uint(8) {
+        0x78 : "All Sound Off",
+        0x79 : "Reset All Controllers",
+        0x7a : "Local Control",
+        0x7b : "All Notes Off",
+        0x7c : "Omni Mode Off",
+        0x7d : "Mono Mode On",
+        0x7e : "Poly Mode On"
+    } controllerNumber;
+    @attr[] = controllerNumber.@attr[];
+    uint(8) controllerValue;
+}
+    
+class ProgramChangeEvent as MidiEvent(0xC)
+{
+    uint(8) newProgramNumber;
+}
+
+class ChannelKeyPressureEvent as MidiEvent(0xD)
+{
+    uint(8) channelPressureValue;
+}
+
+class PitchBendEvent as MidiEvent(0xE)
+{
+    uint(8) leastSignificantByte;
+    uint(8) mostSignificantByte;
+}
+
+virtual class MetaEvent(typeId) as TrackEvent("meta")
+{
+    uint(8) id;
+    uint(8) typeId;
+    VariableLengthQuantity length;
+    @args.typeId = typeId;
+    @size = @pos + 8*length;
+}
+
+class SequenceNumberEvent as MetaEvent(0x00)
+{
+    uint(16) sequenceNumber;
+}
+
+class TextMetaEvent extends MetaEvent
+{
+    String(length)         text;
+}
+
+class TextEvent extends TextMetaEvent as MetaEvent(0x01)
+class CopyrightNoticeEvent extends TextMetaEvent as MetaEvent(0x02)
+class SequenceTrackNameEvent extends TextMetaEvent as MetaEvent(0x03)
+class InstrumentNameEvent extends TextMetaEvent as MetaEvent(0x04)
+class LyricEvent extends TextMetaEvent as MetaEvent(0x05)
+class MarkerEvent extends TextMetaEvent as MetaEvent(0x06)
+class CueEvent extends TextMetaEvent as MetaEvent(0x05)
+
+class MidiChannelPrefixEvent as MetaEvent(0x20)
+{
+    uint(8) midiChannel;
+}
+
+class EndOfTrackEvent as MetaEvent(0x2f)
+{
+}
+
+class SetTempoEvent as MetaEvent(0x51)
+{
+    uint(24) newTempo;
+}
+
+class SMTPEOffset as MetaEvent(0x54)
+{
+    uint(8)  hours;
+    uint(8)  minutes;
+    uint(8)  seconds;
+    uint(8)  frames;
+    uint(8)  fractionalFrame;
+}
+
+class TimeSignatureEvent as MetaEvent(0x58)
+{
+    TimeSignature timeSignature;
+    uint(8) clockPerMetronomeTick;
+    uint(8) numberOf32thNotesPer24Clocks;
+}
+
+class TimeSignature
+{
+    uint(8) numerator;
+    uint(8) power;
+    @value = (numerator+0.0) / (1<<power);
+}
+
+class KeySignatureEvent as MetaEvent(0x59)
+{
+    int(8)  sharpsOrFlats;
+    uint(8) minor;
+} 
+
+class SequencerSpecificMetaEvent as MetaEvent(0x7f)
+{
+    Data data;
+}
+
+class SysexEvent as TrackEvent("sysex")
+{
+    uint(8) startOfExclusive;
+    VariableLengthQuantity length;
+    uint(8) startOfExclusive;
+    Data(8*length) sysexData;
+}
+
+class EscapeEvent as TrackEvent("escape")
+{
+    uint(8) endOfExclusive;
+    VariableLengthQuantity length;
+    Data(8*length) anyData;
+}

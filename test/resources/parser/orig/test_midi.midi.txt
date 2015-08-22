@@ -1,0 +1,107 @@
+0x1984       MidiFile 
+0x112            MidiHeader 
+0x32                 String(4) type = "MThd"
+32x32                uint(32) size = 6
+64x16                uint(16) format = 1
+80x16                uint(16) tracks = 2
+96x16                Division division 
+96x1                     uint(1) type = 0
+97x15                    uint(15) ticksPerQuarterNote = 240
+112x288          MidiTrack 
+112x32               String(4) type = "MTrk"
+144x32               uint(32) size = 28
+176x224              Array(TrackEvent, -1) events 
+176x64                   TimeSignatureEvent track0 
+176x8                        VariableLengthQuantity deltaTime = 0
+184x8                        uint(8) id = 255
+192x8                        uint(8) typeId = 88
+200x8                        VariableLengthQuantity length = 4
+208x16                       TimeSignature timeSignature = 1
+208x8                            uint(8) numerator = 4
+216x8                            uint(8) power = 2
+224x8                        uint(8) clockPerMetronomeTick = 24
+232x8                        uint(8) numberOf32thNotesPer24Clocks = 8
+240x56                   SetTempoEvent track1 
+240x8                        VariableLengthQuantity deltaTime = 0
+248x8                        uint(8) id = 255
+256x8                        uint(8) typeId = 81
+264x8                        VariableLengthQuantity length = 3
+272x24                       uint(24) newTempo = 500000
+296x72                   SMTPEOffset track2 
+296x8                        VariableLengthQuantity deltaTime = 0
+304x8                        uint(8) id = 255
+312x8                        uint(8) typeId = 84
+320x8                        VariableLengthQuantity length = 5
+328x8                        uint(8) hours = 64
+336x8                        uint(8) minutes = 0
+344x8                        uint(8) seconds = 0
+352x8                        uint(8) frames = 0
+360x8                        uint(8) fractionalFrame = 0
+368x32                   EndOfTrackEvent track3 
+368x8                        VariableLengthQuantity deltaTime = 0
+376x8                        uint(8) id = 255
+384x8                        uint(8) typeId = 47
+392x8                        VariableLengthQuantity length = 0
+400x1584         MidiTrack 
+400x32               String(4) type = "MTrk"
+432x32               uint(32) size = 190
+464x1520             Array(TrackEvent, -1) events 
+464x24                   ProgramChangeEvent track0 
+464x8                        VariableLengthQuantity deltaTime = 0
+472x4                        uint(4) type = 12
+476x4                        uint(4) channel = 9
+480x8                        uint(8) newProgramNumber = 0
+488x32                   ControllerChangeEvent track1 
+488x8                        VariableLengthQuantity deltaTime = 0
+496x4                        uint(4) type = 11
+500x4                        uint(4) channel = 9
+504x8                        Enum(uint(8)) controllerNumber = 7
+512x8                        uint(8) controllerValue = 127
+520x32                   NoteOnEvent track2 
+520x8                        VariableLengthQuantity deltaTime = 0
+528x4                        uint(4) type = 9
+532x4                        uint(4) channel = 9
+536x8                        MidiKey key = 36
+544x8                        uint(8) velocity = 97
+552x32                   NoteOffEvent track3 
+552x8                        VariableLengthQuantity deltaTime = 61
+560x4                        uint(4) type = 8
+564x4                        uint(4) channel = 9
+568x8                        MidiKey key = 36
+576x8                        uint(8) velocity = 64
+584x40                   NoteOnEvent track4 
+584x16                       VariableLengthQuantity deltaTime = 33075
+600x4                        uint(4) type = 9
+604x4                        uint(4) channel = 9
+608x8                        MidiKey key = 38
+616x8                        uint(8) velocity = 94
+624x32                   NoteOnEvent track5 
+624x8                        VariableLengthQuantity deltaTime = 120
+632x4                        uint(4) type = 9
+636x4                        uint(4) channel = 9
+640x8                        MidiKey key = 36
+648x8                        uint(8) velocity = 94
+656x32                   NoteOffEvent track6 
+656x8                        VariableLengthQuantity deltaTime = 1
+664x4                        uint(4) type = 8
+668x4                        uint(4) channel = 9
+672x8                        MidiKey key = 38
+680x8                        uint(8) velocity = 64
+688x40                   NoteOffEvent track7 
+688x16                       VariableLengthQuantity deltaTime = 33050
+704x4                        uint(4) type = 8
+708x4                        uint(4) channel = 9
+712x8                        MidiKey key = 36
+720x8                        uint(8) velocity = 64
+728x32                   NoteOnEvent track8 
+728x8                        VariableLengthQuantity deltaTime = 85
+736x4                        uint(4) type = 9
+740x4                        uint(4) channel = 9
+744x8                        MidiKey key = 36
+752x8                        uint(8) velocity = 94
+760x32                   NoteOffEvent track9 
+760x8                        VariableLengthQuantity deltaTime = 77
+768x4                        uint(4) type = 8
+772x4                        uint(4) channel = 9
+776x8                        MidiKey key = 36
+784x8                        uint(8) velocity = 64
