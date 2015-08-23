@@ -42,7 +42,8 @@ public:
         name = 0,
         elementType = 1,
         elementCount = 2,
-        displayMode = 3
+        displayMode = 3,
+        displayAs = 4
     };
 
     typedef std::function<Variant (const ObjectType &)> AttributeGenerator;

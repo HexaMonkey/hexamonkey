@@ -63,7 +63,12 @@ const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"}, [](Objec
                                        });
 });
 
-const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"});
+const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"}, [](ObjectTypeTemplate& typeTemplate) {
+    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::displayAs,
+                                       []objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                       });
+});
 
 const ObjectTypeTemplate DefaultModule::integer("int",{"size", "_base"});
 const ObjectTypeTemplate DefaultModule::uinteger("uint",{"size", "_base"});

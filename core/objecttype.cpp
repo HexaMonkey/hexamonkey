@@ -89,6 +89,21 @@ void ObjectType::setName(const std::string &name)
     _name.setValue(name);
 }
 
+const ObjectType &ObjectType::displayAs() const
+{
+    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayAs;
+    if (typeTemplate().hasAttributeGenerator(attribute)) {
+        const Variant& variant = typeTemplate().attributeGenerator(attribute)(*this);
+        if (!variant.isValueless()) {
+            return variant.toObjectType();
+        } else {
+            return *this;
+        }
+    } else {
+        return *this;
+    }
+}
+
 bool ObjectType::hasDisplayMode() const
 {
     return !vDisplayMode().isValueless();

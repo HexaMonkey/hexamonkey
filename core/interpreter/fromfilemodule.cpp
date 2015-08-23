@@ -235,7 +235,8 @@ std::unordered_map<std::string, ObjectTypeTemplate::Attribute> _attributes = {
     {"elemType", ObjectTypeTemplate::Attribute::elementType},
     {"elemCount", ObjectTypeTemplate::Attribute::elementCount},
     {"name", ObjectTypeTemplate::Attribute::name},
-    {"displayMode", ObjectTypeTemplate::Attribute::displayMode}
+    {"displayMode", ObjectTypeTemplate::Attribute::displayMode},
+    {"displayAs", ObjectTypeTemplate::Attribute::displayAs}
 };
 
 void FromFileModule::nameScan(Program& declarations)

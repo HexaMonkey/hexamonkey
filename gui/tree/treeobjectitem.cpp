@@ -276,22 +276,23 @@ std::ostream& displayType(std::ostream& out, const ObjectType& type)
         }
         out << "]";
     } else {
-        out << "<span style=\"color:#800080;\">" << type.name() << "</span>";
+        const ObjectType& typeDisplayed = type.displayAs();
+        out << "<span style=\"color:#800080;\">" << typeDisplayed.name() << "</span>";
 
-        int n = type.numberOfDisplayableParameters();
+        int n = typeDisplayed.numberOfDisplayableParameters();
 
         if(n>0)
         {
             out<<"(";
             for(int i = 0; i < n; ++i)
             {
-                if(type.parameterSpecified(i))
+                if(typeDisplayed.parameterSpecified(i))
                 {
-                    displayVariant(out, type.parameterValue(i));
+                    displayVariant(out, typeDisplayed.parameterValue(i));
                 }
                 else
                 {
-                    out<<type.typeTemplate().parameterName(i);
+                    out<<typeDisplayed.typeTemplate().parameterName(i);
                 }
                 if(i < n-1)
                     out<<", ";

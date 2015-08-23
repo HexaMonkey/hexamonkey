@@ -85,6 +85,11 @@ public:
     void setName(const std::string& name);
 
     /**
+     * @brief Should display as type
+     */
+    const ObjectType& displayAs() const;
+
+    /**
      * @brief Set a value for the first parameters
      */
     template<typename... Args> void setParameters(Args... args){return _setParameters(0, args...);}
