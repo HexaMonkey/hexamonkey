@@ -32,6 +32,7 @@ private slots:
     void test_ogg();
     void test_sqlite();
     void test_tiff();
+    void test_wave();
     void test_zip();
 
 private:

@@ -448,7 +448,7 @@ class WaveFormatCHUNK as CHUNK("fmt ", "WAVE")
 
 class WaveDataCHUNK as CHUNK("data", "WAVE")
 {
-    
+    Data data;
 }
 
 class WaveLIST as LIST("wavl", "WAVE")

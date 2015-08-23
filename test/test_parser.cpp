@@ -96,6 +96,11 @@ void TestParser::test_tiff()
     QVERIFY(checkFile("test_tiff.tif", 2, 30));
 }
 
+void TestParser::test_wave()
+{
+    QVERIFY(checkFile("test_wav.wav"));
+}
+
 void TestParser::test_zip()
 {
     QVERIFY(checkFile("test_zip.zip"));

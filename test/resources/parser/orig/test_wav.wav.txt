@@ -1,0 +1,29 @@
+0x1328592    WaveFile 
+0x1328592        WaveRIFF 
+0x32                 FOURCC dwFourCC = "RIFF"
+32x32                DWORD dwSize = 166066
+64x32                FOURCC dwFourCC = "WAVE"
+96x208               WaveFormatCHUNK 
+96x32                    FOURCC dwFourCC = "fmt "
+128x32                   DWORD dwSize = 18
+160x16                   Enum(WORD) wFormatTag = 6
+176x16                   WORD wChannels = 1
+192x32                   DWORD dwSamplesPerSec = 16000
+224x32                   DWORD dwAvgBytesPerSec = 16000
+256x16                   WORD wBlockAlign = 1
+304x96               WaveFactCHUNK 
+304x32                   FOURCC dwFourCC = "fact"
+336x32                   DWORD dwSize = 4
+368x32                   DWORD dwFileSize = 165935
+400x1327552          WaveDataCHUNK 
+400x32                   FOURCC dwFourCC = "data"
+432x32                   DWORD dwSize = 165935
+464x1327488              Data data 
+1327952x640          InfoList 
+1327952x32               FOURCC dwFourCC = "LIST"
+1327984x32               DWORD dwSize = 72
+1328016x32               FOURCC dwFourCC = "INFO"
+1328048x544              NameInfo 
+1328048x32                   FOURCC dwFourCC = "INAM"
+1328080x32                   DWORD dwSize = 59
+1328112x480                  ZSTR string = "short0mediaconvert__fb216gzb3utcavanunnb1hb6uq222028.tmpsnd"
