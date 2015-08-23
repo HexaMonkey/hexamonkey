@@ -61,7 +61,7 @@ std::string MagicFormatDetector::doGetFormat(File &file) const
             }
         }))
         {
-            if(entry.second.size() > bestMagicLength)
+            if(entry.first.size() > bestMagicLength)
             {
                 bestFormat = format;
                 bestMagicLength = entry.first.size();
