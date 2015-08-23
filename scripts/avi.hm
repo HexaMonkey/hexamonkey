@@ -1,51 +1,50 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
 addMagicNumber 52 49 46 46 xx xx xx xx 41 56 49 20 4c 49 53 54
 addExtension avi
 
-import microsoft
+import riff
 
-class AviFile as File, ContainerCHUNK extends CHUNK, ContainerLIST extends LIST, ContainerRIFF extends RIFF
+class AviFile as File
 {
 	@endianness = "littleEndian";
 	
 	while(1) CHUNK *;
 }
 
-virtual class CHUNK(code) 
+class AviRIFF as RIFF("AVI "),
+      AvixRIFF as RIFF("AVIX")
 {
-	FOURCC dwFourCC;
-	DWORD dwSize;
-	@size = 16*((dwSize+1)/2)+64;
-	
-	//The fourCC are either four letter codes or
-	//two letters and two digits i
-	var subCode1 = %substr(dwFourCC,0,2);
-	var subCode2 = %substr(dwFourCC,2,2);
-	if (%int(subCode1) != undefined) {
-		@args.code = subCode2;
-	} else if (%int(subCode2) != undefined) {
-		@args.code = subCode1;
-	} else {
-		@args.code = dwFourCC;
-	}
+    @context.namespace = "AVI";
+    while(1) {
+        CHUNK *;
+    }
 }
 
-virtual class LIST(code) as CHUNK("LIST"), RIFF(code) as CHUNK("RIFF")
-{
-	FOURCC dwFourCC;
-	@args.code = dwFourCC;
-}
-
-class AviRIFF extends ContainerRIFF as RIFF("AVI ");
-class AvixRIFF extends ContainerRIFF as RIFF("AVIX");
-
-class HeaderList extends ContainerLIST as LIST("hdrl");
+class AviHeaderList as LIST("hdrl", "AVI")
 
 class MainAviHeader as CHUNK("avih")
 {
 	DWORD dwMicroSecPerFrame; // frame display rate (or 0)
 	DWORD dwMaxBytesPerSec; // max. transfer rate
 	DWORD dwPaddingGranularity; // pad to multiples of this
-	// size;
+	                            // size;
 	DWORD dwFlags; // the ever-present flags
 	DWORD dwTotalFrames; // # frames in file
 	DWORD dwInitialFrames;
@@ -56,9 +55,9 @@ class MainAviHeader as CHUNK("avih")
 	DWORD dwReserved[4];
 }
 
-class StreamHeaderList extends ContainerLIST as LIST("strl");
+class StreamHeaderList as LIST("strl", "AVI")
 
-class StreamHeader as CHUNK("strh")
+class StreamHeader as CHUNK("strh", "AVI")
 {
 	FOURCC fccType;
 	FOURCC fccHandler;
@@ -76,7 +75,7 @@ class StreamHeader as CHUNK("strh")
 	RECT rcFrame;
 }
 
-virtual class StreamFormat(fccType) as CHUNK("strf")
+virtual class StreamFormat(fccType) as CHUNK("strf", "AVI")
 {
 	@args.fccType = @parent[StreamHeader()].fccType;
 }
@@ -107,12 +106,12 @@ class WaveFormatEx as StreamFormat("auds")
 	WORD  cbSize;
 }
 
-class StreamName as CHUNK("strn")
+class StreamName as CHUNK("strn", "AVI")
 {
-	String name;
+	STR name;
 }
 
-class IndexChunk as CHUNK("indx")
+class IndexChunk as CHUNK("indx", "AVI")
 {
 	WORD wLongsPerEntry;
 	BYTE bIndexSubType;
@@ -123,7 +122,7 @@ class IndexChunk as CHUNK("indx")
 	DWORD adw[wLongsPerEntry][];
 }
 
-class IndexEntries as CHUNK("idx1")
+class IndexEntries as CHUNK("idx1", "AVI")
 {
 	IndexEntry entries[];
 }
@@ -136,26 +135,37 @@ class IndexEntry
 	DWORD dwChunkLength;
 }
 
-class MovieList extends ContainerLIST as LIST("movi");
-class MovieRecord extends ContainerLIST as LIST("rec ");
+class MovieList as LIST("movi", "AVI")
+class MovieRecord as LIST("rec ", "AVI")
 
-class InfoList extends ContainerLIST as LIST("INFO");
-
-class OpenDMLList extends ContainerLIST as LIST("odml");
-
-class ODMLExtendedAVIHeader as CHUNK("dmlh")
-{
-	DWORD dwTotalFrames;
-} 
-
-forward CHUNK("dc") to VideoChunk
-forward CHUNK("db") to VideoChunk
-
-class Junk as CHUNK("JUNK"), 
-      AudioChunk as CHUNK("wb"),
-	  VideoChunk extends CHUNK,
-	  SubtitleChunk as CHUNK("tx"),
-	  StandardIndexBlock as CHUNK("ix")
+class AudioChunk as CHUNK("wb", "AVI")  
 {
 	Data payload;
 }
+
+class CompressedVideoChunk as CHUNK("dc", "AVI")
+{
+    Data payload;
+}
+
+class UncompressedCompressedVideoChunk as CHUNK("db", "AVI")
+{
+    Data payload;
+}
+
+class SubtitleChunk as CHUNK("tx", "AVI")
+{
+    Data payload;
+}
+
+class StandardIndexBlock as CHUNK("ix", "AVI")
+{
+    Data payload;
+}
+
+class OpenDMLList as LIST("odml", "AVI")
+
+class ODMLExtendedAVIHeader as CHUNK("dmlh", "AVI")
+{
+	DWORD dwTotalFrames;
+} 

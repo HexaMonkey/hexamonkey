@@ -40,6 +40,41 @@ class UINT64(_base) extends uint(64, _base)
 class GUID extends uuid
 class FOURCC extends String(4)
 
+class STR(size) extends String(size)
+class ZSTR extends String
+
+class RGBQUAD {
+    BYTE rgbBlue;
+    BYTE rgbGreen;
+    BYTE rgbRed;
+    BYTE rgbReserved;
+  
+   @attr.code = "#"+%str(rgbRed, 16, 2)+%str(rgbGreen, 16, 2)+%str(rgbBlue, 16, 2);
+}
+
+class RGBTRIPLE {
+    BYTE rgbBlue;
+    BYTE rgbGreen;
+    BYTE rgbRed;
+    
+    @attr.code = "#"+%str(rgbRed, 16, 2)+%str(rgbGreen, 16, 2)+%str(rgbBlue, 16, 2);
+}
+
+class BSTR, BZSTR
+{
+    BYTE      size;
+    STR(size) payload;
+    @value = payload;
+}
+
+class WSTR, WZSTR
+{
+    WORD      size;
+    STR(size) payload;
+    @value = payload;
+}
+
+
 class RECT 
 {
 	WORD left;

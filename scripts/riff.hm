@@ -1,0 +1,547 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 52 49 46 46
+addExtension riff
+
+import microsoft bmp midi
+
+class RiffFile as File 
+{
+	@endianness = "littleEndian";
+	while(1) CHUNK *;
+}
+
+virtual class CHUNK(code, namespace) 
+{
+	FOURCC dwFourCC;
+	DWORD dwSize;
+	@size = 16*((dwSize+1)/2)+64;
+	
+	//The fourCC are either four letter codes or
+	//two letters and two digits i
+	var subCode1 = %substr(dwFourCC,0,2);
+	var subCode2 = %substr(dwFourCC,2,2);
+	if (%int(subCode1) != undefined) {
+		@args.code = subCode2;
+	} else if (%int(subCode2) != undefined) {
+		@args.code = subCode1;
+	} else {
+		@args.code = dwFourCC;
+	}
+    @args.namespace = @context.namespace;
+}
+
+class ContainerCHUNK extends CHUNK
+{
+    while(1) CHUNK *;
+}
+
+virtual class RIFF(code) as CHUNK("RIFF")
+{
+	FOURCC dwFourCC;
+	@args.code = dwFourCC;
+}
+
+virtual class LIST(code, namespace) as CHUNK("LIST", namespace)
+{
+    FOURCC dwFourCC;
+    @args.code = dwFourCC;
+    while(1) {
+        CHUNK *;
+    }
+}
+
+class InfoList extends ContainerLIST as LIST("INFO");
+
+class StringCHUNK extends CHUNK
+{
+    ZSTR string;
+}
+
+class ArchivalLocationInfo extends StringCHUNK as CHUNK("IARL")
+class ArtistInfo extends StringCHUNK as CHUNK("IART")
+class CommissionedInfo extends StringCHUNK as CHUNK("ICMS")
+class CommentInfo extends StringCHUNK as CHUNK("ICMT")
+class CopyrightInfo extends StringCHUNK as CHUNK("ICOP")
+class CreationDateInfo extends StringCHUNK as CHUNK("ICRD")
+class CroppedInfo extends StringCHUNK as CHUNK("IDIM")
+class DotsPerInchInfo extends StringCHUNK as CHUNK("IDPI")
+class EngineerInfo extends StringCHUNK as CHUNK("IENG")
+class GenreInfo extends StringCHUNK as CHUNK("IGNR")
+class KeywordInfo extends StringCHUNK as CHUNK("IKEY")
+class LightnessInfo extends StringCHUNK as CHUNK("ILGT")
+class MediumInfo extends StringCHUNK as CHUNK("IMED")
+class NameInfo extends StringCHUNK as CHUNK("INAM")
+class PaletteInfo extends StringCHUNK as CHUNK("IPAL")
+class ProductInfo extends StringCHUNK as CHUNK("IPRD")
+class SubjectInfo extends StringCHUNK as CHUNK("ISBJ")
+class SoftwareInfo extends StringCHUNK as CHUNK("ISFT")
+class SharpnessInfo extends StringCHUNK as CHUNK("ISHP")
+class SourceFormInfo extends StringCHUNK as CHUNK("ISRF")
+class TechnicianInfo extends StringCHUNK as CHUNK("ITCH")
+
+
+class CharacterSetChunk as CHUNK("CSET")
+{
+    WORD        wCodePage;
+    CountryCode wCountryCode;
+    Language    dwLanguage;
+    
+}
+
+class CountryCode extends enum WORD {
+        1   : "USA",
+        2   : "Canada",
+        3   : "Latin America",
+        30  : "Greece",
+        31  : "Netherlands",
+        32  : "Belgium",
+        33  : "France",
+        34  : "Spain",
+        39  : "Italy",
+        41  : "Switzerland",
+        43  : "Austria",
+        44  : "United Kingdom",
+        45  : "Denmark",
+        46  : "Sweden",
+        47  : "Norway",
+        49  : "west Germany",
+        52  : "Mexico",
+        55  : "Brazil",
+        61  : "Australia",
+        64  : "New Zealand",
+        81  : "Japan",
+        82  : "Korea",
+        86  : "People's Republic of China",
+        88  : "Taiwan",
+        90  : "Turkey",
+        351 : "Portugal",
+        352 : "Luxembourg",
+        354 : "Iceland",
+        358 : "Finland"
+    } with {displayAs:WORD()}
+
+class Language
+{
+    enum WORD {
+        1  : "Arabic",
+        2  : "Bulgarian",
+        3  : "Catalan",
+        4  : "Chinese",
+        5  : "Czech",
+        6  : "Danish",
+        7  : "German",
+        8  : "Greek",
+        9  : "English",
+        10 : "Spanish",
+        11 : "Finnish",
+        12 : "French",
+        13 : "Hebrew",
+        14 : "Hungarian",
+        15 : "Icelandic",
+        16 : "Italian",
+        17 : "Japanese",
+        18 : "Korean",
+        19 : "Dutch",
+        20 : "Norvegian",
+        21 : "Polish",
+        22 : "Portuguese",
+        23 : "Rhaeto-Romanic",
+        24 : "Romanian",
+        25 : "Russian",
+        26 : "Serbo-Croatian",
+        27 : "Slovak",
+        28 : "Albanian",
+        29 : "Swedish",
+        30 : "Thai",
+        31 : "Turkish",
+        32 : "Urdu",
+        33 : "Bahasa"
+    } wLanguageCode;
+    
+    if (wLanguageCode == 3) {
+        enum WORD {
+            1 : "Traditional Chinese",
+            2 : "Simplified Chinese"
+        } wDialect;
+    } else if (wLanguageCode == 7) {
+        enum WORD {
+            1 : "German",
+            2 : "Swiss German"
+        } wDialect;
+    } else if (wLanguageCode == 9) {
+        enum WORD {
+            1 : "US English",
+            2 : "UK English"
+        } wDialect;
+    } else if (wLanguageCode == 12) {
+        enum WORD {
+            1 : "French",
+            2 : "Belgian French",
+            3 : "Canadian French",
+            4 : "Swiss French"
+        } wDialect;
+    } else if (wLanguageCode == 16) {
+        enum WORD {
+            1 : "Italian",
+            2 : "Swiss Italian"
+        } wDialect;
+    } else if (wLanguageCode == 19) {
+        enum WORD {
+            1 : "Dutch",
+            2 : "Belgian Dutch"
+        } wDialect;
+    } else if (wLanguageCode == 20) {
+        enum WORD {
+            1 : "Norwegian - Bokmal",
+            2 : "Norwegian - Nynorsk"
+        } wDialect;
+    } else if (wLanguageCode == 22) {
+        enum WORD {
+            1 : "Brazilan Portuguese",
+            2 : "Portuguese"
+        } wDialect;
+    }  else if (wLanguageCode == 26) {
+        enum WORD {
+            1 : "Serbo-Croatian (Latin)",
+            2 : "Serbo-Croatian (Cyrillic)"
+        } wDialect;
+    } else {
+        var language = wLanguageCode.@attr[];
+        if (language) {
+            enum WORD {
+                1 : language
+            } wDialect;
+        } else  {
+            WORD wDialect;
+        }
+    }
+}
+
+
+class Junk as CHUNK("JUNK")
+{
+	Data payload;
+}
+
+class CompoundFileStructure extends RIFF
+{
+    CHUNK toc;
+    @context.compoundEntryCount = toc.dwEntriesTotal;
+    @context.compoundEntries := toc.entries;
+    CHUNK compoundfindElements;
+}  
+
+class CompoundFileTOC as CHUNK("CTOC")
+{
+    // Header information
+    DWORD dwHeaderSize;
+    DWORD dwEntriesTotal;
+    DWORD dwEntriesDeleted;
+    DWORD dwEntriesUnused;
+    DWORD dwBytesTotal;
+    DWORD dwBytesDeleted;
+    DWORD dwHeaderFlags;
+    
+    // Parameter table definition
+    WORD wEntrySize;
+    WORD wNameSize;
+    WORD wExHdrFields;
+    WORD wExEntFields;
+    WORD awExHdrFldUsage[wExHdrFields];
+    WORD awExEntFldUsafe[wExEntFields];
+    
+    // Header parameter table
+    DWORD adwExHdrField[wExHdrFields];
+    
+    CompoundFileTOCEntry(wEntrySize, wExEntFields, wNameSize) entries[dwEntriesTotal];
+}
+
+class CompoundFileTOCEntry(_wEntrySize, _wExEntFields, _wNameSize) extends Data(8*_wEntrySize)
+{
+    DWORD            dwOffset;
+    DWORD            dwSize;    
+    FOURCC           dwMedType;
+    DWORD            dwMedUsage;
+    DWORD            dwCompressTech;
+    DWORD            dwUncompressBytes;
+    DWORD            adwExEntField[@context.wExEntFields];
+    BYTE             bEntryFlags;
+    STR(_wNameSize)  achName;
+    if (@rem) {
+        BYTE bEntryPad;
+    }
+}
+
+class CompoundFileElementGroup extends CHUNK("CGRP")
+{
+    CompoundFileElements(@context.compoundEntryCount) elements;
+}
+
+class CompoundFileElements(_count) extends Data with {
+    elemType : CompoundFileElement(),
+    elemCount : count
+}
+{
+    entries = @context.compoundEntries;
+    for (var i = 0; i < _count; ++i) {
+        entry := entries[i];
+        @pos = 8*entry.dwOffset;
+        CompoundFileElement(8*entry.dwSize) #;
+        @pos = 0;
+    }
+}
+
+class CompoundFileElement(_size) extends Data(_size)
+
+
+class BundleRIFF extends CompoundFileStructure as RIFF("BND")
+
+class RdibRIFF as RIFF("RDIB")
+{
+    @context.namespace = "DIB";
+    while (1) {
+        CHUNK *;
+    }
+}
+
+class RdibCHUNK as CHUNK("data", "DIB")
+{
+    BmpData *;
+}
+
+class BitmapHeaderCHUNK as CHUNK("bmhd", "DIB")
+{
+    DWORD  dwMemSize; // If dwPelFormat is 'data', only these
+    FOURCC dwPelFormat; // four fields are present.
+    WORD   wTransType;
+    DWORD  dwTransVal;
+    DWORD  dwHdrSize; // Fields from dwHdrSize forward match
+    DWORD  dwWidth; // the Windows BITMAPINFOHEADER
+    DWORD  dwHeight; // structure, though some fields can
+    WORD   dwPlanes; // contain new values.
+    WORD   dwBitCount;
+    DWORD  dwCompression;
+    DWORD  dwSizeImage;
+    DWORD  dwXPelsPerMeter;
+    DWORD  dwYPelsPerMeter;
+    DWORD  dwClrUsed;
+    DWORD  dwClrImportant;
+}
+
+class ExternalPaletteCHUNK as CHUNK("XPTL")
+{
+    FOURCC fccLocation;
+    ZSTR   szPaletteName;
+}
+
+class MidiRiff as RIFF("RMID")
+{
+    @context.namespace = "MIDI";
+    while(1) {
+        CHUNK *;
+    }
+}
+
+class MidiCHUNK as CHUNK("data", "MIDI")
+{
+    MidiData *;
+}
+
+class PaletteRIFF as RIFF("PAL")
+{
+    @context.namespace = "PAL";
+    while(1) {
+        CHUNK *;
+    }
+}
+
+class PalleteCHUNK as RIFF("data", "PAL")
+{
+    WORD palVersion;
+    WORD palNumEntries;
+    PalletteEntry palPalEntries[];
+}
+
+class PalletteEntry
+{
+    BYTE peRed;
+    BYTE peGreen;
+    BYTE peBlue;
+    BYTE peFlags;
+    
+    @attr.code = "#"+%str(peRed, 16, 2)+%str(peGreen, 16, 2)+%str(peBlue, 16, 2);
+}
+
+class PalleteHeaderCHUNK as CHUNK("plth", "PAL")
+{
+    DWORD dwMapType;
+    WORD wWhite; // Fields from this point on are
+    WORD wBlack; // optional. If they are included
+    WORD wBorder; // but not used, set them to 0xFFFF.
+    WORD wRegisteredMap;
+    WORD wCustomBase;  // If an application encounters a
+    WORD wCustomCnt; // 'PLT' chunk smaller than shown
+    WORD wRsvBase; // here, it should treat the missing
+    WORD wRsvCount; // fields as unused.
+    WORD wArtBase;
+    WORD wArtCnt;
+    WORD wNumIntense;
+} 
+
+class YuvPalleteCHUNK as RIFF("yuvp", "PAL")
+{
+    WORD palVersion;
+    WORD palNumEntries;
+    YuvPalletteEntry palPalEntries[];
+}
+
+class YuvPalletteEntry
+{
+    BYTE peLuminance;
+    BYTE peU;
+    BYTE peV;
+    BYTE peFlags;
+}
+
+class WaveRIFF as RIFF("WAVE")
+{
+    @context.namespace = "WAVE";
+    while(1) {
+        CHUNK *;
+    }
+}
+
+class WaveFormatCHUNK as CHUNK("fmt ", "WAVE")
+{
+    enum WORD {
+        0x0001 : "Microsoft Pulse Code Modulation",
+        0x0101 : "IBM mu-law",
+        0x0102 : "IBM a-law",
+        0x0103 : "IBM AVC Adpative Differential Pulse Code Modulation Format"
+    }     wFormatTag; // Format category
+    WORD  wChannels; // Number of channels
+    DWORD dwSamplesPerSec;  // Sampling rate
+    DWORD dwAvgBytesPerSec; // For buffer estimation
+    WORD  wBlockAlign; // Data block size
+    
+    // Format specific data
+    if (wFormatTag == 0x0001) {
+        WORD wBitsPerSample; // Sample size
+    }
+}
+
+class WaveDataCHUNK as CHUNK("data", "WAVE")
+{
+    
+}
+
+class WaveLIST as LIST("wavl", "WAVE")
+
+class WaveSilenceCHUNK as CHUNK("slnt", "WAVE")
+{
+    DWORD dwSamples;
+}
+
+class WaveFactCHUNK as CHUNK("fact", "WAVE")
+{
+    DWORD dwFileSize; // Number of samples
+}
+
+class WaveCuePointCHUNK as CHUNK("cue ", "WAVE")
+{
+    DWORD        dwCuePoints; //  Count of cue points
+    WaveCuePoint table [dwCuePoints]; // Cue-point table
+}
+
+class WaveCuePoint
+{
+    DWORD  dwName;
+    DWORD  dwPosition;
+    FOURCC fccChunk;
+    DWORD  dwChunkStart;
+    DWORD  dwBlockStart;
+    DWORD  dwSampleOffset;
+}
+
+class WavePlayListChunk as CHUNK("plst", "WAVE")
+{
+    DWORD dwName;
+    DWORD dwLength;
+    DWORD dwLoops;
+}
+
+class WaveAssociatedDataLIST as LIST("adtl", "WAVE")
+{
+}
+
+class WaveLabelCHUNK as CHUNK("labl", "WAVE")
+{
+    DWORD dwName;
+    ZSTR  data;
+}
+
+class WaveNoteCHUNK as CHUNK("note", "WAVE")
+{
+    DWORD dwName;
+    ZSTR  data;
+}
+
+class WaveTextCHUNK as CHUNK("ltxt", "WAVE")
+{
+    DWORD dwName;
+    CountryCode wCountry;
+    Language    dwLanguage;
+    WORD        wCodePage;
+    STR(@rem/8) data;
+}
+
+class WaveEmbeddedFileCHUNK as CHUNK("file", "WAVE")
+{
+    DWORD dwName;
+    DWORD dwMedType;
+    Data  fileData;
+}
+
+class WaveBroadcastExtension as CHUNK("bext", "WAVE")
+{
+    STR(256) sDescription; /* ASCII : «Description of the sound sequence» */ 
+    STR(32) sOriginator; /* ASCII : «Name of the originator» */ 
+    STR(32) sOriginatorReference; /* ASCII : «Reference of the originator» */ 
+    STR(10) sOriginationDate; /* ASCII : «yyyy:mm:dd» */ 
+    STR(8) sOriginationTime; /* ASCII : «hh:mm:ss» */ 
+    DWORD dwTimeReferenceLow; /* First sample count since midnight, low word */ 
+    DWORD dwTimeReferenceHigh; /* First sample count since midnight, high word */ 
+    WORD wVersion; /* Version of the BWF; unsigned binary number */
+    BYTE abUMID[64]; /*SMPTE UMID */ 
+    WORD wLoudnessValue; /* WORD : «Integrated Loudness Value of the file 
+                            in LUFS (multiplied by 100) » */ 
+    WORD wLoudnessRange; /* WORD : «Loudness Range of the file in LU 
+                           (multiplied by 100) » */ 
+    WORD wMaxTruePeakLevel; /* WORD : «Maximum True Peak Level of the file 
+                               expressed as dBTP (multiplied by 100) » */ 
+    WORD wMaxMomentaryLoudness; /* WORD : «Highest value of the Momentary 
+                                   Loudness Level of the file in LUFS (multiplied 
+                                   by 100) » */ 
+    WORD wMaxShortTermLoudness; /* WORD : «Highest value of the Short-Term 
+                                   Loudness Level of the file in LUFS (multiplied 
+                                   by 100) » */ 
+    Data(8*180) abReserved; /* 180 bytes, reserved for future use, set to 
+                              “NULL” */ 
+    STR(@rem/8) sCodingHistory; /* ASCII : « History coding » */ 
+}

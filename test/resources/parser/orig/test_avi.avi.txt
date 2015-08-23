@@ -3,7 +3,7 @@
 0x32                 FOURCC dwFourCC = "RIFF"
 32x32                DWORD dwSize = 166484
 64x32                FOURCC dwFourCC = "AVI "
-96x16096             HeaderList 
+96x16096             AviHeaderList 
 96x32                    FOURCC dwFourCC = "LIST"
 128x32                   DWORD dwSize = 2004
 160x32                   FOURCC dwFourCC = "hdrl"
@@ -59,7 +59,7 @@
 1600x32                          LONG biYPelsPerMeter = 0
 1632x32                          DWORD biClrUsed = 256
 1664x32                          DWORD biClrImportant = 0
-9888x128                 CHUNK("vedt") 
+9888x128                 CHUNK("vedt", "AVI") 
 9888x32                      FOURCC dwFourCC = "vedt"
 9920x32                      DWORD dwSize = 8
 10016x6176               Junk 
@@ -74,7 +74,7 @@
 16288x32                     FOURCC dwFourCC = "LIST"
 16320x32                     DWORD dwSize = 38904
 16352x32                     FOURCC dwFourCC = "rec "
-16384x294768                 VideoChunk 
+16384x294768                 CompressedVideoChunk 
 16384x32                         FOURCC dwFourCC = "00dc"
 16416x32                         DWORD dwSize = 36838
 16448x294704                     Data payload 
@@ -86,7 +86,7 @@
 327584x32                    FOURCC dwFourCC = "LIST"
 327616x32                    DWORD dwSize = 4088
 327648x32                    FOURCC dwFourCC = "rec "
-327680x31136                 VideoChunk 
+327680x31136                 CompressedVideoChunk 
 327680x32                        FOURCC dwFourCC = "00dc"
 327712x32                        DWORD dwSize = 3884
 327744x31072                     Data payload 
@@ -98,7 +98,7 @@
 360352x32                    FOURCC dwFourCC = "LIST"
 360384x32                    DWORD dwSize = 4088
 360416x32                    FOURCC dwFourCC = "rec "
-360448x31936                 VideoChunk 
+360448x31936                 CompressedVideoChunk 
 360448x32                        FOURCC dwFourCC = "00dc"
 360480x32                        DWORD dwSize = 3984
 360512x31872                     Data payload 
@@ -110,7 +110,7 @@
 393120x32                    FOURCC dwFourCC = "LIST"
 393152x32                    DWORD dwSize = 6136
 393184x32                    FOURCC dwFourCC = "rec "
-393216x39328                 VideoChunk 
+393216x39328                 CompressedVideoChunk 
 393216x32                        FOURCC dwFourCC = "00dc"
 393248x32                        DWORD dwSize = 4908
 393280x39264                     Data payload 
@@ -122,7 +122,7 @@
 442272x32                    FOURCC dwFourCC = "LIST"
 442304x32                    DWORD dwSize = 6136
 442336x32                    FOURCC dwFourCC = "rec "
-442368x34848                 VideoChunk 
+442368x34848                 CompressedVideoChunk 
 442368x32                        FOURCC dwFourCC = "00dc"
 442400x32                        DWORD dwSize = 4348
 442432x34784                     Data payload 
@@ -134,7 +134,7 @@
 491424x32                    FOURCC dwFourCC = "LIST"
 491456x32                    DWORD dwSize = 6136
 491488x32                    FOURCC dwFourCC = "rec "
-491520x36256                 VideoChunk 
+491520x36256                 CompressedVideoChunk 
 491520x32                        FOURCC dwFourCC = "00dc"
 491552x32                        DWORD dwSize = 4524
 491584x36192                     Data payload 
@@ -146,7 +146,7 @@
 540576x32                    FOURCC dwFourCC = "LIST"
 540608x32                    DWORD dwSize = 6136
 540640x32                    FOURCC dwFourCC = "rec "
-540672x38608                 VideoChunk 
+540672x38608                 CompressedVideoChunk 
 540672x32                        FOURCC dwFourCC = "00dc"
 540704x32                        DWORD dwSize = 4818
 540736x38544                     Data payload 
@@ -158,7 +158,7 @@
 589728x32                    FOURCC dwFourCC = "LIST"
 589760x32                    DWORD dwSize = 6136
 589792x32                    FOURCC dwFourCC = "rec "
-589824x36688                 VideoChunk 
+589824x36688                 CompressedVideoChunk 
 589824x32                        FOURCC dwFourCC = "00dc"
 589856x32                        DWORD dwSize = 4578
 589888x36624                     Data payload 
@@ -170,7 +170,7 @@
 638880x32                    FOURCC dwFourCC = "LIST"
 638912x32                    DWORD dwSize = 6136
 638944x32                    FOURCC dwFourCC = "rec "
-638976x37296                 VideoChunk 
+638976x37296                 CompressedVideoChunk 
 638976x32                        FOURCC dwFourCC = "00dc"
 639008x32                        DWORD dwSize = 4654
 639040x37232                     Data payload 
@@ -182,7 +182,7 @@
 688032x32                    FOURCC dwFourCC = "LIST"
 688064x32                    DWORD dwSize = 6136
 688096x32                    FOURCC dwFourCC = "rec "
-688128x36560                 VideoChunk 
+688128x36560                 CompressedVideoChunk 
 688128x32                        FOURCC dwFourCC = "00dc"
 688160x32                        DWORD dwSize = 4562
 688192x36496                     Data payload 
@@ -194,7 +194,7 @@
 737184x32                    FOURCC dwFourCC = "LIST"
 737216x32                    DWORD dwSize = 6136
 737248x32                    FOURCC dwFourCC = "rec "
-737280x36752                 VideoChunk 
+737280x36752                 CompressedVideoChunk 
 737280x32                        FOURCC dwFourCC = "00dc"
 737312x32                        DWORD dwSize = 4586
 737344x36688                     Data payload 
@@ -206,7 +206,7 @@
 786336x32                    FOURCC dwFourCC = "LIST"
 786368x32                    DWORD dwSize = 6136
 786400x32                    FOURCC dwFourCC = "rec "
-786432x34032                 VideoChunk 
+786432x34032                 CompressedVideoChunk 
 786432x32                        FOURCC dwFourCC = "00dc"
 786464x32                        DWORD dwSize = 4246
 786496x33968                     Data payload 

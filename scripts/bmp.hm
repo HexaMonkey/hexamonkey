@@ -22,7 +22,8 @@ addMagicNumber 42 4D
 
 import microsoft rgb
 
-class BmpFile as File
+class BmpFile as File,
+      BmpData(_size) extends BmpData(_size)
 {
 	@endianness = "littleEndian";
 	WinBMPFileHeader _fileHeader;
