@@ -409,6 +409,20 @@ const std::string& Variant::toString() const
     }
 }
 
+std::string& Variant::toString()
+{
+    if((_type & typeMask) == stringType) {
+        // copy if shared
+        if (_data.s->second > 1) {
+            this->setValue(_data.s->first);
+        }
+    } else {
+        Log::error("Invalid conversion from ", (*this), " to string");
+        this->setValue(emptyString);
+    }
+    return _data.s->first;
+}
+
 const ObjectType& Variant::toObjectType() const
 {
     if((_type & typeMask) == objectType) {
@@ -416,6 +430,20 @@ const ObjectType& Variant::toObjectType() const
     } else {
         return emptyType;
     }
+}
+
+ObjectType &Variant::toObjectType()
+{
+    if((_type & typeMask) == objectType) {
+        // copy if shared
+        if (_data.t->second > 1) {
+            this->setValue(_data.t->first);
+        }
+    } else {
+        Log::error("Invalid conversion from ", (*this), " to object type");
+        this->setValue(emptyType);
+    }
+    return _data.t->first;
 }
 
 bool Variant::toBool() const

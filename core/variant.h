@@ -131,7 +131,9 @@ public:
     unsigned long long toUnsignedInteger() const;
     double             toDouble()          const;
     const std::string& toString()          const;
+    std::string&       toString()               ;
     const ObjectType&  toObjectType()      const;
+    ObjectType&        toObjectType()           ;
     bool               toBool()            const;
 
     Type type() const;
