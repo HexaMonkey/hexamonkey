@@ -84,7 +84,7 @@ virtual class TrackEvent(type)
     }
 }
 
-class MidiEvent(type) as TrackEvent("midi")
+virtual class MidiEvent(type) as TrackEvent("midi")
 {
     uint(4) type;
     uint(4) channel;
