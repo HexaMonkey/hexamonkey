@@ -177,6 +177,7 @@ private:
     mutable Variant _elementType;
     mutable Variant _elementCount;
     mutable Variant _displayMode;
+    mutable Variant _displayAs;
 
     bool _virtual;
 

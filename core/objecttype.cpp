@@ -93,9 +93,9 @@ const ObjectType &ObjectType::displayAs() const
 {
     const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayAs;
     if (typeTemplate().hasAttributeGenerator(attribute)) {
-        const Variant& variant = typeTemplate().attributeGenerator(attribute)(*this);
-        if (!variant.isValueless()) {
-            return variant.toObjectType();
+        _displayAs = typeTemplate().attributeGenerator(attribute)(*this);
+        if (!_displayAs.isValueless()) {
+            return _displayAs.toObjectType();
         } else {
             return *this;
         }
