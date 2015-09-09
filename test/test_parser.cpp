@@ -46,6 +46,11 @@ void TestParser::test_gif()
     QVERIFY(checkFile("test_gif.gif", -1, 20));
 }
 
+void TestParser::test_flv()
+{
+    QVERIFY(checkFile("test_flv.flv", -1, 15));
+}
+
 void TestParser::test_jpg()
 {
     QVERIFY(checkFile("test_jpg.jpg", -1, 20));

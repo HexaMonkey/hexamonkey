@@ -1,0 +1,370 @@
+//This file is part of the HexaMonkey project, a multimedia analyser
+//Copyright (C) 2013  Sevan Drapeau-Martin, Nicolas Fleury
+
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+addMagicNumber 46 4c 56
+
+addExtension flv
+
+class UI(size, _base) extends uint(size, _base)
+class SI(size, _base) extends int(size, _base)
+
+class FlvFile as File
+{
+	@endianness = "bigEndian";
+	
+    FlvHeader _header;
+    FlvBody   _body;
+}
+
+class FlvHeader
+{
+    String(3) signature;
+    UI(8)     version;
+    TypeFlags typeFlags;
+    UI(32)    dataOffset;
+}
+
+class TypeFlags extends UI(8, 16) with {
+    displayAs : UI(8, 16),
+    displayMode : "bitset"
+}
+{
+    UI(5) reserved;
+    UI(1) audio;
+    UI(1) reserved;
+    UI(1) video;
+}
+
+class FlvBody extends Data(-1)
+{
+    UI(32) PreviousTagSize0;
+    for (var i = 1; 1; ++i) {
+        FlvTag() ("Tag"+i);
+        UI(32) ("PreviousTagSize"+i);
+    }
+}
+
+virtual class FlvTag(type)
+{
+    TagFlag  tagFlag;
+    UI(24) dataSize;
+    @args.type = tagFlag.type;
+    @size = 8*(11+dataSize);
+    ---
+    
+    UI(24) timestamp;
+    UI(8)  timestampExtended;
+    UI(24) streamId;
+} 
+
+class TagFlag extends UI(8, 16) with {
+    displayAs : UI(8, 16),
+    displayMode : "bitset"
+}
+{
+    UI(2) reserved;
+    UI(1) filter;
+    enum UI(5) {
+        8 : "audio",
+        9 : "video",
+        18 : "scriptData"
+    } type;
+}
+
+class AudioTag as FlvTag(8)
+{
+    SoundFlags soundFlags;
+    
+    if (tagFlag.filter) {
+        EncryptedData encryptedData;
+    } else {
+        AudioData(soundFlags.soundFormat) soundData;
+    }
+}
+
+class SoundFlags extends UI(8, 16) with {
+    displayAs : UI(8, 16),
+    displayMode : "bitset"
+}
+{
+    enum UI(4) {
+        0  : "Linear PCM, platform endian",
+        1  : "ADPCM",
+        2  : "MP3",
+        3  : "Linear PCM, little endian",
+        4  : "Nellymoser 16-kHz mono",
+        5  : "Nellymoser 8-kHz mono",
+        6  : "Nellymoser",
+        7  : "G.711 A-law logarithmic PCM",
+        8  : "G.711 mu-law logarithmic PCM",
+        10 : "AAC",
+        11 : "Speex",
+        14 : "MP3 8-kHz",
+        15 : "Device-specific sound"
+    } soundFormat;
+    
+    enum UI(2) {
+        0 : "5.5 kHz",
+        1 : "11 kHz",
+        2 : "22 kHz",
+        3 : "44 kHz"
+    } soundRate;
+    
+    enum UI(1) {
+        0 : "snd8Bit",
+        1 : "snd16Bit"
+    } soundSize;
+    
+    enum UI(1) {
+        0 : "sndMono",
+        1 : "sndStereo"
+    } soundType;
+}
+
+virtual class AudioData(format, _size) extends Data(_size)
+{
+}
+
+class AacAudioData as AudioData(format)
+{
+    UI(8) aacPacketType;
+    Data  data;
+}
+
+class VideoTag as FlvTag(9)
+{
+    VideoFlags                      videoFlags;
+    if (tagFlag.filter) {
+        EncryptionHeader encryptionTagHeader;
+        if (encryptionTagHeader.filterName == "Encryption") {
+            EncryptionFilterParams filterParams;
+        } else {
+            SelectiveEncryptionFilterParams filterParams;
+        }
+    }
+    if (videoFlags.frameType != 5) {
+        VideoPacket(videoFlags.codecID) videoPacket;
+    } else {
+        enum UI(8) {
+            0 : "Start of client-side seeking video frame sequence",
+            1 : "End of client-side seeking video frame sequence"
+        } videoInfo;
+    }
+}
+
+class VideoFlags extends UI(8, 16) with {
+    displayAs : UI(8, 16),
+    displayMode : "bitset"
+}
+{
+    enum UI(4) {
+        1 : "keyframe",
+        2 : "interframe",
+        3 : "disposable interframe",
+        4 : "generated keyframe",
+        5 : "video info/command frame"
+    } frameType;
+    
+    enum UI(4) {
+        1 : "JPEG",
+        2 : "Sorenson H.263",
+        3 : "Screen video",
+        4 : "On2 VP6",
+        5 : "On2 VP6 with alpha channel",
+        6 : "Screen video version 2",
+        7 : "AVC"
+    } codecID;
+}
+
+virtual class VideoPacket(codecID, _size) extends Data(_size)
+{
+}
+
+class AvcVideoPacket as VideoPacket(7)
+{
+    enum UI(8) {
+        0 : "AVC sequence header",
+        1 : "AVC NALU",
+        2 : "AVC end of sequence"
+    } avcPacketType;
+    
+    SI(24) compositionTime;
+    
+    Data data;
+}
+
+class ScriptObjectTag as FlvTag(18)
+{
+    if (tagFlag.filter) {
+        EncryptionHeader encryptionTagHeader;
+        FilterParams filterParams;
+    }
+    ScriptDataValue name;
+    ScriptDataValue data;
+}
+
+class ScriptDataObject
+{
+    ScriptDataString name;
+    ScriptDataValue  data;
+}
+
+class ScriptDataObjectEnd extends UI(24)
+
+class ScriptDataString
+{
+    UI(16) size;
+    String(size) value;
+    @value = value;
+}
+
+class ScriptDataLongString
+{
+    UI(32) size;
+    String(size) value;
+    @value = value;
+}
+
+virtual class ScriptDataValue(type)
+{
+    UI(8)  type;
+    @args.type = type;
+}
+
+class ScriptNumberValue as ScriptDataValue(0)
+{
+    double value;
+    @value = value;
+}
+
+class ScriptBooleanValue as ScriptDataValue(1)
+{
+    UI(8) value;
+    @value = value;
+}
+
+class ScriptStringValue as ScriptDataValue(2)
+{
+    ScriptDataString value;
+    @value = value;
+}
+
+class ScriptObjectValue as ScriptDataValue(3)
+{
+    for (var i = 0; (@parser.peek:UI(24)) != 9; ++i) {
+        ScriptDataObject() ("object"+i);
+    } 
+    ScriptDataObjectEnd end;
+}
+
+class ScriptMovieTypeValue as ScriptDataValue(4)
+{
+    ScriptDataString value;
+    @value = value;
+}
+
+class ScriptNullValue as ScriptDataValue(5)
+{
+}
+
+class ScriptUndefinedValue as ScriptDataValue(6)
+{
+}
+
+class ScriptReferenceValue as ScriptDataValue(7)
+{
+    UI(16) value;
+    @value = value;
+}
+
+class ScriptECMAArrayValue as ScriptDataValue(8)
+{
+    UI(32) ECMAArrayLength;
+    for (var i = 0; (@parser.peek:UI(24)) != 9; ++i) {
+        ScriptDataVariable() ("variable"+i);
+    } 
+    ScriptDataVariableEnd end;
+}
+
+class ScriptStrictArrayValue as ScriptDataValue(10)
+{
+    UI(32) count;
+    ScriptDataValue values[count];
+}
+
+class ScriptDataVariable
+{
+    ScriptDataString name;
+    ScriptDataValue  data;
+    @attr.name = name;
+    if (data != null) {
+        @attr.value = data;
+    }
+}
+
+class ScriptDataVariableEnd extends UI(24)
+
+class ScriptDateValue as ScriptDataValue(11)
+{
+    double dateTime;
+    SI(16) localDateTimeOffset;
+    
+    @attr[] = %formatDate(%int(dateTime/1000));
+}
+
+class ScriptLongStringValue as ScriptDataValue(12)
+{
+    ScriptDataLongString value;
+    @value = value;
+}
+
+class EncryptedData(_size) extends Data(_size)
+{
+    EncryptionHeader encryptionTagHeader;
+    if (encryptionTagHeader.filterName == "Encryption") {
+        EncryptionFilterParams filterParams;
+    } else {
+        SelectiveEncryptionFilterParams filterParams;
+    }
+    EncryptedBody body;
+}
+    
+class EncryptionHeader
+{
+    UI(8)  numFilter;
+    String filterName;
+    UI(24) length;
+}
+
+class EncryptionFilterParams 
+{
+    UI(8) IV[16];
+}
+
+class SelectiveEncryptionFilterParams
+{
+    UI(1) encryptedAU;
+    UI(7) reserved;
+    if (encryptedAU) {
+        UI(8) IV[16];
+    }
+}
+
+class EncryptedBody(_size) extends Data(_size)
+{
+
+}

@@ -22,6 +22,7 @@ private slots:
     void test_avi();
     void test_bmp();
     void test_gif();
+    void test_flv();
     void test_jpg();
     void test_pe();
     void test_png();

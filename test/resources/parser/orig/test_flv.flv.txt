@@ -1,0 +1,223 @@
+0x2426616    FlvFile 
+0x72             FlvHeader 
+0x24                 String(3) signature = "FLV"
+24x8                 UI(8) version = 1
+32x8                 TypeFlags typeFlags = 5
+32x5                     UI(5) reserved = 0
+37x1                     UI(1) audio = 1
+38x1                     UI(1) reserved = 0
+39x1                     UI(1) video = 1
+40x32                UI(32) dataOffset = 9
+72x2426544       FlvBody 
+72x32                UI(32) PreviousTagSize0 = 0
+104x2424             ScriptObjectTag Tag1 
+104x8                    TagFlag tagFlag = 18
+104x2                        UI(2) reserved = 0
+106x1                        UI(1) filter = 0
+107x5                        Enum(UI(5)) type = 18
+112x24                   UI(24) dataSize = 292
+136x24                   UI(24) timestamp = 0
+160x8                    UI(8) timestampExtended = 0
+168x24                   UI(24) streamId = 0
+192x104                  ScriptStringValue name = "onMetaData"
+192x8                        UI(8) type = 2
+200x96                       ScriptDataString value = "onMetaData"
+200x16                           UI(16) size = 10
+216x80                           String(10) value = "onMetaData"
+296x2232                 ScriptECMAArrayValue data 
+296x8                        UI(8) type = 8
+304x32                       UI(32) ECMAArrayLength = 12
+336x152                      ScriptDataVariable variable0 
+336x80                           ScriptDataString name = "duration"
+336x16                               UI(16) size = 8
+352x64                               String(8) value = "duration"
+416x72                           ScriptNumberValue data = 5.56
+416x8                                UI(8) type = 0
+424x64                               double value = 5.56
+488x128                      ScriptDataVariable variable1 
+488x56                           ScriptDataString name = "width"
+488x16                               UI(16) size = 5
+504x40                               String(5) value = "width"
+544x72                           ScriptNumberValue data = 320
+544x8                                UI(8) type = 0
+552x64                               double value = 320
+616x136                      ScriptDataVariable variable2 
+616x64                           ScriptDataString name = "height"
+616x16                               UI(16) size = 6
+632x48                               String(6) value = "height"
+680x72                           ScriptNumberValue data = 240
+680x8                                UI(8) type = 0
+688x64                               double value = 240
+752x192                      ScriptDataVariable variable3 
+752x120                          ScriptDataString name = "videodatarate"
+752x16                               UI(16) size = 13
+768x104                              String(13) value = "videodatarate"
+872x72                           ScriptNumberValue data = 781.25
+872x8                                UI(8) type = 0
+880x64                               double value = 781.25
+944x160                      ScriptDataVariable variable4 
+944x88                           ScriptDataString name = "framerate"
+944x16                               UI(16) size = 9
+960x72                               String(9) value = "framerate"
+1032x72                          ScriptNumberValue data = 25
+1032x8                               UI(8) type = 0
+1040x64                              double value = 25
+1104x184                     ScriptDataVariable variable5 
+1104x112                         ScriptDataString name = "videocodecid"
+1104x16                              UI(16) size = 12
+1120x96                              String(12) value = "videocodecid"
+1216x72                          ScriptNumberValue data = 2
+1216x8                               UI(8) type = 0
+1224x64                              double value = 2
+1288x192                     ScriptDataVariable variable6 
+1288x120                         ScriptDataString name = "audiodatarate"
+1288x16                              UI(16) size = 13
+1304x104                             String(13) value = "audiodatarate"
+1408x72                          ScriptNumberValue data = 63.8203
+1408x8                               UI(8) type = 0
+1416x64                              double value = 63.8203
+1480x208                     ScriptDataVariable variable7 
+1480x136                         ScriptDataString name = "audiosamplerate"
+1480x16                              UI(16) size = 15
+1496x120                             String(15) value = "audiosamplerate"
+1616x72                          ScriptNumberValue data = 44100
+1616x8                               UI(8) type = 0
+1624x64                              double value = 44100
+1688x208                     ScriptDataVariable variable8 
+1688x136                         ScriptDataString name = "audiosamplesize"
+1688x16                              UI(16) size = 15
+1704x120                             String(15) value = "audiosamplesize"
+1824x72                          ScriptNumberValue data = 16
+1824x8                               UI(8) type = 0
+1832x64                              double value = 16
+1896x80                      ScriptDataVariable variable9 
+1896x64                          ScriptDataString name = "stereo"
+1896x16                              UI(16) size = 6
+1912x48                              String(6) value = "stereo"
+1960x16                          ScriptBooleanValue data = 0
+1960x8                               UI(8) type = 1
+1968x8                               UI(8) value = 0
+1976x184                     ScriptDataVariable variable10 
+1976x112                         ScriptDataString name = "audiocodecid"
+1976x16                              UI(16) size = 12
+1992x96                              String(12) value = "audiocodecid"
+2088x72                          ScriptNumberValue data = 2
+2088x8                               UI(8) type = 0
+2096x64                              double value = 2
+2160x192                     ScriptDataVariable variable11 
+2160x72                          ScriptDataString name = "encoder"
+2160x16                              UI(16) size = 7
+2176x56                              String(7) value = "encoder"
+2232x120                         ScriptStringValue data = "Lavf52.103.0"
+2232x8                               UI(8) type = 2
+2240x112                             ScriptDataString value = "Lavf52.103.0"
+2240x16                                  UI(16) size = 12
+2256x96                                  String(12) value = "Lavf52.103.0"
+2352x152                     ScriptDataVariable variable12 
+2352x80                          ScriptDataString name = "filesize"
+2352x16                              UI(16) size = 8
+2368x64                              String(8) value = "filesize"
+2432x72                          ScriptNumberValue data = 303327
+2432x8                               UI(8) type = 0
+2440x64                              double value = 303327
+2528x32              UI(32) PreviousTagSize1 = 303
+2560x1760            AudioTag Tag2 
+2560x8                   TagFlag tagFlag = 8
+2560x2                       UI(2) reserved = 0
+2562x1                       UI(1) filter = 0
+2563x5                       Enum(UI(5)) type = 8
+2568x24                  UI(24) dataSize = 209
+2592x24                  UI(24) timestamp = 0
+2616x8                   UI(8) timestampExtended = 0
+2624x24                  UI(24) streamId = 0
+2648x8                   SoundFlags soundFlags = 46
+2648x4                       Enum(UI(4)) soundFormat = 2
+2652x2                       Enum(UI(2)) soundRate = 3
+2654x1                       Enum(UI(1)) soundSize = 1
+2655x1                       Enum(UI(1)) soundType = 0
+2656x1664                AacAudioData soundData 
+2656x8                       UI(8) aacPacketType = 255
+2664x1656                    Data data 
+4320x32              UI(32) PreviousTagSize2 = 220
+4352x108008          VideoTag Tag3 
+4352x8                   TagFlag tagFlag = 9
+4352x2                       UI(2) reserved = 0
+4354x1                       UI(1) filter = 0
+4355x5                       Enum(UI(5)) type = 9
+4360x24                  UI(24) dataSize = 13490
+4384x24                  UI(24) timestamp = 0
+4408x8                   UI(8) timestampExtended = 0
+4416x24                  UI(24) streamId = 0
+4440x8                   VideoFlags videoFlags = 18
+4440x4                       Enum(UI(4)) frameType = 1
+4444x4                       Enum(UI(4)) codecID = 2
+4448x107912              VideoPacket(2) videoPacket 
+112360x32            UI(32) PreviousTagSize3 = 13501
+112392x2600          AudioTag Tag4 
+112392x8                 TagFlag tagFlag = 8
+112392x2                     UI(2) reserved = 0
+112394x1                     UI(1) filter = 0
+112395x5                     Enum(UI(5)) type = 8
+112400x24                UI(24) dataSize = 314
+112424x24                UI(24) timestamp = 26
+112448x8                 UI(8) timestampExtended = 0
+112456x24                UI(24) streamId = 0
+112480x8                 SoundFlags soundFlags = 46
+112480x4                     Enum(UI(4)) soundFormat = 2
+112484x2                     Enum(UI(2)) soundRate = 3
+112486x1                     Enum(UI(1)) soundSize = 1
+112487x1                     Enum(UI(1)) soundType = 0
+112488x2504              AacAudioData soundData 
+112488x8                     UI(8) aacPacketType = 255
+112496x2496                  Data data 
+114992x32            UI(32) PreviousTagSize4 = 325
+115024x14320         VideoTag Tag5 
+115024x8                 TagFlag tagFlag = 9
+115024x2                     UI(2) reserved = 0
+115026x1                     UI(1) filter = 0
+115027x5                     Enum(UI(5)) type = 9
+115032x24                UI(24) dataSize = 1779
+115056x24                UI(24) timestamp = 40
+115080x8                 UI(8) timestampExtended = 0
+115088x24                UI(24) streamId = 0
+115112x8                 VideoFlags videoFlags = 34
+115112x4                     Enum(UI(4)) frameType = 2
+115116x4                     Enum(UI(4)) codecID = 2
+115120x14224             VideoPacket(2) videoPacket 
+129344x32            UI(32) PreviousTagSize5 = 1790
+129376x2184          AudioTag Tag6 
+129376x8                 TagFlag tagFlag = 8
+129376x2                     UI(2) reserved = 0
+129378x1                     UI(1) filter = 0
+129379x5                     Enum(UI(5)) type = 8
+129384x24                UI(24) dataSize = 262
+129408x24                UI(24) timestamp = 52
+129432x8                 UI(8) timestampExtended = 0
+129440x24                UI(24) streamId = 0
+129464x8                 SoundFlags soundFlags = 46
+129464x4                     Enum(UI(4)) soundFormat = 2
+129468x2                     Enum(UI(2)) soundRate = 3
+129470x1                     Enum(UI(1)) soundSize = 1
+129471x1                     Enum(UI(1)) soundType = 0
+129472x2088              AacAudioData soundData 
+129472x8                     UI(8) aacPacketType = 255
+129480x2080                  Data data 
+131560x32            UI(32) PreviousTagSize6 = 273
+131592x1760          AudioTag Tag7 
+131592x8                 TagFlag tagFlag = 8
+131592x2                     UI(2) reserved = 0
+131594x1                     UI(1) filter = 0
+131595x5                     Enum(UI(5)) type = 8
+131600x24                UI(24) dataSize = 209
+131624x24                UI(24) timestamp = 78
+131648x8                 UI(8) timestampExtended = 0
+131656x24                UI(24) streamId = 0
+131680x8                 SoundFlags soundFlags = 46
+131680x4                     Enum(UI(4)) soundFormat = 2
+131684x2                     Enum(UI(2)) soundRate = 3
+131686x1                     Enum(UI(1)) soundSize = 1
+131687x1                     Enum(UI(1)) soundType = 0
+131688x1664              AacAudioData soundData 
+131688x8                     UI(8) aacPacketType = 255
+131696x1656                  Data data 
+133352x32            UI(32) PreviousTagSize7 = 220
