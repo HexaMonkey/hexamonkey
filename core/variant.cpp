@@ -409,7 +409,7 @@ const std::string& Variant::toString() const
     }
 }
 
-std::string& Variant::toString()
+std::string& Variant::toMutableString()
 {
     if((_type & typeMask) == stringType) {
         // copy if shared
@@ -432,7 +432,7 @@ const ObjectType& Variant::toObjectType() const
     }
 }
 
-ObjectType &Variant::toObjectType()
+ObjectType &Variant::toMutableObjectType()
 {
     if((_type & typeMask) == objectType) {
         // copy if shared
