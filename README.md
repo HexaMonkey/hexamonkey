@@ -27,7 +27,7 @@ We strongly encourage you to implement other formats and share them : see the HM
 
 Installing the project on Windows
 =================================
-There is an installer available on http://www.hexamonkey.com/, browse the download section.
+There is an installer available on http://hexamonkey.com/, browse the download section.
 
 Building the project
 ====================
