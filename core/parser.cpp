@@ -187,7 +187,7 @@ void Parser::doParse()
 {
 }
 
-bool Parser::doParseSome(int hint)
+bool Parser::doParseSome(int /*hint*/)
 {
     doParse();
     return true;

@@ -129,7 +129,7 @@ bool TestParser::checkFile(const std::string &fileName, int depth, int width, co
     ModuleLoader& moduleLoader = moduleSetup.moduleLoader();
     const Module& module = moduleKey.empty() ? moduleLoader.getModule(file) : moduleLoader.getModule(moduleKey);
 
-    Object* object = module.handleFile(DefaultModule::file, file, collector);
+    Object* object = module.handleFile(module.getTemplate("File")(), file, collector);
 
     if (!object) {
         return false;

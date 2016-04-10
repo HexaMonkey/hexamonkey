@@ -59,7 +59,7 @@ QModelIndex TreeModel::addFile(File* file, const Module& module)
     beginInsertRows(QModelIndex(),0,0);
 
     TreeFileItem& item = *(new TreeFileItem(programLoader, rootItem, file));
-    item.setObjectMemory(module.handleFile(DefaultModule::file(), item.file(), item.collector()));
+    item.setObjectMemory(module.handleFile(module.getTemplate("File")(), item.file(), item.collector()));
 
     QModelIndex itemIndex = index(realRowCount(QModelIndex())-1, 0, QModelIndex());
 

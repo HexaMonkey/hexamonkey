@@ -25,39 +25,6 @@
 
 class DefaultModule : public MapModule
 {
-public:
-    static const ObjectTypeTemplate file;
-    static const ObjectTypeTemplate array;
-    static const ObjectTypeTemplate tuple;
-    static const ObjectTypeTemplate data;
-    static const ObjectTypeTemplate structType;
-    static const ObjectTypeTemplate enumType;
-
-    static const ObjectTypeTemplate integer;
-    static const ObjectTypeTemplate uinteger;
-    static const ObjectTypeTemplate byte;
-
-    static const ObjectType int8;
-    static const ObjectType int16;
-    static const ObjectType int32;
-    static const ObjectType int64;
-
-    static const ObjectType uint8;
-    static const ObjectType uint16;
-    static const ObjectType uint32;
-    static const ObjectType uint64;
-
-    static const ObjectTypeTemplate uuid;
-
-    static const ObjectTypeTemplate fixedFloat;
-    static const ObjectTypeTemplate singleFloat;
-    static const ObjectTypeTemplate doubleFloat;
-
-    static const ObjectTypeTemplate string;
-    static const ObjectTypeTemplate wstring;
-
-    static const ObjectTypeTemplate bitset;
-
 protected:
     bool doLoad() override;
 };

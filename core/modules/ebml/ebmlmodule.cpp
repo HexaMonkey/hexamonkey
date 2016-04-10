@@ -51,14 +51,17 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 
 bool EbmlModule::doLoad()
 {
+    auto file = getTemplate("File")();
+
     addTemplate(EBMLFile);
-    setExtension(EBMLFile, DefaultModule::file());
-    setSpecification(DefaultModule::file(), EBMLFile());
+    setExtension(EBMLFile, file);
+    setSpecification(file, EBMLFile());
 
     addTemplate(EBMLElement);
 
+
     addTemplate(Date);
-    setExtension(Date, DefaultModule::int64);
+    setExtension(Date, getTemplate("int")(64));
 
     addTemplate(largeInteger);
 

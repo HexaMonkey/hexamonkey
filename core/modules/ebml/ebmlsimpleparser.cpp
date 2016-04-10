@@ -26,7 +26,7 @@ EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
 
 void EbmlIntegerParser::doParseHead()
 {
-    Object* child = addVariable(DefaultModule::integer(availableSize()),"payload");
+    Object* child = addVariable(module().getTemplate("int")(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -39,7 +39,7 @@ EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
 
 void EbmlUIntegerParser::doParseHead()
 {
-    Object* child = addVariable(DefaultModule::uinteger(availableSize()),"payload");
+    Object* child = addVariable(module().getTemplate("uint")(availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -52,7 +52,7 @@ EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
 
 void EbmlStringParser::doParseHead()
 {
-    Object* child = addVariable(DefaultModule::string(availableSize()/8),"payload");
+    Object* child = addVariable(module().getTemplate("String")(availableSize()/8),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -65,7 +65,7 @@ EbmlBinaryParser::EbmlBinaryParser(Object& object, const Module& module)
 
 void EbmlBinaryParser::doParseHead()
 {
-    addVariable(DefaultModule::data(availableSize()), "payload");
+    addVariable(module().getTemplate("Data")(availableSize()), "payload");
 }
 
 EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& module)
@@ -90,9 +90,9 @@ void EbmlFloatParser::doParseHead()
 {
     Object* child = nullptr;
     if(availableSize() == 32) {
-        addVariable(DefaultModule::singleFloat(),"payload");
+        addVariable(module().getTemplate("single")(),"payload");
     } else {
-        addVariable(DefaultModule::doubleFloat(),"payload");
+        addVariable(module().getTemplate("double")(),"payload");
     }
     if (child) {
         object().setValue(child->value());

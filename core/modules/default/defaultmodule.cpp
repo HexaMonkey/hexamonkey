@@ -32,76 +32,17 @@
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
-const ObjectTypeTemplate DefaultModule::file("File", std::vector<std::string>(), [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setVirtual(true);
-});
-
-const ObjectTypeTemplate DefaultModule::array("Array",{"elementType", "size", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-});
-
-const ObjectTypeTemplate DefaultModule::tuple("Tuple",{"elementType", "count", "_namePattern"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-
-    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementCount,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(1);
-                                       });
-});
-const ObjectTypeTemplate DefaultModule::data("Data", {"_size"});
-
-const ObjectTypeTemplate DefaultModule::structType("Struct", {"_name"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-});
-
-const ObjectTypeTemplate DefaultModule::enumType("Enum", {"type"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setAttributeGenerator(ObjectTypeTemplate::Attribute::displayAs,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-});
-
-const ObjectTypeTemplate DefaultModule::integer("int",{"size", "_base"});
-const ObjectTypeTemplate DefaultModule::uinteger("uint",{"size", "_base"});
-const ObjectTypeTemplate DefaultModule::byte("byte");
-
-const ObjectType DefaultModule::int8(DefaultModule::integer(8));
-const ObjectType DefaultModule::int16(DefaultModule::integer(16));
-const ObjectType DefaultModule::int32(DefaultModule::integer(32));
-const ObjectType DefaultModule::int64(DefaultModule::integer(64));
-
-const ObjectType DefaultModule::uint8(DefaultModule::uinteger(8));
-const ObjectType DefaultModule::uint16(DefaultModule::uinteger(16));
-const ObjectType DefaultModule::uint32(DefaultModule::uinteger(32));
-const ObjectType DefaultModule::uint64(DefaultModule::uinteger(64));
-
-const ObjectTypeTemplate DefaultModule::uuid("uuid");
-
-const ObjectTypeTemplate DefaultModule::fixedFloat("fixedFloat", {"integer","decimal"});
-const ObjectTypeTemplate DefaultModule::singleFloat("float");
-const ObjectTypeTemplate DefaultModule::doubleFloat("double");
-
-const ObjectTypeTemplate DefaultModule::string("String", {"charCount"});
-const ObjectTypeTemplate DefaultModule::wstring("WString", {"charCount"});
-
-const ObjectTypeTemplate DefaultModule::bitset("Bitset", {"size"});
-
-
 bool DefaultModule::doLoad()
 {
-    addTemplate(file);
+    auto& file = newTemplate("File");
+    file.setVirtual(true);
     addParser("File", []parserLambda{return new FileParser(object);});
 
-    addTemplate(array);
+    auto& array = newTemplate("Array",{"elementType", "size", "_namePattern"});
+    array.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
+                                       []objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                       });
     addParser("Array", []parserLambda
     {
         if(type.parameterSpecified(0))
@@ -128,7 +69,16 @@ bool DefaultModule::doLoad()
          return -1;
     });
 
-    addTemplate(tuple);
+    auto& tuple = newTemplate("Tuple",{"elementType", "count", "_namePattern"});
+    tuple.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
+                                       []objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                       });
+
+    tuple.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementCount,
+                                       []objectTypeAttributeLambda {
+                                             return type.parameterValue(1);
+                                       });
     addParser("Tuple", []parserLambda
     {
         if(type.parameterSpecified(0) && type.parameterSpecified(1))
@@ -152,7 +102,8 @@ bool DefaultModule::doLoad()
          return -1;
     });
 
-    addTemplate(data);
+
+    newTemplate("Data", {"_size"});
     addParser("Data", []parserLambda
     {
         if(type.parameterSpecified(0))
@@ -162,7 +113,11 @@ bool DefaultModule::doLoad()
     });
     setFixedSizeFromArg("Data", 0);
 
-    addTemplate(structType);
+    auto& structType = newTemplate("Struct", {"_name"});
+    structType.setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
+                                       []objectTypeAttributeLambda {
+                                             return type.parameterValue(0);
+                                       });
     addParser("Struct", []parserLambda
     {
         auto parser = new StructParser(object, module);
@@ -185,7 +140,11 @@ bool DefaultModule::doLoad()
          return s;
     });
 
-    addTemplate(enumType);
+    auto& enumType = newTemplate("Enum", {"type"});
+    enumType.setAttributeGenerator(ObjectTypeTemplate::Attribute::displayAs,
+                                   []objectTypeAttributeLambda {
+                                       return type.parameterValue(0);
+                                   });
     addParser("Enum", []parserLambda
     {
         if (type.parameterSpecified(0)) {
@@ -210,7 +169,7 @@ bool DefaultModule::doLoad()
          }
     });
 
-    addTemplate(integer);
+    newTemplate("int",{"size", "_base"});
     addParser("int", [this]parserLambda
     {
         if (type.parameterSpecified(0)) {
@@ -256,7 +215,7 @@ bool DefaultModule::doLoad()
     });
     setFixedSizeFromArg("int", 0);
 
-    addTemplate(uinteger);
+    newTemplate("uint",{"size", "_base"});
     addParser("uint", [this]parserLambda
     {
         if (type.parameterSpecified(0)) {
@@ -301,29 +260,29 @@ bool DefaultModule::doLoad()
     });
     setFixedSizeFromArg("uint", 0);
 
-    addTemplate(byte);
+    newTemplate("byte");
     addParser("byte", [this]parserLambda
     {
         return new UInt8Parser(object, Variant::hexadecimal);
     });
     setFixedSize("byte", 8);
 
-    addTemplate(uuid);
+    newTemplate("uuid");
     addParser("uuid", [this]parserLambda
     {
         return new UuidParser(object);
     });
     setFixedSize("uuid", 128);
 
-    addTemplate(singleFloat);
+    newTemplate("float");
     addParser("float", [this]parserLambda{return new SingleFloatParser(object);});
     setFixedSize("float", 32);
 
-    addTemplate(doubleFloat);
+    newTemplate("double");
     addParser("double", [this]parserLambda{return new DoubleFloatParser(object);});
     setFixedSize("double", 64);
 
-    addTemplate(fixedFloat);
+    newTemplate("fixedFloat", {"integer","decimal"});
     addParser("fixedFloat", []parserLambda
     {
         if(type.parameterSpecified(0) && type.parameterSpecified(1)) {
@@ -346,7 +305,7 @@ bool DefaultModule::doLoad()
          return HM_UNKNOWN_SIZE;
     });
 
-    addTemplate(string);
+    newTemplate("String", {"charCount"});
     addParser("String", []parserLambda
     {
         int numberOfChars;
@@ -365,7 +324,7 @@ bool DefaultModule::doLoad()
          return HM_UNKNOWN_SIZE;
     });
 
-    addTemplate(wstring);
+    newTemplate("WString", {"charCount"});
     addParser("WString", [this]parserLambda
     {
         int64_t size;
@@ -385,7 +344,7 @@ bool DefaultModule::doLoad()
     });
 
 
-    addTemplate(bitset);
+    newTemplate("Bitset", {"size"});
     addParser("Bitset", []parserLambda
     {
         if(type.parameterSpecified(0))
