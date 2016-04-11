@@ -465,6 +465,74 @@ void Object::setEndianness(const Object::Endianness &endianness)
     _endianness = endianness;
 }
 
+void throwChildError(const Object& object, const Object &child, ParsingException::Type type, const std::string reason)
+{
+    throw ParsingException(type, concat("Child ", child, " cannot be added to ", object, " : ", reason));
+}
+
+void Object::addChild(Object *child)
+{
+    if (child != nullptr) {
+        std::streamoff curPos = pos();
+        if (child->size() == -1LL) {
+            if (size() != -1LL && child->isSetToExpandOnAddition()) {
+                child->setSize(size() - curPos);
+            } else {
+                child->parse();
+                child->setSize(child->_contentSize);
+            }
+        }
+
+        int64_t newSize = curPos + child->size();
+
+        std::streamoff newPos;
+        const bool fileGood = file().good();
+        const int64_t objectSize = size();
+        const int64_t newAbsolutePosition = beginningPos() + newSize;
+        const int64_t fileSize = file().size();
+        const bool outOfFile = (!fileGood || newAbsolutePosition > fileSize);
+        const bool outOfParent = (objectSize != -1 && newSize > objectSize);
+        if (outOfFile || outOfParent) {
+            if (size() != -1) {
+                newPos = size();
+            } else {
+                newPos = 0;
+            }
+        } else {
+            newPos = child->beginningPos() - beginningPos();
+            if (child->size() != -1LL) {
+                newPos += child->size();
+            }
+        }
+
+        setPos(newPos);
+        seekObjectEnd();
+
+        if (_contentSize < newSize) {
+            _contentSize = newSize;
+        }
+
+        if(!child->name().empty()) {
+            _lookUpTable[child->name()] = child;
+        }
+
+        child->_parent = this;
+
+        _children.push_back(child);
+        _ownedChildren.push_back(std::unique_ptr<Object>(child));
+        child->_rank = _children.size() - 1;
+        _lastChild = nullptr;
+
+        if (!(child->isValid())) {
+            throwChildError(*this, *child, ParsingException::InvalidChild, "child invalid");
+        } else if (outOfFile) {
+            throwChildError(*this, *child, ParsingException::OutOfFile, "out of file");
+        } else if (outOfParent) {
+            throwChildError(*this, *child, ParsingException::OutOfParent, concat("too big ", child->size()));
+        }
+    }
+}
+
 
 void Object::explore(int depth)
 {
@@ -679,21 +747,36 @@ std::ostream& operator <<(std::ostream& out, const Object& object)
 }
 
 
-Object::Parsing::Parsing(Object &object)
+Object::ParsingContext::ParsingContext(Object &object)
     :_object(object),
       _isAvailable(!object._parsingInProgress)
 {
+    if (!_isAvailable)
+    {
+        throw LockException(_object);
+    }
     object._parsingInProgress = true;
 }
 
-Object::Parsing::~Parsing()
+Object::ParsingContext::~ParsingContext()
 {
     if (_isAvailable) {
         _object._parsingInProgress = false;
     }
 }
 
-bool Object::Parsing::isAvailable() const
+bool Object::ParsingContext::isAvailable() const
 {
     return _isAvailable;
+}
+
+
+Object::ParsingContext::LockException::LockException(const Object &object)
+    :_object(object)
+{
+}
+
+const char *Object::ParsingContext::LockException::what() const noexcept
+{
+    return "Object locked for parsing";
 }

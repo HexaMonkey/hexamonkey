@@ -73,12 +73,6 @@ public:
 protected:
     ContainerParser(Object& object, const Module& module);
 
-    /**
-     * @brief Insure that when children are added past the end of the object that its
-     * size grows automaticaly
-     */
-    void setAutogrow();
-
 private:
     /**
      * @brief Generate an \link Object object\endlink to be subsequently added (or not)
@@ -91,7 +85,6 @@ private:
     std::vector<std::vector<unsigned char> > &maskList);
 
     const Module& _module;
-    bool _autogrow;
 };
 
 #endif // CONTAINERPARSER_H

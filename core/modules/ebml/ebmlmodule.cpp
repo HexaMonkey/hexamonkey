@@ -28,13 +28,6 @@
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
 
-const ObjectTypeTemplate EbmlModule::EBMLFile("EBMLFile");
-const ObjectTypeTemplate EbmlModule::EBMLElement("EBMLElement", {"id"}, [](ObjectTypeTemplate& typeTemplate) {
-    typeTemplate.setVirtual(true);
-});
-const ObjectTypeTemplate EbmlModule::largeInteger("LargeInteger");
-const ObjectTypeTemplate EbmlModule::Date("Date");
-
 const int EbmlModule::numberOfTypeElements = 8;
 const std::string EbmlModule::typeElements[] = {"MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
 const std::string EbmlModule::typeElementAtributes[] = {"master","integer","uinteger","float","string","utf-8","date","binary"};
@@ -53,17 +46,17 @@ bool EbmlModule::doLoad()
 {
     auto file = getTemplate("File")();
 
-    addTemplate(EBMLFile);
+    auto& EBMLFile  = newTemplate("EBMLFile");
     setExtension(EBMLFile, file);
     setSpecification(file, EBMLFile());
 
-    addTemplate(EBMLElement);
+    auto& EBMLElement = newTemplate("EBMLElement", {"id"});
+    EBMLElement.setVirtual(true);
 
+    newTemplate("LargeInteger");
 
-    addTemplate(Date);
+    auto& Date = newTemplate("Date");
     setExtension(Date, getTemplate("int")(64));
-
-    addTemplate(largeInteger);
 
     for(int i = 0; i < numberOfTypeElements; ++i)
     {

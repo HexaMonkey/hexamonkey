@@ -25,8 +25,9 @@ EbmlContainerParser::EbmlContainerParser(Object &object, const Module &module)
 
 void EbmlContainerParser::doParseHead()
 {
-    Object* p_id = addVariable(EbmlModule::largeInteger(), "id");
-    Object* p_size = addVariable(EbmlModule::largeInteger(), "size");
+    const auto largeInteger = module().getTemplate("LargeInteger")();
+    Object* p_id = addVariable(largeInteger, "id");
+    Object* p_size = addVariable(largeInteger, "size");
 
     object().setSize(8*p_size->value().toInteger()+p_id->size()+p_size->size());
 

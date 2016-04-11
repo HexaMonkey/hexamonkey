@@ -67,15 +67,25 @@ class Object
         typedef contextContainer::iterator contextIterator;
         typedef contextContainer::const_iterator const_contextIterator;
 
-        friend class Parsing;
+        friend class ParsingContext;
         /**
          * @brief RAII object used to lock parsing to avoid reentrency
          */
-        class Parsing
+        class ParsingContext
         {
         public:
-            Parsing(Object& object);
-            ~Parsing();
+            class LockException : std::exception
+            {
+            public:
+                LockException(const Object& object);
+
+                const char* what() const noexcept override;
+            private:
+                const Object& _object;
+            };
+
+            ParsingContext(Object& object);
+            ~ParsingContext();
             bool isAvailable() const;
         private:
             Object& _object;
@@ -290,6 +300,9 @@ class Object
 
         Endianness endianness() const;
         void setEndianness(const Endianness &endianness);
+
+        void addChild(Object* child);
+
 
         inline VariableCollector& collector() {
             return _collector;

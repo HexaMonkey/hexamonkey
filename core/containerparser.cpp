@@ -22,9 +22,7 @@
 
 ContainerParser::ContainerParser(Object &object, const Module &module)
     : Parser(object),
-      _module(module),
-      _autogrow(false)
-
+      _module(module)
 {
 }
 
@@ -44,9 +42,6 @@ void ContainerParser::addChild(Object *child)
 
 
         int64_t newSize = pos + child->size();
-        if (_autogrow && newSize > object().size()) {
-            object().setSize(newSize);
-        }
 
         std::streamoff newPos;
         const bool fileGood = object().file().good();
@@ -93,9 +88,12 @@ void ContainerParser::addChild(Object *child)
         } else if (outOfParent) {
             throwChildError(*child, ParsingException::OutOfParent, concat("too big ", child->size()));
         }
-
-
     }
+}
+
+void ContainerParser::throwChildError(const Object &child, ParsingException::Type type, const std::string reason) const
+{
+    throw ParsingException(type, concat("Child ", child, " cannot be added to ", object(), " : ", reason));
 }
 
 void ContainerParser::addChild(Object *child, const std::string &name)
@@ -184,20 +182,6 @@ int64_t ContainerParser::findBytePattern(const std::string &pattern)
 const Module &ContainerParser::module() const
 {
     return _module;
-}
-
-
-void ContainerParser::setAutogrow()
-{
-    _autogrow = true;
-    if(object().size()<0) {
-        object().setSize(0);
-    }
-}
-
-void ContainerParser::throwChildError(const Object &child, ParsingException::Type type, const std::string reason) const
-{
-    throw ParsingException(type, concat("Child ", child, " cannot be added to ", object(), " : ", reason));
 }
 
 void ContainerParser::parseBytePattern(const std::string &pattern, std::vector<std::vector<unsigned char> >& byteList, std::vector<std::vector<unsigned char> >& maskList)

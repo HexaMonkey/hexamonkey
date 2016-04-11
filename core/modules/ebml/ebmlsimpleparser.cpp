@@ -75,7 +75,7 @@ EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& m
 
 void EbmlDateContainerParser::doParseHead()
 {
-    Object* child = addVariable(EbmlModule::Date(), "payload");
+    Object* child = addVariable(module().getTemplate("Date")(), "payload");
     if (child) {
         object().setValue(child->value());
     }

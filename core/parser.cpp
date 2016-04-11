@@ -35,14 +35,16 @@ Parser::Parser(Object& object)
 
 void Parser::parseHead()
 {
-    Object::Parsing parsing(object());
-    if(parsing.isAvailable() && !_headParsed)
+    if (!_headParsed)
     {
         try {
+            Object::ParsingContext context(object());
             doParseHead();
             setHeadParsed();
         } catch (const ParsingException& exception) {
             handleParsingException(exception);
+        } catch (const Object::ParsingContext::LockException&) {
+
         }
     }
 }
@@ -51,16 +53,16 @@ void Parser::parse()
 {
     parseHead();
 
+    if (!_parsed)
     {
-        Object::Parsing parsing(object());
-        if(parsing.isAvailable() && !_parsed)
-        {
-            try {
-                doParse();
-                _parsed = true;
-            } catch (const ParsingException& exception) {
-                handleParsingException(exception);
-            }
+        try {
+            Object::ParsingContext context(object());
+            doParse();
+            _parsed = true;
+        } catch (const ParsingException& exception) {
+            handleParsingException(exception);
+        } catch (const Object::ParsingContext::LockException&) {
+
         }
     }
 }
@@ -68,14 +70,19 @@ void Parser::parse()
 bool Parser::parseSome(int hint)
 {
     parseHead();
-    Object::Parsing parsing(object());
-    try {
-        if(parsing.isAvailable() && !_parsed && doParseSome(hint))
-        {
-            _parsed = true;
+    if (!_parsed)
+    {
+        try {
+            Object::ParsingContext context(object());
+            if (doParseSome(hint))
+            {
+                _parsed = true;
+            }
+        } catch (const ParsingException& exception) {
+            handleParsingException(exception);
+        } catch (const Object::ParsingContext::LockException&) {
+
         }
-    } catch (const ParsingException& exception) {
-        handleParsingException(exception);
     }
     return _parsed;
 }
@@ -91,10 +98,13 @@ void Parser::parseTail()
     if(!_tailParsed)
     {
         try {
+            Object::ParsingContext context(object());
             doParseTail();
             _tailParsed = true;
         } catch (const ParsingException& exception) {
             handleParsingException(exception);
+        } catch (const Object::ParsingContext::LockException&) {
+
         }
     }
 }
@@ -223,17 +233,17 @@ SimpleParser::SimpleParser(Object &object) : Parser(object)
 
 void SimpleParser::parseHead()
 {
-    Object::Parsing parsing(object());
-
-    if(parsing.isAvailable() && !_headParsed)
+    if (!_headParsed)
     {
         try {
+            Object::ParsingContext context(object());
             doParseHead();
             setHeadParsed();
             _parsed = true;
             _tailParsed = true;
         } catch (const ParsingException& exception) {
             handleParsingException(exception);
+        } catch (const Object::ParsingContext::LockException&) {
         }
     }
 }

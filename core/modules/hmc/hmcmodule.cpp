@@ -66,9 +66,9 @@ bool HmcModule::doLoad()
 
         addParser(name);
         const ObjectTypeTemplate& typeTemplate = newTemplate(name);
-        setSpecification(EbmlModule::EBMLElement(i), typeTemplate());
+        setSpecification(getTemplate("EBMLElement")(i), typeTemplate());
 
-        for(int j =0;j<EbmlModule::numberOfTypeElements;++j)
+        for(int j = 0; j < EbmlModule::numberOfTypeElements; ++j)
         {
             if(type == EbmlModule::typeElementAtributes[j])
             {
