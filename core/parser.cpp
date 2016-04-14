@@ -227,6 +227,90 @@ void Parser::handleParsingException(const ParsingException &exception)
     object().invalidate();
 }
 
+void parseBytePattern(const std::string &pattern, std::vector<std::vector<unsigned char> >& byteList, std::vector<std::vector<unsigned char> >& maskList)
+{
+    bool isCurrentMask = false;
+    std::vector<unsigned char> current;
+    std::string buffer = "00";
+    for (int i = 0, n = pattern.size(); i < n; ++i)
+    {
+        char ch = pattern[i];
+        if (ch == '&') {
+            byteList.emplace_back(std::move(current));
+            current.resize(0);
+            isCurrentMask = true;
+        } else if (ch == '|') {
+            if (isCurrentMask) {
+                maskList.emplace_back(std::move(current));
+                current.resize(0);
+                isCurrentMask = false;
+            } else {
+                maskList.emplace_back(std::vector<unsigned char>(current.size(), 0xff));
+                byteList.emplace_back(std::move(current));
+                current.resize(0);
+            }
+        } else if (ch == ' ') {
+            /** ignore **/
+        } else if (i < n - 1) {
+            buffer[0] = ch;
+            ++i;
+            buffer[1] = pattern[i];
+            current.insert(current.begin(), strtol(buffer.c_str(), nullptr, 16));
+        }
+    }
+
+    if (isCurrentMask) {
+        maskList.emplace_back(std::move(current));
+        current.resize(0);
+        isCurrentMask = false;
+    } else {
+        maskList.emplace_back(std::vector<unsigned char>(current.size(), 0xff));
+        byteList.emplace_back(std::move(current));
+        current.resize(0);
+    }
+}
+
+int64_t Parser::findBytePattern(const std::string &pattern)
+{
+    std::vector<std::vector<unsigned char>> byteList;
+    std::vector<std::vector<unsigned char>> maskList;
+
+    parseBytePattern(pattern, byteList, maskList);
+
+    size_t patternCount = byteList.size();
+    size_t width = 0;
+    for (const auto& bytes : byteList) {
+        if (bytes.size() > width) {
+            width = bytes.size();
+        }
+    }
+    object().seekObjectEnd();
+    size_t pos = object().pos();
+    File& file = object().file();
+    std::vector<unsigned char> buffer(width);
+    for (size_t i = 0; file.good();++i) {
+        file.read(reinterpret_cast<char *>(&buffer[i%width]), 8);
+        for (size_t j = 0; j < patternCount; ++j) {
+            const auto& bytes = byteList[j];
+            const auto& masks = maskList[j];
+            size_t patternSize = bytes.size();
+            if (i >= patternSize - 1) {
+                for (size_t k = 0; k < patternSize; ++k) {
+                    if (bytes[k] != (masks[k] & buffer[(i - k) % width])) {
+                        break;
+                    }
+
+                    if (k >= patternSize - 1) {
+                        return pos + 8*(i - k);
+                    }
+                }
+            }
+        }
+    }
+    file.clear();
+    return -1;
+}
+
 SimpleParser::SimpleParser(Object &object) : Parser(object)
 {
 }

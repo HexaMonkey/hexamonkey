@@ -35,18 +35,6 @@ public:
     virtual ~ContainerParser() {}
 
     /**
-     * @brief Add a child to the \link Object object\endlink
-     * 
-     * The object will be in charge of managing the child's memory
-     */
-    void addChild(Object* child);
-
-    /**
-     * @brief Add a child and set its name
-     */
-    void addChild(Object* child, const std::string& name);
-
-    /**
      * @brief Generate an \link Object object\endlink not to be subsequently added
      */
     Object* readVariable(const ObjectType& type, std::streamoff offset = 0);
@@ -61,13 +49,6 @@ public:
      */
     Object* addVariable(const ObjectType& type, const std::string& name);
 
-    /**
-     * @brief find a byte pattern and seek to first occurence
-     * @param pattern
-     * @return true if found
-     */
-    int64_t findBytePattern(const std::string& pattern);
-
     const Module& module() const;
 
 protected:
@@ -78,11 +59,6 @@ private:
      * @brief Generate an \link Object object\endlink to be subsequently added (or not)
      */
     Object* getVariable(const ObjectType& type, std::streamoff offset = 0);
-
-    void throwChildError(const Object& child, ParsingException::Type type, const std::string reason) const;
-
-    static void parseBytePattern(const std::string& pattern, std::vector<std::vector<unsigned char> > &byteList,
-    std::vector<std::vector<unsigned char> > &maskList);
 
     const Module& _module;
 };

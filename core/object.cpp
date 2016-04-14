@@ -724,6 +724,40 @@ std::ostream &Object::displayTree(std::ostream &out, std::string prefix) const
     return out;
 }
 
+
+Object *Object::readVariable(const Module& module, const ObjectType &type, std::streamoff offset)
+{
+    Object* child = getVariable(module, type, offset);
+    if (child != nullptr && child->size() == -1LL) {
+        child->parse();
+        child->setSize(child->_contentSize);
+    }
+    return child;
+}
+
+Object *Object::addVariable(const Module& module, const ObjectType &type)
+{
+    Object* child = getVariable(module, type);
+    addChild(child);
+    return child;
+}
+
+Object *Object::addVariable(const Module& module, const ObjectType &type, const std::string &name)
+{
+    seekObjectEnd();
+
+    Object* child = getVariable(module, type);
+    child->setName(name);
+    addChild(child);
+    return child;
+}
+
+Object *Object::getVariable(const Module& module, const ObjectType &type, std::streamoff offset)
+{
+    seekObjectEnd(offset);
+    return module.handle(type, *this);
+}
+
 bool Object::parsed()
 {
     if (!_valid) {
@@ -780,3 +814,5 @@ const char *Object::ParsingContext::LockException::what() const noexcept
 {
     return "Object locked for parsing";
 }
+
+

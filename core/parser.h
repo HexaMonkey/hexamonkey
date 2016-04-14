@@ -98,6 +98,13 @@ public:
 
     std::shared_ptr< std::pair<bool, ObjectType> > sharedType() const;
 
+    /**
+     * @brief find a byte pattern and seek to first occurence
+     * @param pattern
+     * @return true if found
+     */
+    int64_t findBytePattern(const std::string &pattern);
+
 protected:
     Parser(Object& object);
 
