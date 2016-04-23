@@ -18,9 +18,9 @@
 #ifndef EBMLMODULE_H
 #define EBMLMODULE_H
 
-#include "core/mapmodule.h"
+#include "core/module.h"
 
-class EbmlModule : public MapModule
+class EbmlModule : public Module
 {
 public:
     static const int numberOfTypeElements;

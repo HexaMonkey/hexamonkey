@@ -36,6 +36,10 @@ class Object;
 class Parser;
 class Variable;
 
+#define parserLambda (const ObjectType &type, Object &object, const Module &module) ->Parser*
+#define fixedSizeLambda (const ObjectType &type, const Module &module) ->int64_t
+#define functionLambda (const Variable& scope, const Module &module) ->Variable
+
 /*!
  * @brief Factory for \link Object objects\endlink
  *
@@ -61,7 +65,7 @@ class Variable;
  * module loader\endlink uses the module for the first time, it first ask for importation request to see which \link Module modules\endlink must be loaded and imported
  * (reimplement requestImportations) and then the actual loading is done (reimplement doLoad).
  *
- * The class is virtual and must be subclassed to be used. For most usages MapModule is the right class to subclass.
+ * The class is virtual and must be subclassed to be used. For most usages Module is the right class to subclass.
  */
 class Module
 {
@@ -257,6 +261,54 @@ protected:
      */
     ObjectTypeTemplate& newTemplate(const std::string& name, const std::vector<std::string>& parameters = std::vector<std::string>());
 
+
+    typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
+    typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
+    typedef std::function<Variable (const Variable&, const Module &)> Functor;
+
+
+
+    /**
+     * @brief Define a parser generator for the \link ObjectTypeTemplate type template\endlink with this name
+     */
+    void addParser(const std::string& name, const ParserGenerator& parserGenerator);
+
+    /**
+     * @brief Define a null parser generator for the \link ObjectTypeTemplate type template\endlink with this name
+     */
+    void addParser(const std::string& name);
+
+    /**
+     * @brief Define a function to compute the fixed size for the \link ObjectType types\endlink
+     * of the \link ObjectTypeTemplate type template\endlink with this name
+     */
+    void setFixedSize(const std::string& name, const FixedSizeGenerator& fixedSizeFunction);
+
+    /**
+     * @brief Define a fixed size for all \link ObjectType types\endlink
+     * of the \link ObjectTypeTemplate type template\endlink with this name
+     */
+    void setFixedSize(const std::string& name, int64_t fixedSize);
+
+    /**
+     * @brief Link size for all \link ObjectType types\endlink
+     * of the \link ObjectTypeTemplate type template\endlink with this name
+     * with one of the arguments (
+     *
+     * For instance the size of an integer is given
+     * by the first argument : int(16), int(32), int(64)...
+     */
+    void setFixedSizeFromArg(const std::string& name, int arg);
+
+    /**
+     * @brief Define a function signature and define a \link Functor functor\endlink to execute the function
+     */
+    void addFunction(const std::string& name,
+                     const std::vector<std::string>& parameterNames,
+                     const std::vector<bool>& parameterModifiables,
+                     const std::vector<Variant>& parameterDefaults,
+                     const Functor& functor);
+
 private:
     friend class ModuleLoader;
     template<class T>
@@ -292,6 +344,13 @@ private:
 
     std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
     std::list<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
+
+    static const ParserGenerator& nullGenerator;
+    std::unordered_map<std::string, ParserGenerator> _map;
+    std::unordered_map<std::string, FixedSizeGenerator> _sizes;
+
+    typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Functor> FunctionDescriptor;
+    std::unordered_map<std::string,  FunctionDescriptor>  _functions;
 };
 
 #endif // MODULE_H

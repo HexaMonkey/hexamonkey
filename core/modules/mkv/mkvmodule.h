@@ -18,12 +18,12 @@
 #ifndef MKVMODULE_H
 #define MKVMODULE_H
 
-#include "core/mapmodule.h"
+#include "core/module.h"
 
 /*!
  * @brief The MkvModule class
  */
-class MkvModule : public MapModule
+class MkvModule : public Module
 {
 public:
     MkvModule(std::string modelPath);

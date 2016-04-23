@@ -18,12 +18,12 @@
 #ifndef DEFAULTMODULE_H
 #define DEFAULTMODULE_H
 
-#include "core/mapmodule.h"
+#include "core/module.h"
 #include "core/log/logmanager.h"
 
 #include "core/objecttypetemplate.h"
 
-class DefaultModule : public MapModule
+class DefaultModule : public Module
 {
 protected:
     bool doLoad() override;

@@ -304,21 +304,6 @@ class Object
 
         void addChild(Object* child);
 
-        /**
-         * @brief Generate an \link Object object\endlink not to be subsequently added
-         */
-        Object* readVariable(const Module& module, const ObjectType& type, std::streamoff offset = 0);
-
-        /**
-         * @brief Generate an \link Object object\endlink and add it
-         */
-        Object* addVariable(const Module& module, const ObjectType& type);
-
-        /**
-         * @brief Generate an \link Object object\endlink, set its name, and add it
-         */
-        Object* addVariable(const Module& module, const ObjectType& type, const std::string& name);
-
         inline VariableCollector& collector() {
             return _collector;
         }
@@ -332,11 +317,6 @@ class Object
         friend class ContainerParser;
 
         Object(File& file, std::streampos beginningPos, Object* parent, VariableCollector& collector);
-
-        /**
-         * @brief Generate an \link Object object\endlink to be subsequently added (or not)
-         */
-        Object* getVariable(const Module& module, const ObjectType& type, std::streamoff offset = 0);
 
         void parse();
         void parseBody();

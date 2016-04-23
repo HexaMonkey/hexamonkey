@@ -340,46 +340,6 @@ bool Module::load()
     return _loaded;
 }
 
-Parser *Module::getParser(const ObjectType &/*type*/, Object &/*object*/, const Module &/*fromModule*/) const
-{
-    return nullptr;
-}
-
-bool Module::hasParser(const ObjectType &/*type*/) const
-{
-    return false;
-}
-
-int64_t Module::doGetFixedSize(const ObjectType &/*type*/, const Module &/*module*/) const
-{
-    return -1;
-}
-
-bool Module::doCanHandleFunction(const std::string &/*name*/) const
-{
-    return false;
-}
-
-Variable Module::doExecuteFunction(const std::string &/*name*/, const Variable &/*params*/, const Module &/*fromModule*/) const
-{
-    return Variable();
-}
-
-const std::vector<std::string> &Module::doGetFunctionParameterNames(const std::string& /*name*/) const
-{
-    return emptyParameterNames;
-}
-
-const std::vector<bool> &Module::doGetFunctionParameterModifiables(const std::string &/*name*/) const
-{
-    return emptyParameterModifiables;
-}
-
-const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &/*name*/) const
-{
-    return emptyParameterDefaults;
-}
-
 Variable Module::executeFunction(const std::string &name, const Variable &params, const Module &fromModule) const
 {
     const Module* handlerModule = functionHandler(name);
@@ -434,3 +394,127 @@ ObjectTypeTemplate &Module::newTemplate(const std::string &name, const std::vect
     addTemplate(*temp);
     return *temp;
 }
+
+const Module::ParserGenerator& Module::nullGenerator = []parserLambda{return nullptr;};
+
+void Module::addParser(const std::string &name, const Module::ParserGenerator &parserGenerator)
+{
+    _map[name] = parserGenerator;
+}
+
+void Module::addParser(const std::string &name)
+{
+    addParser(name, nullGenerator);
+    setFixedSize(name, 0);
+}
+
+void Module::setFixedSize(const std::string &name, const FixedSizeGenerator &fixedSizeFunction)
+{
+    _sizes[name] = fixedSizeFunction;
+}
+
+void Module::setFixedSize(const std::string &name, int64_t fixedSize)
+{
+    _sizes[name] = [fixedSize] fixedSizeLambda {return fixedSize;};
+}
+
+void Module::setFixedSizeFromArg(const std::string &name, int arg)
+{
+    _sizes[name] = [arg]fixedSizeLambda {
+             if(type.parameterSpecified(arg))
+                 return type.parameterValue(arg).toInteger();
+             return -1;
+    };
+}
+
+void Module::addFunction(const std::string &name,
+                            const std::vector<std::string> &parameterNames,
+                            const std::vector<bool> &parameterModifiables,
+                            const std::vector<Variant> &parameterDefaults,
+                            const Module::Functor &functor)
+{
+    _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, functor);
+}
+
+bool Module::hasParser(const ObjectType &type) const
+{
+    return _map.find(type.typeTemplate().name()) != _map.end();
+}
+
+Parser *Module::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    auto it = _map.find(type.typeTemplate().name());
+    if(it != _map.end())
+    {
+        return (it->second)(type, object, fromModule);
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+int64_t Module::doGetFixedSize(const ObjectType &type, const Module &module) const
+{
+    auto it = _sizes.find(type.typeTemplate().name());
+    if(it != _sizes.end())
+    {
+        return (it->second)(type, module);
+    }
+    else
+    {
+        return HM_UNKNOWN_SIZE;
+    }
+}
+
+bool Module::doCanHandleFunction(const std::string &name) const
+{
+    return _functions.find(name) != _functions.end();
+}
+
+Variable Module::doExecuteFunction(const std::string &name, const Variable &params, const Module &fromModule) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return Variable();
+
+    const Functor& function = std::get<3>(it->second);
+
+    return function(params, fromModule);
+}
+
+
+const std::vector<std::string> &Module::doGetFunctionParameterNames(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterNames;
+
+    const std::vector<std::string>& parameterNames = std::get<0>(it->second);
+    return parameterNames;
+}
+
+const std::vector<bool> &Module::doGetFunctionParameterModifiables(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterModifiables;
+
+    const std::vector<bool>& parameterNames = std::get<1>(it->second);
+    return parameterNames;
+}
+
+const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &name) const
+{
+    auto it = _functions.find(name);
+
+    if(it == _functions.end())
+        return emptyParameterDefaults;
+
+    const std::vector<Variant>& parameterDefaults = std::get<2>(it->second);
+    return parameterDefaults;
+}
+

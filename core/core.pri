@@ -8,7 +8,6 @@ SOURCES += \
     ../core/object.cpp \
     ../core/moduleloader.cpp \
     ../core/module.cpp \
-    ../core/mapmodule.cpp \
     ../core/containerparser.cpp \
     ../core/file/esfragmentedfile.cpp \
     ../core/file/file.cpp \
@@ -84,7 +83,6 @@ HEADERS  += \
     ../core/object.h \
     ../core/moduleloader.h \
     ../core/module.h \
-    ../core/mapmodule.h \
     ../core/containerparser.h \
     ../core/file/esfragmentedfile.h \
     ../core/file/file.h \

@@ -20,7 +20,7 @@
 
 #include <memory>
 
-#include "core/mapmodule.h"
+#include "core/module.h"
 #include "core/interpreter/program.h"
 #include "core/interpreter/evaluator.h"
 

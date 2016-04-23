@@ -124,20 +124,20 @@ void ObjectTypeTemplate::setVirtual(bool value)
 
 bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 {
-    return (a._name == b._name);
+    return &a == &b;
 }
 
 bool operator!=(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 {
-    return !(a == b);
+    return &a != &b;
 }
 
 bool operator< (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 {
-    return (a._name < b._name);
+    return &a < &b;
 }
 
 bool operator<= (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 {
-    return (a<b)||(a==b);
+    return &a <= &b;
 }

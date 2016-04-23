@@ -18,12 +18,12 @@
 #ifndef HMCMODULE_H
 #define HMCMODULE_H
 
-#include "core/mapmodule.h"
+#include "core/module.h"
 
 /*!
  * @brief The HmcModule class
  */
-class HmcModule : public MapModule
+class HmcModule : public Module
 {
 public:
     HmcModule(std::string modelPath);

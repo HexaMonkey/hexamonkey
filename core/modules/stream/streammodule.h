@@ -2,12 +2,12 @@
 #define STREAM_MODULE_H
 
 #include "core/object.h"
-#include "core/mapmodule.h"
+#include "core/module.h"
 #include "core/file/fragmentedfile.h"
 
 const ObjectTypeTemplate parentPID("ParentPID");
 
-class StreamModule : public MapModule
+class StreamModule : public Module
 {
 public:
     static FragmentedFile* getFragmentedFile(Object &object);
