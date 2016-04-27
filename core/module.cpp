@@ -260,7 +260,7 @@ const ObjectTypeTemplate& Module::getTemplate(const std::string &name) const
             return temp;
     }
 
-    return nullTypeTemplate;
+    return ObjectTypeTemplate::nullTypeTemplate;
 }
 
 bool Module::hasTemplate(const std::string& name) const

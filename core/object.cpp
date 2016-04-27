@@ -755,8 +755,21 @@ Object::ParsingContext::ParsingContext(Object &object)
     {
         throw LockException(_object);
     }
-    object._parsingInProgress = true;
+    _object._parsingInProgress = true;
 }
+
+Object::ParsingContext::ParsingContext(ParsingOption &parsingOption)
+    :_object(static_cast<Object&>(parsingOption)),
+      _isAvailable(!_object._parsingInProgress)
+{
+    if (!_isAvailable)
+    {
+        throw LockException(_object);
+    }
+    _object.parseBody();
+    _object._parsingInProgress = true;
+}
+
 
 Object::ParsingContext::~ParsingContext()
 {
@@ -781,4 +794,8 @@ const char *Object::ParsingContext::LockException::what() const noexcept
     return "Object locked for parsing";
 }
 
+
+ParsingOption::ParsingOption()
+{
+}
 

@@ -156,6 +156,19 @@ public:
      */
     const ObjectTypeTemplate& getTemplate(const std::string& name) const;
 
+    ObjectType getType(const std::string& name) const
+    {
+        return ObjectType(getTemplate(name));
+    }
+
+
+    template<typename... Args> ObjectType getType(const std::string& name, Args... args) const
+    {
+         ObjectType type(getTemplate(name));
+         type.setParameters(args...);
+         return type;
+    }
+
     /**
      * @brief Check if any \link ObjectTypeTemplate type template\endlink stored by the \link Module module\endlink or one of the imported one has this name
      */

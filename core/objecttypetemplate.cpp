@@ -141,3 +141,7 @@ bool operator<= (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 {
     return &a <= &b;
 }
+
+ObjectTypeTemplate _nullTypeTemplate("");
+const ObjectTypeTemplate& ObjectTypeTemplate::nullTypeTemplate = _nullTypeTemplate;
+

@@ -28,7 +28,7 @@ void EbmlMasterParser::doParse()
 {
     while(availableSize()>0)
     {
-        addVariable(module().getTemplate("EBMLElement")());
+        addVariable(module().getType("EBMLElement"));
     }
 }
 
@@ -43,7 +43,7 @@ bool EbmlMasterParser::doParseSome(int hint)
         if(count>=hint)
             return false;
 
-        addVariable(module().getTemplate("EBMLElement")());
+        addVariable(module().getType("EBMLElement"));
         ++count;
     }
 }

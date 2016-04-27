@@ -44,11 +44,11 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 
 bool EbmlModule::doLoad()
 {
-    auto file = getTemplate("File")();
+    auto file = getType("File");
 
     auto& EBMLFile  = newTemplate("EBMLFile");
     setExtension(EBMLFile, file);
-    setSpecification(file, EBMLFile());
+    setSpecification(file, ObjectType(EBMLFile));
 
     auto& EBMLElement = newTemplate("EBMLElement", {"id"});
     EBMLElement.setVirtual(true);
@@ -56,20 +56,25 @@ bool EbmlModule::doLoad()
     newTemplate("LargeInteger");
 
     auto& Date = newTemplate("Date");
-    setExtension(Date, getTemplate("int")(64));
+    setExtension(Date, getType("int", 64));
 
     for(int i = 0; i < numberOfTypeElements; ++i)
     {
         const ObjectTypeTemplate& TypeElementTemplate = newTemplate(typeElements[i]);
-        setExtension(TypeElementTemplate, EBMLElement());
+        setExtension(TypeElementTemplate, ObjectType(EBMLElement));
     }
 
     for(int i = 0; i < numberOfDefaultElements; ++i)
     {
-        const ObjectTypeTemplate& DefaultElementTemplate = newTemplate(defaultElements[i]);
+        const ObjectTypeTemplate& defaultElementTemplate = newTemplate(defaultElements[i]);
+        ObjectType element(EBMLElement);
+
         addParser(defaultElements[i]);
-        setExtension(DefaultElementTemplate, getTemplate(typeElements[defaultElementTypes[i]])());
-        setSpecification(EBMLElement(defaultElementIds[i]), DefaultElementTemplate());
+        setExtension(defaultElementTemplate, getType(typeElements[defaultElementTypes[i]]));
+
+
+        element.setParameter(0, defaultElementIds[i]);
+        setSpecification(element, ObjectType(defaultElementTemplate));
     }
 
     addParser("EBMLFile", []parserLambda{return new EbmlMasterParser(object, module);});

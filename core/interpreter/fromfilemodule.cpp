@@ -351,7 +351,7 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
     {
         if(classDeclaration.tag() == HMC_CLASS_DECLARATION)
         {
-            ObjectType child = getTemplate(classDeclaration.node(0).node(0).node(0).payload().toString())();
+            ObjectType child = getType(classDeclaration.node(0).node(0).node(0).payload().toString());
             for(Program type : classDeclaration.node(0).node(2))
             {
                 ObjectType parent(_evaluator.type(type));

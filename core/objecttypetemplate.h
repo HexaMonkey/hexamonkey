@@ -23,9 +23,10 @@
 #include <unordered_map>
 #include <functional>
 
-#include "core/objecttype.h"
 #include "core/variant.h"
 
+class Parser;
+class ParsingOption;
 
 #define objectTypeAttributeLambda (const ObjectType &type) ->Variant
 
@@ -37,7 +38,10 @@
  */
 class ObjectTypeTemplate
 {
+friend class ObjectType;
 public:
+    static const int64_t unknownSize = -1;
+
     enum class Attribute{
         name = 0,
         elementType = 1,
@@ -99,17 +103,6 @@ public:
      */
     void addParameter(const std::string& parameterName);
 
-    /**
-     * @brief Instanciate a \link ObjectType type\endlink with the
-     * \link ObjectTypeTemplate template\endlink and set values for a number of its parameters
-     */
-    template<typename... Args> ObjectType operator()(Args... args) const
-    {
-        ObjectType type(*this);
-        type.setParameters(args...);
-        return type;
-    }
-
     void setAttributeGenerator(Attribute attribute, const AttributeGenerator& generator);
     bool hasAttributeGenerator(Attribute attribute) const;
     const AttributeGenerator &attributeGenerator(Attribute attribute) const;
@@ -120,7 +113,24 @@ public:
     friend bool operator==(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
     friend bool operator< (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
 
+    static const ObjectTypeTemplate& nullTypeTemplate;
+
 private:
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const
+    {
+        return nullptr;
+    }
+
+    virtual int64_t fixedSize(const ObjectType&) const
+    {
+        return unknownSize;
+    }
+
+    virtual Variant attributeValue(const ObjectType&, Attribute) const
+    {
+        return Variant();
+    }
+
     std::string                _name;
     std::vector<std::string>   _parametersNames;
     std::unordered_map<std::string, int> _parametersNumbers;
@@ -136,14 +146,13 @@ private:
     AttributeGenerator _elementTypeGenerator;
     AttributeGenerator _elementCountGenerator;
 
-
     bool _virtual;
 
     ObjectTypeTemplate(const ObjectTypeTemplate&) = delete;
     ObjectTypeTemplate& operator=(const ObjectTypeTemplate&) = delete;
 };
 
-const ObjectTypeTemplate nullTypeTemplate("");
+
 
 bool operator!=(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);
 bool operator<=(const ObjectTypeTemplate& a, const ObjectTypeTemplate& b);

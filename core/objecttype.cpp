@@ -23,7 +23,7 @@
 Variant undefinedVariant;
 Variant nullVariant = Variant::null();
 
-ObjectType::ObjectType() : _typeTemplate(&nullTypeTemplate)
+ObjectType::ObjectType() : _typeTemplate(&ObjectTypeTemplate::nullTypeTemplate)
 {
 }
 
@@ -135,7 +135,7 @@ const ObjectType& ObjectType::importParameters(const ObjectType& other)
 
 bool ObjectType::extendsDirectly(const ObjectType& other) const
 {
-    if(*_typeTemplate != *other._typeTemplate)
+    if(_typeTemplate != other._typeTemplate)
     {
         return false;
     }
@@ -188,7 +188,7 @@ void ObjectType::setElementCount(long long count)
 
 bool ObjectType::isNull() const
 {
-    return (*_typeTemplate == nullTypeTemplate);
+    return (*_typeTemplate == ObjectTypeTemplate::nullTypeTemplate);
 }
 
 void swap(ObjectType& a, ObjectType& b)
@@ -211,7 +211,6 @@ const Variant &ObjectType::vElementType() const
 {
     const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementType;
     if (_elementType.isValueless()
-            && _typeTemplate
             && _typeTemplate->hasAttributeGenerator(attribute)) {
         _elementType.setValue(typeTemplate().attributeGenerator(attribute)(*this));
     }
@@ -222,7 +221,6 @@ const Variant &ObjectType::vElementCount() const
 {
     const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementCount;
     if (_elementCount.isValueless()
-            && _typeTemplate
             && _typeTemplate->hasAttributeGenerator(attribute)) {
         _elementCount.setValue(typeTemplate().attributeGenerator(attribute)(*this));
     }
@@ -233,7 +231,6 @@ const Variant &ObjectType::vDisplayMode() const
 {
     const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayMode;
     if (_displayMode.isValueless()
-            && _typeTemplate
             && _typeTemplate->hasAttributeGenerator(attribute)) {
         _displayMode.setValue(typeTemplate().attributeGenerator(attribute)(*this));
     }

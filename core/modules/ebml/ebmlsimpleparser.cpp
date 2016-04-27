@@ -26,7 +26,7 @@ EbmlIntegerParser::EbmlIntegerParser(Object& object, const Module& module)
 
 void EbmlIntegerParser::doParseHead()
 {
-    Object* child = addVariable(module().getTemplate("int")(availableSize()),"payload");
+    Object* child = addVariable(module().getType("int", availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -39,7 +39,7 @@ EbmlUIntegerParser::EbmlUIntegerParser(Object& object, const Module& module)
 
 void EbmlUIntegerParser::doParseHead()
 {
-    Object* child = addVariable(module().getTemplate("uint")(availableSize()),"payload");
+    Object* child = addVariable(module().getType("uint", availableSize()),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -52,7 +52,7 @@ EbmlStringParser::EbmlStringParser(Object& object, const Module& module)
 
 void EbmlStringParser::doParseHead()
 {
-    Object* child = addVariable(module().getTemplate("String")(availableSize()/8),"payload");
+    Object* child = addVariable(module().getType("String", availableSize()/8),"payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -65,7 +65,7 @@ EbmlBinaryParser::EbmlBinaryParser(Object& object, const Module& module)
 
 void EbmlBinaryParser::doParseHead()
 {
-    addVariable(module().getTemplate("Data")(availableSize()), "payload");
+    addVariable(module().getType("Data", availableSize()), "payload");
 }
 
 EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& module)
@@ -75,7 +75,7 @@ EbmlDateContainerParser::EbmlDateContainerParser(Object& object, const Module& m
 
 void EbmlDateContainerParser::doParseHead()
 {
-    Object* child = addVariable(module().getTemplate("Date")(), "payload");
+    Object* child = addVariable(module().getType("Date"), "payload");
     if (child) {
         object().setValue(child->value());
     }
@@ -90,9 +90,9 @@ void EbmlFloatParser::doParseHead()
 {
     Object* child = nullptr;
     if(availableSize() == 32) {
-        addVariable(module().getTemplate("single")(),"payload");
+        addVariable(module().getType("single"),"payload");
     } else {
-        addVariable(module().getTemplate("double")(),"payload");
+        addVariable(module().getType("double"),"payload");
     }
     if (child) {
         object().setValue(child->value());

@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
         const Module& module = moduleLoader.getModule(file);
 
         std::vector<Object*> objs;
-        objs.push_back(module.handleFile(module.getTemplate("File"), file, collector));
+        objs.push_back(module.handleFile(module.getType("File"), file, collector));
 
 
         Object*child = nullptr;

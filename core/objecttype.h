@@ -22,8 +22,7 @@
 #include <functional>
 
 #include "core/variant.h"
-
-class ObjectTypeTemplate;
+#include "core/objecttypetemplate.h"
 
 /**
  * @brief Symbol representing a class of \link Object objects\endlink that are to be parsed in the same way.
@@ -165,6 +164,22 @@ public:
 
     bool isVirtual() const;
     void setVirtual(bool value);
+
+    inline Parser* parseOrGetParser(ParsingOption& parsingOption) const
+    {
+        return _typeTemplate->parseOrGetParser(*this, parsingOption);
+    }
+
+    inline int64_t fixedSize() const
+    {
+        return _typeTemplate->fixedSize(*this);
+    }
+
+    inline Variant attributeValue(ObjectTypeTemplate::Attribute attribute) const
+    {
+        return _typeTemplate->attributeValue(*this, attribute);
+    }
+
 
 private:
     const Variant& vElementType() const;

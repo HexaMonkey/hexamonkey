@@ -69,13 +69,13 @@ bool MkvModule::doLoad()
 
         addParser(name);
         const ObjectTypeTemplate& typeTemplate = newTemplate(name);
-        setSpecification(getTemplate("EBMLElement")(id), typeTemplate());
+        setSpecification(getType("EBMLElement", id), ObjectType(typeTemplate));
 
         for(int i = 0; i < EbmlModule::numberOfTypeElements; ++i)
         {
             if(type == EbmlModule::typeElementAtributes[i])
             {
-                setExtension(typeTemplate, getTemplate(EbmlModule::typeElements[i])());
+                setExtension(typeTemplate, getType(EbmlModule::typeElements[i]));
                 break;
             }
         }

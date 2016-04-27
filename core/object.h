@@ -36,6 +36,12 @@ class ObjectContext;
 class ObjectAttributes;
 class Module;
 
+class ParsingOption
+{
+protected:
+    ParsingOption();
+};
+
 /** @brief Node of the tree structure associated with a \link File file\endlink
  *
  * The object correspond to a contiguous memory area in the \link file() file\endlink represented
@@ -50,7 +56,7 @@ class Module;
  * into children. The children can be access through iteration of the object or by using access functions.
  * It can also have a \link value() value\endlink.
  */
-class Object
+class Object : public ParsingOption
 {
     public:
         enum Endianness {
@@ -86,7 +92,9 @@ class Object
             };
 
             ParsingContext(Object& object);
+            ParsingContext(ParsingOption& parsingOption);
             ~ParsingContext();
+            inline Object& object() {return _object;}
             bool isAvailable() const;
         private:
             Object& _object;

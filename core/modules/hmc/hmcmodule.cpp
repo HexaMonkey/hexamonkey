@@ -66,13 +66,13 @@ bool HmcModule::doLoad()
 
         addParser(name);
         const ObjectTypeTemplate& typeTemplate = newTemplate(name);
-        setSpecification(getTemplate("EBMLElement")(i), typeTemplate());
+        setSpecification(getType("EBMLElement", i), ObjectType(typeTemplate));
 
         for(int j = 0; j < EbmlModule::numberOfTypeElements; ++j)
         {
             if(type == EbmlModule::typeElementAtributes[j])
             {
-                setExtension(typeTemplate, getTemplate(EbmlModule::typeElements[j])());
+                setExtension(typeTemplate, getType(EbmlModule::typeElements[j]));
                 break;
             }
         }
