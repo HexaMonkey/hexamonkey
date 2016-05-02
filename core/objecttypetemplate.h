@@ -22,6 +22,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 #include "core/variant.h"
 
@@ -116,20 +117,15 @@ public:
     static const ObjectTypeTemplate& nullTypeTemplate;
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const
-    {
-        return nullptr;
-    }
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const;
 
-    virtual int64_t fixedSize(const ObjectType&) const
-    {
-        return unknownSize;
-    }
 
-    virtual Variant attributeValue(const ObjectType&, Attribute) const
-    {
-        return Variant();
-    }
+    virtual int64_t fixedSize(const ObjectType&) const;
+
+
+    virtual Variant attributeValue(const ObjectType&, Attribute) const;
+
+    virtual std::shared_ptr<ObjectType> parent(const ObjectType&) const;
 
     std::string                _name;
     std::vector<std::string>   _parametersNames;

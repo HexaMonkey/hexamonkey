@@ -11,7 +11,8 @@ public:
     enum Type {
         OutOfFile,
         OutOfParent,
-        InvalidChild
+        InvalidChild,
+        BadParameter
     };
 
     ParsingException(Type type, const std::string& message);

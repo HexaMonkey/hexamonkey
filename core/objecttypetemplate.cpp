@@ -145,3 +145,23 @@ bool operator<= (const ObjectTypeTemplate& a, const ObjectTypeTemplate& b)
 ObjectTypeTemplate _nullTypeTemplate("");
 const ObjectTypeTemplate& ObjectTypeTemplate::nullTypeTemplate = _nullTypeTemplate;
 
+
+Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &) const
+{
+    return nullptr;
+}
+
+int64_t ObjectTypeTemplate::fixedSize(const ObjectType &) const
+{
+    return unknownSize;
+}
+
+Variant ObjectTypeTemplate::attributeValue(const ObjectType &, ObjectTypeTemplate::Attribute) const
+{
+    return Variant();
+}
+
+std::shared_ptr<ObjectType> ObjectTypeTemplate::parent(const ObjectType &) const
+{
+    return std::shared_ptr<ObjectType>();
+}

@@ -268,6 +268,7 @@ protected:
      * can be recognized.
      */
     void addTemplate(const ObjectTypeTemplate& typeTemplate);
+    void addTemplate(ObjectTypeTemplate* typeTemplate);
 
     /**
      * @brief

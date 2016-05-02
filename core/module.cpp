@@ -387,6 +387,12 @@ void Module::addTemplate(const ObjectTypeTemplate& typeTemplate)
     _templates[typeTemplate.name()] = &typeTemplate;
 }
 
+void Module::addTemplate(ObjectTypeTemplate* typeTemplate)
+{
+    _ownedTemplates.push_back(std::unique_ptr<ObjectTypeTemplate>(typeTemplate));
+    _templates[typeTemplate->name()] = typeTemplate;
+}
+
 ObjectTypeTemplate &Module::newTemplate(const std::string &name, const std::vector<std::string> &parameters)
 {
     ObjectTypeTemplate* temp = new ObjectTypeTemplate(name, parameters);

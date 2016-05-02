@@ -72,7 +72,8 @@ SOURCES += \
     ../core/variable/mapscope.cpp \
     ../core/variable/variablepath.cpp \
     ../core/modulesetup.cpp \
-    ../core/parsingexception.cpp
+    ../core/parsingexception.cpp \
+    ../core/modules/default/integertypetemplate.cpp
     
 
 HEADERS  += \ 
@@ -155,6 +156,7 @@ HEADERS  += \
     ../core/variable/parserscope.h \
     ../core/varianthash.h \
     ../core/modulesetup.h \
-    ../core/parsingexception.h
+    ../core/parsingexception.h \
+    ../core/modules/default/integertypetemplate.h
 
 

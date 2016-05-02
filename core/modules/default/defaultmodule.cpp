@@ -32,6 +32,8 @@
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
+#include "core/modules/default/integertypetemplate.h"
+
 bool DefaultModule::doLoad()
 {
     auto& file = newTemplate("File");
@@ -169,51 +171,7 @@ bool DefaultModule::doLoad()
          }
     });
 
-    newTemplate("int",{"size", "_base"});
-    addParser("int", [this]parserLambda
-    {
-        if (type.parameterSpecified(0)) {
-            int size = type.parameterValue(0).toInteger();
-            int base = 0;
-            if (type.parameterSpecified(1)) {
-                base = type.parameterValue(1).toInteger();
-            }
-            Variant::Display display = Variant::decimal;
-            switch (base) {
-                case 2:
-                    display = Variant::binary;
-                    break;
-
-                case 8:
-                    display = Variant::octal;
-                    break;
-
-                case 16:
-                    display = Variant::hexadecimal;
-                    break;
-            }
-
-            if(size<=64)
-            {
-                switch(size)
-                {
-                    case 8:
-                        return new Int8Parser(object, display);
-                    case 16:
-                        return new Int16Parser(object, display);
-                    case 32:
-                        return new Int32Parser(object, display);
-                    case 64:
-                        return new Int64Parser(object, display);
-                    default:
-                        return new IntXParser(object, size, display);
-                }
-            }
-        }
-        return nullptr;
-
-    });
-    setFixedSizeFromArg("int", 0);
+    addTemplate(new IntegerTypeTemplate());
 
     newTemplate("uint",{"size", "_base"});
     addParser("uint", [this]parserLambda
@@ -579,4 +537,34 @@ bool DefaultModule::doLoad()
     });
 
     return true;
+}
+
+Parser *DefaultModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    if (type.typeTemplate().name() == "int")
+    {
+        return type.parseOrGetParser(static_cast<ParsingOption&>(object));
+    } else {
+        return Module::getParser(type, object, fromModule);
+    }
+}
+
+bool DefaultModule::hasParser(const ObjectType &type) const
+{
+    if (type.typeTemplate().name() == "int")
+    {
+        return true;
+    } else {
+        return Module::hasParser(type);
+    }
+}
+
+int64_t DefaultModule::doGetFixedSize(const ObjectType &type, const Module &module) const
+{
+    if (type.typeTemplate().name() == "int")
+    {
+        return type.fixedSize();
+    } else {
+        return Module::doGetFixedSize(type, module);
+    }
 }
