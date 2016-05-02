@@ -15,6 +15,8 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#include <unordered_set>
+
 #include "core/modules/default/defaultmodule.h"
 #include "core/modules/default/fileparser.h"
 #include "core/modules/default/arrayparser.h"
@@ -33,6 +35,8 @@
 #include "core/util/bitutil.h"
 
 #include "core/modules/default/integertypetemplate.h"
+
+std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid"};
 
 bool DefaultModule::doLoad()
 {
@@ -173,64 +177,11 @@ bool DefaultModule::doLoad()
 
     addTemplate(new IntegerTypeTemplate());
 
-    newTemplate("uint",{"size", "_base"});
-    addParser("uint", [this]parserLambda
-    {
-        if (type.parameterSpecified(0)) {
-            int size = type.parameterValue(0).toInteger();
-            int base = 0;
-            if (type.parameterSpecified(1)) {
-                base = type.parameterValue(1).toInteger();
-            }
-            Variant::Display display = Variant::decimal;
-            switch (base) {
-                case 2:
-                    display = Variant::binary;
-                    break;
+    addTemplate(new UIntegerTypeTemplate());
 
-                case 8:
-                    display = Variant::octal;
-                    break;
+    addTemplate(new ByteTypeTemplate());
 
-                case 16:
-                    display = Variant::hexadecimal;
-                    break;
-            }
-
-            if(size<=64)
-            {
-                switch(size)
-                {
-                    case 8:
-                        return new UInt8Parser(object, display);
-                    case 16:
-                        return new UInt16Parser(object, display);
-                    case 32:
-                        return new UInt32Parser(object, display);
-                    case 64:
-                        return new UInt64Parser(object, display);
-                    default:
-                        return new UIntXParser(object, size, display);
-                }
-            }
-        }
-        return nullptr;
-    });
-    setFixedSizeFromArg("uint", 0);
-
-    newTemplate("byte");
-    addParser("byte", [this]parserLambda
-    {
-        return new UInt8Parser(object, Variant::hexadecimal);
-    });
-    setFixedSize("byte", 8);
-
-    newTemplate("uuid");
-    addParser("uuid", [this]parserLambda
-    {
-        return new UuidParser(object);
-    });
-    setFixedSize("uuid", 128);
+    addTemplate(new UuidTypeTemplate());
 
     newTemplate("float");
     addParser("float", [this]parserLambda{return new SingleFloatParser(object);});
@@ -541,7 +492,7 @@ bool DefaultModule::doLoad()
 
 Parser *DefaultModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
 {
-    if (type.typeTemplate().name() == "int")
+    if (refactored.find(type.typeTemplate().name()) != refactored.end())
     {
         return type.parseOrGetParser(static_cast<ParsingOption&>(object));
     } else {
@@ -551,7 +502,7 @@ Parser *DefaultModule::getParser(const ObjectType &type, Object &object, const M
 
 bool DefaultModule::hasParser(const ObjectType &type) const
 {
-    if (type.typeTemplate().name() == "int")
+    if (refactored.find(type.typeTemplate().name()) != refactored.end())
     {
         return true;
     } else {
@@ -561,7 +512,7 @@ bool DefaultModule::hasParser(const ObjectType &type) const
 
 int64_t DefaultModule::doGetFixedSize(const ObjectType &type, const Module &module) const
 {
-    if (type.typeTemplate().name() == "int")
+    if (refactored.find(type.typeTemplate().name()) != refactored.end())
     {
         return type.fixedSize();
     } else {
