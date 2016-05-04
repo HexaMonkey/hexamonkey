@@ -312,6 +312,21 @@ class Object : public ParsingOption
 
         void addChild(Object* child);
 
+        /**
+         * @brief Generate an \link Object object\endlink not to be subsequently added
+         */
+        Object* readVariable(const ObjectType& type, const Module& module, std::streamoff offset = 0);
+
+        /**
+         * @brief Generate an \link Object object\endlink and add it
+         */
+        Object* addVariable(const ObjectType& type, const Module& module);
+
+        /**
+         * @brief Generate an \link Object object\endlink, set its name, and add it
+         */
+        Object* addVariable(const ObjectType& type, const std::string& name, const Module& module);
+
         inline VariableCollector& collector() {
             return _collector;
         }
@@ -330,6 +345,11 @@ class Object : public ParsingOption
         void parseBody();
         bool parseSome(int hint);
         void parseTail();
+
+        /**
+         * @brief Generate an \link Object object\endlink to be subsequently added (or not)
+         */
+        Object* getVariable(const ObjectType& type, const Module& module, std::streamoff offset = 0);
 
         File& _file;
         std::streampos _beginningPos;

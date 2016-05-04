@@ -332,3 +332,43 @@ int64_t UuidTypeTemplate::fixedSize(const ObjectType &/*objectType*/, const Modu
 {
     return 128;
 }
+
+
+BitsetTypeTemplate::BitsetTypeTemplate()
+    : ObjectTypeTemplate("Bitset", {"size"})
+{
+}
+
+Parser *BitsetTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+{
+    if(!type.parameterSpecified(0)) {
+        throw ParsingException(ParsingException::Type::BadParameter, "Missing bitset size");
+    }
+    auto size = type.parameterValue(0).toInteger();
+    if (size > 64) {
+        throw ParsingException(ParsingException::Type::BadParameter, "Bitset size must be lower than 64");
+    }
+
+    Object::ParsingContext context(option);
+
+    context.object().setSize(size);
+
+    std::bitset<64> flag;
+    unsigned char bit;
+    for(unsigned int i = 0; i < size; i+=1)
+    {
+        context.object().file().read(reinterpret_cast<char*>(&bit), 1);
+        flag <<= 1;
+        flag |= bit;
+    }
+
+    Variant value(flag.to_ullong());
+    value.setDisplayType(Variant::binary);
+    context.object().setValue(value);
+    return nullptr;
+}
+
+int64_t BitsetTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+{
+    return type.parameterValue(0).toInteger();
+}

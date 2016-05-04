@@ -11,7 +11,7 @@
 class StructParser : public ContainerParser
 {
 public:
-    StructParser(Object& object, const Module& module);
+    StructParser(ParsingOption& object, const Module& module);
     void addElement(const ObjectType& type, const std::string& name);
 
 protected:

@@ -533,6 +533,38 @@ void Object::addChild(Object *child)
     }
 }
 
+Object *Object::readVariable(const ObjectType &type, const Module &module, std::streamoff offset)
+{
+    Object* child = getVariable(type, module, offset);
+    if (child != nullptr && child->size() == -1LL) {
+        child->parse();
+        child->setSize(child->_contentSize);
+    }
+    return child;
+}
+
+Object *Object::addVariable(const ObjectType &type, const Module &module)
+{
+    Object* child = getVariable(type, module);
+    addChild(child);
+    return child;
+}
+
+Object *Object::addVariable(const ObjectType &type, const std::string &name, const Module &module)
+{
+    seekObjectEnd();
+
+    Object* child = getVariable(type, module);
+    child->setName(name);
+    addChild(child);
+    return child;
+}
+
+Object *Object::getVariable(const ObjectType &type, const Module& module, std::streamoff offset)
+{
+    seekObjectEnd(offset);
+    return module.handle(type, *this);
+}
 
 void Object::explore(int depth)
 {

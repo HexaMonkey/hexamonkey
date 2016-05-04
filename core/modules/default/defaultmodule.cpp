@@ -41,101 +41,44 @@
 #include "core/modules/default/datatypetemplate.h"
 #include "core/modules/default/floattypetemplate.h"
 #include "core/modules/default/stringtypetemplate.h"
+#include "core/modules/default/enumtypetemplate.h"
+#include "core/modules/default/structtypetemplate.h"
 
-std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File", "Array", "Tuple", "Data", "float", "double", "fixedFloat", "String", "WString"};
+std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File", "Array", "Tuple", "Data", "float", "double", "fixedFloat", "String", "WString", "Enum", "Struct", "Bitset"};
 
 bool DefaultModule::doLoad()
 {
-    addTemplate(new FileTypeTemplate());
+    addTemplate(new FileTypeTemplate);
 
-    addTemplate(new ArrayTypeTemplate());
+    addTemplate(new ArrayTypeTemplate);
 
-    addTemplate(new TupleTypeTemplate());
+    addTemplate(new TupleTypeTemplate);
 
-    addTemplate(new DataTypeTemplate());
+    addTemplate(new DataTypeTemplate);
 
-    auto& structType = newTemplate("Struct", {"_name"});
-    structType.setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-    addParser("Struct", []parserLambda
-    {
-        auto parser = new StructParser(object, module);
-        for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
-            parser->addElement(type.parameterValue(2*i+1).toObjectType(), type.parameterValue(2*i+2).toString());
-        }
-        return parser;
-    });
-    setFixedSize("Struct", [this]fixedSizeLambda
-    {
-         int s = 0;
-         for (int i = 1; i < type.numberOfParameters(); i += 2) {
-             int t = module.getFixedSize(type.parameterValue(i).toObjectType());
-             if (t != -1) {
-                 s += t;
-             } else {
-                 return -1;
-             }
-         }
-         return s;
-    });
+    addTemplate(new StructTypeTemplate);
 
-    auto& enumType = newTemplate("Enum", {"type"});
-    enumType.setAttributeGenerator(ObjectTypeTemplate::Attribute::displayAs,
-                                   []objectTypeAttributeLambda {
-                                       return type.parameterValue(0);
-                                   });
-    addParser("Enum", []parserLambda
-    {
-        if (type.parameterSpecified(0)) {
-            auto parser = new EnumParser(object, module, type.parameterValue(0).toObjectType());
-            for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
-                parser->addElement(type.parameterValue(2*i+1), type.parameterValue(2*i+2));
-            }
+    addTemplate(new EnumTypeTemplate);
 
-            return parser;
-        } else {
-            return nullptr;
-        }
-    });
-    setFixedSize("Enum", [this]fixedSizeLambda
-    {
-         if (type.parameterSpecified(0)) {
-             const ObjectType& childType = type.parameterValue(0).toObjectType();
-             const int64_t t = module.getFixedSize(childType);
-             return t;
-         } else {
-             return -1;
-         }
-    });
+    addTemplate(new IntegerTypeTemplate);
 
-    addTemplate(new IntegerTypeTemplate());
+    addTemplate(new UIntegerTypeTemplate);
 
-    addTemplate(new UIntegerTypeTemplate());
+    addTemplate(new ByteTypeTemplate);
 
-    addTemplate(new ByteTypeTemplate());
+    addTemplate(new BitsetTypeTemplate);
 
-    addTemplate(new UuidTypeTemplate());
+    addTemplate(new UuidTypeTemplate);
 
-    addTemplate(new FloatTypeTemplate());
+    addTemplate(new FloatTypeTemplate);
 
-    addTemplate(new DoubleTypeTemplate());
+    addTemplate(new DoubleTypeTemplate);
 
-    addTemplate(new FixedFloatTypeTemplate());
+    addTemplate(new FixedFloatTypeTemplate);
 
-    addTemplate(new StringTypeTemplate());
+    addTemplate(new StringTypeTemplate);
 
-    addTemplate(new WStringTypeTemplate());
-
-    newTemplate("Bitset", {"size"});
-    addParser("Bitset", []parserLambda
-    {
-        if(type.parameterSpecified(0))
-            return new BitParser(object, type.parameterValue(0).toInteger());
-        return nullptr;
-    });
-    setFixedSizeFromArg("Bitset", 0);
+    addTemplate(new WStringTypeTemplate);
 
 
     addFunction("sizeof",

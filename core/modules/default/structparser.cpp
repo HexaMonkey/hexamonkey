@@ -1,7 +1,8 @@
 #include "structparser.h"
 #include "core/module.h"
 
-StructParser::StructParser(Object &object, const Module &module) : ContainerParser(object, module)
+StructParser::StructParser(ParsingOption &option, const Module &module)
+    : ContainerParser(option, module)
 {
 }
 

@@ -36,6 +36,17 @@ private:
     virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
 };
 
+class BitsetTypeTemplate : public ObjectTypeTemplate
+{
+public:
+    BitsetTypeTemplate();
+
+private:
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+
+    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
+};
+
 class UuidTypeTemplate : public ObjectTypeTemplate
 {
 public:
