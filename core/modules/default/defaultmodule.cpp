@@ -40,8 +40,9 @@
 #include "core/modules/default/tupletypetemplate.h"
 #include "core/modules/default/datatypetemplate.h"
 #include "core/modules/default/floattypetemplate.h"
+#include "core/modules/default/stringtypetemplate.h"
 
-std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File", "Array", "Tuple", "Data", "float", "double", "fixedFloat"};
+std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File", "Array", "Tuple", "Data", "float", "double", "fixedFloat", "String", "WString"};
 
 bool DefaultModule::doLoad()
 {
@@ -123,44 +124,9 @@ bool DefaultModule::doLoad()
 
     addTemplate(new FixedFloatTypeTemplate());
 
-    newTemplate("String", {"charCount"});
-    addParser("String", []parserLambda
-    {
-        int numberOfChars;
-        if(type.parameterSpecified(0)) {
-            numberOfChars = (int) type.parameterValue(0).toInteger();
-        } else {
-            numberOfChars = -1;
-        }
+    addTemplate(new StringTypeTemplate());
 
-        return new Utf8StringParser(object, numberOfChars);
-    });
-    setFixedSize("String", []fixedSizeLambda
-    {
-         if(type.parameterSpecified(0))
-             return 8*type.parameterValue(0).toInteger();
-         return HM_UNKNOWN_SIZE;
-    });
-
-    newTemplate("WString", {"charCount"});
-    addParser("WString", [this]parserLambda
-    {
-        int64_t size;
-        if(type.parameterSpecified(0)) {
-            size = type.parameterValue(0).toInteger();
-        } else {
-            size = -1;
-        }
-
-        return new WideStringParser(object, size);
-    });
-    setFixedSize("WString", []fixedSizeLambda
-    {
-         if(type.parameterSpecified(0))
-             return 16*type.parameterValue(0).toInteger();
-         return HM_UNKNOWN_SIZE;
-    });
-
+    addTemplate(new WStringTypeTemplate());
 
     newTemplate("Bitset", {"size"});
     addParser("Bitset", []parserLambda

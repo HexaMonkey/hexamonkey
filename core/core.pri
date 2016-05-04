@@ -78,7 +78,8 @@ SOURCES += \
     ../core/modules/default/arraytypetemplate.cpp \
     ../core/modules/default/tupletypetemplate.cpp \
     ../core/modules/default/datatypetemplate.cpp \
-    ../core/modules/default/floattypetemplate.cpp
+    ../core/modules/default/floattypetemplate.cpp \
+    ../core/modules/default/stringtypetemplate.cpp
     
 
 HEADERS  += \ 
@@ -167,6 +168,7 @@ HEADERS  += \
     ../core/modules/default/arraytypetemplate.h \
     ../core/modules/default/tupletypetemplate.h \
     ../core/modules/default/datatypetemplate.h \
-    ../core/modules/default/floattypetemplate.h
+    ../core/modules/default/floattypetemplate.h \
+    ../core/modules/default/stringtypetemplate.h
 
 
