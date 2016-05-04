@@ -74,7 +74,11 @@ SOURCES += \
     ../core/modulesetup.cpp \
     ../core/parsingexception.cpp \
     ../core/modules/default/integertypetemplate.cpp \
-    ../core/modules/default/filetypetemplate.cpp
+    ../core/modules/default/filetypetemplate.cpp \
+    ../core/modules/default/arraytypetemplate.cpp \
+    ../core/modules/default/tupletypetemplate.cpp \
+    ../core/modules/default/datatypetemplate.cpp \
+    ../core/modules/default/floattypetemplate.cpp
     
 
 HEADERS  += \ 
@@ -159,6 +163,10 @@ HEADERS  += \
     ../core/modulesetup.h \
     ../core/parsingexception.h \
     ../core/modules/default/integertypetemplate.h \
-    ../core/modules/default/filetypetemplate.h
+    ../core/modules/default/filetypetemplate.h \
+    ../core/modules/default/arraytypetemplate.h \
+    ../core/modules/default/tupletypetemplate.h \
+    ../core/modules/default/datatypetemplate.h \
+    ../core/modules/default/floattypetemplate.h
 
 

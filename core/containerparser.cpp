@@ -26,6 +26,12 @@ ContainerParser::ContainerParser(Object &object, const Module &module)
 {
 }
 
+ContainerParser::ContainerParser(ParsingOption &option, const Module &module)
+    : Parser(option),
+      _module(module)
+{
+}
+
 Object *ContainerParser::readVariable(const ObjectType &type, std::streamoff offset)
 {
     Object* child = getVariable(type, offset);

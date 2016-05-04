@@ -33,6 +33,18 @@ Parser::Parser(Object& object)
 
 }
 
+Parser::Parser(ParsingOption& option)
+    : _object(static_cast<Object&>(option)),
+      _sharedType(new std::pair<bool, ObjectType>(false, ObjectType())),
+      _headParsed(false),
+      _parsed(false),
+      _tailParsed(false),
+      _hasHead(true),
+      _hasTail(true)
+{
+
+}
+
 void Parser::parseHead()
 {
     if (!_headParsed)

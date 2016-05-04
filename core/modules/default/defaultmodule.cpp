@@ -36,87 +36,22 @@
 
 #include "core/modules/default/filetypetemplate.h"
 #include "core/modules/default/integertypetemplate.h"
+#include "core/modules/default/arraytypetemplate.h"
+#include "core/modules/default/tupletypetemplate.h"
+#include "core/modules/default/datatypetemplate.h"
+#include "core/modules/default/floattypetemplate.h"
 
-std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File"};
+std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File", "Array", "Tuple", "Data", "float", "double", "fixedFloat"};
 
 bool DefaultModule::doLoad()
 {
     addTemplate(new FileTypeTemplate());
 
-    auto& array = newTemplate("Array",{"elementType", "size", "_namePattern"});
-    array.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-    addParser("Array", []parserLambda
-    {
-        if(type.parameterSpecified(0))
-        {
-            const ObjectType& elemType = type.parameterValue(0).toObjectType();
-            const int64_t size =
-                      type.parameterSpecified(1) ? type.parameterValue(1).toInteger() : -1LL;
+    addTemplate(new ArrayTypeTemplate());
 
-            const std::string& namePattern =
-                      type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
+    addTemplate(new TupleTypeTemplate());
 
-            return new ArrayParser(object, module, elemType, size, namePattern);
-        }
-        return nullptr;
-    });
-    setFixedSize("Array", [this]fixedSizeLambda
-    {
-         if(type.parameterSpecified(1))
-         {
-             int64_t s = type.parameterValue(1).toInteger();
-             if(s>=0)
-                return s;
-         }
-         return -1;
-    });
-
-    auto& tuple = newTemplate("Tuple",{"elementType", "count", "_namePattern"});
-    tuple.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(0);
-                                       });
-
-    tuple.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementCount,
-                                       []objectTypeAttributeLambda {
-                                             return type.parameterValue(1);
-                                       });
-    addParser("Tuple", []parserLambda
-    {
-        if(type.parameterSpecified(0) && type.parameterSpecified(1))
-        {
-            const ObjectType& elemType = type.parameterValue(0).toObjectType();
-            const int64_t elemCount = type.parameterValue(1).toInteger();
-            const std::string& namePattern =
-                       type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
-            return new TupleParser(object, module, elemType, elemCount, namePattern);
-        }
-        return nullptr;
-    });
-    setFixedSize("Tuple", [this]fixedSizeLambda
-    {
-         if(type.parameterSpecified(0) && type.parameterSpecified(1))
-         {
-             int64_t t = module.getFixedSize(type.parameterValue(0).toObjectType());
-             if(t>=0)
-                return t*type.parameterValue(1).toInteger();
-         }
-         return -1;
-    });
-
-
-    newTemplate("Data", {"_size"});
-    addParser("Data", []parserLambda
-    {
-        if(type.parameterSpecified(0))
-            return new DataParser(object, type.parameterValue(0).toInteger());
-        else
-            return new DataParser(object, -1);
-    });
-    setFixedSizeFromArg("Data", 0);
+    addTemplate(new DataTypeTemplate());
 
     auto& structType = newTemplate("Struct", {"_name"});
     structType.setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
@@ -182,36 +117,11 @@ bool DefaultModule::doLoad()
 
     addTemplate(new UuidTypeTemplate());
 
-    newTemplate("float");
-    addParser("float", [this]parserLambda{return new SingleFloatParser(object);});
-    setFixedSize("float", 32);
+    addTemplate(new FloatTypeTemplate());
 
-    newTemplate("double");
-    addParser("double", [this]parserLambda{return new DoubleFloatParser(object);});
-    setFixedSize("double", 64);
+    addTemplate(new DoubleTypeTemplate());
 
-    newTemplate("fixedFloat", {"integer","decimal"});
-    addParser("fixedFloat", []parserLambda
-    {
-        if(type.parameterSpecified(0) && type.parameterSpecified(1)) {
-                      int64_t decimal = type.parameterValue(0).toInteger();
-                      int64_t fractionnal = type.parameterValue(1).toInteger();
-                      if (decimal == fractionnal) {
-                          if (decimal == 16) {
-                              return new FixedFloat16Parser(object);
-                          } else if (decimal == 32) {
-                              return new FixedFloat32Parser(object);
-                          }
-                      }
-        }
-        return nullptr;
-    });
-    setFixedSize("fixedFloat", []fixedSizeLambda
-    {
-         if(type.parameterSpecified(0) && type.parameterSpecified(1))
-             return type.parameterValue(0).toInteger()+type.parameterValue(1).toInteger();
-         return HM_UNKNOWN_SIZE;
-    });
+    addTemplate(new FixedFloatTypeTemplate());
 
     newTemplate("String", {"charCount"});
     addParser("String", []parserLambda

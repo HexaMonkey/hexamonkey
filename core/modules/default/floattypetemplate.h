@@ -1,12 +1,12 @@
-#ifndef INTEGERTYPETEMPLATE_H
-#define INTEGERTYPETEMPLATE_H
+#ifndef FLOATTYPETEMPLATE_H
+#define FLOATTYPETEMPLATE_H
 
 #include "core/objecttypetemplate.h"
 
-class IntegerTypeTemplate : public ObjectTypeTemplate
+class FloatTypeTemplate : public ObjectTypeTemplate
 {
 public:
-    IntegerTypeTemplate();
+    FloatTypeTemplate();
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
@@ -14,10 +14,10 @@ private:
     virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
 };
 
-class UIntegerTypeTemplate : public ObjectTypeTemplate
+class DoubleTypeTemplate : public ObjectTypeTemplate
 {
 public:
-    UIntegerTypeTemplate();
+    DoubleTypeTemplate();
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
@@ -25,10 +25,10 @@ private:
     virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
 };
 
-class ByteTypeTemplate : public ObjectTypeTemplate
+class FixedFloatTypeTemplate : public ObjectTypeTemplate
 {
 public:
-    ByteTypeTemplate();
+    FixedFloatTypeTemplate();
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
@@ -36,17 +36,4 @@ private:
     virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
 };
 
-class UuidTypeTemplate : public ObjectTypeTemplate
-{
-public:
-    UuidTypeTemplate();
-
-private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
-
-    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
-};
-
-
-
-#endif // INTEGERTYPETEMPLATE_H
+#endif // FLOATTYPETEMPLATE_H

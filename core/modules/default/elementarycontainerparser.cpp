@@ -2,8 +2,8 @@
 
 #include "core/module.h"
 
-ElementaryContainerParser::ElementaryContainerParser(Object &object, const Module &module, const ObjectType &elementType, const std::string &namePattern)
-    :ContainerParser(object, module), elementType(elementType)
+ElementaryContainerParser::ElementaryContainerParser(ParsingOption& option, const Module &module, const ObjectType &elementType, const std::string &namePattern)
+    :ContainerParser(option, module), elementType(elementType)
 {
     if (namePattern.empty()) {
         hasFixedName = true;

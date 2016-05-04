@@ -53,6 +53,7 @@ public:
 
 protected:
     ContainerParser(Object& object, const Module& module);
+    ContainerParser(ParsingOption& option, const Module& module);
 
 private:
     /**

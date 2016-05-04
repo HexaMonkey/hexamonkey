@@ -19,10 +19,10 @@
 #include "core/module.h"
 #include "core/object.h"
 
-ArrayParser::ArrayParser(Object &object, const Module &module, const ObjectType &elementType, int64_t size, const std::string &namePattern)
-    :ElementaryContainerParser(object, module, elementType, namePattern), size(size)
+ArrayParser::ArrayParser(ParsingOption &option, const Module &module, const ObjectType &elementType, int64_t size, const std::string &namePattern)
+    :ElementaryContainerParser(option, module, elementType, namePattern), size(size)
 {
-    object.setToExpandOnAddition();
+    object().setToExpandOnAddition();
 }
 
 void ArrayParser::doParseHead()

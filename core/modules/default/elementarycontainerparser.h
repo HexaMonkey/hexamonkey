@@ -9,7 +9,7 @@
 class ElementaryContainerParser : public ContainerParser
 {
 public:
-    ElementaryContainerParser(Object& object, const Module& module, const ObjectType& elementType, const std::string &namePattern);
+    ElementaryContainerParser(ParsingOption& option, const Module& module, const ObjectType& elementType, const std::string &namePattern);
 
 protected:
     Object* addElem();

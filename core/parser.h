@@ -107,6 +107,7 @@ public:
 
 protected:
     Parser(Object& object);
+    Parser(ParsingOption& object);
 
     /**
      * @brief Get the number of bits between the current position in the \link File file\endlink and
