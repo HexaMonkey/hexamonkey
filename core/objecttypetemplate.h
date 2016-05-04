@@ -28,6 +28,7 @@
 
 class Parser;
 class ParsingOption;
+class Module;
 
 #define objectTypeAttributeLambda (const ObjectType &type) ->Variant
 
@@ -117,10 +118,10 @@ public:
     static const ObjectTypeTemplate& nullTypeTemplate;
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const;
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const;
 
 
-    virtual int64_t fixedSize(const ObjectType&) const;
+    virtual int64_t fixedSize(const ObjectType&, const Module& module) const;
 
 
     virtual Variant attributeValue(const ObjectType&, Attribute) const;

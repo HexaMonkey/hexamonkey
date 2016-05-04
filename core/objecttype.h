@@ -165,14 +165,14 @@ public:
     bool isVirtual() const;
     void setVirtual(bool value);
 
-    inline Parser* parseOrGetParser(ParsingOption& parsingOption) const
+    inline Parser* parseOrGetParser(ParsingOption& parsingOption, const Module& module) const
     {
-        return _typeTemplate->parseOrGetParser(*this, parsingOption);
+        return _typeTemplate->parseOrGetParser(*this, parsingOption, module);
     }
 
-    inline int64_t fixedSize() const
+    inline int64_t fixedSize(const Module& module) const
     {
-        return _typeTemplate->fixedSize(*this);
+        return _typeTemplate->fixedSize(*this, module);
     }
 
     inline Variant attributeValue(ObjectTypeTemplate::Attribute attribute) const

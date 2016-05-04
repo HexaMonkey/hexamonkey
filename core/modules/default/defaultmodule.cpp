@@ -34,15 +34,14 @@
 #include "core/util/strutil.h"
 #include "core/util/bitutil.h"
 
+#include "core/modules/default/filetypetemplate.h"
 #include "core/modules/default/integertypetemplate.h"
 
-std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid"};
+std::unordered_set<std::string> refactored = {"int", "uint", "byte", "uuid", "File"};
 
 bool DefaultModule::doLoad()
 {
-    auto& file = newTemplate("File");
-    file.setVirtual(true);
-    addParser("File", []parserLambda{return new FileParser(object);});
+    addTemplate(new FileTypeTemplate());
 
     auto& array = newTemplate("Array",{"elementType", "size", "_namePattern"});
     array.setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
@@ -494,7 +493,7 @@ Parser *DefaultModule::getParser(const ObjectType &type, Object &object, const M
 {
     if (refactored.find(type.typeTemplate().name()) != refactored.end())
     {
-        return type.parseOrGetParser(static_cast<ParsingOption&>(object));
+        return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
     } else {
         return Module::getParser(type, object, fromModule);
     }
@@ -514,7 +513,7 @@ int64_t DefaultModule::doGetFixedSize(const ObjectType &type, const Module &modu
 {
     if (refactored.find(type.typeTemplate().name()) != refactored.end())
     {
-        return type.fixedSize();
+        return type.fixedSize(module);
     } else {
         return Module::doGetFixedSize(type, module);
     }

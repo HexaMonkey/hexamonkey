@@ -146,12 +146,12 @@ ObjectTypeTemplate _nullTypeTemplate("");
 const ObjectTypeTemplate& ObjectTypeTemplate::nullTypeTemplate = _nullTypeTemplate;
 
 
-Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &) const
+Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &, const Module&) const
 {
     return nullptr;
 }
 
-int64_t ObjectTypeTemplate::fixedSize(const ObjectType &) const
+int64_t ObjectTypeTemplate::fixedSize(const ObjectType &, const Module &) const
 {
     return unknownSize;
 }

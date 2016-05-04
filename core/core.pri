@@ -73,7 +73,8 @@ SOURCES += \
     ../core/variable/variablepath.cpp \
     ../core/modulesetup.cpp \
     ../core/parsingexception.cpp \
-    ../core/modules/default/integertypetemplate.cpp
+    ../core/modules/default/integertypetemplate.cpp \
+    ../core/modules/default/filetypetemplate.cpp
     
 
 HEADERS  += \ 
@@ -157,6 +158,7 @@ HEADERS  += \
     ../core/varianthash.h \
     ../core/modulesetup.h \
     ../core/parsingexception.h \
-    ../core/modules/default/integertypetemplate.h
+    ../core/modules/default/integertypetemplate.h \
+    ../core/modules/default/filetypetemplate.h
 
 

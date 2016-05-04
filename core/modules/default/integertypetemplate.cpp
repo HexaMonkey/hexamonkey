@@ -7,7 +7,7 @@ IntegerTypeTemplate::IntegerTypeTemplate()
 {
 }
 
-Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
+Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module&) const
 {
     Object::ParsingContext context(option);
 
@@ -120,7 +120,7 @@ Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOpt
     return nullptr;
 }
 
-int64_t IntegerTypeTemplate::fixedSize(const ObjectType &objectType) const
+int64_t IntegerTypeTemplate::fixedSize(const ObjectType &objectType, const Module&) const
 {
     return objectType.parameterValue(0).toInteger();
 }
@@ -131,7 +131,7 @@ UIntegerTypeTemplate::UIntegerTypeTemplate()
 {
 }
 
-Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
+Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module&) const
 {
     Object::ParsingContext context(option);
 
@@ -240,7 +240,7 @@ Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOp
     return nullptr;
 }
 
-int64_t UIntegerTypeTemplate::fixedSize(const ObjectType &objectType) const
+int64_t UIntegerTypeTemplate::fixedSize(const ObjectType &objectType, const Module&) const
 {
     return objectType.parameterValue(0).toInteger();
 }
@@ -252,7 +252,7 @@ ByteTypeTemplate::ByteTypeTemplate()
 {
 }
 
-Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &/*type*/, ParsingOption &option) const
+Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &/*type*/, ParsingOption &option, const Module&) const
 {
     Object::ParsingContext context(option);
 
@@ -272,7 +272,7 @@ Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &/*type*/, ParsingOp
     return nullptr;
 }
 
-int64_t ByteTypeTemplate::fixedSize(const ObjectType &/*objectType*/) const
+int64_t ByteTypeTemplate::fixedSize(const ObjectType &/*objectType*/, const Module&) const
 {
     return 8;
 }
@@ -283,7 +283,7 @@ UuidTypeTemplate::UuidTypeTemplate()
 {
 }
 
-Parser *UuidTypeTemplate::parseOrGetParser(const ObjectType &/*objectType*/, ParsingOption &option) const
+Parser *UuidTypeTemplate::parseOrGetParser(const ObjectType &/*objectType*/, ParsingOption &option, const Module&) const
 {
     Object::ParsingContext context(option);
 
@@ -328,7 +328,7 @@ Parser *UuidTypeTemplate::parseOrGetParser(const ObjectType &/*objectType*/, Par
     return nullptr;
 }
 
-int64_t UuidTypeTemplate::fixedSize(const ObjectType &/*objectType*/) const
+int64_t UuidTypeTemplate::fixedSize(const ObjectType &/*objectType*/, const Module&) const
 {
     return 128;
 }
