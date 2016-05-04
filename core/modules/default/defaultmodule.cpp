@@ -18,16 +18,8 @@
 #include <unordered_set>
 
 #include "core/modules/default/defaultmodule.h"
-#include "core/modules/default/fileparser.h"
-#include "core/modules/default/arrayparser.h"
-#include "core/modules/default/tupleparser.h"
-#include "core/modules/default/dataparser.h"
-#include "core/modules/default/structparser.h"
-#include "core/modules/default/intparser.h"
-#include "core/modules/default/bitparser.h"
-#include "core/modules/default/wordparser.h"
-#include "core/modules/default/floatparser.h"
-#include "core/modules/default/enumparser.h"
+
+#include "core/object.h"
 
 #include "core/variable/variable.h"
 #include "core/variable/variablecollector.h"

@@ -32,16 +32,9 @@ SOURCES += \
     ../core/log/streamlogger.cpp \
     ../core/modules/default/elementarycontainerparser.cpp \
     ../core/modules/default/tupleparser.cpp \
-    ../core/modules/default/fileparser.cpp \
     ../core/modules/default/defaultmodule.cpp \
     ../core/modules/default/arrayparser.cpp \
-    ../core/modules/default/dataparser.cpp \
     ../core/modules/default/structparser.cpp \
-    ../core/modules/default/wordparser.cpp \
-    ../core/modules/default/intparser.cpp \
-    ../core/modules/default/floatparser.cpp \
-    ../core/modules/default/bitparser.cpp \
-    ../core/modules/default/enumparser.cpp \
     ../core/modules/ebml/ebmlsimpleparser.cpp \
     ../core/modules/ebml/ebmlmodule.cpp \
     ../core/modules/ebml/ebmlmasterparser.cpp \
@@ -115,17 +108,10 @@ HEADERS  += \
     ../core/log/logmanager.h \
     ../core/log/streamlogger.h \
     ../core/modules/default/elementarycontainerparser.h \
-    ../core/modules/default/dataparser.h \
     ../core/modules/default/tupleparser.h \
-    ../core/modules/default/fileparser.h \
     ../core/modules/default/defaultmodule.h \
     ../core/modules/default/arrayparser.h \
     ../core/modules/default/structparser.h \
-    ../core/modules/default/wordparser.h \
-    ../core/modules/default/intparser.h \
-    ../core/modules/default/floatparser.h \
-    ../core/modules/default/bitparser.h \
-    ../core/modules/default/enumparser.h \
     ../core/modules/ebml/ebmlsimpleparser.h \
     ../core/modules/ebml/ebmlmodule.h \
     ../core/modules/ebml/ebmlmasterparser.h \
