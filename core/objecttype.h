@@ -180,6 +180,14 @@ public:
         return _typeTemplate->attributeValue(*this, attribute);
     }
 
+    inline const ObjectType& parent() const
+    {
+        if (!_parent) {
+            _parent = _typeTemplate->parent(*this);
+        }
+        return *_parent;
+    }
+
 
 private:
     const Variant& vElementType() const;
@@ -193,6 +201,8 @@ private:
     mutable Variant _elementCount;
     mutable Variant _displayMode;
     mutable Variant _displayAs;
+
+    mutable std::shared_ptr<ObjectType> _parent;
 
     bool _virtual;
 

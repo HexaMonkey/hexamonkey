@@ -24,6 +24,11 @@ EbmlMasterParser::EbmlMasterParser(Object& object, const Module& module)
 {
 }
 
+EbmlMasterParser::EbmlMasterParser(ParsingOption &option, const Module &module)
+    :ContainerParser(option, module)
+{
+}
+
 void EbmlMasterParser::doParse()
 {
     while(availableSize()>0)

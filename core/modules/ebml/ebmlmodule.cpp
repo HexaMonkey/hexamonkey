@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <streambuf>
+#include <unordered_set>
 
 #include "core/modules/default/defaultmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
@@ -27,6 +28,13 @@
 #include "core/modules/ebml/ebmldateparser.h"
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
+
+#include "core/modules/ebml/ebmllargeintegertypetemplate.h"
+#include "core/modules/ebml/ebmlfiletypetemplate.h"
+#include "core/modules/ebml/ebmlelementtypetemplate.h"
+#include "core/modules/ebml/ebmldatetypetemplate.h"
+
+std::unordered_set<std::string> ebmlRefactored = {"LargeInteger", "EBMLFile", "EBMLElement", "Date"};
 
 const int EbmlModule::numberOfTypeElements = 8;
 const std::string EbmlModule::typeElements[] = {"MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
@@ -45,18 +53,13 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 bool EbmlModule::doLoad()
 {
     auto file = getType("File");
-
-    auto& EBMLFile  = newTemplate("EBMLFile");
-    setExtension(EBMLFile, file);
+    auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file.typeTemplate()));
     setSpecification(file, ObjectType(EBMLFile));
 
-    auto& EBMLElement = newTemplate("EBMLElement", {"id"});
-    EBMLElement.setVirtual(true);
+    auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate);
 
-    newTemplate("LargeInteger");
-
-    auto& Date = newTemplate("Date");
-    setExtension(Date, getType("int", 64));
+    addTemplate(new EbmlLargeIntegerTypeTemplate);
+    addTemplate(new EbmlDateTypeTemplate);
 
     for(int i = 0; i < numberOfTypeElements; ++i)
     {
@@ -77,12 +80,6 @@ bool EbmlModule::doLoad()
         setSpecification(element, ObjectType(defaultElementTemplate));
     }
 
-    addParser("EBMLFile", []parserLambda{return new EbmlMasterParser(object, module);});
-    addParser("EBMLElement", []parserLambda{return new EbmlContainerParser(object, module);});
-
-    addParser("Date", []parserLambda{return new EbmlDateParser(object);});
-    addParser("LargeInteger", []parserLambda{return new EbmlLargeIntegerParser(object);});
-
     addParser("MasterElement", []parserLambda{return new EbmlMasterParser(object, module);});
     addParser("IntegerElement", []parserLambda{return new EbmlIntegerParser(object, module);});
     addParser("UIntegerElement", []parserLambda{return new EbmlUIntegerParser(object, module);});
@@ -95,3 +92,43 @@ bool EbmlModule::doLoad()
     return true;
 }
 
+
+Parser *EbmlModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
+    {
+        return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
+    } else {
+        return Module::getParser(type, object, fromModule);
+    }
+}
+
+bool EbmlModule::hasParser(const ObjectType &type) const
+{
+    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
+    {
+        return true;
+    } else {
+        return Module::hasParser(type);
+    }
+}
+
+int64_t EbmlModule::doGetFixedSize(const ObjectType &type, const Module &module) const
+{
+    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
+    {
+        return type.fixedSize(module);
+    } else {
+        return Module::doGetFixedSize(type, module);
+    }
+}
+
+ObjectType EbmlModule::getFather(const ObjectType &child) const
+{
+    if (ebmlRefactored.find(child.typeTemplate().name()) != ebmlRefactored.end())
+    {
+        return child.parent();
+    } else {
+        return Module::getFather(child);
+    }
+}

@@ -49,6 +49,7 @@ const Variant& ObjectType::parameterValue(size_t index) const
 
 Variant &ObjectType::parameterValue(size_t index)
 {
+    _parent.reset();
     return _parametersValue[index];
 }
 
@@ -59,6 +60,8 @@ bool ObjectType::parameterSpecified(size_t index) const
 
 void ObjectType::setParameter(size_t index, const Variant &value)
 {
+    _parent.reset();
+
     while(index >= _parametersValue.size()) {
         _parametersValue.push_back(undefinedVariant);
     }
@@ -336,6 +339,6 @@ std::ostream& operator<<(std::ostream& out, const ObjectType& type)
 }
 
 
-void ObjectType::_setParameters(int first)
+void ObjectType::_setParameters(int)
 {
 }

@@ -110,7 +110,7 @@ public:
      *
      * Returns the \link ObjectType::isNull null\endlink type if the \link ObjectType type\endlink doesn't have a father
      */
-    ObjectType getFather(const ObjectType& child) const;
+    virtual ObjectType getFather(const ObjectType& child) const;
 
     /**
      * @brief Get the specification for the parent object
@@ -268,7 +268,7 @@ protected:
      * can be recognized.
      */
     void addTemplate(const ObjectTypeTemplate& typeTemplate);
-    void addTemplate(ObjectTypeTemplate* typeTemplate);
+    ObjectTypeTemplate& addTemplate(ObjectTypeTemplate* typeTemplate);
 
     /**
      * @brief

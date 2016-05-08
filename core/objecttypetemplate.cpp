@@ -161,7 +161,9 @@ Variant ObjectTypeTemplate::attributeValue(const ObjectType &, ObjectTypeTemplat
     return Variant();
 }
 
+std::shared_ptr<ObjectType> nullParent(new ObjectType);
+
 std::shared_ptr<ObjectType> ObjectTypeTemplate::parent(const ObjectType &) const
 {
-    return std::shared_ptr<ObjectType>();
+    return nullParent;
 }
