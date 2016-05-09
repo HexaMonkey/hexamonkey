@@ -55,7 +55,7 @@ public:
     virtual int64_t size() = 0;
 
     /** @brief Checks if data can be recovered from the stream*/
-    virtual bool good() = 0;
+    virtual bool good() const = 0;
 
 protected:
     char _bitPosition;

@@ -67,7 +67,7 @@ public:
     virtual int64_t size() override;
 
     /** @brief Checks if data can be recovered from the stream*/
-    virtual bool good() override;
+    virtual bool good() const override;
 
 
 private:

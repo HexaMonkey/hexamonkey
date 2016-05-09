@@ -23,7 +23,6 @@
 class EbmlMasterParser : public ContainerParser
 {
 public:
-    EbmlMasterParser(Object& object, const Module& module);
     EbmlMasterParser(ParsingOption& option, const Module& module);
 
 protected:

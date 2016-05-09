@@ -18,6 +18,7 @@
 #include <fstream>
 #include <streambuf>
 #include <unordered_set>
+#include <array>
 
 #include "core/modules/default/defaultmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
@@ -33,8 +34,9 @@
 #include "core/modules/ebml/ebmlfiletypetemplate.h"
 #include "core/modules/ebml/ebmlelementtypetemplate.h"
 #include "core/modules/ebml/ebmldatetypetemplate.h"
+#include "core/modules/ebml/ebmlextensiontypetemplate.h"
 
-std::unordered_set<std::string> ebmlRefactored = {"LargeInteger", "EBMLFile", "EBMLElement", "Date"};
+std::unordered_set<std::string> ebmlRefactored = {"LargeInteger", "EBMLFile", "EBMLElement", "Date", "MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
 
 const int EbmlModule::numberOfTypeElements = 8;
 const std::string EbmlModule::typeElements[] = {"MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
@@ -59,35 +61,25 @@ bool EbmlModule::doLoad()
     auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate);
 
     addTemplate(new EbmlLargeIntegerTypeTemplate);
-    addTemplate(new EbmlDateTypeTemplate);
+    const ObjectTypeTemplate& dateTypeTemplate = addTemplate(new EbmlDateTypeTemplate);
 
-    for(int i = 0; i < numberOfTypeElements; ++i)
-    {
-        const ObjectTypeTemplate& TypeElementTemplate = newTemplate(typeElements[i]);
-        setExtension(TypeElementTemplate, ObjectType(EBMLElement));
-    }
+    auto elementType = std::make_shared<ObjectType>(EBMLElement);
+    std::shared_ptr<ObjectType> elementTypeTemplates[] = {
+        std::make_shared<ObjectType>(addTemplate(new EbmlMasterTypeTemplate(elementType))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlIntegerTypeTemplate(elementType, getTemplate("int")))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlUIntegerTypeTemplate(elementType, getTemplate("uint")))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlFloatTypeTemplate(elementType, getTemplate("float"), getTemplate("double")))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlStringTypeTemplate(elementType, getTemplate("String")))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlUtf8StringTypeTemplate(elementType, getTemplate("String")))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlDateElementTypeTemplate(elementType, dateTypeTemplate))),
+        std::make_shared<ObjectType>(addTemplate(new EbmlBinaryTypeTemplate(elementType, getTemplate("Data"))))
+    };
 
     for(int i = 0; i < numberOfDefaultElements; ++i)
     {
-        const ObjectTypeTemplate& defaultElementTemplate = newTemplate(defaultElements[i]);
-        ObjectType element(EBMLElement);
-
-        addParser(defaultElements[i]);
-        setExtension(defaultElementTemplate, getType(typeElements[defaultElementTypes[i]]));
-
-
-        element.setParameter(0, defaultElementIds[i]);
-        setSpecification(element, ObjectType(defaultElementTemplate));
+        const ObjectTypeTemplate& defaultElementTemplate = addTemplate(new FixedParentTypeTemplate(defaultElements[i], elementTypeTemplates[i]));
+        setSpecification(ObjectType(EBMLElement, defaultElementIds[i]), ObjectType(defaultElementTemplate));
     }
-
-    addParser("MasterElement", []parserLambda{return new EbmlMasterParser(object, module);});
-    addParser("IntegerElement", []parserLambda{return new EbmlIntegerParser(object, module);});
-    addParser("UIntegerElement", []parserLambda{return new EbmlUIntegerParser(object, module);});
-    addParser("FloatElement", []parserLambda{return new EbmlFloatParser(object, module);});
-    addParser("StringElement", []parserLambda{return new EbmlStringParser(object, module);});
-    addParser("UTF8StringElement", []parserLambda{return new EbmlStringParser(object, module);});
-    addParser("DateElement", []parserLambda{return new EbmlDateContainerParser(object, module);});
-    addParser("BinaryElement", []parserLambda{return new EbmlBinaryParser(object, module);});
 
     return true;
 }

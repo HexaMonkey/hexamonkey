@@ -21,7 +21,7 @@ public:
     // do nothing
     virtual const std::string& path() const override;
 
-    // do nothing : the "file" is open since the object is usable
+    // do nothing : the "file" is open since the object is usable
     virtual void open() override;
 
     // do nothing
@@ -44,7 +44,7 @@ public:
     virtual int64_t size() override;
 
     // Always returns true...
-    virtual bool good() override;
+    virtual bool good() const override;
 
     void dump(std::ostream &out);
 

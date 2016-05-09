@@ -161,12 +161,23 @@ public:
         return ObjectType(getTemplate(name));
     }
 
-
     template<typename... Args> ObjectType getType(const std::string& name, Args... args) const
     {
          ObjectType type(getTemplate(name));
          type.setParameters(args...);
          return type;
+    }
+
+    std::shared_ptr<ObjectType> getSharedType(const std::string& name) const
+    {
+        return std::make_shared<ObjectType>(getTemplate(name));
+    }
+
+    template<typename... Args> std::shared_ptr<ObjectType> getSharedType(const std::string& name, Args... args) const
+    {
+        auto type = std::make_shared<ObjectType>(getTemplate(name));
+        type->setParameters(args...);
+        return type;
     }
 
     /**

@@ -214,6 +214,12 @@ private:
         setParameter(first, v);
         _setParameters(first+1, args...);
     }
+public:
+    template<typename... Args> ObjectType(const ObjectTypeTemplate& typeTemplate, Args... args)
+        : _typeTemplate(&typeTemplate)
+    {
+        setParameters(args...);
+    }
 };
 
 bool operator==(const ObjectType& a, const ObjectType& b);

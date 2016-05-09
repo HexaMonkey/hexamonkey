@@ -685,6 +685,15 @@ void Object::setToExpandOnAddition()
     _expandOnAddition = true;
 }
 
+std::streamoff Object::availableSize() const
+{
+    if(file().good()) {
+        return size() - pos();
+    } else {
+        return -1;
+    }
+}
+
 Object* Object::parent()
 {
     return _parent;

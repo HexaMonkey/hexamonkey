@@ -19,11 +19,6 @@
 #include "core/objecttypetemplate.h"
 #include "core/modules/ebml/ebmlmasterparser.h"
 
-EbmlMasterParser::EbmlMasterParser(Object& object, const Module& module)
-    :ContainerParser(object, module)
-{
-}
-
 EbmlMasterParser::EbmlMasterParser(ParsingOption &option, const Module &module)
     :ContainerParser(option, module)
 {

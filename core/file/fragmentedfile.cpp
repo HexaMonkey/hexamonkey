@@ -90,7 +90,7 @@ int64_t FragmentedFile::size() {
     return size;
 }
 
-bool FragmentedFile::good() {
+bool FragmentedFile::good() const {
     return true;
 }
 

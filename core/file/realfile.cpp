@@ -129,7 +129,7 @@ int64_t RealFile::size()
     return _size;
 }
 
-bool RealFile::good()
+bool RealFile::good() const
 {
     return _file.is_open()&&!_file.fail()&&!_file.bad()&&!_file.eof();
 }

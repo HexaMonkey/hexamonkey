@@ -78,7 +78,9 @@ SOURCES += \
     ../core/modules/ebml/ebmllargeintegertypetemplate.cpp \
     ../core/modules/ebml/ebmlfiletypetemplate.cpp \
     ../core/modules/ebml/ebmlelementtypetemplate.cpp \
-    ../core/modules/ebml/ebmldatetypetemplate.cpp
+    ../core/modules/ebml/ebmldatetypetemplate.cpp \
+    ../core/fixedparenttypetemplate.cpp \
+    ../core/modules/ebml/ebmlextensiontypetemplate.cpp
     
 
 HEADERS  += \ 
@@ -167,6 +169,8 @@ HEADERS  += \
     ../core/modules/ebml/ebmllargeintegertypetemplate.h \
     ../core/modules/ebml/ebmlfiletypetemplate.h \
     ../core/modules/ebml/ebmlelementtypetemplate.h \
-    ../core/modules/ebml/ebmldatetypetemplate.h
+    ../core/modules/ebml/ebmldatetypetemplate.h \
+    ../core/fixedparenttypetemplate.h \
+    ../core/modules/ebml/ebmlextensiontypetemplate.h
 
 

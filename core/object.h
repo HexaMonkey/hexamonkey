@@ -118,6 +118,7 @@ class Object : public ParsingOption
         void setSize(std::streamoff size);
         bool isSetToExpandOnAddition() const;
         void setToExpandOnAddition();
+        std::streamoff availableSize() const;
 
         /** @brief Access the current position of the \link file() file\endlink relative to
          *  the \link beginningPos beginning position\endlink of the \link file() file\endlink.
