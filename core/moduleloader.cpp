@@ -64,12 +64,12 @@ const Module &ModuleLoader::getModule(const std::string &key) const
             {
                 for(const std::string& importRequirement : importRequirements)
                 {
-                    module.import(getModule(importRequirement));
+                    module.import(getModule(importRequirement), importRequirement);
                 }
             }
             else if(!key.empty())
             {
-                module.import(getModule(""));
+                module.import(getModule(""), "");
             }
             Log::info("Load module : <", key, ">");
             module.load();

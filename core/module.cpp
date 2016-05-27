@@ -32,9 +32,10 @@ Module::Module()
 {
 }
 
-void Module::import(const Module &module)
+void Module::import(const Module &module, const std::string& name)
 {
-    _importedModules.push_back(&module);
+    _importedModulesChain.insert(_importedModulesChain.begin(), &module);
+    _importedModulesMap[name] = &module;
 }
 
 bool Module::isExtension(const ObjectType& child, const ObjectType& parent) const
@@ -81,18 +82,15 @@ void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectT
 ObjectType Module::getFather(const ObjectType &child) const
 {
     //Searching locally
-    auto it = _extensions.find(&child.typeTemplate());
-    if(it != _extensions.end())
     {
-        ObjectType father = (it->second)(child);
-        if(!father.isNull())
-        {
+        auto father = getFatherLocally(child);
+        if (!father.isNull()) {
             return father;
         }
     }
 
     //Searching in imported modules
-    for(const Module* module: reverse(_importedModules))
+    for(const Module* module: _importedModulesChain)
     {
         ObjectType father = module->getFather(child);
         if(!father.isNull())
@@ -100,7 +98,20 @@ ObjectType Module::getFather(const ObjectType &child) const
             return father;
         }
     }
+
     return ObjectType();
+}
+
+ObjectType Module::getFatherLocally(const ObjectType &child) const
+{
+    //Searching locally
+    auto it = _extensions.find(&child.typeTemplate());
+    if(it != _extensions.end())
+    {
+        return (it->second)(child);
+    } else {
+        return ObjectType();
+    }
 }
 
 ObjectType Module::specify(const ObjectType &parent) const
@@ -109,7 +120,7 @@ ObjectType Module::specify(const ObjectType &parent) const
 
     if(child.isNull())
     {
-        for(const Module* module : reverse(_importedModules))
+        for(const Module* module : _importedModulesChain)
         {
             child = module->specify(parent);
             if(!child.isNull())
@@ -208,11 +219,9 @@ bool Module::canHandle(const ObjectType &type) const
 {
     if(hasParser(type))
         return true;
-    for(std::list<const Module*>::const_reverse_iterator it = _importedModules.rbegin();
-        it != _importedModules.rend();
-        ++it)
+    for(const Module* module : _importedModulesChain)
     {
-        if((*it)->canHandle(type))
+        if(module->canHandle(type))
             return true;
     }
     return false;
@@ -223,7 +232,7 @@ const Module *Module::handler(const ObjectType &type) const
     if(hasParser(type))
         return this;
 
-    for(const Module* module : reverse(_importedModules))
+    for(const Module* module : _importedModulesChain)
     {
         if(module->canHandle(type))
             return module->handler(type);
@@ -253,7 +262,7 @@ const ObjectTypeTemplate& Module::getTemplate(const std::string &name) const
     if(it != _templates.end())
         return *it->second;
 
-    for(const Module* module: reverse(_importedModules))
+    for(const Module* module: _importedModulesChain)
     {
         const ObjectTypeTemplate& temp = module->getTemplate(name);
         if(!temp.isNull())
@@ -288,7 +297,7 @@ bool Module::canHandleFunction(const std::string& name) const
     if(doCanHandleFunction(name))
         return true;
 
-    for(const Module* importedModule: _importedModules)
+    for(const Module* importedModule: _importedModulesChain)
     {
         if(importedModule->canHandleFunction(name))
             return true;
@@ -302,7 +311,7 @@ const Module *Module::functionHandler(const std::string &name) const
     if(doCanHandleFunction(name))
         return this;
 
-    for(const Module* importedModule: _importedModules)
+    for(const Module* importedModule: _importedModulesChain)
     {
         const Module* result = importedModule->functionHandler(name);
         if(result != nullptr)

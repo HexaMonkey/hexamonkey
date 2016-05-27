@@ -78,7 +78,9 @@ public:
      * If a \link ObjectType type\endlink or a function is not handled by the the \link Module module\endlink, then a handler will be searched among the
      * imported modules, with a priority for the lastest \link Module module\endlink imported
      */
-    void import(const Module& module);
+    void import(const Module& module, const std::string &name);
+
+    const Module& getImportedModule(const std::string& name) const;
 
     /**
      * @brief Check if a \link ObjectType type\endlink extends another
@@ -110,7 +112,8 @@ public:
      *
      * Returns the \link ObjectType::isNull null\endlink type if the \link ObjectType type\endlink doesn't have a father
      */
-    virtual ObjectType getFather(const ObjectType& child) const;
+    ObjectType getFather(const ObjectType& child) const;
+    virtual ObjectType getFatherLocally(const ObjectType& child) const;
 
     /**
      * @brief Get the specification for the parent object
@@ -361,7 +364,8 @@ private:
 
     bool _loaded;
 
-    std::list<const Module*> _importedModules;
+    std::vector<const Module*> _importedModulesChain;
+    std::unordered_map<std::string, const Module*> _importedModulesMap;
 
     ExtensionMap _extensions;
 

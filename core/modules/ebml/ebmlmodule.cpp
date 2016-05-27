@@ -87,40 +87,20 @@ bool EbmlModule::doLoad()
 
 Parser *EbmlModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
 {
-    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
-    {
-        return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-    } else {
-        return Module::getParser(type, object, fromModule);
-    }
+    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
 }
 
 bool EbmlModule::hasParser(const ObjectType &type) const
 {
-    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
-    {
-        return true;
-    } else {
-        return Module::hasParser(type);
-    }
+    return hasTemplate(type.name());
 }
 
 int64_t EbmlModule::doGetFixedSize(const ObjectType &type, const Module &module) const
 {
-    if (ebmlRefactored.find(type.typeTemplate().name()) != ebmlRefactored.end())
-    {
-        return type.fixedSize(module);
-    } else {
-        return Module::doGetFixedSize(type, module);
-    }
+    return type.fixedSize(module);
 }
 
-ObjectType EbmlModule::getFather(const ObjectType &child) const
+ObjectType EbmlModule::getFatherLocally(const ObjectType &child) const
 {
-    if (ebmlRefactored.find(child.typeTemplate().name()) != ebmlRefactored.end())
-    {
-        return child.parent();
-    } else {
-        return Module::getFather(child);
-    }
+    return child.parent();
 }

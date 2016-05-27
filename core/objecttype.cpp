@@ -119,6 +119,7 @@ const std::string &ObjectType::displayMode() const
 
 const ObjectType& ObjectType::importParameters(const ObjectType& other)
 {
+    _parent.reset();
     for(int i = 0; i < typeTemplate().numberOfParameters();++i)
     {
         if(!parameterSpecified(i))
@@ -201,6 +202,7 @@ void swap(ObjectType& a, ObjectType& b)
     swap(a._parametersValue, b._parametersValue);
     swap(a._elementCount, b._elementCount);
     swap(a._name, b._name);
+    swap(a._parent, b._parent);
 
 }
 
