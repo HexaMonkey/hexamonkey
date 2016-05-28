@@ -77,7 +77,7 @@ bool EbmlModule::doLoad()
 
     for(int i = 0; i < numberOfDefaultElements; ++i)
     {
-        const ObjectTypeTemplate& defaultElementTemplate = addTemplate(new FixedParentTypeTemplate(defaultElements[i], elementTypeTemplates[i]));
+        const ObjectTypeTemplate& defaultElementTemplate = addTemplate(new FixedParentTypeTemplate(defaultElements[i], elementTypeTemplates[defaultElementTypes [i]]));
         setSpecification(ObjectType(EBMLElement, defaultElementIds[i]), ObjectType(defaultElementTemplate));
     }
 

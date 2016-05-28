@@ -38,6 +38,11 @@ void Module::import(const Module &module, const std::string& name)
     _importedModulesMap[name] = &module;
 }
 
+const Module *Module::getImportedModule(const std::string &name) const
+{
+    return _importedModulesMap.find(name)->second;
+}
+
 bool Module::isExtension(const ObjectType& child, const ObjectType& parent) const
 {
     if(child.extendsDirectly(parent))

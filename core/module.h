@@ -80,7 +80,7 @@ public:
      */
     void import(const Module& module, const std::string &name);
 
-    const Module& getImportedModule(const std::string& name) const;
+    const Module* getImportedModule(const std::string& name) const;
 
     /**
      * @brief Check if a \link ObjectType type\endlink extends another

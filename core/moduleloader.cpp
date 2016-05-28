@@ -35,7 +35,8 @@ ModuleLoader::ModuleLoader()
 
 const Module &ModuleLoader::getModule(File &file) const
 {
-    return getModule(formatDetector.getFormat(file));
+    const std::string& format = formatDetector.getFormat(file);
+    return getModule(format);
 }
 
 const Module &ModuleLoader::getModule(const std::string &key) const

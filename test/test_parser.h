@@ -30,6 +30,7 @@ private slots:
     void test_midi();
     void test_mp3();
     void test_mp4();
+    void test_mkv();
     void test_ogg();
     void test_sqlite();
     void test_tiff();

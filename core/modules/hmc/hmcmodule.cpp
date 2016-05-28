@@ -52,7 +52,7 @@ bool HmcModule::doLoad()
     std::ifstream modelFile(_modelPath);
     CSVReader modelReader(modelFile);
 
-    for(unsigned int i = 0;modelReader.hasNextLine();++i)
+    for (unsigned int i = 0; modelReader.hasNextLine(); ++i)
     {
         std::vector<std::string> modelLine;
         modelReader.readNextLine(modelLine);

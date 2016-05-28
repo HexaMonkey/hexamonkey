@@ -36,6 +36,7 @@ MkvModule::MkvModule(std::string modelPath) : _modelPath(modelPath)
 void MkvModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
     formatAdder.addMagicNumber("1a 45 df a3 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx 6d 61 74 72 6f 73 6b 61");
+    formatAdder.addMagicNumber("1a 45 df a3 xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx 6d 61 74 72 6f 73 6b 61");
     formatAdder.addExtension("mkv");
 }
 
