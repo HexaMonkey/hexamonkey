@@ -44,7 +44,6 @@ SOURCES += \
     ../core/modules/hmc/hmcmodule.cpp \
     ../core/modules/mkv/mkvmodule.cpp \
     ../core/modules/stream/streammodule.cpp \
-    ../core/modules/stream/parentpidparser.cpp \
     ../core/util/strutil.cpp \
     ../core/util/iterutil.cpp \
     ../core/util/fileutil.cpp \
@@ -80,7 +79,8 @@ SOURCES += \
     ../core/modules/ebml/ebmlelementtypetemplate.cpp \
     ../core/modules/ebml/ebmldatetypetemplate.cpp \
     ../core/fixedparenttypetemplate.cpp \
-    ../core/modules/ebml/ebmlextensiontypetemplate.cpp
+    ../core/modules/ebml/ebmlextensiontypetemplate.cpp \
+    ../core/modules/stream/parentpidtemplate.cpp
     
 
 HEADERS  += \ 
@@ -127,7 +127,6 @@ HEADERS  += \
     ../core/modules/hmc/hmcmodule.h \
     ../core/modules/mkv/mkvmodule.h \
     ../core/modules/stream/streammodule.h \
-    ../core/modules/stream/parentpidparser.h \
     ../core/util/unused.h \
     ../core/util/strutil.h \
     ../core/util/iterutil.h \
@@ -171,6 +170,7 @@ HEADERS  += \
     ../core/modules/ebml/ebmlelementtypetemplate.h \
     ../core/modules/ebml/ebmldatetypetemplate.h \
     ../core/fixedparenttypetemplate.h \
-    ../core/modules/ebml/ebmlextensiontypetemplate.h
+    ../core/modules/ebml/ebmlextensiontypetemplate.h \
+    ../core/modules/stream/parentpidtemplate.h
 
 

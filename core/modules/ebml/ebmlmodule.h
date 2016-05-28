@@ -32,6 +32,8 @@ public:
     static const uint32_t defaultElementIds[];
     static const int defaultElementTypes[];
 
+    std::shared_ptr<ObjectType> elementType(const std::string& type) const;
+
 protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     bool doLoad() override;
@@ -43,6 +45,8 @@ private:
     virtual ObjectType getFatherLocally(const ObjectType &child) const override;
 
     static int64_t parseId(char* str);
+
+    std::unordered_map<std::string, std::shared_ptr<ObjectType> > _elementTypes;
 };
 
 #endif // EBMLMODULE_H

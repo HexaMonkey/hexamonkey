@@ -26,6 +26,9 @@
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
+#include "core/fixedparenttypetemplate.h"
+#include "core/modules/ebml/ebmlmodule.h"
+#include "core/object.h"
 
 using namespace rapidxml;
 
@@ -60,6 +63,8 @@ bool MkvModule::doLoad()
     xml_document<> mkvModelParser;
     mkvModelParser.parse<0>(&mkvModelText[0]);
 
+    const auto& ebmlModule = static_cast<const EbmlModule&>(getImportedModule("ebml"));
+
     for(xml_node<>* nodeFrame = mkvModelParser.first_node()->first_node();
         nodeFrame;
         nodeFrame = nodeFrame->next_sibling())
@@ -68,18 +73,8 @@ bool MkvModule::doLoad()
         std::string name = nodeFrame->first_attribute("name")->value();
         std::string type = nodeFrame->first_attribute("type")->value();
 
-        addParser(name);
-        const ObjectTypeTemplate& typeTemplate = newTemplate(name);
+        const auto& typeTemplate = addTemplate(new FixedParentTypeTemplate(name, ebmlModule.elementType(type)));
         setSpecification(getType("EBMLElement", id), ObjectType(typeTemplate));
-
-        for(int i = 0; i < EbmlModule::numberOfTypeElements; ++i)
-        {
-            if(type == EbmlModule::typeElementAtributes[i])
-            {
-                setExtension(typeTemplate, getType(EbmlModule::typeElements[i]));
-                break;
-            }
-        }
     }
     return true;
 }
@@ -94,4 +89,24 @@ int64_t MkvModule::parseId(char* str)
         value = value<<4 | fromHex(*ch);
     }
     return value;
+}
+
+Parser *MkvModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
+}
+
+bool MkvModule::hasParser(const ObjectType &type) const
+{
+    return hasTemplate(type.name());
+}
+
+int64_t MkvModule::doGetFixedSize(const ObjectType &type, const Module &module) const
+{
+    return type.fixedSize(module);
+}
+
+ObjectType MkvModule::getFatherLocally(const ObjectType &child) const
+{
+    return child.parent();
 }

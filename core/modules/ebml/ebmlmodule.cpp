@@ -47,6 +47,11 @@ const std::string EbmlModule::defaultElements[] = {"EBML", "EBMLVersion", "EBMLR
 const uint32_t EbmlModule::defaultElementIds[] = {0xa45dfa3, 0x286, 0x2f7, 0x2f2, 0x2f3, 0x282, 0x287, 0x285};
 const int EbmlModule::defaultElementTypes[] = {0,2,2,2,2,4,2,2};
 
+std::shared_ptr<ObjectType> EbmlModule::elementType(const std::string &type) const
+{
+    return _elementTypes.find(type)->second;
+}
+
 void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 {
     formatAdder.addMagicNumber("1a 45 df a3");
@@ -74,6 +79,11 @@ bool EbmlModule::doLoad()
         std::make_shared<ObjectType>(addTemplate(new EbmlDateElementTypeTemplate(elementType, dateTypeTemplate))),
         std::make_shared<ObjectType>(addTemplate(new EbmlBinaryTypeTemplate(elementType, getTemplate("Data"))))
     };
+
+    for (int i = 0; i < numberOfTypeElements; ++i)
+    {
+        _elementTypes[typeElementAtributes[i]] = elementTypeTemplates[i];
+    }
 
     for(int i = 0; i < numberOfDefaultElements; ++i)
     {

@@ -24,6 +24,9 @@
 #include "core/util/strutil.h"
 #include "core/util/fileutil.h"
 #include "core/log/logmanager.h"
+#include "core/fixedparenttypetemplate.h"
+#include "core/modules/ebml/ebmlmodule.h"
+#include "core/object.h"
 
 HmcModule::HmcModule(std::string modelPath) : _modelPath(modelPath)
 {
@@ -52,6 +55,8 @@ bool HmcModule::doLoad()
     std::ifstream modelFile(_modelPath);
     CSVReader modelReader(modelFile);
 
+    const auto& ebmlModule = static_cast<const EbmlModule&>(getImportedModule("ebml"));
+
     for (unsigned int i = 0; modelReader.hasNextLine(); ++i)
     {
         std::vector<std::string> modelLine;
@@ -64,19 +69,29 @@ bool HmcModule::doLoad()
         name[0]= toupper(name[0]);
         std::string type  = modelLine[1];
 
-        addParser(name);
-        const ObjectTypeTemplate& typeTemplate = newTemplate(name);
+        const auto& typeTemplate = addTemplate(new FixedParentTypeTemplate(name, ebmlModule.elementType(type)));
         setSpecification(getType("EBMLElement", i), ObjectType(typeTemplate));
-
-        for(int j = 0; j < EbmlModule::numberOfTypeElements; ++j)
-        {
-            if(type == EbmlModule::typeElementAtributes[j])
-            {
-                setExtension(typeTemplate, getType(EbmlModule::typeElements[j]));
-                break;
-            }
-        }
     }
     return true;
+}
+
+Parser *HmcModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
+{
+    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
+}
+
+bool HmcModule::hasParser(const ObjectType &type) const
+{
+    return hasTemplate(type.name());
+}
+
+int64_t HmcModule::doGetFixedSize(const ObjectType &type, const Module &module) const
+{
+    return type.fixedSize(module);
+}
+
+ObjectType HmcModule::getFatherLocally(const ObjectType &child) const
+{
+    return child.parent();
 }
 
