@@ -102,50 +102,7 @@ Parser *FromFileModule::getParser(const ObjectType &type, Object &object, const 
 
 int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &module) const
 {
-    const std::string& name = type.typeTemplate().name();
-    auto alreadyIt = _fixedSizes.find(name);
-    if(alreadyIt != _fixedSizes.end())
-    {
-        return alreadyIt->second;
-    }
-
-    auto definitionIt = _definitions.find(name);
-    if(definitionIt == _definitions.end())
-    {
-        return HM_UNKNOWN_SIZE;
-    }
-
-    Program definition = definitionIt->second;
-
-    if(sizeDependency(name))
-    {
-#ifdef LOAD_TRACE
-        std::cerr<<type.typeTemplate().name()<<" unknown size"<<std::endl;
-#endif
-        _fixedSizes[type.typeTemplate().name()] = HM_UNKNOWN_SIZE;
-        return HM_UNKNOWN_SIZE;
-    }
-
-    if(!type.typeTemplate().isVirtual() && module.getFather(type).isNull())
-    {
-        VariableCollectionGuard guard(_collector);
-
-        int64_t size = guessSize(definition);
-        if(size>=0)
-        {
-#ifdef LOAD_TRACE
-            std::cerr<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
-#endif
-            _fixedSizes[type.typeTemplate().name()] = size;
-            return size;
-        }
-    }
-#ifdef LOAD_TRACE
-    std::cerr<<type.typeTemplate().name()<<" father's size"<<std::endl;
-#endif
-
-    _fixedSizes[type.typeTemplate().name()] = HM_PARENT_SIZE;
-    return HM_PARENT_SIZE;
+    return type.fixedSize(module);
 }
 
 ObjectType FromFileModule::getFatherLocally(const ObjectType &child) const
@@ -535,7 +492,7 @@ const Program &FromFileModule::program() const
 
 bool FromFileModule::hasParser(const ObjectType &type) const
 {
-    return _definitions.find(type.typeTemplate().name()) != _definitions.end();
+    return hasTemplate(type.name());
 }
 
 

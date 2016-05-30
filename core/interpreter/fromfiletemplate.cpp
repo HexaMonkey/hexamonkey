@@ -49,7 +49,10 @@ FromFileTemplate::FromFileTemplate(Program declaration, const Module &module, Va
     }
 }
 
-
+Parser *FromFileTemplate::parseOrGetParser(const ObjectType &, ParsingOption &, const Module &module) const
+{
+    return nullptr;
+}
 
 const VariablePath sizeDescriptor = {"@size"};
 const std::vector<VariablePath> headerOnlyVars = {
@@ -62,6 +65,43 @@ const std::vector<VariablePath> headerOnlyVars = {
 };
 
 std::shared_ptr<ObjectType> fromFileNullParent(new ObjectType);
+
+int64_t FromFileTemplate::fixedSize(const ObjectType &type, const Module &module) const
+{
+    if (! (_flag & _sizeComputed)) {
+        _fixedSize = unknownSize;
+        std::set<VariablePath> dependencies = variableDependencies(_classDefinition, true);
+        if (dependencies.find(sizeDescriptor) == dependencies.end())
+        {
+            if (!isVirtual() && module.getFather(type).isNull()) {
+                VariableCollectionGuard guard(_collector);
+
+                int64_t size = guessSize(_classDefinition);
+                if(size>=0)
+                {
+    #ifdef LOAD_TRACE
+                    std::cerr<<type.typeTemplate().name()<<" guessed size "<<size<<std::endl;
+    #endif
+                    _fixedSize = size;
+                }
+            } else {
+        #ifdef LOAD_TRACE
+                std::cerr<<type.typeTemplate().name()<<" father's size"<<std::endl;
+        #endif
+
+                _flag |= _isParentSize;
+            }
+        }
+
+        _flag |= _sizeComputed;
+    }
+
+    if (_flag & _isParentSize) {
+        return HM_PARENT_SIZE;
+    } else {
+        return _fixedSize;
+    }
+}
 
 std::shared_ptr<ObjectType> FromFileTemplate::parent(const ObjectType &type) const
 {
@@ -122,8 +162,6 @@ bool FromFileTemplate::needTailParsing() const
     return _needTailParsing;
 }
 
-
-
 bool FromFileTemplate::checkHeaderOnlyVar(const Program &line) const
 {
     //Check dependencies
@@ -147,6 +185,62 @@ bool FromFileTemplate::checkHeaderOnlyVar(const Program &line) const
     });
 }
 
+int64_t FromFileTemplate::guessSize(const Program &instructions) const
+{
+    int64_t size = 0;
+    for(const Program& line : instructions)
+    {
+        switch(line.tag())
+        {
+        case HMC_EXECUTION_BLOCK:
+            size += guessSize(line);
+            break;
+
+        case HMC_DECLARATION:
+            {
+                if(!variableDependencies(line.node(0),false).empty())
+                    return unknownSize;
+
+                ObjectType type = _evaluator.rightValue(line.node(0)).value().toObjectType();
+                if(type.isNull())
+                    return unknownSize;
+
+                int64_t elemSize = _module.getFixedSize(type);
+                if(elemSize == -1)
+                    return unknownSize;
+
+                size += elemSize;
+                break;
+            }
+
+        case HMC_LOOP:
+        case HMC_DO_LOOP:
+            if(guessSize(line.node(1)) != 0)
+                return unknownSize;
+            break;
+
+        case HMC_CONDITIONAL_STATEMENT:
+            {
+                int64_t size1 = guessSize(line.node(1));
+                if(size1 == -1)
+                    return unknownSize;
+                int64_t size2 = guessSize(line.node(2));
+                if(size2 == -1 ||size2 != size1)
+                    return unknownSize;
+                size += size1;
+                break;
+            }
+
+        case HMC_RIGHT_VALUE:
+        case HMC_LOCAL_DECLARATION:
+            break;
+
+        default:
+            return unknownSize;
+        }
+    }
+    return size;
+}
 
 void FromFileTemplate::buildDependencies(const Program &instructions, bool modificationOnly, std::set<VariablePath> &descriptors, bool areVariablesModified) const
 {

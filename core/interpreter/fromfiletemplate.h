@@ -15,13 +15,14 @@ public:
     FromFileTemplate(Program declaration, const Module& module, VariableCollector& collector, const Evaluator& evaluator);
 
 private:
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
+    virtual int64_t fixedSize(const ObjectType&, const Module& module) const override;
     virtual std::shared_ptr<ObjectType> parent(const ObjectType&) const override;
 
 
     Program::const_iterator headerEnd() const;
     bool needTailParsing() const;
 
-    bool sizeDependency(const std::string& name) const;
     bool checkHeaderOnlyVar(const Program& line) const;
     int64_t guessSize(const Program& instructions) const;
     std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly) const;
