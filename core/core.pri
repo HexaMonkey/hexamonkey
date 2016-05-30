@@ -80,7 +80,8 @@ SOURCES += \
     ../core/modules/ebml/ebmldatetypetemplate.cpp \
     ../core/fixedparenttypetemplate.cpp \
     ../core/modules/ebml/ebmlextensiontypetemplate.cpp \
-    ../core/modules/stream/parentpidtemplate.cpp
+    ../core/modules/stream/parentpidtemplate.cpp \
+    ../core/interpreter/fromfiletemplate.cpp
     
 
 HEADERS  += \ 
@@ -171,6 +172,7 @@ HEADERS  += \
     ../core/modules/ebml/ebmldatetypetemplate.h \
     ../core/fixedparenttypetemplate.h \
     ../core/modules/ebml/ebmlextensiontypetemplate.h \
-    ../core/modules/stream/parentpidtemplate.h
+    ../core/modules/stream/parentpidtemplate.h \
+    ../core/interpreter/fromfiletemplate.h
 
 

@@ -17,7 +17,9 @@
 
 #include "compiler/model.h"
 #include "core/interpreter/fromfilemodule.h"
+#include "core/interpreter/fromfiletemplate.h"
 #include "core/interpreter/programloader.h"
+#include "core/interpreter/fromfiletemplate.h"
 #include "core/variable/variablepath.h"
 #include "core/variable/variable.h"
 #include "core/interpreter/fromfileparser.h"
@@ -249,20 +251,12 @@ void FromFileModule::nameScan(Program& declarations)
     {
         if(declaration.tag() == HMC_CLASS_DECLARATION)
         {
-            Program classInfo = declaration.node(0);
-            Program typeTemplate = classInfo.node(0);
-            const std::string& name = typeTemplate.node(0).payload().toString();
-            std::vector<std::string> parameters;
-            for(Program arg:typeTemplate.node(1))
-            {
-                parameters.push_back(arg.payload().toString());
-            }
-            ObjectTypeTemplate& objectTypeTemplate = newTemplate(name, parameters);
+            ObjectTypeTemplate& objectTypeTemplate = addTemplate(new FromFileTemplate(*this, declaration));
 #ifdef LOAD_TRACE
             std::cerr<<"    "<<objectTypeTemplate<<std::endl;
 #endif
 
-            Program typeAttributes = classInfo.node(3);
+            Program typeAttributes = declaration.node(0).node(3);
             for (Program typeAttribute : typeAttributes) {
                 const std::string& name = typeAttribute.node(0).payload().toString();
                 Program program = typeAttribute.node(1);
@@ -278,13 +272,9 @@ void FromFileModule::nameScan(Program& declarations)
                 }
             }
 
-            Program isVirtual = classInfo.node(4);
-            if (isVirtual.payload().toBool()) {
-                objectTypeTemplate.setVirtual(true);
-            }
 
             Program classDefinition = declaration.node(1);
-            _definitions[name] = classDefinition;
+            _definitions[objectTypeTemplate.name()] = classDefinition;
         }
         else if(declaration.tag() == HMC_FUNCTION_DECLARATION)
         {
