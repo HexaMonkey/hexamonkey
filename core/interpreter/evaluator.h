@@ -31,6 +31,7 @@ public:
      * @brief Evaluate a type tagged \link Program program node\endlink
      */
     ObjectType type(const Program& program) const;
+    std::shared_ptr<ObjectType> sharedType(const Program& program) const;
 private:
     VariableCollector& collector() const;
 

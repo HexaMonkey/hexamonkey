@@ -148,6 +148,13 @@ int64_t FromFileModule::doGetFixedSize(const ObjectType &type, const Module &mod
     return HM_PARENT_SIZE;
 }
 
+ObjectType FromFileModule::getFatherLocally(const ObjectType &child) const
+{
+    return child.parent();
+}
+
+
+
 bool FromFileModule::doCanHandleFunction(const std::string &name) const
 {
     return _functions.find(name) != _functions.end();
@@ -251,7 +258,7 @@ void FromFileModule::nameScan(Program& declarations)
     {
         if(declaration.tag() == HMC_CLASS_DECLARATION)
         {
-            ObjectTypeTemplate& objectTypeTemplate = addTemplate(new FromFileTemplate(*this, declaration));
+            ObjectTypeTemplate& objectTypeTemplate = addTemplate(new FromFileTemplate(declaration, *this, _collector, _evaluator));
 #ifdef LOAD_TRACE
             std::cerr<<"    "<<objectTypeTemplate<<std::endl;
 #endif
@@ -593,7 +600,7 @@ bool FromFileModule::checkHeaderOnlyVar(const Program &line) const
     //Check dependencies
     std::set<VariablePath> variableSet = variableDependencies(line, true);
 
-    return std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariablePath& headerOnlyVar) -> bool
+    return std::any_of(headerOnlyVars.begin(), headerOnlyVars.end(), [&variableSet](const VariablePath& headerOnlyVar)
     {
         auto find = variableSet.find(headerOnlyVar);
         if(find != variableSet.end())

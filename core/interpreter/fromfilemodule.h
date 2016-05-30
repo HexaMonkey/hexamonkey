@@ -45,6 +45,7 @@ private:
     virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const final;
     virtual bool hasParser(const ObjectType &type) const final;
     virtual int64_t doGetFixedSize(const ObjectType &type, const Module &module) const final;
+    virtual ObjectType getFatherLocally(const ObjectType &child) const final;
 
     virtual bool doCanHandleFunction(const std::string& name) const final;
     virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const final;
@@ -62,10 +63,9 @@ private:
     void nameScan(Program &classDeclarations);
     void loadExtensions(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
+
     bool sizeDependency(const std::string& name) const;
-
     int64_t guessSize(const Program& instructions) const;
-
     std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly) const;
     void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false) const;
 

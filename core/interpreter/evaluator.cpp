@@ -158,6 +158,28 @@ ObjectType Evaluator::type(const Program &program) const
     return type;
 }
 
+std::shared_ptr<ObjectType> Evaluator::sharedType(const Program &program) const
+{
+    const std::string& name = program.node(0).payload().toString();
+    const ObjectTypeTemplate& parentTemplate = module.getTemplate(name);
+    auto type = std::make_shared<ObjectType>(parentTemplate);
+    if(type->isNull())
+    {
+        Log::error("Type not found ", name);
+        return type;
+    }
+
+    Program arguments = program.node(1);
+    for(int i = 0; i < arguments.size(); ++i)
+    {
+        if(arguments.node(i).tag() == HMC_RIGHT_VALUE)
+        {
+            type->setParameter(i, rightValue(arguments.node(i)).value());
+        }
+    }
+    return type;
+}
+
 VariableCollector &Evaluator::collector() const
 {
     return scope.collector();
