@@ -42,11 +42,6 @@ private:
     virtual void requestImportations(std::vector<std::string>& formatRequested) final;
     virtual bool doLoad() final;
 
-    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const final;
-    virtual bool hasParser(const ObjectType &type) const final;
-    virtual int64_t doGetFixedSize(const ObjectType &type, const Module &module) const final;
-    virtual ObjectType getFatherLocally(const ObjectType &child) const final;
-
     virtual bool doCanHandleFunction(const std::string& name) const final;
     virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const final;
     virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const final;
@@ -61,31 +56,16 @@ private:
     void loadImports(Program& imports, std::vector<std::string>& formatRequested);
 
     void nameScan(Program &classDeclarations);
-    void loadExtensions(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
 
-    bool sizeDependency(const std::string& name) const;
-    int64_t guessSize(const Program& instructions) const;
-    std::set<VariablePath> variableDependencies(const Program& instructions, bool modificationOnly) const;
-    void buildDependencies(const Program& instructions, bool modificationOnly, std::set<VariablePath>& descriptors, bool areVariablesModified = false) const;
-
-    bool checkHeaderOnlyVar(const Program& line) const;
-    Program::const_iterator headerEnd(const std::string& name) const;
-    bool needTailParsing(const std::string& name) const;
     FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
 
     const Program& program() const;
 
     Program _program;
 
-    std::unordered_map<std::string, Program> _definitions;
     std::unordered_map<std::string, Program> _functions;
     mutable FunctionDescriptorMap _functionDescriptors;
-
-    mutable std::unordered_map<std::string, int64_t> _fixedSizes;
-    mutable std::unordered_map<std::string, bool> _sizeDependency;
-    mutable std::unordered_map<std::string, Program::const_iterator> _headerEnd;
-    mutable std::unordered_map<std::string, bool> _needTailParsing;
 
     mutable VariableCollector _collector;
     Variable _scope;

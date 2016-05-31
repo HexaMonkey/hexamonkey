@@ -299,33 +299,3 @@ bool DefaultModule::doLoad()
 
     return true;
 }
-
-Parser *DefaultModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
-{
-    if (refactored.find(type.typeTemplate().name()) != refactored.end())
-    {
-        return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-    } else {
-        return Module::getParser(type, object, fromModule);
-    }
-}
-
-bool DefaultModule::hasParser(const ObjectType &type) const
-{
-    if (refactored.find(type.typeTemplate().name()) != refactored.end())
-    {
-        return true;
-    } else {
-        return Module::hasParser(type);
-    }
-}
-
-int64_t DefaultModule::doGetFixedSize(const ObjectType &type, const Module &module) const
-{
-    if (refactored.find(type.typeTemplate().name()) != refactored.end())
-    {
-        return type.fixedSize(module);
-    } else {
-        return Module::doGetFixedSize(type, module);
-    }
-}

@@ -109,14 +109,7 @@ ObjectType Module::getFather(const ObjectType &child) const
 
 ObjectType Module::getFatherLocally(const ObjectType &child) const
 {
-    //Searching locally
-    auto it = _extensions.find(&child.typeTemplate());
-    if(it != _extensions.end())
-    {
-        return (it->second)(child);
-    } else {
-        return ObjectType();
-    }
+    return child.parent();
 }
 
 ObjectType Module::specify(const ObjectType &parent) const
@@ -178,7 +171,7 @@ void Module::addParsersRecursive(Object &object, const ObjectType &type, const M
     while(currentType.typeTemplate() != lastType.typeTemplate() && !currentType.isNull())
     {
         fathers.push_front(currentType);
-        currentType = fromModule.getFather(currentType);
+        currentType = currentType.parent();
     }
 
     //Adding the fathers' parsers
@@ -284,12 +277,7 @@ bool Module::hasTemplate(const std::string& name) const
 
 int64_t Module::getFixedSize(const ObjectType &type) const
 {
-    const Module* module = handler(type);
-
-    if(module == nullptr)
-        return HM_UNKNOWN_SIZE;
-
-    int64_t size = module->doGetFixedSize(type, *this);
+    int64_t size = type.fixedSize(*this);
 
     if(size == HM_PARENT_SIZE)
         return getFixedSize(getFather(type));
@@ -459,33 +447,17 @@ void Module::addFunction(const std::string &name,
 
 bool Module::hasParser(const ObjectType &type) const
 {
-    return _map.find(type.typeTemplate().name()) != _map.end();
+    return hasTemplate(type.typeTemplate().name());
 }
 
 Parser *Module::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
 {
-    auto it = _map.find(type.typeTemplate().name());
-    if(it != _map.end())
-    {
-        return (it->second)(type, object, fromModule);
-    }
-    else
-    {
-        return nullptr;
-    }
+    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
 }
 
 int64_t Module::doGetFixedSize(const ObjectType &type, const Module &module) const
 {
-    auto it = _sizes.find(type.typeTemplate().name());
-    if(it != _sizes.end())
-    {
-        return (it->second)(type, module);
-    }
-    else
-    {
-        return HM_UNKNOWN_SIZE;
-    }
+    return type.fixedSize(module);
 }
 
 bool Module::doCanHandleFunction(const std::string &name) const

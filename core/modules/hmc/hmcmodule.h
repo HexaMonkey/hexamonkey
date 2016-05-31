@@ -32,11 +32,6 @@ protected:
     void addFormatDetection(StandardFormatDetector::Adder& formatAdder) override;
     void requestImportations(std::vector<std::string>& formatRequested) override;
     bool doLoad() override;
-private:
-    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const override;
-    virtual bool hasParser(const ObjectType &type) const override;
-    virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const override;
-    virtual ObjectType getFatherLocally(const ObjectType &child) const override;
 
     std::string _modelPath;
 };

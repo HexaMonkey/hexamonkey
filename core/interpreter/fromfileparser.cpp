@@ -24,9 +24,8 @@
 #include "core/variable/objectscope.h"
 #include "core/util/unused.h"
 
-FromFileParser::FromFileParser(Object &object, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
-    : ContainerParser(object, module),
-      _object(object),
+FromFileParser::FromFileParser(ParsingOption &option, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
+    : ContainerParser(option, module),
       _sharedAccess(new ContainerParser*(this)),
       _scope(new LocalScope(Variable(new ObjectScope(_sharedAccess), true)), true),
       _headerEnd(headerEnd),

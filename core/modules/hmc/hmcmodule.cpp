@@ -74,24 +74,3 @@ bool HmcModule::doLoad()
     }
     return true;
 }
-
-Parser *HmcModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
-{
-    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-}
-
-bool HmcModule::hasParser(const ObjectType &type) const
-{
-    return hasTemplate(type.name());
-}
-
-int64_t HmcModule::doGetFixedSize(const ObjectType &type, const Module &module) const
-{
-    return type.fixedSize(module);
-}
-
-ObjectType HmcModule::getFatherLocally(const ObjectType &child) const
-{
-    return child.parent();
-}
-

@@ -14,12 +14,6 @@ public:
     static std::string getFragmentedModule(Object &object);
 protected:
     bool doLoad() override;
-
-private:
-    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const override;
-    virtual bool hasParser(const ObjectType &type) const override;
-    virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const override;
-    virtual ObjectType getFatherLocally(const ObjectType &child) const override;
 };
 
 

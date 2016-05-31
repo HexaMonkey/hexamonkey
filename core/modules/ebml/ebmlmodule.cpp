@@ -93,24 +93,3 @@ bool EbmlModule::doLoad()
 
     return true;
 }
-
-
-Parser *EbmlModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
-{
-    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-}
-
-bool EbmlModule::hasParser(const ObjectType &type) const
-{
-    return hasTemplate(type.name());
-}
-
-int64_t EbmlModule::doGetFixedSize(const ObjectType &type, const Module &module) const
-{
-    return type.fixedSize(module);
-}
-
-ObjectType EbmlModule::getFatherLocally(const ObjectType &child) const
-{
-    return child.parent();
-}

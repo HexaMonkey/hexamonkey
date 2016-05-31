@@ -90,23 +90,3 @@ int64_t MkvModule::parseId(char* str)
     }
     return value;
 }
-
-Parser *MkvModule::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
-{
-    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-}
-
-bool MkvModule::hasParser(const ObjectType &type) const
-{
-    return hasTemplate(type.name());
-}
-
-int64_t MkvModule::doGetFixedSize(const ObjectType &type, const Module &module) const
-{
-    return type.fixedSize(module);
-}
-
-ObjectType MkvModule::getFatherLocally(const ObjectType &child) const
-{
-    return child.parent();
-}

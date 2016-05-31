@@ -113,7 +113,7 @@ public:
      * Returns the \link ObjectType::isNull null\endlink type if the \link ObjectType type\endlink doesn't have a father
      */
     ObjectType getFather(const ObjectType& child) const;
-    virtual ObjectType getFatherLocally(const ObjectType& child) const;
+    ObjectType getFatherLocally(const ObjectType& child) const;
 
     /**
      * @brief Get the specification for the parent object
@@ -250,12 +250,12 @@ protected:
      *
      * Return nullptr if the type cannot be handled
      */
-    virtual Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
+    Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
 
     /**
      * @brief [Pure Virtual] Check if the type can be handled be the \link Module module\endlink directly.
      */
-    virtual bool hasParser(const ObjectType &type) const;
+    bool hasParser(const ObjectType &type) const;
 
     /**
      * @brief [Pure Virtual] Get the size that every objects of a type should have.
@@ -264,7 +264,7 @@ protected:
      *
      * Return -1 if the size is variable and set by type's \link Parser parser\endlink
      */
-    virtual int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
+    int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
 
 
     virtual bool doCanHandleFunction(const std::string& name) const;
