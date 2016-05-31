@@ -45,13 +45,13 @@ const Module &Module::getImportedModule(const std::string &name) const
 
 bool Module::isExtension(const ObjectType& child, const ObjectType& parent) const
 {
-    if(child.extendsDirectly(parent))
-        return true;
+    ObjectType const * const pChild = &child;
 
-    ObjectType father = getFather(child);
-
-    if(!father.isNull())
-        return isExtension(father, parent);
+    do {
+        if (pChild->extendsDirectly(parent)) {
+            return true;
+        }
+    } while (!pChild->isNull());
 
     return false;
 }
@@ -273,16 +273,6 @@ const ObjectTypeTemplate& Module::getTemplate(const std::string &name) const
 bool Module::hasTemplate(const std::string& name) const
 {
     return _templates.find(name) != _templates.end();
-}
-
-int64_t Module::getFixedSize(const ObjectType &type) const
-{
-    int64_t size = type.fixedSize(*this);
-
-    if(size == HM_PARENT_SIZE)
-        return getFixedSize(getFather(type));
-
-    return size;
 }
 
 bool Module::canHandleFunction(const std::string& name) const

@@ -34,7 +34,7 @@ int64_t TupleTypeTemplate::fixedSize(const ObjectType &type, const Module &modul
 {
     if(type.parameterSpecified(0) && type.parameterSpecified(1))
     {
-        int64_t t = module.getFixedSize(type.parameterValue(0).toObjectType());
+        int64_t t = type.parameterValue(0).toObjectType().fixedSize(module);
         if(t>=0)
            return t*type.parameterValue(1).toInteger();
     }

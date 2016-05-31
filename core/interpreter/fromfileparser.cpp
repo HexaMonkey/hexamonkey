@@ -38,7 +38,7 @@ FromFileParser::FromFileParser(ParsingOption &option, const Module &module, Prog
 
     auto bodyBlock = classDefinition.node(0);
 
-    if (module.getFixedSize(constType()) == -1 && headerEnd == bodyBlock.begin()) {
+    if (constType().fixedSize(module) == -1 && headerEnd == bodyBlock.begin()) {
         setHeadParsed();
         if(_bodyExecution.done()) {
             setParsed();
@@ -58,7 +58,7 @@ FromFileParser::~FromFileParser()
 
 void FromFileParser::doParseHead()
 {
-    int64_t fixedSize = module().getFixedSize(constType());
+    int64_t fixedSize = constType().fixedSize(module());
     if(fixedSize > 0) {
         object().setSize(fixedSize);
     }

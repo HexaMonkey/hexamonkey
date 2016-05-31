@@ -27,7 +27,7 @@ int64_t StructTypeTemplate::fixedSize(const ObjectType &type, const Module &modu
 {
     int s = 0;
     for (int i = 1; i < type.numberOfParameters(); i += 2) {
-        int t = module.getFixedSize(type.parameterValue(i).toObjectType());
+        int t = type.parameterValue(i).toObjectType().fixedSize(module);
         if (t != -1) {
             s += t;
         } else {

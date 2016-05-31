@@ -35,5 +35,5 @@ Object *ElementaryContainerParser::addElem()
 
 int64_t ElementaryContainerParser::getElemFixedSize() const
 {
-    return module().getFixedSize(elementType);
+    return elementType.fixedSize(module());
 }

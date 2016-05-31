@@ -80,7 +80,7 @@ bool DefaultModule::doLoad()
                 []functionLambda
     {
         const ObjectType& type = scope.field(0).value().toObjectType();
-        int64_t size = module.getFixedSize(type);
+        int64_t size = type.fixedSize(module);
         if(size != -1)
             return scope.collector().copy(size);
         else

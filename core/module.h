@@ -148,13 +148,6 @@ public:
     const Module* handler(const ObjectType &type) const;
 
     /**
-     * @brief Get the size that every objects of a type should have
-     *
-     * Return -1 if the size is variable
-     */
-    int64_t getFixedSize(const ObjectType& type) const;
-
-    /**
      * @brief Get a \link ObjectTypeTemplate type template\endlink stored by the \link Module module\endlink or one of the imported one, by its name
      */
     const ObjectTypeTemplate& getTemplate(const std::string& name) const;

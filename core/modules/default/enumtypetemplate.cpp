@@ -44,7 +44,7 @@ int64_t EnumTypeTemplate::fixedSize(const ObjectType &type, const Module &module
 {
     if (type.parameterSpecified(0)) {
         const ObjectType& childType = type.parameterValue(0).toObjectType();
-        const int64_t t = module.getFixedSize(childType);
+        const int64_t t = childType.fixedSize(module);
         return t;
     } else {
         return -1;

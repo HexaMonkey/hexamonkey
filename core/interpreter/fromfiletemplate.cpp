@@ -77,7 +77,7 @@ int64_t FromFileTemplate::fixedSize(const ObjectType &type, const Module &module
         std::set<VariablePath> dependencies = variableDependencies(_classDefinition, true);
         if (dependencies.find(sizeDescriptor) == dependencies.end())
         {
-            if (!isVirtual() && module.getFather(type).isNull()) {
+            if (!isVirtual() && type.parent().isNull()) {
                 VariableCollectionGuard guard(_collector);
 
                 int64_t size = guessSize(_classDefinition);
@@ -101,7 +101,7 @@ int64_t FromFileTemplate::fixedSize(const ObjectType &type, const Module &module
     }
 
     if (_flag & _isParentSize) {
-        return HM_PARENT_SIZE;
+        return type.parent().fixedSize(module);
     } else {
         return _fixedSize;
     }
@@ -209,7 +209,7 @@ int64_t FromFileTemplate::guessSize(const Program &instructions) const
                 if(type.isNull())
                     return unknownSize;
 
-                int64_t elemSize = _module.getFixedSize(type);
+                int64_t elemSize = type.fixedSize(_module);
                 if(elemSize == -1)
                     return unknownSize;
 
