@@ -121,7 +121,7 @@ private:
     virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const;
 
 
-    virtual int64_t fixedSize(const ObjectType&, const Module& module) const;
+    virtual int64_t fixedSize(const ObjectType&) const;
 
 
     virtual Variant attributeValue(const ObjectType&, Attribute) const;

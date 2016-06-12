@@ -20,7 +20,7 @@ Parser *ParentPidTemplate::parseOrGetParser(const ObjectType &, ParsingOption &o
     return nullptr;
 }
 
-int64_t ParentPidTemplate::fixedSize(const ObjectType &, const Module &) const
+int64_t ParentPidTemplate::fixedSize(const ObjectType &) const
 {
     return 0LL;
 }

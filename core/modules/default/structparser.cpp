@@ -16,7 +16,7 @@ void StructParser::doParseHead()
 {
     int64_t s = 0;
     for (unsigned int i = 0; i < _types.size(); ++i) {
-        int64_t t = _types[i].fixedSize(module());
+        int64_t t = _types[i].fixedSize();
         if (t >= 0) {
             s += t;
         } else {

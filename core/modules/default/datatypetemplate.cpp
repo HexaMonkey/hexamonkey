@@ -25,7 +25,7 @@ Parser *DataTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption
     return nullptr;
 }
 
-int64_t DataTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+int64_t DataTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if (type.parameterSpecified(0))
     {

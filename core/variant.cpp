@@ -53,7 +53,6 @@ Variant::Variant(const Variant& other)
             if (this != &other) {
                 ++_data.s->second;
             }
-
             break;
 
         case objectType:

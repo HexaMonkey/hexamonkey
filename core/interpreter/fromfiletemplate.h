@@ -16,7 +16,7 @@ public:
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
-    virtual int64_t fixedSize(const ObjectType&, const Module& module) const override;
+    virtual int64_t fixedSize(const ObjectType& type) const override;
     virtual std::shared_ptr<ObjectType> parent(const ObjectType&) const override;
 
 

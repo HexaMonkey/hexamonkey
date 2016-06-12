@@ -83,39 +83,6 @@ public:
     const Module& getImportedModule(const std::string& name) const;
 
     /**
-     * @brief Check if a \link ObjectType type\endlink extends another
-     *
-     * Get the father of the child and checks if it \link ObjectType::extendsDirectly extends directly\endlink the parent, if not checks recursively
-     * if the father extends the parent.
-     */
-    bool isExtension(const ObjectType& child, const ObjectType& parent) const;
-
-    /**
-     * @brief Set a function to compute the fathers for a \link ObjectTypeTemplate type template\endlink
-     *
-     * Most likely the fathers will all have the same \link ObjectTypeTemplate type template\endlink but different parameters
-     */
-    void setExtension(const ObjectTypeTemplate& childTemplate, const std::function<ObjectType(const ObjectType &)> &parentFunction);
-
-    /**
-     * @brief Set a father for a \link ObjectTypeTemplate type template\endlink
-     */
-    void setExtension(const ObjectTypeTemplate& childTemplate, const ObjectType& parent);
-
-    /**
-     * @brief Set fathers for a \link ObjectTypeTemplate type template\endlink with a mapping for parameters
-     */
-    void setExtension(const ObjectTypeTemplate& childTemplate, const ObjectType& parent, const std::map<int, int> &parameterMapping);
-
-    /**
-     * @brief Get the father of a \link ObjectType type\endlink
-     *
-     * Returns the \link ObjectType::isNull null\endlink type if the \link ObjectType type\endlink doesn't have a father
-     */
-    ObjectType getFather(const ObjectType& child) const;
-    ObjectType getFatherLocally(const ObjectType& child) const;
-
-    /**
      * @brief Get the specification for the parent object
      *
      * Returns the \link ObjectType::isNull null\endlink type if the \link ObjectType type\endlink doesn't have a specification
@@ -250,16 +217,6 @@ protected:
      */
     bool hasParser(const ObjectType &type) const;
 
-    /**
-     * @brief [Pure Virtual] Get the size that every objects of a type should have.
-     *
-     * Return 0 if the type relies on its father to compute the size
-     *
-     * Return -1 if the size is variable and set by type's \link Parser parser\endlink
-     */
-    int64_t doGetFixedSize(const ObjectType& type, const Module& module) const;
-
-
     virtual bool doCanHandleFunction(const std::string& name) const;
     virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const;
     virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
@@ -277,49 +234,9 @@ protected:
     void addTemplate(const ObjectTypeTemplate& typeTemplate);
     ObjectTypeTemplate& addTemplate(ObjectTypeTemplate* typeTemplate);
 
-    /**
-     * @brief
-     */
-    ObjectTypeTemplate& newTemplate(const std::string& name, const std::vector<std::string>& parameters = std::vector<std::string>());
-
-
     typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
     typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
     typedef std::function<Variable (const Variable&, const Module &)> Functor;
-
-
-
-    /**
-     * @brief Define a parser generator for the \link ObjectTypeTemplate type template\endlink with this name
-     */
-    void addParser(const std::string& name, const ParserGenerator& parserGenerator);
-
-    /**
-     * @brief Define a null parser generator for the \link ObjectTypeTemplate type template\endlink with this name
-     */
-    void addParser(const std::string& name);
-
-    /**
-     * @brief Define a function to compute the fixed size for the \link ObjectType types\endlink
-     * of the \link ObjectTypeTemplate type template\endlink with this name
-     */
-    void setFixedSize(const std::string& name, const FixedSizeGenerator& fixedSizeFunction);
-
-    /**
-     * @brief Define a fixed size for all \link ObjectType types\endlink
-     * of the \link ObjectTypeTemplate type template\endlink with this name
-     */
-    void setFixedSize(const std::string& name, int64_t fixedSize);
-
-    /**
-     * @brief Link size for all \link ObjectType types\endlink
-     * of the \link ObjectTypeTemplate type template\endlink with this name
-     * with one of the arguments (
-     *
-     * For instance the size of an integer is given
-     * by the first argument : int(16), int(32), int(64)...
-     */
-    void setFixedSizeFromArg(const std::string& name, int arg);
 
     /**
      * @brief Define a function signature and define a \link Functor functor\endlink to execute the function
@@ -360,16 +277,10 @@ private:
     std::vector<const Module*> _importedModulesChain;
     std::unordered_map<std::string, const Module*> _importedModulesMap;
 
-    ExtensionMap _extensions;
-
     SpecificationMap _automaticSpecifications;
 
     std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
     std::list<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
-
-    static const ParserGenerator& nullGenerator;
-    std::unordered_map<std::string, ParserGenerator> _map;
-    std::unordered_map<std::string, FixedSizeGenerator> _sizes;
 
     typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Functor> FunctionDescriptor;
     std::unordered_map<std::string,  FunctionDescriptor>  _functions;

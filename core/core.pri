@@ -81,7 +81,8 @@ SOURCES += \
     ../core/fixedparenttypetemplate.cpp \
     ../core/modules/ebml/ebmlextensiontypetemplate.cpp \
     ../core/modules/stream/parentpidtemplate.cpp \
-    ../core/interpreter/fromfiletemplate.cpp
+    ../core/interpreter/fromfiletemplate.cpp \
+    ../core/specializer.cpp
     
 
 HEADERS  += \ 
@@ -173,6 +174,7 @@ HEADERS  += \
     ../core/fixedparenttypetemplate.h \
     ../core/modules/ebml/ebmlextensiontypetemplate.h \
     ../core/modules/stream/parentpidtemplate.h \
-    ../core/interpreter/fromfiletemplate.h
+    ../core/interpreter/fromfiletemplate.h \
+    ../core/specializer.h
 
 

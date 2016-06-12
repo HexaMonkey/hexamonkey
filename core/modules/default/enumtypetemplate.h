@@ -10,7 +10,7 @@ public:
 
     virtual Parser* parseOrGetParser(const ObjectType& type, ParsingOption& option, const Module&) const override;
 
-    virtual int64_t fixedSize(const ObjectType& type, const Module&) const override;
+    virtual int64_t fixedSize(const ObjectType& type) const override;
 
 };
 

@@ -12,7 +12,7 @@ private:
     virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const;
 
 
-    virtual int64_t fixedSize(const ObjectType&, const Module& module) const;
+    virtual int64_t fixedSize(const ObjectType&) const;
 };
 
 #endif // PARENTPIDTEMPLATE_H

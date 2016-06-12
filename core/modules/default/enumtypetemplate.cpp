@@ -40,11 +40,11 @@ Parser *EnumTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption
     return nullptr;
 }
 
-int64_t EnumTypeTemplate::fixedSize(const ObjectType &type, const Module &module) const
+int64_t EnumTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if (type.parameterSpecified(0)) {
         const ObjectType& childType = type.parameterValue(0).toObjectType();
-        const int64_t t = childType.fixedSize(module);
+        const int64_t t = childType.fixedSize();
         return t;
     } else {
         return -1;

@@ -67,7 +67,7 @@ Parser *StringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOpti
     return nullptr;
 }
 
-int64_t StringTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+int64_t StringTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if (type.parameterSpecified(0))
     {
@@ -129,7 +129,7 @@ Parser *WStringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOpt
     return nullptr;
 }
 
-int64_t WStringTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+int64_t WStringTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if (type.parameterSpecified(0))
     {

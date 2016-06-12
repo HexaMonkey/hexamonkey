@@ -27,7 +27,7 @@ Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOptio
     return nullptr;
 }
 
-int64_t ArrayTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+int64_t ArrayTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if(type.parameterSpecified(1))
     {

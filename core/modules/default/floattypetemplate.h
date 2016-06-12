@@ -11,7 +11,7 @@ public:
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
+    virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
 
 class DoubleTypeTemplate : public ObjectTypeTemplate
@@ -22,7 +22,7 @@ public:
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
+    virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
 
 class FixedFloatTypeTemplate : public ObjectTypeTemplate
@@ -33,7 +33,7 @@ public:
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
+    virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
 
 #endif // FLOATTYPETEMPLATE_H

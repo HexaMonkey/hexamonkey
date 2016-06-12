@@ -10,7 +10,7 @@ public:
 
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    virtual int64_t fixedSize(const ObjectType& objectType, const Module&) const override;
+    virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
 
 #endif // DATATYPETEMPLATE_H

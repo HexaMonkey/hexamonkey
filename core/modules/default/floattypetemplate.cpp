@@ -23,7 +23,7 @@ Parser *FloatTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &o
     return nullptr;
 }
 
-int64_t FloatTypeTemplate::fixedSize(const ObjectType &, const Module &) const
+int64_t FloatTypeTemplate::fixedSize(const ObjectType &) const
 {
     return 32;
 }
@@ -50,7 +50,7 @@ Parser *DoubleTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &
     return nullptr;
 }
 
-int64_t DoubleTypeTemplate::fixedSize(const ObjectType &, const Module &) const
+int64_t DoubleTypeTemplate::fixedSize(const ObjectType &) const
 {
     return 64;
 }
@@ -107,7 +107,7 @@ Parser *FixedFloatTypeTemplate::parseOrGetParser(const ObjectType &type, Parsing
     return nullptr;
 }
 
-int64_t FixedFloatTypeTemplate::fixedSize(const ObjectType &type, const Module &) const
+int64_t FixedFloatTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if(type.parameterSpecified(0) && type.parameterSpecified(1)) {
         return type.parameterValue(0).toInteger()+type.parameterValue(1).toInteger();

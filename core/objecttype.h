@@ -155,7 +155,10 @@ public:
 	 */
 	std::ostream& simpleDisplay(std::ostream& out) const; 
 
-    int numberOfParameters() const;
+    const int numberOfParameters() const
+    {
+        _parametersValue.size();
+    }
 
     int numberOfDisplayableParameters() const;
 
@@ -170,9 +173,9 @@ public:
         return _typeTemplate->parseOrGetParser(*this, parsingOption, module);
     }
 
-    inline int64_t fixedSize(const Module& module) const
+    inline int64_t fixedSize() const
     {
-        return _typeTemplate->fixedSize(*this, module);
+        return _typeTemplate->fixedSize(*this);
     }
 
     inline Variant attributeValue(ObjectTypeTemplate::Attribute attribute) const

@@ -43,75 +43,6 @@ const Module &Module::getImportedModule(const std::string &name) const
     return *_importedModulesMap.find(name)->second;
 }
 
-bool Module::isExtension(const ObjectType& child, const ObjectType& parent) const
-{
-    ObjectType const * const pChild = &child;
-
-    do {
-        if (pChild->extendsDirectly(parent)) {
-            return true;
-        }
-    } while (!pChild->isNull());
-
-    return false;
-}
-
-void Module::setExtension(const ObjectTypeTemplate &childTemplate, const std::function<ObjectType (const ObjectType &)> &parentFunction)
-{
-    _extensions.insert(std::make_pair(&childTemplate, parentFunction));
-}
-
-void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectType &parent)
-{
-    setExtension(childTemplate, [parent](const ObjectType& type)
-    {
-        return parent;
-    });
-}
-
-void Module::setExtension(const ObjectTypeTemplate &childTemplate, const ObjectType &parent, const std::map<int, int> &parameterMapping)
-{
-    setExtension(childTemplate, [parent, parameterMapping](const ObjectType& type)
-    {
-        ObjectType father = parent;
-        for(const auto& binding : parameterMapping)
-        {
-            father.setParameter(binding.second, type.parameterValue(binding.first));
-        }
-        return father;
-    });
-}
-
-
-
-ObjectType Module::getFather(const ObjectType &child) const
-{
-    //Searching locally
-    {
-        auto father = getFatherLocally(child);
-        if (!father.isNull()) {
-            return father;
-        }
-    }
-
-    //Searching in imported modules
-    for(const Module* module: _importedModulesChain)
-    {
-        ObjectType father = module->getFather(child);
-        if(!father.isNull())
-        {
-            return father;
-        }
-    }
-
-    return ObjectType();
-}
-
-ObjectType Module::getFatherLocally(const ObjectType &child) const
-{
-    return child.parent();
-}
-
 ObjectType Module::specify(const ObjectType &parent) const
 {
     ObjectType child = specifyLocally(parent);
@@ -373,57 +304,11 @@ bool Module::isLoaded() const
     return _loaded;
 }
 
-
-void Module::addTemplate(const ObjectTypeTemplate& typeTemplate)
-{
-    _templates[typeTemplate.name()] = &typeTemplate;
-}
-
 ObjectTypeTemplate &Module::addTemplate(ObjectTypeTemplate* typeTemplate)
 {
     _ownedTemplates.push_back(std::unique_ptr<ObjectTypeTemplate>(typeTemplate));
     _templates[typeTemplate->name()] = typeTemplate;
     return *typeTemplate;
-}
-
-ObjectTypeTemplate &Module::newTemplate(const std::string &name, const std::vector<std::string> &parameters)
-{
-    ObjectTypeTemplate* temp = new ObjectTypeTemplate(name, parameters);
-    _ownedTemplates.push_back(std::unique_ptr<ObjectTypeTemplate>(temp));
-    addTemplate(*temp);
-    return *temp;
-}
-
-const Module::ParserGenerator& Module::nullGenerator = []parserLambda{return nullptr;};
-
-void Module::addParser(const std::string &name, const Module::ParserGenerator &parserGenerator)
-{
-    _map[name] = parserGenerator;
-}
-
-void Module::addParser(const std::string &name)
-{
-    addParser(name, nullGenerator);
-    setFixedSize(name, 0);
-}
-
-void Module::setFixedSize(const std::string &name, const FixedSizeGenerator &fixedSizeFunction)
-{
-    _sizes[name] = fixedSizeFunction;
-}
-
-void Module::setFixedSize(const std::string &name, int64_t fixedSize)
-{
-    _sizes[name] = [fixedSize] fixedSizeLambda {return fixedSize;};
-}
-
-void Module::setFixedSizeFromArg(const std::string &name, int arg)
-{
-    _sizes[name] = [arg]fixedSizeLambda {
-             if(type.parameterSpecified(arg))
-                 return type.parameterValue(arg).toInteger();
-             return -1;
-    };
 }
 
 void Module::addFunction(const std::string &name,
@@ -443,11 +328,6 @@ bool Module::hasParser(const ObjectType &type) const
 Parser *Module::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
 {
     return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-}
-
-int64_t Module::doGetFixedSize(const ObjectType &type, const Module &module) const
-{
-    return type.fixedSize(module);
 }
 
 bool Module::doCanHandleFunction(const std::string &name) const

@@ -30,11 +30,11 @@ Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOptio
     return nullptr;
 }
 
-int64_t TupleTypeTemplate::fixedSize(const ObjectType &type, const Module &module) const
+int64_t TupleTypeTemplate::fixedSize(const ObjectType &type) const
 {
     if(type.parameterSpecified(0) && type.parameterSpecified(1))
     {
-        int64_t t = type.parameterValue(0).toObjectType().fixedSize(module);
+        int64_t t = type.parameterValue(0).toObjectType().fixedSize();
         if(t>=0)
            return t*type.parameterValue(1).toInteger();
     }

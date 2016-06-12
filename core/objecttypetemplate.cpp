@@ -151,7 +151,7 @@ Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &
     return nullptr;
 }
 
-int64_t ObjectTypeTemplate::fixedSize(const ObjectType &, const Module &) const
+int64_t ObjectTypeTemplate::fixedSize(const ObjectType &) const
 {
     return unknownSize;
 }

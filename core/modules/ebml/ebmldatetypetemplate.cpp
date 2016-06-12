@@ -28,7 +28,7 @@ Parser *EbmlDateTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption
     return nullptr;
 }
 
-int64_t EbmlDateTypeTemplate::fixedSize(const ObjectType &, const Module &) const
+int64_t EbmlDateTypeTemplate::fixedSize(const ObjectType &) const
 {
     return 64;
 }

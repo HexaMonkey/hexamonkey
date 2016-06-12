@@ -70,7 +70,7 @@ const std::vector<VariablePath> headerOnlyVars = {
 
 std::shared_ptr<ObjectType> fromFileNullParent(new ObjectType);
 
-int64_t FromFileTemplate::fixedSize(const ObjectType &type, const Module &module) const
+int64_t FromFileTemplate::fixedSize(const ObjectType &type) const
 {
     if (! (_flag & _sizeComputed)) {
         _fixedSize = unknownSize;
@@ -101,7 +101,7 @@ int64_t FromFileTemplate::fixedSize(const ObjectType &type, const Module &module
     }
 
     if (_flag & _isParentSize) {
-        return type.parent().fixedSize(module);
+        return type.parent().fixedSize();
     } else {
         return _fixedSize;
     }
@@ -209,7 +209,7 @@ int64_t FromFileTemplate::guessSize(const Program &instructions) const
                 if(type.isNull())
                     return unknownSize;
 
-                int64_t elemSize = type.fixedSize(_module);
+                int64_t elemSize = type.fixedSize();
                 if(elemSize == -1)
                     return unknownSize;
 

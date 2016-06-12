@@ -23,11 +23,11 @@ Parser *StructTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOpti
     return parser;
 }
 
-int64_t StructTypeTemplate::fixedSize(const ObjectType &type, const Module &module) const
+int64_t StructTypeTemplate::fixedSize(const ObjectType &type) const
 {
     int s = 0;
     for (int i = 1; i < type.numberOfParameters(); i += 2) {
-        int t = type.parameterValue(i).toObjectType().fixedSize(module);
+        int t = type.parameterValue(i).toObjectType().fixedSize();
         if (t != -1) {
             s += t;
         } else {

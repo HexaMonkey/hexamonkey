@@ -335,6 +335,16 @@ int ObjectType::numberOfDisplayableParameters() const
     return n;
 }
 
+int ObjectType::numberOfSpecifiedParameters() const
+{
+    int n = typeTemplate().numberOfParameters();
+    while (n >= 1 && _parametersValue[n-1].isUndefined())
+    {
+        n--;
+    }
+    return n;
+}
+
 std::ostream& operator<<(std::ostream& out, const ObjectType& type)
 {
     return type.display(out);
