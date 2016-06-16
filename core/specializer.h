@@ -9,6 +9,7 @@
 
 class Specializer
 {
+public:
     Specializer();
 
     Specializer(const Specializer& other);
@@ -16,7 +17,7 @@ private:
     inline void detach() {
         if (!_writable) {
             if (_nextSpecializations) {
-                _nextSpecializations.reset(new std::unordered_map<Variant, Specializer> >(*_nextSpecializations));
+                _nextSpecializations.reset(new std::unordered_map<Variant, Specializer>(*_nextSpecializations));
             }
             _writable = true;
         }

@@ -157,10 +157,11 @@ public:
 
     const int numberOfParameters() const
     {
-        _parametersValue.size();
+        return _parametersValue.size();
     }
 
     int numberOfDisplayableParameters() const;
+    int numberOfSpecifiedParameters() const;
 
     friend void swap(ObjectType& a, ObjectType& b);
     ObjectType& operator=(ObjectType other);

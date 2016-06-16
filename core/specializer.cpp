@@ -1,4 +1,4 @@
-
+#include "specializer.h"
 
 Specializer::Specializer()
     : _writable(true)
@@ -13,6 +13,6 @@ Specializer::Specializer(const Specializer &other)
 {
 }
 
-#include "specializer.h"
+
 
 

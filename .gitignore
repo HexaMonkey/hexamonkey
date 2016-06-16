@@ -162,6 +162,7 @@ test/moc_*.cpp
 !test/resources/parser/*
 !test/resources/parser/orig
 !test/resources/parser/orig/*
+!test/resources/parser/new/
 !test/resources/parser/scripts
 !test/resources/parser/scripts/*.hm
 !test/resources/formatDetector

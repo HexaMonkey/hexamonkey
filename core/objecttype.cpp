@@ -320,10 +320,6 @@ std::ostream& ObjectType::simpleDisplay(std::ostream& out) const
     return out;
 }
 
-int ObjectType::numberOfParameters() const
-{
-    return _parametersValue.size();
-}
 
 int ObjectType::numberOfDisplayableParameters() const
 {
