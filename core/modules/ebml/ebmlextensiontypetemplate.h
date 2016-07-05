@@ -17,29 +17,29 @@ private:
 class EbmlIntegerTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& intTypeTemplate);
+    EbmlIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& intType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    const ObjectTypeTemplate& _intTypeTemplate;
+    mutable ObjectType _intType;
 };
 
 class EbmlUIntegerTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlUIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& uintTypeTemplate);
+    EbmlUIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &uintType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    const ObjectTypeTemplate& _uintTypeTemplate;
+   mutable ObjectType _uintType;
 };
 
 class EbmlFloatTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlFloatTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& floatTypeTemplate, const ObjectTypeTemplate& doubleTypeTemplate);
+    EbmlFloatTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& floatType, const ObjectType& doubleType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
@@ -51,45 +51,45 @@ private:
 class EbmlStringTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlStringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& stringTypeTemplate);
+    EbmlStringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& stringType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    const ObjectTypeTemplate& _stringTypeTemplate;
+    mutable ObjectType _stringType;
 };
 
 class EbmlUtf8StringTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlUtf8StringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& stringTypeTemplate);
+    EbmlUtf8StringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &stringType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    const ObjectTypeTemplate& _stringTypeTemplate;
+    mutable ObjectType _stringType;
 };
 
 class EbmlDateElementTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlDateElementTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& dateTypeTemplate);
+    EbmlDateElementTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &dateTypeTemplate);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    ObjectType _dateType;
+    mutable ObjectType _dateType;
 };
 
 class EbmlBinaryTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlBinaryTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectTypeTemplate& dataTypeTemplate);
+    EbmlBinaryTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& dataType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
 
-    const ObjectTypeTemplate& _dataTypeTemplate;
+    mutable ObjectType _dataType;
 };
 
 #endif // EBMLEXTENSIONTYPETEMPLATE_H

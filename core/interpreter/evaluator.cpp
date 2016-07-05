@@ -139,8 +139,7 @@ VariablePath Evaluator::variablePath(const Program &program) const
 ObjectType Evaluator::type(const Program &program) const
 {
     const std::string& name = program.node(0).payload().toString();
-    const ObjectTypeTemplate& parentTemplate = module.getTemplate(name);
-    ObjectType type(parentTemplate);
+    ObjectType type = module.getType(name);
     if(type.isNull())
     {
         Log::error("Type not found ", name);
@@ -161,8 +160,7 @@ ObjectType Evaluator::type(const Program &program) const
 std::shared_ptr<ObjectType> Evaluator::sharedType(const Program &program) const
 {
     const std::string& name = program.node(0).payload().toString();
-    const ObjectTypeTemplate& parentTemplate = module.getTemplate(name);
-    auto type = std::make_shared<ObjectType>(parentTemplate);
+    auto type = module.getSharedType(name);
     if(type->isNull())
     {
         Log::error("Type not found ", name);

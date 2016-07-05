@@ -70,7 +70,7 @@ bool HmcModule::doLoad()
         std::string type  = modelLine[1];
 
         const auto& typeTemplate = addTemplate(new FixedParentTypeTemplate(name, ebmlModule.elementType(type)));
-        setSpecification(getType("EBMLElement", i), ObjectType(typeTemplate));
+        setSpecification(getType("EBMLElement", i), getType(typeTemplate));
     }
     return true;
 }

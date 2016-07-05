@@ -63,7 +63,7 @@ ObjectType Module::specify(const ObjectType &parent) const
 ObjectType Module::specifyLocally(const ObjectType& parent) const
 {
     ObjectType type;
-    ObjectType rangeBegin(parent.typeTemplate());
+    ObjectType rangeBegin = ObjectTypeCreator::Create(parent.typeTemplate());
     for(SpecificationMap::const_iterator it = _automaticSpecifications.lower_bound(&rangeBegin);
         it != _automaticSpecifications.end() && it->first->typeTemplate() == parent.typeTemplate();
         ++it)
@@ -127,7 +127,7 @@ void Module::addParsersRecursive(Object &object, const ObjectType &type, const M
 void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
 {
     if (!parent.typeTemplate().isVirtual()) {
-        Log::error("Cannot forward ",parent," to ",child," because ",parent.typeTemplate(), " is not virtual ");
+        Log::error("Cannot forward ",parent," to ",child," because ",parent.typeTemplate().name(), " is not virtual ");
     }
     const ObjectType* parentPtr = new ObjectType(parent);
     _automaticSpecifications.insert(std::make_pair(parentPtr, child));

@@ -43,14 +43,8 @@ public:
      * \link ObjectTypeTemplate type template\endlink
      */
     ObjectType();
-    /**
-     * @brief Construct a \link ObjectType type\endlink with the
-     * \link ObjectTypeTemplate type template\endlink given.
-     *
-     * The parameters are set to the null \link Variant variant\endlink, and can be
-     * set to other values subsequently.
-     */
-    ObjectType(const ObjectTypeTemplate& typeTemplate);
+    ObjectType(const ObjectType&) = default;
+
 
     /**
      * @brief Get the \link ObjectTypeTemplate type template\endlink the \link ObjectType type\endlink implements
@@ -155,7 +149,7 @@ public:
 	 */
 	std::ostream& simpleDisplay(std::ostream& out) const; 
 
-    const int numberOfParameters() const
+    int numberOfParameters() const
     {
         return _parametersValue.size();
     }
@@ -193,7 +187,18 @@ public:
     }
 
 
-private:
+private:    
+    /**
+    * @brief Construct a \link ObjectType type\endlink with the
+    * \link ObjectTypeTemplate type template\endlink given.
+    *
+    * The parameters are set to the null \link Variant variant\endlink, and can be
+    * set to other values subsequently.
+    */
+    ObjectType(const ObjectTypeTemplate& typeTemplate);
+
+    friend class ObjectTypeCreator;
+
     const Variant& vElementType() const;
     const Variant& vElementCount() const;
     const Variant& vDisplayMode() const;
@@ -217,12 +222,22 @@ private:
     {
         setParameter(first, v);
         _setParameters(first+1, args...);
-    }
+    }    
+};
+
+class ObjectTypeCreator
+{
 public:
-    template<typename... Args> ObjectType(const ObjectTypeTemplate& typeTemplate, Args... args)
-        : _typeTemplate(&typeTemplate)
+    friend class Module;
+
+    inline static ObjectType Create(const ObjectTypeTemplate& typeTemplate)
     {
-        setParameters(args...);
+        return ObjectType(typeTemplate);
+    }
+
+    inline static std::shared_ptr<ObjectType> CreateShared(const ObjectTypeTemplate& typeTemplate)
+    {
+        return std::shared_ptr<ObjectType>(new ObjectType(typeTemplate));
     }
 };
 

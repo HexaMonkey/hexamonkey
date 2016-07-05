@@ -74,7 +74,7 @@ bool MkvModule::doLoad()
         std::string type = nodeFrame->first_attribute("type")->value();
 
         const auto& typeTemplate = addTemplate(new FixedParentTypeTemplate(name, ebmlModule.elementType(type)));
-        setSpecification(getType("EBMLElement", id), ObjectType(typeTemplate));
+        setSpecification(getType("EBMLElement", id), getType(typeTemplate));
     }
     return true;
 }

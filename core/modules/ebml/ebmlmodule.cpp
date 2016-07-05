@@ -60,24 +60,24 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 bool EbmlModule::doLoad()
 {
     auto file = getType("File");
-    auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file.typeTemplate()));
-    setSpecification(file, ObjectType(EBMLFile));
+    auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file));
+    setSpecification(file, getType(EBMLFile));
 
     auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate);
 
     addTemplate(new EbmlLargeIntegerTypeTemplate);
     const ObjectTypeTemplate& dateTypeTemplate = addTemplate(new EbmlDateTypeTemplate);
 
-    auto elementType = std::make_shared<ObjectType>(EBMLElement);
+    auto elementType = getSharedType(EBMLElement);
     std::shared_ptr<ObjectType> elementTypeTemplates[] = {
-        std::make_shared<ObjectType>(addTemplate(new EbmlMasterTypeTemplate(elementType))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlIntegerTypeTemplate(elementType, getTemplate("int")))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlUIntegerTypeTemplate(elementType, getTemplate("uint")))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlFloatTypeTemplate(elementType, getTemplate("float"), getTemplate("double")))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlStringTypeTemplate(elementType, getTemplate("String")))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlUtf8StringTypeTemplate(elementType, getTemplate("String")))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlDateElementTypeTemplate(elementType, dateTypeTemplate))),
-        std::make_shared<ObjectType>(addTemplate(new EbmlBinaryTypeTemplate(elementType, getTemplate("Data"))))
+        getSharedType(addTemplate(new EbmlMasterTypeTemplate(elementType))),
+        getSharedType(addTemplate(new EbmlIntegerTypeTemplate(elementType, getType("int")))),
+        getSharedType(addTemplate(new EbmlUIntegerTypeTemplate(elementType, getType("uint")))),
+        getSharedType(addTemplate(new EbmlFloatTypeTemplate(elementType, getType("float"), getType("double")))),
+        getSharedType(addTemplate(new EbmlStringTypeTemplate(elementType, getType("String")))),
+        getSharedType(addTemplate(new EbmlUtf8StringTypeTemplate(elementType, getType("String")))),
+        getSharedType(addTemplate(new EbmlDateElementTypeTemplate(elementType, getType(dateTypeTemplate)))),
+        getSharedType(addTemplate(new EbmlBinaryTypeTemplate(elementType, getType("Data"))))
     };
 
     for (int i = 0; i < numberOfTypeElements; ++i)
@@ -88,7 +88,7 @@ bool EbmlModule::doLoad()
     for(int i = 0; i < numberOfDefaultElements; ++i)
     {
         const ObjectTypeTemplate& defaultElementTemplate = addTemplate(new FixedParentTypeTemplate(defaultElements[i], elementTypeTemplates[defaultElementTypes [i]]));
-        setSpecification(ObjectType(EBMLElement, defaultElementIds[i]), ObjectType(defaultElementTemplate));
+        setSpecification(getType(EBMLElement, defaultElementIds[i]), getType(defaultElementTemplate));
     }
 
     return true;

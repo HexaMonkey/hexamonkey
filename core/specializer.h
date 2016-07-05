@@ -13,7 +13,19 @@ public:
     Specializer();
 
     Specializer(const Specializer& other);
+
+public:
+    void forward(const ObjectType& source, const ObjectType& destination);
+    const ObjectType& specialize(const ObjectType& source) const;
+
 private:
+    Specializer& specializer(const Variant& value);
+    Specializer& specializer();
+
+
+    const Specializer* specializerIfExists(const Variant &value) const;
+    const Specializer* specializerIfExists() const;
+
     inline void detach() {
         if (!_writable) {
             if (_nextSpecializations) {

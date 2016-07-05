@@ -119,26 +119,50 @@ public:
      */
     const ObjectTypeTemplate& getTemplate(const std::string& name) const;
 
-    ObjectType getType(const std::string& name) const
+    inline ObjectType getType(const std::string& name) const
     {
-        return ObjectType(getTemplate(name));
+        return ObjectTypeCreator::Create(getTemplate(name));
     }
 
-    template<typename... Args> ObjectType getType(const std::string& name, Args... args) const
+    template<typename... Args> inline ObjectType getType(const std::string& name, Args... args) const
     {
-         ObjectType type(getTemplate(name));
+         ObjectType type = ObjectTypeCreator::Create(getTemplate(name));
+         type.setParameters(args...);
+         return type;
+    }
+
+    inline ObjectType getType(const ObjectTypeTemplate& typeTemplate) const
+    {
+        return ObjectTypeCreator::Create(typeTemplate);
+    }
+
+    template<typename... Args> inline ObjectType getType(const ObjectTypeTemplate& typeTemplate, Args... args) const
+    {
+         ObjectType type = ObjectTypeCreator::Create(typeTemplate);
          type.setParameters(args...);
          return type;
     }
 
     std::shared_ptr<ObjectType> getSharedType(const std::string& name) const
     {
-        return std::make_shared<ObjectType>(getTemplate(name));
+        return ObjectTypeCreator::CreateShared(getTemplate(name));
     }
 
     template<typename... Args> std::shared_ptr<ObjectType> getSharedType(const std::string& name, Args... args) const
     {
-        auto type = std::make_shared<ObjectType>(getTemplate(name));
+        auto type = ObjectTypeCreator::CreateShared(getTemplate(name));
+        type->setParameters(args...);
+        return type;
+    }
+
+    std::shared_ptr<ObjectType> getSharedType(const ObjectTypeTemplate& typeTemplate) const
+    {
+        return ObjectTypeCreator::CreateShared(typeTemplate);
+    }
+
+    template<typename... Args> std::shared_ptr<ObjectType> getSharedType(const ObjectTypeTemplate& typeTemplate, Args... args) const
+    {
+        auto type = ObjectTypeCreator::CreateShared(typeTemplate);
         type->setParameters(args...);
         return type;
     }

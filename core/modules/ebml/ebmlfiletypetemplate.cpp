@@ -2,8 +2,8 @@
 
 #include "core/modules/ebml/ebmlmasterparser.h"
 
-EbmlFileTypeTemplate::EbmlFileTypeTemplate(const ObjectTypeTemplate& fileTemplate)
-    : FixedParentTypeTemplate("EBMLFile", std::make_shared<ObjectType>(fileTemplate))
+EbmlFileTypeTemplate::EbmlFileTypeTemplate(const ObjectType& fileType)
+    : FixedParentTypeTemplate("EBMLFile", std::make_shared<ObjectType>(fileType))
 {
 }
 

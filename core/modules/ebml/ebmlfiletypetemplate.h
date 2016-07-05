@@ -6,7 +6,7 @@
 class EbmlFileTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlFileTypeTemplate(const ObjectTypeTemplate& fileTemplate);
+    EbmlFileTypeTemplate(const ObjectType& fileType);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
