@@ -65,12 +65,12 @@ const Module &ModuleLoader::getModule(const std::string &key) const
             {
                 for(const std::string& importRequirement : importRequirements)
                 {
-                    module.import(getModule(importRequirement), importRequirement);
+                    module.import(getModule(importRequirement));
                 }
             }
             else if(!key.empty())
             {
-                module.import(getModule(""), "");
+                module.import(getModule(""));
             }
             Log::info("Load module : <", key, ">");
             module.load();
@@ -85,6 +85,7 @@ void ModuleLoader::addModule(const std::string &key, Module *module)
 {
     if (module != nullptr)
     {
+        module->_name = key;
         std::unique_ptr<StandardFormatDetector::Adder> adder(formatDetector.newAdder(key));
         module->addFormatDetection(*adder);
         modules[key].reset(module);

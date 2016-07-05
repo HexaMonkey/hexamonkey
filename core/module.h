@@ -72,13 +72,10 @@ class Module
 public:
     Module();
 
-    /** @brief Import a \link Module module\endlink to serve as fallback if a \link ObjectType type\endlink cannot be handled directly by the
-     *  \link Module module\endlink
-     *
-     * If a \link ObjectType type\endlink or a function is not handled by the the \link Module module\endlink, then a handler will be searched among the
-     * imported modules, with a priority for the lastest \link Module module\endlink imported
-     */
-    void import(const Module& module, const std::string &name);
+    inline const std::string& name() const
+    {
+        return _name;
+    }
 
     const Module& getImportedModule(const std::string& name) const;
 
@@ -286,6 +283,14 @@ private:
 
     typedef std::map<const ObjectTypeTemplate*, std::function<ObjectType(const ObjectType&)>, UnrefCompare<const ObjectTypeTemplate*> > ExtensionMap;
 
+    /** @brief Import a \link Module module\endlink to serve as fallback if a \link ObjectType type\endlink cannot be handled directly by the
+     *  \link Module module\endlink
+     *
+     * If a \link ObjectType type\endlink or a function is not handled by the the \link Module module\endlink, then a handler will be searched among the
+     * imported modules, with a priority for the lastest \link Module module\endlink imported
+     */
+    void import(const Module& module);
+
     bool load();
 
     ObjectType specifyLocally(const ObjectType& parent) const;
@@ -296,6 +301,7 @@ private:
 
     Variable executeFunction(const std::string& name, const Variable &params, const Module& fromModule) const;
 
+    std::string _name;
     bool _loaded;
 
     std::vector<const Module*> _importedModulesChain;
