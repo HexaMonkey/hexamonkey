@@ -15,8 +15,8 @@ Parser *EbmlElementTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOpt
     Object::ParsingContext context(option);
 
     const auto largeInteger = module.getType("LargeInteger");
-    Object* p_id = context.object().addVariable(largeInteger, "id", module);
-    Object* p_size = context.object().addVariable(largeInteger, "size", module);
+    Object* p_id = context.object().addVariable(largeInteger, "id");
+    Object* p_size = context.object().addVariable(largeInteger, "size");
 
     context.object().setSize(p_id->size() + p_size->size() + 8 * p_size->value().toInteger());
 

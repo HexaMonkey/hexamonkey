@@ -22,11 +22,6 @@
 
 #include "core/modules/default/defaultmodule.h"
 #include "core/modules/ebml/ebmlmodule.h"
-#include "core/modules/ebml/ebmlmasterparser.h"
-#include "core/modules/ebml/ebmlcontainerparser.h"
-#include "core/modules/ebml/ebmllargeintegerparser.h"
-#include "core/modules/ebml/ebmlsimpleparser.h"
-#include "core/modules/ebml/ebmldateparser.h"
 #include "core/util/bitutil.h"
 #include "core/util/strutil.h"
 
@@ -35,8 +30,6 @@
 #include "core/modules/ebml/ebmlelementtypetemplate.h"
 #include "core/modules/ebml/ebmldatetypetemplate.h"
 #include "core/modules/ebml/ebmlextensiontypetemplate.h"
-
-std::unordered_set<std::string> ebmlRefactored = {"LargeInteger", "EBMLFile", "EBMLElement", "Date", "MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
 
 const int EbmlModule::numberOfTypeElements = 8;
 const std::string EbmlModule::typeElements[] = {"MasterElement","IntegerElement","UIntegerElement","FloatElement","StringElement","UTF8StringElement","DateElement","BinaryElement"};
@@ -60,17 +53,19 @@ void EbmlModule::addFormatDetection(StandardFormatDetector::Adder &formatAdder)
 bool EbmlModule::doLoad()
 {
     auto file = getType("File");
-    auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file));
-    setSpecification(file, getType(EBMLFile));
+
 
     auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate);
+
+    auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file, getType(EBMLElement)));
+    setSpecification(file, getType(EBMLFile));
 
     addTemplate(new EbmlLargeIntegerTypeTemplate);
     const ObjectTypeTemplate& dateTypeTemplate = addTemplate(new EbmlDateTypeTemplate);
 
     auto elementType = getSharedType(EBMLElement);
     std::shared_ptr<ObjectType> elementTypeTemplates[] = {
-        getSharedType(addTemplate(new EbmlMasterTypeTemplate(elementType))),
+        getSharedType(addTemplate(new EbmlMasterTypeTemplate(elementType, getType(EBMLElement)))),
         getSharedType(addTemplate(new EbmlIntegerTypeTemplate(elementType, getType("int")))),
         getSharedType(addTemplate(new EbmlUIntegerTypeTemplate(elementType, getType("uint")))),
         getSharedType(addTemplate(new EbmlFloatTypeTemplate(elementType, getType("float"), getType("double")))),

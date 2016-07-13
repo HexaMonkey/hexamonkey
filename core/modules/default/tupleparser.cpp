@@ -18,15 +18,13 @@
 #include "core/module.h"
 #include "core/modules/default/tupleparser.h"
 
-TupleParser::TupleParser(ParsingOption &option, const Module &module, const ObjectType &elementType, int64_t count, const std::string& namePattern)
-    :  ElementaryContainerParser(option, module, elementType, namePattern), count(count)
+TupleParser::TupleParser(ParsingOption &option, const ObjectType &elementType, int64_t count, const std::string& namePattern)
+    :  ElementaryContainerParser(option, elementType, namePattern), count(count)
 {
 }
 
 void TupleParser::doParseHead()
 {
-    ElementaryContainerParser::doParseHead();
-
     if (!count) {
         setParsed();
     } else {

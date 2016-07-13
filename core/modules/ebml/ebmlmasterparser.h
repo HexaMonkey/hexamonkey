@@ -18,16 +18,19 @@
 #ifndef EBMLMASTERPARSER_H
 #define EBMLMASTERPARSER_H
 
-#include "core/containerparser.h"
+#include "core/parser.h"
 
-class EbmlMasterParser : public ContainerParser
+class EbmlMasterParser : public Parser
 {
 public:
-    EbmlMasterParser(ParsingOption& option, const Module& module);
+    EbmlMasterParser(ParsingOption& option, const ObjectType &elementType);
 
 protected:
     void doParse();
     bool doParseSome(int hint);
+
+private:
+    ObjectType _elementType;
 };
 
 #endif // EBMLMASTERPARSER_H

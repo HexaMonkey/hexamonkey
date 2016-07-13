@@ -20,7 +20,7 @@
 
 #include <memory>
 
-#include "core/containerparser.h"
+#include "core/parser.h"
 #include "core/interpreter/program.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/blockexecution.h"
@@ -33,7 +33,7 @@
  * A breakpoint is given to isolate the head, which is computed
  * statically by the module.
  */
-class FromFileParser : public ContainerParser
+class FromFileParser : public Parser
 {
 public:
     FromFileParser(ParsingOption& option, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing);
@@ -46,7 +46,7 @@ private:
     virtual void doParseTail() final;
     virtual bool doNeedTailParsing() final;
 
-    std::shared_ptr<ContainerParser*> _sharedAccess;
+    std::shared_ptr<Parser*> _sharedAccess;
 
     Variable _scope;
 

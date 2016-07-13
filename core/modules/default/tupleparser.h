@@ -23,7 +23,7 @@
 class TupleParser : public ElementaryContainerParser
 {
 public:
-    TupleParser(ParsingOption& option, const Module& module, const ObjectType& elementType, int64_t count, const std::string &namePattern);
+    TupleParser(ParsingOption& option, const ObjectType& elementType, int64_t count, const std::string &namePattern);
 
 protected:
     void doParseHead();

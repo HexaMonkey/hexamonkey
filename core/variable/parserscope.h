@@ -5,21 +5,21 @@
 
 #include <memory>
 
-class ContainerParser;
+class Parser;
 
 class ParserScope : public VariableImplementation
 {
 public:
-    ParserScope(VariableCollector& collector, std::shared_ptr<ContainerParser*> sharedAccess);
+    ParserScope(VariableCollector& collector, std::shared_ptr<Parser*> sharedAccess);
 
 protected:
     virtual Variable doGetField(const Variant &key, bool, bool);
 
 private:
-    inline ContainerParser* parser() {
+    inline Parser* parser() {
         return *_sharedAccess;
     }
-    std::shared_ptr<ContainerParser*> _sharedAccess;
+    std::shared_ptr<Parser*> _sharedAccess;
 };
 
 #endif // PARSERSCOPE_H

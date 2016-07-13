@@ -34,7 +34,6 @@ Module::Module()
 
 void Module::import(const Module &module)
 {
-    Log::info(module.name());
     if (_importedModulesMap.find(module.name()) == _importedModulesMap.end()) {
         for (const Module* importedModule : reverse(module._importedModulesChain))
         {
@@ -45,6 +44,8 @@ void Module::import(const Module &module)
         }
         _importedModulesChain.insert(_importedModulesChain.begin(), &module);
         _importedModulesMap[module.name()] = &module;
+    } else {
+        Log::error("Module ", module.name(), " has already been imported by ", name());
     }
 }
 
@@ -55,23 +56,43 @@ const Module &Module::getImportedModule(const std::string &name) const
 
 ObjectType Module::specify(const ObjectType &parent) const
 {
-    ObjectType child = specifyLocally(parent);
+    if (!parent.typeTemplate().isVirtual()) {
+       return ObjectType();
+    }
 
+    ObjectType child = specifyLocally(parent);
     if(child.isNull())
     {
         for(const Module* importedModule : _importedModulesChain)
         {
             child = importedModule->specifyLocally(parent);
             if(!child.isNull())
-                return child;
+                break;
         }
     }
+    Log::error("Forwarding ", parent, " to ", child);
     return child;
 }
 
 
 ObjectType Module::specifyLocally(const ObjectType& parent) const
 {
+#if 1
+    auto it = _specializers.find(const_cast<ObjectTypeTemplate*>(&parent.typeTemplate()));
+    if (it == _specializers.end())
+    {
+        return ObjectType();
+    }
+
+    ObjectType type = it->second.specialize(parent);
+    if (!type.isNull())
+    {
+        type.importParameters(parent);
+    }
+
+    return type;
+#else
+
     ObjectType type;
     ObjectType rangeBegin = ObjectTypeCreator::Create(parent.typeTemplate());
     for(SpecificationMap::const_iterator it = _automaticSpecifications.lower_bound(&rangeBegin);
@@ -86,26 +107,14 @@ ObjectType Module::specifyLocally(const ObjectType& parent) const
         }
     }
     return type;
+#endif
 }
-
-void Module::addParsers(Object &object, const ObjectType &type, const Module &fromModule, const ObjectType &lastType) const
+ #if 0
+void addParsersRecursive(Object &object, const ObjectType &type, const ObjectType &lastType)
 {
-    addParsersRecursive(object, type, fromModule, lastType);
+    const Module& fromModule = object._fromModule;
+    ObjectType specification;
 
-    const auto& parsers = object._parsers;
-    if (std::any_of(parsers.begin(), parsers.end(), [](const std::unique_ptr<Parser>& parser) {
-        if (parser) {
-            return parser->needTailParsing();
-        } else {
-            return false;
-        }
-    })) {
-        object.parse();
-    };
-}
-
-void Module::addParsersRecursive(Object &object, const ObjectType &type, const Module &fromModule, const ObjectType &lastType) const
-{
     //Building the father list
     std::list<ObjectType> fathers;
     ObjectType currentType = type;
@@ -119,20 +128,57 @@ void Module::addParsersRecursive(Object &object, const ObjectType &type, const M
     for(ObjectType father : fathers)
     {
         object.setType(father);
-        const Module* module = handler(father);
-        if(module!=nullptr)
-        {
-            Parser* parser = module->getParser(father, object, fromModule);
-            object.addParser(parser);
-        }
+        Parser* parser = father.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
+        object.addParser(parser);
     }
     //Type specification
-    ObjectType specification = specify(object.type());
-    if(!specification.isNull())
+    specification = fromModule.specify(object.type());
+
+    if (!specification.isNull())
     {
-        addParsersRecursive(object, specification, fromModule, object.type());
+        addParsersRecursive(object, specification, object.type());
     }
 }
+#endif
+void Module::addParsers(Object &object, const ObjectType &type) const
+{
+    //Building the father list
+
+    ObjectType currentType = type;
+    ObjectType lastType;
+    while (!currentType.isNull()) {
+        std::list<ObjectType> fathers;
+        while(currentType.typeTemplate() != lastType.typeTemplate() && !currentType.isNull())
+        {
+            fathers.push_front(currentType);
+            currentType = currentType.parent();
+        }
+
+        //Adding the fathers' parsers
+        for(ObjectType father : fathers)
+        {
+            object.setType(father);
+            Parser* parser = father.parseOrGetParser(static_cast<ParsingOption&>(object), *this);
+            object.addParser(parser);
+        }
+        //Type specification
+        lastType= object.type();
+        currentType = specify(lastType);
+    }
+
+    const auto& parsers = object._parsers;
+    if (std::any_of(parsers.begin(), parsers.end(), [](const std::unique_ptr<Parser>& parser) {
+        if (parser) {
+            return parser->needTailParsing();
+        } else {
+            return false;
+        }
+    })) {
+        object.parse();
+    };
+}
+
+
 
 void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
 {
@@ -141,16 +187,24 @@ void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
     }
     const ObjectType* parentPtr = new ObjectType(parent);
     _automaticSpecifications.insert(std::make_pair(parentPtr, child));
+
+    auto it = _specializers.find(const_cast<ObjectTypeTemplate*>(&parent.typeTemplate()));
+    if (it == _specializers.end()) {
+        _specializers.emplace(std::piecewise_construct, std::make_tuple(const_cast<ObjectTypeTemplate* >(&parent.typeTemplate())), std::make_tuple(parent, child));
+    } else {
+        it->second.forward(parent, child);
+    }
+
 }
 
 Object* Module::handleFile(const ObjectType& type, File &file, VariableCollector &collector) const
 {
-    return handle(type, file, nullptr, collector, *this);
+    return handle(type, file, nullptr, collector);
 }
 
 Object* Module::handle(const ObjectType& type, Object &parent) const
 {
-    return handle(type, parent.file(), &parent, parent.collector(), *this);
+    return handle(type, parent.file(), &parent, parent.collector());
 }
 
 
@@ -179,18 +233,18 @@ const Module *Module::handler(const ObjectType &type) const
     return nullptr;
 }
 
-Object* Module::handle(const ObjectType& type, File& file, Object* parent, VariableCollector &collector, const Module& fromModule) const
+Object* Module::handle(const ObjectType& type, File& file, Object* parent, VariableCollector &collector) const
 {
     Object* object;
 
     if(parent != nullptr) {
-        object = new Object(file, parent->beginningPos() + parent->pos(), parent, collector);
+        object = new Object(file, parent->beginningPos() + parent->pos(), parent, collector, *this);
         parent->_lastChild = object;
     } else {
-        object = new Object(file, 0, nullptr, collector);
+        object = new Object(file, 0, nullptr, collector, *this);
     }
 
-    addParsers(*object, type, fromModule);
+    addParsers(*object, type);
     return object;
 }
 

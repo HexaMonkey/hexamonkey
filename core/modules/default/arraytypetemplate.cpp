@@ -11,7 +11,7 @@ ArrayTypeTemplate::ArrayTypeTemplate()
                                            });
 }
 
-Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &module) const
+Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
 {
     if(type.parameterSpecified(0))
     {
@@ -22,7 +22,7 @@ Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOptio
         const std::string& namePattern =
                   type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
 
-        return new ArrayParser(option, module, elemType, size, namePattern);
+        return new ArrayParser(option, elemType, size, namePattern);
     }
     return nullptr;
 }

@@ -2,8 +2,8 @@
 
 #include "core/module.h"
 
-ElementaryContainerParser::ElementaryContainerParser(ParsingOption& option, const Module &module, const ObjectType &elementType, const std::string &namePattern)
-    :ContainerParser(option, module), elementType(elementType)
+ElementaryContainerParser::ElementaryContainerParser(ParsingOption& option, const ObjectType &elementType, const std::string &namePattern)
+    :Parser(option), elementType(elementType)
 {
     if (namePattern.empty()) {
         hasFixedName = true;
@@ -21,7 +21,7 @@ ElementaryContainerParser::ElementaryContainerParser(ParsingOption& option, cons
 
 Object *ElementaryContainerParser::addElem()
 {
-    Object* child = addVariable(elementType);
+    Object* child = object().addVariable(elementType);
     if (hasFixedName) {
         child->setName(fixedName);
     } else {

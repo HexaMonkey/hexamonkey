@@ -1,17 +1,17 @@
 #ifndef STRUCTPARSER_H
 #define STRUCTPARSER_H
 
-#include "core/containerparser.h"
+#include "core/parser.h"
 
 #include <vector>
 
 /**
  * @brief Parser for C-like struct object
  */
-class StructParser : public ContainerParser
+class StructParser : public Parser
 {
 public:
-    StructParser(ParsingOption& object, const Module& module);
+    StructParser(ParsingOption& object);
     void addElement(const ObjectType& type, const std::string& name);
 
 protected:

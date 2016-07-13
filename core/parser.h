@@ -47,22 +47,22 @@ public:
     /**
      * @brief Parse what must be parsed as soon as possible
      */
-    virtual void parseHead();
+    void parseHead();
 
     /**
      * @brief Parse everything except the tail
      */
-    virtual void parse();
+    void parse();
 
     /**
      * @brief Parse the amount indicated by the hint
      */
-    virtual bool parseSome(int hint);
+    bool parseSome(int hint);
 
     /**
      * @brief parse the tail
      */
-    virtual void parseTail();
+    void parseTail();
 
     /**
      * @brief Check if the head has been parsed
@@ -106,7 +106,6 @@ public:
     int64_t findBytePattern(const std::string &pattern);
 
 protected:
-    Parser(Object& object);
     Parser(ParsingOption& object);
 
     /**
@@ -134,6 +133,9 @@ protected:
      * @brief Mark the parser as tailless
      */
     void setNoTail();
+
+private:
+    friend class ParserTypeScope;
 
     /**
      * @brief [Virtual] Parse what must be parsed as soon as possible (do nothing by default)
@@ -166,11 +168,8 @@ protected:
      */
     virtual bool doNeedTailParsing();
 
-private:
-    friend class SimpleParser;
-    friend class ContainerParser;
-    friend class BlockExecution;
-    friend class ParserTypeScope;
+
+
 
     Object& _object;
     std::shared_ptr< std::pair<bool, ObjectType> > _sharedType;
@@ -186,26 +185,4 @@ private:
     bool _hasHead;
     bool _hasTail;
 };
-
-/**
- * @brief Parser that is that is always parsed fully as soon
- * as possible.
- *
- * Only doParseHead needs to be reimplemented.
- */
-class SimpleParser : public Parser
-{
-public:
-    virtual ~SimpleParser() {}
-
-    void parseHead() override;
-
-protected:
-    SimpleParser(Object& object);
-
-private:
-    void doParse() override;
-    bool doParseSome(int hint) override;
-};
-
 #endif // PARSER_H

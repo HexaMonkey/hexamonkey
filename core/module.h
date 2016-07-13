@@ -31,13 +31,12 @@
 #include "core/objecttypetemplate.h"
 #include "core/formatdetector/standardformatdetector.h"
 #include "core/variable/variable.h"
+#include "core/specializer.h"
 
 class Object;
 class Parser;
 class Variable;
 
-#define parserLambda (const ObjectType &type, Object &object, const Module &module) ->Parser*
-#define fixedSizeLambda (const ObjectType &type, const Module &module) ->int64_t
 #define functionLambda (const Variable& scope, const Module &module) ->Variable
 
 /*!
@@ -294,10 +293,9 @@ private:
     bool load();
 
     ObjectType specifyLocally(const ObjectType& parent) const;
-    void addParsers(Object& data, const ObjectType &type, const Module& fromModule, const ObjectType &lastType = ObjectType()) const;
-    void addParsersRecursive(Object& object, const ObjectType &type, const Module& fromModule, const ObjectType &lastType) const;
+    void addParsers(Object& data, const ObjectType &type) const;
 
-    Object* handle(const ObjectType& type, File& file, Object *parent, VariableCollector& collector, const Module& fromModule) const;
+    Object* handle(const ObjectType& type, File& file, Object *parent, VariableCollector& collector) const;
 
     Variable executeFunction(const std::string& name, const Variable &params, const Module& fromModule) const;
 
@@ -307,10 +305,12 @@ private:
     std::vector<const Module*> _importedModulesChain;
     std::unordered_map<std::string, const Module*> _importedModulesMap;
 
+
     SpecificationMap _automaticSpecifications;
 
     std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
     std::list<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
+    std::unordered_map<ObjectTypeTemplate *, Specializer> _specializers;
 
     typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Functor> FunctionDescriptor;
     std::unordered_map<std::string,  FunctionDescriptor>  _functions;

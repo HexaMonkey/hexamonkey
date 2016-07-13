@@ -2,12 +2,13 @@
 
 #include "core/modules/ebml/ebmlmasterparser.h"
 
-EbmlFileTypeTemplate::EbmlFileTypeTemplate(const ObjectType& fileType)
-    : FixedParentTypeTemplate("EBMLFile", std::make_shared<ObjectType>(fileType))
+EbmlFileTypeTemplate::EbmlFileTypeTemplate(const ObjectType& fileType, const ObjectType& elementType)
+    : FixedParentTypeTemplate("EBMLFile", std::make_shared<ObjectType>(fileType)),
+      _elementType(elementType)
 {
 }
 
-Parser *EbmlFileTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &module) const
+Parser *EbmlFileTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
 {
-    return new EbmlMasterParser(option, module);
+    return new EbmlMasterParser(option, _elementType);
 }

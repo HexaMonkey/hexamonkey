@@ -316,17 +316,17 @@ class Object : public ParsingOption
         /**
          * @brief Generate an \link Object object\endlink not to be subsequently added
          */
-        Object* readVariable(const ObjectType& type, const Module& module, std::streamoff offset = 0);
+        Object* readVariable(const ObjectType& type, std::streamoff offset = 0);
 
         /**
          * @brief Generate an \link Object object\endlink and add it
          */
-        Object* addVariable(const ObjectType& type, const Module& module);
+        Object* addVariable(const ObjectType& type);
 
         /**
          * @brief Generate an \link Object object\endlink, set its name, and add it
          */
-        Object* addVariable(const ObjectType& type, const std::string& name, const Module& module);
+        Object* addVariable(const ObjectType& type, const std::string& name);
 
         inline VariableCollector& collector() {
             return _collector;
@@ -340,7 +340,7 @@ class Object : public ParsingOption
         friend class Module;
         friend class ContainerParser;
 
-        Object(File& file, std::streampos beginningPos, Object* parent, VariableCollector& collector);
+        Object(File& file, std::streampos beginningPos, Object* parent, VariableCollector& collector, const Module &fromModule);
 
         void parse();
         void parseBody();
@@ -350,7 +350,7 @@ class Object : public ParsingOption
         /**
          * @brief Generate an \link Object object\endlink to be subsequently added (or not)
          */
-        Object* getVariable(const ObjectType& type, const Module& module, std::streamoff offset = 0);
+        Object* getVariable(const ObjectType& type, std::streamoff offset = 0);
 
         File& _file;
         std::streampos _beginningPos;
@@ -390,6 +390,8 @@ class Object : public ParsingOption
         Endianness _endianness;
 
         VariableCollector& _collector;
+
+        const Module& _fromModule;
 
         //Non copyable
         Object& operator =(const Object&) = delete;

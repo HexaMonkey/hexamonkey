@@ -204,7 +204,7 @@ ObjectScope::ObjectScope(Object &object)
 {
 }
 
-ObjectScope::ObjectScope(std::shared_ptr<ContainerParser *> sharedParserAccess)
+ObjectScope::ObjectScope(std::shared_ptr<Parser *> sharedParserAccess)
     : VariableImplementation((*sharedParserAccess)->object().collector()),
       _object((*sharedParserAccess)->object()),
       _sharedType((*sharedParserAccess)->sharedType()),

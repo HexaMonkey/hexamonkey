@@ -1,9 +1,17 @@
 #include "specializer.h"
 
+#include "core/log/logmanager.h"
+
 Specializer::Specializer()
     : _writable(true)
 {
 
+}
+
+Specializer::Specializer(const ObjectType& source, const ObjectType& destination)
+    : _writable(true)
+{
+    forward(source, destination);
 }
 
 Specializer::Specializer(const Specializer &other)
@@ -64,6 +72,27 @@ const ObjectType &Specializer::specialize(const ObjectType &source) const
     }
 
     return *currentSpecialization;
+}
+
+std::ostream &Specializer::display(std::ostream &out) const
+{
+    out << _directSpecialization;
+    if (_nextSpecializations) {
+        out << " (";
+        bool first = true;
+        for (const auto& item : *_nextSpecializations) {
+            if (first) {
+                first = false;
+            } else {
+                out << ", ";
+            }
+            out << item.first << " : " << item.second;
+        }
+        out << ")";
+    }
+
+
+    return out;
 }
 
 Specializer &Specializer::specializer(const Variant &value)
@@ -130,6 +159,7 @@ const Specializer *Specializer::specializerIfExists() const
     }
 }
 
-
-
-
+std::ostream &operator<<(std::ostream &out, const Specializer &specializer)
+{
+    return specializer.display(out);
+}

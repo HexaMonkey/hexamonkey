@@ -1,8 +1,8 @@
 #include "structparser.h"
 #include "core/module.h"
 
-StructParser::StructParser(ParsingOption &option, const Module &module)
-    : ContainerParser(option, module)
+StructParser::StructParser(ParsingOption &option)
+    : Parser(option)
 {
 }
 
@@ -30,8 +30,8 @@ void StructParser::doParseHead()
     } else {
         s = 0;
         for (unsigned int i = 0; i < _types.size(); ++i) {
-            Object* object = addVariable(_types[i], _names[i]);
-            s += object->size();
+            Object* child = object().addVariable(_types[i], _names[i]);
+            s += child->size();
         }
         object().setSize(s);
         _parsedInHead = true;
@@ -42,7 +42,7 @@ void StructParser::doParse()
 {
     if (!_parsedInHead) {
         for (unsigned int i = 0; i < _types.size(); ++i) {
-            addVariable(_types[i], _names[i]);
+            object().addVariable(_types[i], _names[i]);
         }
     }
 }

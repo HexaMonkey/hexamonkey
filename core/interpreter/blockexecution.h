@@ -2,7 +2,6 @@
 #define BLOCKEXECUTION_H
 
 class Module;
-class ContainerParser;
 class Evaluator;
 
 #include <memory>
@@ -28,7 +27,7 @@ public:
     BlockExecution(Program block,
                    const Evaluator& evaluator,
                    const Variable &scope,
-                   ContainerParser* parser = nullptr);
+                   Object *object = nullptr);
 
     /**
      * @brief Codes signifying the reason that an execution terminated
@@ -88,9 +87,6 @@ public:
 private:
     VariableCollector& collector() const;
 
-    bool hasParser();
-    ContainerParser& parser();
-
     void setSubBlock(Program program, bool loop);
     void resetSubBlock();
 
@@ -118,7 +114,7 @@ private:
 
     const Evaluator& eval;
     Variable scope;
-    ContainerParser* _parser;
+    Object* _object;
 
     Variable _returnValue;
 

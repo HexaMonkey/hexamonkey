@@ -49,13 +49,13 @@ FromFileTemplate::FromFileTemplate(Program declaration, const Module &module, Va
     }
 }
 
-Parser *FromFileTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &module) const
+Parser *FromFileTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
 {
     if(_classDefinition.node(0).size() == 0 && _classDefinition.node(1).size() == 0) {
         return nullptr;
     }
 
-    return new FromFileParser(option, module, _classDefinition, headerEnd(), needTailParsing());
+    return new FromFileParser(option, _module, _classDefinition, headerEnd(), needTailParsing());
 }
 
 const VariablePath sizeDescriptor = {"@size"};

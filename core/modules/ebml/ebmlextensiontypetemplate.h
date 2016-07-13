@@ -8,10 +8,12 @@
 class EbmlMasterTypeTemplate : public FixedParentTypeTemplate
 {
 public:
-    EbmlMasterTypeTemplate(std::shared_ptr<ObjectType> elementType);
+    EbmlMasterTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& elementType2);
 
 private:
     virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+
+    ObjectType _elementType;
 };
 
 class EbmlIntegerTypeTemplate : public FixedParentTypeTemplate

@@ -17,7 +17,7 @@ TupleTypeTemplate::TupleTypeTemplate()
                                            });
 }
 
-Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &module) const
+Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
 {
     if(type.parameterSpecified(0) && type.parameterSpecified(1))
     {
@@ -25,7 +25,7 @@ Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOptio
         const int64_t elemCount = type.parameterValue(1).toInteger();
         const std::string& namePattern =
                    type.parameterSpecified(2) ? type.parameterValue(2).toString() : "";
-        return new TupleParser(option, module, elemType, elemCount, namePattern);
+        return new TupleParser(option, elemType, elemCount, namePattern);
     }
     return nullptr;
 }

@@ -26,7 +26,7 @@
 class ArrayParser : public ElementaryContainerParser
 {
 public:
-    ArrayParser(ParsingOption& option, const Module& module, const ObjectType& elementType, int64_t size, const std::string &namePattern);
+    ArrayParser(ParsingOption& option, const ObjectType& elementType, int64_t size, const std::string &namePattern);
 protected:
     void doParseHead();
     void doParse();

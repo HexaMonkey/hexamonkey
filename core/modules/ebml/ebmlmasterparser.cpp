@@ -19,8 +19,9 @@
 #include "core/objecttypetemplate.h"
 #include "core/modules/ebml/ebmlmasterparser.h"
 
-EbmlMasterParser::EbmlMasterParser(ParsingOption &option, const Module &module)
-    :ContainerParser(option, module)
+EbmlMasterParser::EbmlMasterParser(ParsingOption &option, const ObjectType& elementType)
+    :Parser(option),
+     _elementType(elementType)
 {
 }
 
@@ -28,7 +29,7 @@ void EbmlMasterParser::doParse()
 {
     while(availableSize()>0)
     {
-        addVariable(module().getType("EBMLElement"));
+        object().addVariable(_elementType);
     }
 }
 
@@ -43,7 +44,7 @@ bool EbmlMasterParser::doParseSome(int hint)
         if(count>=hint)
             return false;
 
-        addVariable(module().getType("EBMLElement"));
+        object().addVariable(_elementType);
         ++count;
     }
 }

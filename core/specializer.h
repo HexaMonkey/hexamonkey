@@ -11,6 +11,7 @@ class Specializer
 {
 public:
     Specializer();
+    Specializer(const ObjectType& source, const ObjectType& destination);
 
     Specializer(const Specializer& other);
 
@@ -18,6 +19,8 @@ public:
     void forward(const ObjectType& source, const ObjectType& destination);
     const ObjectType& specialize(const ObjectType& source) const;
 
+
+    std::ostream& display(std::ostream& out) const;
 private:
     Specializer& specializer(const Variant& value);
     Specializer& specializer();
@@ -40,6 +43,6 @@ private:
     bool _writable;
 };
 
-
+std::ostream& operator<<(std::ostream& out, const Specializer& specializer);
 
 #endif // SPECIALIZER_H

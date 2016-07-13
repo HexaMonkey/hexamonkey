@@ -20,6 +20,7 @@
 
 #include "core/object.h"
 #include "core/parser.h"
+#include "core/parsingexception.h"
 #include "core/log/logmanager.h"
 #include "core/modules/stream/streammodule.h"
 #include "core/variable/objectcontext.h"
@@ -28,9 +29,10 @@
 #include "core/variable/typescope.h"
 
 
+
 #define BUFFER_SIZE 1048576
 
-Object::Object(File& file, std::streampos beginningPos, Object *parent, VariableCollector &collector) :
+Object::Object(File& file, std::streampos beginningPos, Object *parent, VariableCollector &collector, const Module& fromModule) :
     _file(file),
     _beginningPos(beginningPos),
     _size(-1),
@@ -49,7 +51,8 @@ Object::Object(File& file, std::streampos beginningPos, Object *parent, Variable
     _attributes(nullptr),
     _valid(true),
     _endianness(parent ? parent->_endianness : bigEndian),
-    _collector(collector)
+    _collector(collector),
+    _fromModule(fromModule)
 {
 }
 
@@ -533,9 +536,9 @@ void Object::addChild(Object *child)
     }
 }
 
-Object *Object::readVariable(const ObjectType &type, const Module &module, std::streamoff offset)
+Object *Object::readVariable(const ObjectType &type, std::streamoff offset)
 {
-    Object* child = getVariable(type, module, offset);
+    Object* child = getVariable(type, offset);
     if (child != nullptr && child->size() == -1LL) {
         child->parse();
         child->setSize(child->_contentSize);
@@ -543,27 +546,27 @@ Object *Object::readVariable(const ObjectType &type, const Module &module, std::
     return child;
 }
 
-Object *Object::addVariable(const ObjectType &type, const Module &module)
+Object *Object::addVariable(const ObjectType &type)
 {
-    Object* child = getVariable(type, module);
+    Object* child = getVariable(type);
     addChild(child);
     return child;
 }
 
-Object *Object::addVariable(const ObjectType &type, const std::string &name, const Module &module)
+Object *Object::addVariable(const ObjectType &type, const std::string &name)
 {
     seekObjectEnd();
 
-    Object* child = getVariable(type, module);
+    Object* child = getVariable(type);
     child->setName(name);
     addChild(child);
     return child;
 }
 
-Object *Object::getVariable(const ObjectType &type, const Module& module, std::streamoff offset)
+Object *Object::getVariable(const ObjectType &type, std::streamoff offset)
 {
     seekObjectEnd(offset);
-    return module.handle(type, *this);
+    return _fromModule.handle(type, *this);
 }
 
 void Object::explore(int depth)

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "core/variable/variable.h"
-#include "core/containerparser.h"
+#include "core/parser.h"
 
 class Object;
 
@@ -12,7 +12,7 @@ class ObjectScope : public VariableImplementation
 {
 public:
     ObjectScope(Object& object);
-    ObjectScope(std::shared_ptr<ContainerParser*> sharedParserAccess);
+    ObjectScope(std::shared_ptr<Parser*> sharedParserAccess);
 
     virtual void collect(const VariableAdder &addAccessible) override;
 protected:
@@ -23,7 +23,7 @@ protected:
 private:
     Object& _object;
     std::shared_ptr< std::pair<bool, ObjectType> > _sharedType;
-    std::shared_ptr< ContainerParser* > _sharedParserAccess;
+    std::shared_ptr<Parser*> _sharedParserAccess;
     VariableMemory _parserScope;
 };
 

@@ -1,7 +1,7 @@
 #include "parserscope.h"
 
 #include "core/variable/variablecollector.h"
-#include "core/containerparser.h"
+#include "core/parser.h"
 #include "core/util/unused.h"
 #include "core/object.h"
 
@@ -16,7 +16,7 @@ const std::unordered_map<std::string, int> reserved = {
 };
 
 
-ParserScope::ParserScope(VariableCollector &collector, std::shared_ptr<ContainerParser *> sharedAccess)
+ParserScope::ParserScope(VariableCollector &collector, std::shared_ptr<Parser *> sharedAccess)
     : VariableImplementation(collector),
       _sharedAccess(sharedAccess)
 {
@@ -38,7 +38,7 @@ Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /
                         if (typeArg.type() == Variant::objectType) {
                             std::streamoff offset = args.size() > 1 ? args[1].value().toInteger() : 0;
                             const ObjectType& type = typeArg.toObjectType();
-                            std::unique_ptr<Object> child(parser()->readVariable(type, offset));
+                            std::unique_ptr<Object> child(parser()->object().readVariable(type, offset));
                             if (child) {
                                 return collector().copy(child->value());
                             }
@@ -54,7 +54,7 @@ Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /
                         Variant typeArg = args[0].value();
                         if (typeArg.type() == Variant::objectType) {
                             const ObjectType& type = typeArg.toObjectType();
-                            std::unique_ptr<Object> child(parser()->readVariable(type));
+                            std::unique_ptr<Object> child(parser()->object().readVariable(type));
                             if (child) {
                                 parser()->object().setPos(parser()->object().pos()+child->size());
                                 return collector().copy(child->value());

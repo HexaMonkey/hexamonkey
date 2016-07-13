@@ -2,7 +2,7 @@
 #include <limits>
 
 #include "compiler/model.h"
-#include "core/containerparser.h"
+#include "core/parser.h"
 #include "core/interpreter/blockexecution.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/programloader.h"
@@ -13,7 +13,7 @@
 BlockExecution::BlockExecution(Program block,
                                const Evaluator &evaluator,
                                const Variable& scope,
-                               ContainerParser *parser)
+                               Object *object)
     : program(block),
       begin(block.begin()),
       end(block.end()),
@@ -22,7 +22,7 @@ BlockExecution::BlockExecution(Program block,
       lineRepeatCount(0),
       eval(evaluator),
       scope(scope),
-      _parser(parser),
+      _object(object),
       _inLoop(false),
       _subBlockExitCode(ExitCode::NoExit)
 {
@@ -167,17 +167,6 @@ bool BlockExecution::done()
     return current == end;
 }
 
-
-bool BlockExecution::hasParser()
-{
-    return (_parser != nullptr);
-}
-
-ContainerParser &BlockExecution::parser()
-{
-    return *_parser;
-}
-
 Variable BlockExecution::returnValue()
 {
     return _returnValue;
@@ -190,7 +179,7 @@ VariableCollector &BlockExecution::collector() const
 
 void BlockExecution::setSubBlock(Program program, bool loop)
 {
-    subBlock.reset(new BlockExecution(program, eval, scope, _parser));
+    subBlock.reset(new BlockExecution(program, eval, scope, _object));
     if(loop || _inLoop)
         subBlock->_inLoop = true;
     _subBlockExitCode = ExitCode::NoExit;
@@ -203,7 +192,7 @@ void BlockExecution::resetSubBlock()
 
 void BlockExecution::handleDeclaration(const Program &declaration, size_t &parseQuota)
 {
-    if(hasParser())
+    if(_object != nullptr)
     {
         const Variant typeValue = eval.rightValue(declaration.node(0)).value();
 
@@ -220,7 +209,7 @@ void BlockExecution::handleDeclaration(const Program &declaration, size_t &parse
             S<<"Declaration "<<type<<" "<<name;
             std::cerr<<S.str()<<std::endl;
 #endif
-            if (parser().addVariable(type, name) != nullptr) {
+            if (_object->addVariable(type, name) != nullptr) {
                 --parseQuota;
             }
         }
@@ -388,7 +377,7 @@ bool BlockExecution::loopCondition(const Program &loop)
     Variable variable = eval.rightValue(loop.node(0));
     bool check = variable.value().toBool();
     return check
-            && ((!hasDeclaration(loop.node(1)) || (hasParser() && parser().availableSize()!= 0)));
+            && ((!hasDeclaration(loop.node(1)) || (_object != nullptr && _object->availableSize()!= 0)));
 }
 
 bool BlockExecution::hasDeclaration(const Program &instructions)

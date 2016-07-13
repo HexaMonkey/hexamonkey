@@ -1,15 +1,15 @@
 #ifndef ELEMENTARYCONTAINERPARSER_H
 #define ELEMENTARYCONTAINERPARSER_H
 
-#include "core/containerparser.h"
+#include "core/parser.h"
 
 /**
  * @brief Parent class for both ArrayParser and Tuple parser
  */
-class ElementaryContainerParser : public ContainerParser
+class ElementaryContainerParser : public Parser
 {
 public:
-    ElementaryContainerParser(ParsingOption& option, const Module& module, const ObjectType& elementType, const std::string &namePattern);
+    ElementaryContainerParser(ParsingOption& option, const ObjectType& elementType, const std::string &namePattern);
 
 protected:
     Object* addElem();

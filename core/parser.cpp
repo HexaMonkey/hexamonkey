@@ -21,18 +21,6 @@
 
 ObjectType errorType;
 
-Parser::Parser(Object& object)
-    : _object(object),
-      _sharedType(new std::pair<bool, ObjectType>(false, ObjectType())),
-      _headParsed(false),
-      _parsed(false),
-      _tailParsed(false),
-      _hasHead(true),
-      _hasTail(true)
-{
-
-}
-
 Parser::Parser(ParsingOption& option)
     : _object(static_cast<Object&>(option)),
       _sharedType(new std::pair<bool, ObjectType>(false, ObjectType())),
@@ -321,36 +309,4 @@ int64_t Parser::findBytePattern(const std::string &pattern)
     }
     file.clear();
     return -1;
-}
-
-SimpleParser::SimpleParser(Object &object) : Parser(object)
-{
-}
-
-void SimpleParser::parseHead()
-{
-    if (!_headParsed)
-    {
-        try {
-            Object::ParsingContext context(object());
-            doParseHead();
-            setHeadParsed();
-            _parsed = true;
-            _tailParsed = true;
-        } catch (const ParsingException& exception) {
-            handleParsingException(exception);
-        } catch (const Object::ParsingContext::LockException&) {
-        }
-    }
-}
-
-void SimpleParser::doParse()
-{
-    parseHead();
-}
-
-bool SimpleParser::doParseSome(int /*hint*/)
-{
-    parseHead();
-    return true;
 }

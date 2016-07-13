@@ -25,13 +25,13 @@
 #include "core/util/unused.h"
 
 FromFileParser::FromFileParser(ParsingOption &option, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
-    : ContainerParser(option, module),
-      _sharedAccess(new ContainerParser*(this)),
+    : Parser(option),
+      _sharedAccess(new Parser*(this)),
       _scope(new LocalScope(Variable(new ObjectScope(_sharedAccess), true)), true),
       _headerEnd(headerEnd),
       _evaluator(_scope, module),
-      _bodyExecution(classDefinition.node(0), _evaluator, _scope, this),
-      _tailExecution(classDefinition.node(1), _evaluator, _scope, this),
+      _bodyExecution(classDefinition.node(0), _evaluator, _scope, &object()),
+      _tailExecution(classDefinition.node(1), _evaluator, _scope, &object()),
       _needTailParsing(needTailParsing)
 {
     UNUSED(hmcElemNames);

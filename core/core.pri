@@ -8,7 +8,6 @@ SOURCES += \
     ../core/object.cpp \
     ../core/moduleloader.cpp \
     ../core/module.cpp \
-    ../core/containerparser.cpp \
     ../core/file/esfragmentedfile.cpp \
     ../core/file/file.cpp \
     ../core/file/psifragmentedfile.cpp \
@@ -35,12 +34,8 @@ SOURCES += \
     ../core/modules/default/defaultmodule.cpp \
     ../core/modules/default/arrayparser.cpp \
     ../core/modules/default/structparser.cpp \
-    ../core/modules/ebml/ebmlsimpleparser.cpp \
     ../core/modules/ebml/ebmlmodule.cpp \
     ../core/modules/ebml/ebmlmasterparser.cpp \
-    ../core/modules/ebml/ebmllargeintegerparser.cpp \
-    ../core/modules/ebml/ebmldateparser.cpp \
-    ../core/modules/ebml/ebmlcontainerparser.cpp \
     ../core/modules/hmc/hmcmodule.cpp \
     ../core/modules/mkv/mkvmodule.cpp \
     ../core/modules/stream/streammodule.cpp \
@@ -93,7 +88,6 @@ HEADERS  += \
     ../core/object.h \
     ../core/moduleloader.h \
     ../core/module.h \
-    ../core/containerparser.h \
     ../core/file/esfragmentedfile.h \
     ../core/file/file.h \
     ../core/file/fragmentedfile.h \
@@ -120,12 +114,8 @@ HEADERS  += \
     ../core/modules/default/defaultmodule.h \
     ../core/modules/default/arrayparser.h \
     ../core/modules/default/structparser.h \
-    ../core/modules/ebml/ebmlsimpleparser.h \
     ../core/modules/ebml/ebmlmodule.h \
     ../core/modules/ebml/ebmlmasterparser.h \
-    ../core/modules/ebml/ebmllargeintegerparser.h \
-    ../core/modules/ebml/ebmldateparser.h \
-    ../core/modules/ebml/ebmlcontainerparser.h \
     ../core/modules/hmc/hmcmodule.h \
     ../core/modules/mkv/mkvmodule.h \
     ../core/modules/stream/streammodule.h \

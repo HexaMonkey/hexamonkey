@@ -16,7 +16,7 @@ EnumTypeTemplate::EnumTypeTemplate()
                           });
 }
 
-Parser *EnumTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &module) const
+Parser *EnumTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
 {
     if (!type.parameterSpecified(0)) {
         throw ParsingException(ParsingException::Type::BadParameter, "No enum type given");
@@ -24,7 +24,7 @@ Parser *EnumTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption
 
     Object::ParsingContext context(option);
 
-    std::unique_ptr<Object> childPtr(context.object().readVariable(type.parameterValue(0).toObjectType() ,module));
+    std::unique_ptr<Object> childPtr(context.object().readVariable(type.parameterValue(0).toObjectType()));
     Object& child = *childPtr;
 
     const Variant& value = child.value();

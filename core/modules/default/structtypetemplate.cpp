@@ -14,9 +14,9 @@ StructTypeTemplate::StructTypeTemplate()
                           });
 }
 
-Parser *StructTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &module) const
+Parser *StructTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
 {
-    auto parser = new StructParser(option, module);
+    auto parser = new StructParser(option);
     for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
         parser->addElement(type.parameterValue(2*i+1).toObjectType(), type.parameterValue(2*i+2).toString());
     }
