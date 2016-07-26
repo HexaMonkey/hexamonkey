@@ -49,7 +49,6 @@ const Variant& ObjectType::parameterValue(size_t index) const
 
 Variant &ObjectType::parameterValue(size_t index)
 {
-    _parent.reset();
     return _parametersValue[index];
 }
 
@@ -60,8 +59,6 @@ bool ObjectType::parameterSpecified(size_t index) const
 
 void ObjectType::setParameter(size_t index, const Variant &value)
 {
-    _parent.reset();
-
     while(index >= _parametersValue.size()) {
         _parametersValue.push_back(undefinedVariant);
     }
@@ -71,55 +68,16 @@ void ObjectType::setParameter(size_t index, const Variant &value)
 
 const std::string &ObjectType::name() const
 {
-    if (_name.isValueless()) {
-        const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::name;
-        if (typeTemplate().hasAttributeGenerator(attribute)) {
-            const Variant nameValue = typeTemplate().attributeGenerator(attribute)(*this);
-            if (!nameValue.isValueless()) {
-                return nameValue.toString();
-            }
-        }
-
+    Variant value = attributeValue(ObjectTypeTemplate::Attribute::name);
+    if (value.isValueless()) {
         return typeTemplate().name();
-
     } else {
-        return _name.toString();
+        return value.toString();
     }
-}
-
-void ObjectType::setName(const std::string &name)
-{
-    _name.setValue(name);
-}
-
-const ObjectType &ObjectType::displayAs() const
-{
-    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayAs;
-    if (typeTemplate().hasAttributeGenerator(attribute)) {
-        _displayAs = typeTemplate().attributeGenerator(attribute)(*this);
-        if (!_displayAs.isValueless()) {
-            return _displayAs.toObjectType();
-        } else {
-            return *this;
-        }
-    } else {
-        return *this;
-    }
-}
-
-bool ObjectType::hasDisplayMode() const
-{
-    return !vDisplayMode().isValueless();
-}
-
-const std::string &ObjectType::displayMode() const
-{
-    return vDisplayMode().toString();
 }
 
 const ObjectType& ObjectType::importParameters(const ObjectType& other)
 {
-    _parent.reset();
     for(int i = 0; i < typeTemplate().numberOfParameters();++i)
     {
         if(!parameterSpecified(i))
@@ -155,41 +113,6 @@ bool ObjectType::extendsDirectly(const ObjectType& other) const
     return true;
 }
 
-bool ObjectType::hasElementType() const
-{
-    return !vElementType().isValueless();
-}
-
-const ObjectType &ObjectType::elementType() const
-{
-    return vElementType().toObjectType();
-}
-
-void ObjectType::setElementType(const ObjectType &type)
-{
-    _elementType.setValue(type);
-}
-
-bool ObjectType::hasElementCount() const
-{
-    return !vElementCount().isValueless();
-}
-
-
-size_t ObjectType::elementCount() const
-{
-    return vElementCount().toUnsignedInteger();
-}
-
-void ObjectType::setElementCount(long long count)
-{
-    if (count >= 0) {
-        _elementCount.setValue(count);
-    } else {
-        Log::error("Trying to set negative value for element count of type ", *this);
-    }
-}
-
 bool ObjectType::isNull() const
 {
     return (*_typeTemplate == ObjectTypeTemplate::nullTypeTemplate);
@@ -200,46 +123,12 @@ void swap(ObjectType& a, ObjectType& b)
     using std::swap;
     swap(a._typeTemplate,b._typeTemplate);
     swap(a._parametersValue, b._parametersValue);
-    swap(a._elementCount, b._elementCount);
-    swap(a._name, b._name);
-    swap(a._parent, b._parent);
-
 }
 
 ObjectType& ObjectType::operator =(ObjectType other)
 {
     swap(*this, other);
     return *this;
-}
-
-const Variant &ObjectType::vElementType() const
-{
-    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementType;
-    if (_elementType.isValueless()
-            && _typeTemplate->hasAttributeGenerator(attribute)) {
-        _elementType.setValue(typeTemplate().attributeGenerator(attribute)(*this));
-    }
-    return _elementType;
-}
-
-const Variant &ObjectType::vElementCount() const
-{
-    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::elementCount;
-    if (_elementCount.isValueless()
-            && _typeTemplate->hasAttributeGenerator(attribute)) {
-        _elementCount.setValue(typeTemplate().attributeGenerator(attribute)(*this));
-    }
-    return _elementCount;
-}
-
-const Variant &ObjectType::vDisplayMode() const
-{
-    const ObjectTypeTemplate::Attribute attribute = ObjectTypeTemplate::Attribute::displayMode;
-    if (_displayMode.isValueless()
-            && _typeTemplate->hasAttributeGenerator(attribute)) {
-        _displayMode.setValue(typeTemplate().attributeGenerator(attribute)(*this));
-    }
-    return _displayMode;
 }
 
 bool operator==(const ObjectType& a, const ObjectType& b)
@@ -275,10 +164,13 @@ bool operator< (const ObjectType& a, const ObjectType& b)
 
 std::ostream& ObjectType::display(std::ostream& out) const
 {
-    if (hasElementType()) {
-        out << elementType() << "[";
-        if (hasElementCount()) {
-            out << elementCount();
+    const Variant elementType = attributeValue(ObjectTypeTemplate::Attribute::elementType);
+    if (!elementType.isValueless()) {
+        out << elementType.toObjectType() << "[";
+
+        const Variant elementCount = attributeValue(ObjectTypeTemplate::Attribute::elementCount);
+        if (!elementCount.isValueless()) {
+            out << elementCount.toInteger();
         }
         out << "]";
     } else {

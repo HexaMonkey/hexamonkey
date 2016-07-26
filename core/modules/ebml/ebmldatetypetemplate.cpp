@@ -9,7 +9,7 @@ EbmlDateTypeTemplate::EbmlDateTypeTemplate()
 {
 }
 
-Parser *EbmlDateTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlDateTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 

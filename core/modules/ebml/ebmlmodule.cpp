@@ -54,14 +54,14 @@ bool EbmlModule::doLoad()
 {
     auto file = getType("File");
 
-
-    auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate);
+    const ObjectTypeTemplate& largeIntegerTypeTemplate = addTemplate(new EbmlLargeIntegerTypeTemplate);
+    const ObjectTypeTemplate& dateTypeTemplate = addTemplate(new EbmlDateTypeTemplate);
+    auto& EBMLElement = addTemplate(new EbmlElementTypeTemplate(getType(largeIntegerTypeTemplate)));
 
     auto& EBMLFile = addTemplate(new EbmlFileTypeTemplate(file, getType(EBMLElement)));
     setSpecification(file, getType(EBMLFile));
 
-    addTemplate(new EbmlLargeIntegerTypeTemplate);
-    const ObjectTypeTemplate& dateTypeTemplate = addTemplate(new EbmlDateTypeTemplate);
+
 
     auto elementType = getSharedType(EBMLElement);
     std::shared_ptr<ObjectType> elementTypeTemplates[] = {

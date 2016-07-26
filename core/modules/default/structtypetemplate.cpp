@@ -8,13 +8,9 @@
 StructTypeTemplate::StructTypeTemplate()
     :ObjectTypeTemplate("Struct", {"_name"})
 {
-    setAttributeGenerator(ObjectTypeTemplate::Attribute::name,
-                          []objectTypeAttributeLambda {
-                                return type.parameterValue(0);
-                          });
 }
 
-Parser *StructTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *StructTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     auto parser = new StructParser(option);
     for (int i = 0, n = (type.numberOfParameters()-1)/2; i < n; ++i) {
@@ -35,4 +31,13 @@ int64_t StructTypeTemplate::fixedSize(const ObjectType &type) const
         }
     }
     return s;
+}
+
+Variant StructTypeTemplate::attributeValue(const ObjectType &type, ObjectTypeTemplate::Attribute attribute) const
+{
+    if (attribute == ObjectTypeTemplate::Attribute::name) {
+        return type.parameterValue(0);
+    } else {
+        return Variant();
+    }
 }

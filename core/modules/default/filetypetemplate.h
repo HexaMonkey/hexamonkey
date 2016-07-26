@@ -9,7 +9,7 @@ public:
     FileTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 };
 
 #endif // FILETYPETEMPLATE_H

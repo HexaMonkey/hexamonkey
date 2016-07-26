@@ -18,10 +18,6 @@
 #include "core/objecttypetemplate.h"
 #include "core/objecttype.h"
 
-const uint8_t ObjectTypeTemplate::_nameAttribute = 0x1;
-const uint8_t ObjectTypeTemplate::_elementTypeAttribute = 0x2;
-const uint8_t ObjectTypeTemplate::_elementCountAttribute = 0x4;
-
 
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name,
                                        const std::vector<std::string> &parameterNames,
@@ -35,7 +31,6 @@ ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name,
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vector<std::string> &parameterNames)
     :_name(name),
       _parametersNames(parameterNames),
-      _attributeFlag(0),
       _virtual(false)
 
 {
@@ -48,22 +43,6 @@ ObjectTypeTemplate::ObjectTypeTemplate(const std::string &name, const std::vecto
 ObjectTypeTemplate::ObjectTypeTemplate(const std::string& name)
     : ObjectTypeTemplate(name, std::vector<std::string>())
 {
-}
-
-
-const std::string& ObjectTypeTemplate::name() const
-{
-    return _name;
-}
-
-int ObjectTypeTemplate::numberOfParameters() const
-{
-    return _parametersNames.size();
-}
-
-const std::string& ObjectTypeTemplate::parameterName(int index) const
-{
-    return _parametersNames.at(index);
 }
 
 bool ObjectTypeTemplate::isParameterPrivate(int index) const
@@ -88,28 +67,6 @@ bool ObjectTypeTemplate::isNull() const
 void ObjectTypeTemplate::addParameter(const std::string& parameterName)
 {
     _parametersNames.push_back(parameterName);
-}
-
-void ObjectTypeTemplate::setAttributeGenerator(ObjectTypeTemplate::Attribute attribute, const ObjectTypeTemplate::AttributeGenerator &generator)
-{
-    const uint8_t attributeIndex = (uint8_t) attribute;
-    _attributeFlag |= 1<<attributeIndex;
-    if (attributeIndex >= _attributeGenerators.size()) {
-        _attributeGenerators.resize(attributeIndex + 1);
-    }
-    _attributeGenerators[attributeIndex] = generator;
-}
-
-bool ObjectTypeTemplate::hasAttributeGenerator(Attribute attribute) const
-{
-    const uint8_t attributeIndex = (uint8_t) attribute;
-    return _attributeFlag & (1<<attributeIndex);
-}
-
-const ObjectTypeTemplate::AttributeGenerator &ObjectTypeTemplate::attributeGenerator(ObjectTypeTemplate::Attribute attribute) const
-{
-    const uint8_t attributeIndex = (uint8_t) attribute;
-    return _attributeGenerators[attributeIndex];
 }
 
 bool ObjectTypeTemplate::isVirtual() const
@@ -146,7 +103,7 @@ ObjectTypeTemplate _nullTypeTemplate("");
 const ObjectTypeTemplate& ObjectTypeTemplate::nullTypeTemplate = _nullTypeTemplate;
 
 
-Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &, const Module&) const
+Parser *ObjectTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &) const
 {
     return nullptr;
 }

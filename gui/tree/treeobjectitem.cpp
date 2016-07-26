@@ -258,8 +258,8 @@ bool TreeObjectItem::isBitsetDisplay() const
 {
     Object* parent = object().parent();
     if (parent) {
-        const ObjectType& parentType = parent->type();
-        if (parentType.hasDisplayMode() && parentType.displayMode() == "bitset") {
+        const Variant displayMode = parent->type().attributeValue(ObjectTypeTemplate::Attribute::displayMode);
+        if (!displayMode.isValueless() && displayMode.toString() == "bitset") {
             return true;
         }
     }
@@ -268,15 +268,18 @@ bool TreeObjectItem::isBitsetDisplay() const
 
 std::ostream& displayType(std::ostream& out, const ObjectType& type)
 {
-    if (type.hasElementType()) {
-        displayType(out, type.elementType());
+    const Variant elementType = type.attributeValue(ObjectTypeTemplate::Attribute::elementType);
+    if (!elementType.isValueless()) {
+        displayType(out, elementType.toObjectType());
         out << "&nbsp;" << "[";
-        if (type.hasElementCount()) {
-            displayVariant(out, Variant(type.elementCount()));
+        const Variant elementCount = type.attributeValue(ObjectTypeTemplate::Attribute::elementCount);
+        if (!elementCount.isValueless()) {
+            displayVariant(out, elementCount);
         }
         out << "]";
     } else {
-        const ObjectType& typeDisplayed = type.displayAs();
+        const Variant displayAs = type.attributeValue(ObjectTypeTemplate::Attribute::displayAs);
+        const ObjectType& typeDisplayed = displayAs.isValueless() ? type : displayAs.toObjectType();
         out << "<span style=\"color:#800080;\">" << typeDisplayed.name() << "</span>";
 
         int n = typeDisplayed.numberOfDisplayableParameters();
@@ -338,11 +341,13 @@ std::ostream& displayName(std::ostream& out, const std::string& name)
 
 std::ostream& displayDecl(std::ostream& out, const ObjectType& type, const std::string& name)
 {
-    if (type.hasElementType()) {
-        displayDecl(out, type.elementType(), name);
+    const Variant elementType = type.attributeValue(ObjectTypeTemplate::Attribute::elementType);
+    if (!elementType.isValueless()) {
+        displayDecl(out, elementType.toObjectType(), name);
         out << "&nbsp;" << "[";
-        if (type.hasElementCount()) {
-            displayVariant(out, Variant(type.elementCount()));
+        const Variant elementCount = type.attributeValue(ObjectTypeTemplate::Attribute::elementCount);
+        if (!elementCount.isValueless()) {
+            displayVariant(out, elementCount);
         }
         out << "]";
     } else {

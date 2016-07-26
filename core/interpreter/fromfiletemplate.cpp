@@ -14,6 +14,7 @@
 #include "core/variable/variablecollector.h"
 #include "core/util/fileutil.h"
 #include "core/util/unused.h"
+#include "core/log/logmanager.h"
 
 std::vector<std::string> parseParameters(Program definition)
 {
@@ -24,6 +25,15 @@ std::vector<std::string> parseParameters(Program definition)
     }
     return parameters;
 }
+
+
+std::unordered_map<std::string, ObjectTypeTemplate::Attribute> attributeMapping = {
+    {"elemType", ObjectTypeTemplate::Attribute::elementType},
+    {"elemCount", ObjectTypeTemplate::Attribute::elementCount},
+    {"name", ObjectTypeTemplate::Attribute::name},
+    {"displayMode", ObjectTypeTemplate::Attribute::displayMode},
+    {"displayAs", ObjectTypeTemplate::Attribute::displayAs}
+};
 
 
 FromFileTemplate::FromFileTemplate(Program declaration, const Module &module, VariableCollector& collector, const Evaluator& evaluator)
@@ -47,9 +57,22 @@ FromFileTemplate::FromFileTemplate(Program declaration, const Module &module, Va
     {
         _parentInfo = _classInfo.node(2);
     }
+
+    Program typeAttributes = _classInfo.node(3);
+    for (Program typeAttribute : typeAttributes) {
+        const std::string& attributeName = typeAttribute.node(0).payload().toString();
+        Program program = typeAttribute.node(1);
+
+        auto it = attributeMapping.find(attributeName);
+        if (it != attributeMapping.end()) {
+            _attributeExpressions[it->second] = program;
+        } else {
+            Log::error("Unrecognized attribute ", attributeName, " for ", name());
+        }
+    }
 }
 
-Parser *FromFileTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *FromFileTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     if(_classDefinition.node(0).size() == 0 && _classDefinition.node(1).size() == 0) {
         return nullptr;
@@ -67,6 +90,7 @@ const std::vector<VariablePath> headerOnlyVars = {
     {"@linkTo"},
     {"@attr"}
 };
+
 
 std::shared_ptr<ObjectType> fromFileNullParent(new ObjectType);
 
@@ -114,6 +138,19 @@ std::shared_ptr<ObjectType> FromFileTemplate::parent(const ObjectType &type) con
     } else {
         VariableCollectionGuard guard(_collector);
         return Evaluator(Variable(new TypeScope(_collector, type), false), _module).sharedType(_parentInfo.node(0));
+    }
+}
+
+Variant FromFileTemplate::attributeValue(const ObjectType &type, ObjectTypeTemplate::Attribute attribute) const
+{
+    auto it = _attributeExpressions.find(attribute);
+
+    if (it != _attributeExpressions.end())
+    {
+        VariableCollectionGuard guard(_collector);
+        return Evaluator(Variable(new TypeScope(_collector, type), false), _module).rightValue(it->second).value();
+    } else {
+        return Variant();
     }
 }
 

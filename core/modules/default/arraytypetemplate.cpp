@@ -5,13 +5,9 @@
 ArrayTypeTemplate::ArrayTypeTemplate()
     : ObjectTypeTemplate("Array",{"elementType", "size", "_namePattern"})
 {
-    setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                           []objectTypeAttributeLambda {
-                                                 return type.parameterValue(0);
-                                           });
 }
 
-Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *ArrayTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     if(type.parameterSpecified(0))
     {
@@ -36,4 +32,13 @@ int64_t ArrayTypeTemplate::fixedSize(const ObjectType &type) const
            return s;
     }
     return -1;
+}
+
+Variant ArrayTypeTemplate::attributeValue(const ObjectType &type, ObjectTypeTemplate::Attribute attribute) const
+{
+    if (attribute == ObjectTypeTemplate::Attribute::elementType) {
+        return type.parameterValue(0);
+    } else {
+        return Variant();
+    }
 }

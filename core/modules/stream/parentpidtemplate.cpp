@@ -9,7 +9,7 @@ ParentPidTemplate::ParentPidTemplate()
 {
 }
 
-Parser *ParentPidTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *ParentPidTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 

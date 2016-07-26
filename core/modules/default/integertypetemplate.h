@@ -9,7 +9,7 @@ public:
     IntegerTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
@@ -20,7 +20,7 @@ public:
     UIntegerTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
@@ -31,7 +31,7 @@ public:
     ByteTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
@@ -42,7 +42,7 @@ public:
     BitsetTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };
@@ -53,7 +53,7 @@ public:
     UuidTypeTemplate();
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     virtual int64_t fixedSize(const ObjectType& objectType) const override;
 };

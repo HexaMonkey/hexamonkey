@@ -192,22 +192,6 @@ void FromFileModule::nameScan(Program& declarations)
 #ifdef LOAD_TRACE
             std::cerr<<"    "<<objectTypeTemplate<<std::endl;
 #endif
-
-            Program typeAttributes = declaration.node(0).node(3);
-            for (Program typeAttribute : typeAttributes) {
-                const std::string& name = typeAttribute.node(0).payload().toString();
-                Program program = typeAttribute.node(1);
-                auto generator = [this, program]objectTypeAttributeLambda
-                {
-                    VariableCollectionGuard guard(_collector);
-                    return Evaluator(Variable(new TypeScope(_collector, type), false), *this).rightValue(program).value();
-                };
-
-                auto it = _attributes.find(name);
-                if (it != _attributes.end()) {
-                    objectTypeTemplate.setAttributeGenerator(it->second, generator);
-                }
-            }
         }
         else if(declaration.tag() == HMC_FUNCTION_DECLARATION)
         {

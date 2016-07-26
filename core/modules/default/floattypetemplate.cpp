@@ -8,7 +8,7 @@ FloatTypeTemplate::FloatTypeTemplate()
 {
 }
 
-Parser *FloatTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *FloatTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     context.object().setSize(32);
@@ -34,7 +34,7 @@ DoubleTypeTemplate::DoubleTypeTemplate()
 {
 }
 
-Parser *DoubleTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *DoubleTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     context.object().setSize(64);
@@ -62,7 +62,7 @@ FixedFloatTypeTemplate::FixedFloatTypeTemplate()
 
 }
 
-Parser *FixedFloatTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *FixedFloatTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     if (!type.parameterSpecified(0) && !type.parameterSpecified(1))
     {

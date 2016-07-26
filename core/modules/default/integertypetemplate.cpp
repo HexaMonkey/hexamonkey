@@ -7,7 +7,7 @@ IntegerTypeTemplate::IntegerTypeTemplate()
 {
 }
 
-Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module&) const
+Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 
@@ -131,7 +131,7 @@ UIntegerTypeTemplate::UIntegerTypeTemplate()
 {
 }
 
-Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module&) const
+Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 
@@ -252,7 +252,7 @@ ByteTypeTemplate::ByteTypeTemplate()
 {
 }
 
-Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &/*type*/, ParsingOption &option, const Module&) const
+Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 
@@ -272,7 +272,7 @@ Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &/*type*/, ParsingOp
     return nullptr;
 }
 
-int64_t ByteTypeTemplate::fixedSize(const ObjectType &/*objectType*/) const
+int64_t ByteTypeTemplate::fixedSize(const ObjectType &) const
 {
     return 8;
 }
@@ -283,7 +283,7 @@ UuidTypeTemplate::UuidTypeTemplate()
 {
 }
 
-Parser *UuidTypeTemplate::parseOrGetParser(const ObjectType &/*objectType*/, ParsingOption &option, const Module&) const
+Parser *UuidTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 
@@ -339,7 +339,7 @@ BitsetTypeTemplate::BitsetTypeTemplate()
 {
 }
 
-Parser *BitsetTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *BitsetTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     if(!type.parameterSpecified(0)) {
         throw ParsingException(ParsingException::Type::BadParameter, "Missing bitset size");

@@ -75,12 +75,6 @@ public:
      * @brief Get type name (by default @link ObjectTypeTemplate template\endlink's name)
      */
     const std::string& name() const;
-    void setName(const std::string& name);
-
-    /**
-     * @brief Should display as type
-     */
-    const ObjectType& displayAs() const;
 
     /**
      * @brief Set a value for the first parameters
@@ -113,29 +107,6 @@ public:
     bool extendsDirectly(const ObjectType& other) const;
 
     /**
-     * @brief Used to know if the object should be displayed as an Array/Tuple
-     * and what type to display if so.
-     */
-    bool hasElementType() const;
-    const ObjectType &elementType() const;
-    void setElementType(const ObjectType& type);
-
-    /**
-     * @brief Used to know if the object should be displayed as a Tuple (if the
-     * @link elementType elementType \endlink is also not NULL) and what value is to be displayed
-     * for count if so.
-     */
-    bool hasElementCount() const;
-    size_t elementCount() const;
-    void setElementCount(long long count);
-
-    /**
-     * @brief display mode
-     */
-    bool hasDisplayMode() const;
-    const std::string& displayMode() const;
-
-    /**
      * @brief Output a representation of the \link ObjectType type\endlink into a stream
      *
      * Same effect as <<
@@ -163,9 +134,9 @@ public:
     bool isVirtual() const;
     void setVirtual(bool value);
 
-    inline Parser* parseOrGetParser(ParsingOption& parsingOption, const Module& module) const
+    inline Parser* parseOrGetParser(ParsingOption& parsingOption) const
     {
-        return _typeTemplate->parseOrGetParser(*this, parsingOption, module);
+        return _typeTemplate->parseOrGetParser(*this, parsingOption);
     }
 
     inline int64_t fixedSize() const
@@ -178,12 +149,9 @@ public:
         return _typeTemplate->attributeValue(*this, attribute);
     }
 
-    inline const ObjectType& parent() const
+    inline ObjectType parent() const
     {
-        if (!_parent) {
-            _parent = _typeTemplate->parent(*this);
-        }
-        return *_parent;
+        return *_typeTemplate->parent(*this);
     }
 
 
@@ -199,21 +167,8 @@ private:
 
     friend class ObjectTypeCreator;
 
-    const Variant& vElementType() const;
-    const Variant& vElementCount() const;
-    const Variant& vDisplayMode() const;
-
     const ObjectTypeTemplate* _typeTemplate;
     std::vector<Variant> _parametersValue;
-    Variant _name;
-    mutable Variant _elementType;
-    mutable Variant _elementCount;
-    mutable Variant _displayMode;
-    mutable Variant _displayAs;
-
-    mutable std::shared_ptr<ObjectType> _parent;
-
-    bool _virtual;
 
     void _setParameters(int first);
 

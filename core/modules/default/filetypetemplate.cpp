@@ -8,7 +8,7 @@ FileTypeTemplate::FileTypeTemplate()
     setVirtual(true);
 }
 
-Parser *FileTypeTemplate::parseOrGetParser(const ObjectType &/*objectType*/, ParsingOption &option, const Module&) const
+Parser *FileTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     int64_t size = context.object().file().size();

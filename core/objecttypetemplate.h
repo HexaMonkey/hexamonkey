@@ -64,19 +64,28 @@ public:
     /**
      * @brief Get the name used as a unique identifiers
      */
-    const std::string& name() const;
+    inline const std::string& name() const
+    {
+        return _name;
+    }
 
     /**
      * @brief Get the number of parameters
      */
-    int numberOfParameters() const;
+    inline int numberOfParameters() const
+    {
+        return _parametersNames.size();
+    }
 
     /**
      * @brief Get the name of a parameter given its name
      *
      * Raise an exception if out of bounds
      */
-    const std::string& parameterName(int index) const;
+    const std::string& parameterName(int index) const
+    {
+        return _parametersNames.at(index);
+    }
 
     /**
      * @brief Check if the parameter is private
@@ -105,10 +114,6 @@ public:
      */
     void addParameter(const std::string& parameterName);
 
-    void setAttributeGenerator(Attribute attribute, const AttributeGenerator& generator);
-    bool hasAttributeGenerator(Attribute attribute) const;
-    const AttributeGenerator &attributeGenerator(Attribute attribute) const;
-
     bool isVirtual() const;
     void setVirtual(bool value);
 
@@ -118,7 +123,7 @@ public:
     static const ObjectTypeTemplate& nullTypeTemplate;
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const;
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const;
 
 
     virtual int64_t fixedSize(const ObjectType&) const;
@@ -131,17 +136,6 @@ private:
     std::string                _name;
     std::vector<std::string>   _parametersNames;
     std::unordered_map<std::string, int> _parametersNumbers;
-
-    const static uint8_t _nameAttribute;
-    const static uint8_t _elementTypeAttribute;
-    const static uint8_t _elementCountAttribute;
-
-    uint8_t _attributeFlag;
-    std::vector<AttributeGenerator> _attributeGenerators;
-
-    AttributeGenerator _nameGenerator;
-    AttributeGenerator _elementTypeGenerator;
-    AttributeGenerator _elementCountGenerator;
 
     bool _virtual;
 

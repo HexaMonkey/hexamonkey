@@ -7,7 +7,7 @@ DataTypeTemplate::DataTypeTemplate()
 {
 }
 
-Parser *DataTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *DataTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 

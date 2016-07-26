@@ -64,13 +64,11 @@ class TableBasedImageData
 	DataSubSequence *;
 }
 
-class DataSubSequence
+class DataSubSequence with {elemType:DataSubBlock()}
 {
 	do {
 		DataSubBlock #;
-	} while(self[].Length /*&& self[].Data != undefined*/)
-	@args.@elementType = DataSubBlock();
-	@args.@elementCount = @numberOfChildren;
+	} while(self[].Length)
 }
 
 class DataSubBlock

@@ -13,34 +13,9 @@
 
 const std::unordered_map<std::string, int> reserved = {
     {"@count", A_COUNT},
-    {"@elementType", A_ELEMENT_TYPE},
-    {"@elementCount", A_ELEMENT_COUNT},
+    {"@elemType", A_ELEMENT_TYPE},
+    {"@elemCount", A_ELEMENT_COUNT},
     {"@name", A_NAME}
-};
-
-class TypeNameVariableImplementation : public VariableImplementation
-{
-public:
-    TypeNameVariableImplementation(VariableCollector& collector, ObjectType& type)
-        : VariableImplementation(collector),
-          _type(type) {
-
-    }
-
-protected:
-    virtual void doSetValue(const Variant& value) override {
-        if (value.type() == Variant::stringType) {
-            _type.setName(value.toString());
-        } else {
-            Log::warning("Trying to set an invalid value ", value, " as name for type ", _type);
-        }
-    }
-
-    virtual Variant doGetValue() override {
-        return Variant(_type.name());
-    }
-private:
-    ObjectType& _type;
 };
 
 class ConstTypeNameVariableImplementation : public VariableImplementation
@@ -61,32 +36,6 @@ private:
     const ObjectType& _type;
 };
 
-class TypeElementTypeVariableImplementation : public VariableImplementation
-{
-public:
-    TypeElementTypeVariableImplementation(VariableCollector& collector, ObjectType& type)
-        : VariableImplementation(collector),
-          _type(type)
-    {
-
-    }
-
-protected:
-    virtual void doSetValue(const Variant& value) override {
-        if (value.type() == Variant::objectType) {
-            _type.setElementType(value.toObjectType());
-        } else {
-            Log::warning("Trying to set an invalid value ", value, " as element type for type ", _type);
-        }
-    }
-
-    virtual Variant doGetValue() override {
-        return Variant(_type.elementType());
-    }
-private:
-    ObjectType& _type;
-};
-
 class ConstTypeElementTypeVariableImplementation : public VariableImplementation
 {
 public:
@@ -99,36 +48,10 @@ public:
 
 protected:
     virtual Variant doGetValue() override {
-        return Variant(_type.elementType());
+        return _type.attributeValue(ObjectTypeTemplate::Attribute::elementType);
     }
 private:
     const ObjectType& _type;
-};
-
-class TypeElementCountVariableImplementation : public VariableImplementation
-{
-public:
-    TypeElementCountVariableImplementation(VariableCollector& collector, ObjectType& type)
-        : VariableImplementation(collector),
-          _type(type)
-    {
-
-    }
-
-protected:
-    virtual void doSetValue(const Variant& value) override {
-        if (value.hasNumericalType()) {
-            _type.setElementCount(value.toInteger());
-        } else {
-            Log::warning("Trying to set an invalid value ", value, " as element type for type ", _type);
-        }
-    }
-
-    virtual Variant doGetValue() override {
-        return Variant(_type.elementCount());
-    }
-private:
-    ObjectType& _type;
 };
 
 class ConstTypeElementCountVariableImplementation : public VariableImplementation
@@ -140,7 +63,7 @@ public:
 
 protected:
     virtual Variant doGetValue() override {
-        return Variant(_type.elementCount());
+        return _type.attributeValue(ObjectTypeTemplate::Attribute::elementCount);
     }
 private:
     const ObjectType& _type;
@@ -193,25 +116,13 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
                 return collector().copy(numberOfParameters, false);
 
             case A_ELEMENT_TYPE:
-                if (mType != nullptr) {
-                    return Variable(new TypeElementTypeVariableImplementation(collector(), *mType), true);
-                } else {
-                    return Variable(new ConstTypeElementTypeVariableImplementation(collector(), cType), false);
-                }
+                return Variable(new ConstTypeElementTypeVariableImplementation(collector(), cType), false);
 
             case A_ELEMENT_COUNT:
-                if (mType != nullptr) {
-                    return Variable(new TypeElementCountVariableImplementation(collector(), *mType), true);
-                } else {
-                    return Variable(new ConstTypeElementCountVariableImplementation(collector(), cType), false);
-                }
+                return Variable(new ConstTypeElementCountVariableImplementation(collector(), cType), false);
 
             case A_NAME:
-                if (mType != nullptr) {
-                    return Variable(new TypeNameVariableImplementation(collector(), *mType), true);
-                } else {
-                    return Variable(new ConstTypeNameVariableImplementation(collector(), cType), false);
-                }
+                return Variable(new ConstTypeNameVariableImplementation(collector(), cType), false);
             }
 
             return Variable();

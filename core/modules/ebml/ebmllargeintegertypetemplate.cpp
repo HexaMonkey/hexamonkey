@@ -6,7 +6,7 @@ EbmlLargeIntegerTypeTemplate::EbmlLargeIntegerTypeTemplate()
 {
 }
 
-Parser *EbmlLargeIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlLargeIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 

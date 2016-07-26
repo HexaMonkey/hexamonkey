@@ -13,7 +13,7 @@ EbmlMasterTypeTemplate::EbmlMasterTypeTemplate(std::shared_ptr<ObjectType> eleme
 {
 }
 
-Parser *EbmlMasterTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlMasterTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     return new EbmlMasterParser(option, _elementType);
 }
@@ -25,7 +25,7 @@ EbmlIntegerTypeTemplate::EbmlIntegerTypeTemplate(std::shared_ptr<ObjectType> ele
 {
 }
 
-Parser *EbmlIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     _intType.setParameter(0, context.object().availableSize());
@@ -42,7 +42,7 @@ EbmlUIntegerTypeTemplate::EbmlUIntegerTypeTemplate(std::shared_ptr<ObjectType> e
 {
 }
 
-Parser *EbmlUIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlUIntegerTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     _uintType.setParameter(0, context.object().availableSize());
@@ -61,7 +61,7 @@ EbmlFloatTypeTemplate::EbmlFloatTypeTemplate(std::shared_ptr<ObjectType> element
 {
 }
 
-Parser *EbmlFloatTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlFloatTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     Object* child = context.object().addVariable(context.object().availableSize() == 64 ? _doubleType : _floatType, "payload");
@@ -79,7 +79,7 @@ EbmlStringTypeTemplate::EbmlStringTypeTemplate(std::shared_ptr<ObjectType> eleme
 {
 }
 
-Parser *EbmlStringTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlStringTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     _stringType.setParameter(0, context.object().availableSize()/8);
@@ -97,7 +97,7 @@ EbmlUtf8StringTypeTemplate::EbmlUtf8StringTypeTemplate(std::shared_ptr<ObjectTyp
 {
 }
 
-Parser *EbmlUtf8StringTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlUtf8StringTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     _stringType.setParameter(0, context.object().availableSize()/8);
@@ -115,7 +115,7 @@ EbmlDateElementTypeTemplate::EbmlDateElementTypeTemplate(std::shared_ptr<ObjectT
 {
 }
 
-Parser *EbmlDateElementTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlDateElementTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     Object* child = context.object().addVariable(_dateType, "payload");
@@ -133,7 +133,7 @@ EbmlBinaryTypeTemplate::EbmlBinaryTypeTemplate(std::shared_ptr<ObjectType> eleme
 {
 }
 
-Parser *EbmlBinaryTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlBinaryTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
     _dataType.setParameter(0, context.object().availableSize());

@@ -6,18 +6,9 @@
 TupleTypeTemplate::TupleTypeTemplate()
     : ObjectTypeTemplate("Tuple",{"elementType", "count", "_namePattern"})
 {
-    setAttributeGenerator(ObjectTypeTemplate::Attribute::elementType,
-                                           []objectTypeAttributeLambda {
-                                                 return type.parameterValue(0);
-                                           });
-
-    setAttributeGenerator(ObjectTypeTemplate::Attribute::elementCount,
-                                           []objectTypeAttributeLambda {
-                                                 return type.parameterValue(1);
-                                           });
 }
 
-Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *TupleTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     if(type.parameterSpecified(0) && type.parameterSpecified(1))
     {
@@ -39,4 +30,18 @@ int64_t TupleTypeTemplate::fixedSize(const ObjectType &type) const
            return t*type.parameterValue(1).toInteger();
     }
     return -1;
+}
+
+Variant TupleTypeTemplate::attributeValue(const ObjectType &type, ObjectTypeTemplate::Attribute attribute) const
+{
+    switch (attribute) {
+    case ObjectTypeTemplate::Attribute::elementType:
+        return type.parameterValue(0);
+
+    case ObjectTypeTemplate::Attribute::elementCount:
+        return type.parameterValue(1);
+
+    default:
+        return Variant();
+    }
 }

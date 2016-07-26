@@ -11,7 +11,7 @@ public:
     EbmlMasterTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& elementType2);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     ObjectType _elementType;
 };
@@ -22,7 +22,7 @@ public:
     EbmlIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& intType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     mutable ObjectType _intType;
 };
@@ -33,7 +33,7 @@ public:
     EbmlUIntegerTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &uintType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
    mutable ObjectType _uintType;
 };
@@ -44,7 +44,7 @@ public:
     EbmlFloatTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& floatType, const ObjectType& doubleType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     ObjectType _floatType;
     ObjectType _doubleType;
@@ -56,7 +56,7 @@ public:
     EbmlStringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& stringType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     mutable ObjectType _stringType;
 };
@@ -67,7 +67,7 @@ public:
     EbmlUtf8StringTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &stringType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     mutable ObjectType _stringType;
 };
@@ -78,7 +78,7 @@ public:
     EbmlDateElementTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType &dateTypeTemplate);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     mutable ObjectType _dateType;
 };
@@ -89,7 +89,7 @@ public:
     EbmlBinaryTypeTemplate(std::shared_ptr<ObjectType> elementType, const ObjectType& dataType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option, const Module&) const override;
+    virtual Parser* parseOrGetParser(const ObjectType& objectType, ParsingOption& option) const override;
 
     mutable ObjectType _dataType;
 };

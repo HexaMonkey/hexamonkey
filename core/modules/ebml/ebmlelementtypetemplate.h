@@ -1,15 +1,17 @@
 #ifndef EBMLELEMENTTYPEELEMENT_H
 #define EBMLELEMENTTYPEELEMENT_H
 
-#include "core/objecttypetemplate.h"
+#include "core/objecttype.h"
 
 class EbmlElementTypeTemplate : public ObjectTypeTemplate
 {
 public:
-    EbmlElementTypeTemplate();
+    EbmlElementTypeTemplate(const ObjectType& largeIntegerType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const override;
+
+    ObjectType _largeIntegerType;
 };
 
 #endif // EBMLELEMENTTYPEELEMENT_H

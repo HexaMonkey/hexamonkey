@@ -70,7 +70,6 @@ ObjectType Module::specify(const ObjectType &parent) const
                 break;
         }
     }
-    Log::error("Forwarding ", parent, " to ", child);
     return child;
 }
 
@@ -158,7 +157,7 @@ void Module::addParsers(Object &object, const ObjectType &type) const
         for(ObjectType father : fathers)
         {
             object.setType(father);
-            Parser* parser = father.parseOrGetParser(static_cast<ParsingOption&>(object), *this);
+            Parser* parser = father.parseOrGetParser(static_cast<ParsingOption&>(object));
             object.addParser(parser);
         }
         //Type specification
@@ -205,19 +204,6 @@ Object* Module::handleFile(const ObjectType& type, File &file, VariableCollector
 Object* Module::handle(const ObjectType& type, Object &parent) const
 {
     return handle(type, parent.file(), &parent, parent.collector());
-}
-
-
-bool Module::canHandle(const ObjectType &type) const
-{
-    if(hasParser(type))
-        return true;
-    for(const Module* importedModule : _importedModulesChain)
-    {
-        if(importedModule->hasParser(type))
-            return true;
-    }
-    return false;
 }
 
 const Module *Module::handler(const ObjectType &type) const
@@ -387,11 +373,6 @@ void Module::addFunction(const std::string &name,
 bool Module::hasParser(const ObjectType &type) const
 {
     return hasTemplate(type.typeTemplate().name());
-}
-
-Parser *Module::getParser(const ObjectType &type, Object &object, const Module &fromModule) const
-{
-    return type.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
 }
 
 bool Module::doCanHandleFunction(const std::string &name) const

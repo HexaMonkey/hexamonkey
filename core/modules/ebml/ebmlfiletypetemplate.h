@@ -11,7 +11,7 @@ public:
     EbmlFileTypeTemplate(const ObjectType& fileType, const ObjectType &elementType);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const override;
 
     ObjectType _elementType;
 };

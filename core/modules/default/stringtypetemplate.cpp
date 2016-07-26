@@ -7,7 +7,7 @@ StringTypeTemplate::StringTypeTemplate()
 {
 }
 
-Parser *StringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *StringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 
@@ -83,7 +83,7 @@ WStringTypeTemplate::WStringTypeTemplate()
 {
 }
 
-Parser *WStringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option, const Module &) const
+Parser *WStringTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOption &option) const
 {
     Object::ParsingContext context(option);
 

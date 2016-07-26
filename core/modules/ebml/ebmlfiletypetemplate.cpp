@@ -8,7 +8,7 @@ EbmlFileTypeTemplate::EbmlFileTypeTemplate(const ObjectType& fileType, const Obj
 {
 }
 
-Parser *EbmlFileTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option, const Module &) const
+Parser *EbmlFileTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &option) const
 {
     return new EbmlMasterParser(option, _elementType);
 }

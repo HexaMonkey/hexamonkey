@@ -99,11 +99,6 @@ public:
     Object* handle(const ObjectType& type, Object& parent) const;
 
     /**
-     * @brief Check if the type can be handled by the \link Module module\endlink or any of the imported one.
-     */
-    bool  canHandle(const ObjectType& type) const;
-
-    /**
      * @brief Get the module able to handle the type among the current \link Module module\endlink and the imported ones
      *
      * Return nullptr if the type cannot be handled
@@ -224,13 +219,6 @@ protected:
      * module is first used, after the requested modules have been added.
      */
     virtual bool doLoad();
-
-    /**
-     * @brief [Pure Virtual] Get the parser associated with the type.
-     *
-     * Return nullptr if the type cannot be handled
-     */
-    Parser* getParser(const ObjectType &type, Object& object, const Module& fromModule) const;
 
     /**
      * @brief [Pure Virtual] Check if the type can be handled be the \link Module module\endlink directly.

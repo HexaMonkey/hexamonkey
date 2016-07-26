@@ -28,7 +28,7 @@ class PEFile as File
 	IMAGE_DOS_SEGMENT((_dos_header.e_lfanew<<3)-@pos) _dos_segment;
 	IMAGE_NT_HEADERS _nt_header;
 	IMAGE_SECTION_HEADER _section_headers[_nt_header.FileHeader.NumberOfSections];
-	IMAGE_SECTIONS _image_sections;
+	IMAGE_SECTIONS(_nt_header.FileHeader.NumberOfSections) _image_sections;
 }
 
 class IMAGE_DOS_HEADER {      // DOS .EXE header
@@ -194,10 +194,9 @@ class IMAGE_SECTION(name, _size, _virtualOffset) extends Data(_size << 3)
 	}
 }
 
-class IMAGE_SECTIONS
+class IMAGE_SECTIONS(count) with {elemType:IMAGE_SECTION(), elemCount:count}
 {
-	@args.@elementType = IMAGE_SECTION();
-	var n = @args.@elementCount = @parent._nt_header.FileHeader.NumberOfSections;
+	var n = @args.count;
 	headers := @parent._section_headers;
 	for (var i = 0; i < n; ++i) {
 		header := headers[i];
@@ -269,10 +268,9 @@ class IMAGE_EXPORT_DIRECTORY
     RVA     AddressOfNameOrdinals;
 }
 
-class IMAGE_EXPORT_NAMES(_count) extends Data(-1)
+class IMAGE_EXPORT_NAMES(count) extends Data(-1) with {elemType:String(), elemCount:count}
 {
-	@args.@elementType = String();
-	var count = @args.@elementCount = @args._count;
+	var count = @args.count;
 	for (var i = 0; i < count; ++i) {
 		@pos = @parent.NamesAddresses[i].@linkTo - @beginningPos;
 		String #;
@@ -287,29 +285,30 @@ class IMAGE_DIRECTORY_ENTRY_IMPORT as IMAGE_DIRECTORY_ENTRY(1)
 {
 	IMAGE_IMPORT_DESCRIPTORS _descriptors;
 	var originalPos = _descriptors.@size;
-	IMAGE_IMPORT_NAMES _names;
+	var count = _descriptors.@numberOfChildren - 1;
+	IMAGE_IMPORT_NAMES(count) _names;
 	@pos = originalPos;
-	IMAGE_IMPORT_DATAS _data;
+	IMAGE_IMPORT_DATAS(count) _data;
 }
 
 
 class IMAGE_IMPORT_NAME extends String
 
-class IMAGE_IMPORT_NAMES extends Data(-1)
+class IMAGE_IMPORT_NAMES(count) extends Data(-1) 
+   with {elemType:IMAGE_IMPORT_NAME(), elemCount:count}
 {
-	@args.@elementType = IMAGE_IMPORT_NAME();
-	var n = @args.@elementCount = @parent._descriptors.@numberOfChildren - 1;
+	var n = @args.count;
 	for  (var i = 0; i < n; ++i) {
 		@pos = @parent._descriptors[i].Name.@linkTo - @beginningPos;
 		IMAGE_IMPORT_NAME #;
 	}
 }
 
-class IMAGE_IMPORT_DATAS extends Data(-1)
+class IMAGE_IMPORT_DATAS(count) extends Data(-1)
+	with {elemType:IMAGE_IMPORT_DATA(), elemCount:count}
 {
-	@args.@elementType = IMAGE_IMPORT_DATA();
 	descriptors := @parent._descriptors;
-	var n = @args.@elementCount = descriptors.@numberOfChildren - 1;
+	var n = @args.count;
 	for (var i = 0; i < n; ++i) {
 		IMAGE_IMPORT_DATA(descriptors[i].OriginalFirstThunk.@linkTo) #;
 		@pos = 0;
@@ -319,7 +318,12 @@ class IMAGE_IMPORT_DATAS extends Data(-1)
 class IMAGE_IMPORT_DATA(_originalFirstThunk) extends Data(-1)
 {
 	@pos = @args._originalFirstThunk - @beginningPos;
-	IMAGE_THUNK_DATAS _data;
+	if (@global.HDR64) {
+		var elementType = IMAGE_THUNK_DATA64();
+	} else {
+		var elementType = IMAGE_THUNK_DATA32();
+	}
+	IMAGE_THUNK_DATAS(elementType) _data;
 	var n = _data.@numberOfChildren - 1;
 	var importCount = 0;
 	for (var i = 0; i < n; ++i) {
@@ -362,32 +366,20 @@ class IMAGE_THUNK_DATA64 extends ULONGLONG(16)
 	}
 }
 
-class IMAGE_THUNK_DATAS
+class IMAGE_THUNK_DATAS(elementType) with {elemType:elementType}
 {
-	if (@global.HDR64) {
-		var elementType = IMAGE_THUNK_DATA64();
-	} else {
-		var elementType = IMAGE_THUNK_DATA32();
-	}
-	@args.@elementType = elementType;
-	
-	var n = 0;
+	var elementType = @args.elementType;
 	do {
 		(elementType) #;
-		++n;
 	} while (self[] != 0)
-	@args.@elementCount = n;
 }
 
-class IMAGE_IMPORT_DESCRIPTORS
+class IMAGE_IMPORT_DESCRIPTORS with {elemType:IMAGE_IMPORT_DESCRIPTOR()}
 {
-	@args.@elementType = IMAGE_IMPORT_DESCRIPTOR();
 	var n = 0;
 	do {
 		IMAGE_IMPORT_DESCRIPTOR #;
-		++n;
 	} while (self[].OriginalFirstThunk != 0 || self[].FirstThunk != 0)
-	@args.@elementCount = n;
 }
 
 class IMAGE_IMPORT_DESCRIPTOR
@@ -407,10 +399,9 @@ class IMAGE_IMPORT_BY_NAME
     @attr.Name = Name;
 }
 
-class IMAGE_IMPORT_BY_NAMES(_count) extends Data(-1)
+class IMAGE_IMPORT_BY_NAMES(count) extends Data(-1)
+	with {elemType:IMAGE_IMPORT_BY_NAME(), elemCount:count}
 {
-	@args.@elementType = IMAGE_IMPORT_BY_NAME();
-	@args.@elementCount = @args._count;
 	var n = @parent._data.@numberOfChildren - 1;
 	for (var i = 0; i < n; ++i) {
 		var linkTo = @parent._data[i].@linkTo;

@@ -9,15 +9,25 @@
 
 class Module;
 
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
 class FromFileTemplate : public ObjectTypeTemplate
 {
 public:
     FromFileTemplate(Program declaration, const Module& module, VariableCollector& collector, const Evaluator& evaluator);
 
 private:
-    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&, const Module &module) const override;
+    virtual Parser* parseOrGetParser(const ObjectType&, ParsingOption&) const override;
     virtual int64_t fixedSize(const ObjectType& type) const override;
     virtual std::shared_ptr<ObjectType> parent(const ObjectType&) const override;
+    virtual Variant attributeValue(const ObjectType& type, Attribute attribute) const;
 
 
     Program::const_iterator headerEnd() const;
@@ -36,6 +46,7 @@ private:
     Program _classInfo;
     Program _classDefinition;
     Program _parentInfo;
+    std::unordered_map<ObjectTypeTemplate::Attribute, Program, EnumClassHash> _attributeExpressions;
 
     VariableCollector&  _collector;
     const Evaluator& _evaluator;
