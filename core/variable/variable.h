@@ -118,7 +118,7 @@ public:
     /**
      * @brief call as function
      */
-    Variable call(const VariableArgs& args, const VariableKeywordArgs& kwargs) const;
+    Variable call(VariableArgs& args, VariableKeywordArgs& kwargs) const;
 
     /**
      * @brief Set the variable as constant which prevents modification of the value
@@ -190,7 +190,7 @@ protected:
     virtual void doSetField(const Variant& key, const Variable& variable);
     virtual void doRemoveField(const Variant& key);
 
-    virtual Variable doCall(const VariableArgs &args, const VariableKeywordArgs &kwargs);
+    virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &kwargs);
 private:
     VariableImplementation(); /* <--- */ friend class UndefinedVariableImplementation;
 

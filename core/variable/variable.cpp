@@ -224,7 +224,7 @@ void Variable::removeField(const VariablePath &path) const
     }
 }
 
-Variable Variable::call(const VariableArgs &args, const VariableKeywordArgs &kwargs) const
+Variable Variable::call(VariableArgs &args, VariableKeywordArgs &kwargs) const
 {
     return _implementation->doCall(args, kwargs);
 }
@@ -313,7 +313,7 @@ void VariableImplementation::doRemoveField(const Variant &key)
     Log::warning("Trying to remove a field ", key," on a variable that doesn't support removal");
 }
 
-Variable VariableImplementation::doCall(const VariableArgs &/*args*/, const VariableKeywordArgs &/*kwargs*/)
+Variable VariableImplementation::doCall(VariableArgs &/*args*/, VariableKeywordArgs &/*kwargs*/)
 {
     Log::warning("Trying call a variable that cannot be called");
     return Variable();

@@ -1,9 +1,12 @@
 #include "localscope.h"
 
 #include "core/log/logmanager.h"
+#include "core/module.h"
 
-LocalScope::LocalScope(const Variable &context)
-    : VariableImplementation(context.collector()), _context(context)
+LocalScope::LocalScope(const Variable &context, const Module &module)
+    : VariableImplementation(context.collector()),
+      _context(context),
+      _module(module)
 {
 }
 
@@ -24,7 +27,18 @@ Variable LocalScope::doGetField(const Variant &key, bool modifiable, bool create
         }
     }
 
-    return Variable(_context).field(key, modifiable, createIfNeeded);
+    const Variable variable = Variable(_context).field(key, modifiable, createIfNeeded);
+    if (key.type() != Variant::Type::stringType || variable.isDefined()) {
+        return variable;
+    } else {
+        const std::string& name = key.toString();
+        const Variable moduleVariable = _module.getVariable(name, collector());
+        if (moduleVariable.isDefined()) {
+            _fields[name] = moduleVariable;
+        }
+        return moduleVariable;
+    }
+
 }
 
 void LocalScope::doSetField(const Variant &key, const Variable &variable)

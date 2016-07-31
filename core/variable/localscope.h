@@ -6,10 +6,12 @@
 
 #include "core/variable/variable.h"
 
+class Module;
+
 class LocalScope : public VariableImplementation
 {
 public:
-    LocalScope(const Variable& context);
+    LocalScope(const Variable& context, const Module& module);
 
     virtual void collect(const VariableAdder &addAccessible) override;
 protected:
@@ -20,6 +22,7 @@ protected:
 private:
     std::unordered_map<std::string, VariableMemory> _fields;
     VariableMemory _context;
+    const Module& _module;
 };
 
 #endif // LOCALSCOPE_H

@@ -22,6 +22,100 @@ ParserScope::ParserScope(VariableCollector &collector, std::shared_ptr<Parser *>
 {
 }
 
+class PeekVariableImplementation : public VariableImplementation
+{
+public:
+    PeekVariableImplementation(VariableCollector & collector, const std::shared_ptr<Parser*>& sharedAccess)
+        : VariableImplementation(collector),
+          _sharedAccess(sharedAccess)
+    {
+    }
+
+protected:
+    virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &) override
+    {
+        Parser* parser = *_sharedAccess;
+
+        if (parser && args.size() >= 1) {
+            Variant typeArg = args[0].value();
+
+            if (typeArg.type() == Variant::objectType) {
+                std::streamoff offset = args.size() > 1 ? args[1].value().toInteger() : 0;
+                const ObjectType& type = typeArg.toObjectType();
+                std::unique_ptr<Object> child(parser->object().readVariable(type, offset));
+                if (child) {
+                    return collector().copy(child->value());
+                }
+            }
+        }
+        return Variable();
+    }
+private:
+    std::shared_ptr<Parser*> _sharedAccess;
+};
+
+class ReadVariableImplementation : public VariableImplementation
+{
+public:
+    ReadVariableImplementation(VariableCollector & collector, const std::shared_ptr<Parser*>& sharedAccess)
+        : VariableImplementation(collector),
+          _sharedAccess(sharedAccess)
+    {
+    }
+
+protected:
+    virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &) override
+    {
+        Parser* parser = *_sharedAccess;
+
+        if (parser) {
+            Variant typeArg = args[0].value();
+            if (typeArg.type() == Variant::objectType) {
+                const ObjectType& type = typeArg.toObjectType();
+                std::unique_ptr<Object> child(parser->object().readVariable(type));
+                if (child) {
+                    parser->object().setPos(parser->object().pos()+child->size());
+                    return collector().copy(child->value());
+                }
+            }
+        }
+        return Variable();
+    }
+private:
+    std::shared_ptr<Parser*> _sharedAccess;
+};
+
+class FindBytePatternVariableImplementation : public VariableImplementation
+{
+public:
+    FindBytePatternVariableImplementation(VariableCollector & collector, const std::shared_ptr<Parser*>& sharedAccess)
+        : VariableImplementation(collector),
+          _sharedAccess(sharedAccess)
+    {
+    }
+
+protected:
+    virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &) override
+    {
+        if (args.size() < 1) {
+            return Variable();
+        }
+        const Variant& value = args[0].value();
+        if (value.type() != Variant::stringType) {
+            return Variable();
+        }
+
+        Parser* parser = *_sharedAccess;
+        if (parser) {
+            return collector().copy(parser->findBytePattern(value.toString()));
+        }
+
+        return Variable();
+    }
+private:
+    std::shared_ptr<Parser*> _sharedAccess;
+};
+
 Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /*createIfNeeded*/)
 {
     if (key.type() == Variant::stringType) {
@@ -30,57 +124,13 @@ Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /
             const auto id = it->second;
             switch (id) {
                 case A_PEEK:
-                return collector().lambda(
-                    [this](const VariableArgs& args, const VariableKeywordArgs&) ->Variable {
-                    if (parser() && args.size() >= 1) {
-                        Variant typeArg = args[0].value();
-
-                        if (typeArg.type() == Variant::objectType) {
-                            std::streamoff offset = args.size() > 1 ? args[1].value().toInteger() : 0;
-                            const ObjectType& type = typeArg.toObjectType();
-                            std::unique_ptr<Object> child(parser()->object().readVariable(type, offset));
-                            if (child) {
-                                return collector().copy(child->value());
-                            }
-                        }
-                    }
-                    return Variable();
-                }, memory());
+                return Variable(new PeekVariableImplementation(collector(), _sharedAccess), false);
 
                 case A_READ:
-                return collector().lambda(
-                    [this](const VariableArgs& args, const VariableKeywordArgs&) ->Variable {
-                    if (parser()) {
-                        Variant typeArg = args[0].value();
-                        if (typeArg.type() == Variant::objectType) {
-                            const ObjectType& type = typeArg.toObjectType();
-                            std::unique_ptr<Object> child(parser()->object().readVariable(type));
-                            if (child) {
-                                parser()->object().setPos(parser()->object().pos()+child->size());
-                                return collector().copy(child->value());
-                            }
-                        }
-                    }
-                    return Variable();
-                }, memory());
+                return Variable(new ReadVariableImplementation(collector(), _sharedAccess), false);
 
                 case A_FIND_BYTE_PATTERN:
-                return collector().lambda(
-                    [this](const VariableArgs& args, const VariableKeywordArgs&) ->Variable {
-                        if (args.size() < 1) {
-                            return Variable();
-                        }
-                        const Variant& value = args[0].value();
-                        if (value.type() != Variant::stringType) {
-                            return Variable();
-                        }
-                        if (parser()) {
-                            return collector().copy(parser()->findBytePattern(value.toString()));
-                        }
-
-                        return Variable();
-                    }
-                );
+                return Variable(new FindBytePatternVariableImplementation(collector(), _sharedAccess), false);
             }
         }
     }

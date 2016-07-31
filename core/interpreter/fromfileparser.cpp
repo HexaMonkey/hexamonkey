@@ -27,7 +27,7 @@
 FromFileParser::FromFileParser(ParsingOption &option, const Module &module, Program classDefinition, Program::const_iterator headerEnd, bool needTailParsing)
     : Parser(option),
       _sharedAccess(new Parser*(this)),
-      _scope(new LocalScope(Variable(new ObjectScope(_sharedAccess), true)), true),
+      _scope(new LocalScope(Variable(new ObjectScope(_sharedAccess), true), module), true),
       _headerEnd(headerEnd),
       _evaluator(_scope, module),
       _bodyExecution(classDefinition.node(0), _evaluator, _scope, &object()),

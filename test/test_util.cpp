@@ -8,6 +8,9 @@
 #include "core/util/iterutil.h"
 #include "core/util/ptrutil.h"
 #include "core/util/strutil.h"
+#include "core/util/formatutil.h"
+
+#include "core/variable/variablecollector.h"
 
 void TestUtil::testCSVReader()
 {
@@ -273,4 +276,27 @@ void TestUtil::testIterationWrapper()
     QCOMPARE(*(++str_it), std::string("b"));
     QCOMPARE(*(++str_it), std::string("a"));
     QCOMPARE(++str_it, reverse(strings).end());
+}
+
+
+void TestUtil::testFormat()
+{
+    VariableCollector collector;
+
+
+    const std::string test1 = formatString({collector.copy("test")}, VariableKeywordArgs());
+    QCOMPARE(test1, std::string("test"));
+
+    const std::string test2 = formatString({collector.copy("{0}jj{number}ddd{}{"), collector.copy("test"),collector.copy(6)}, {{"number", collector.copy(0)}});
+    QCOMPARE(test2, std::string("testjj0dddtest6"));
+
+    const std::string test3 = formatString({collector.copy("{0:d4}|{1:x1}|{2:o}"), collector.copy(42),collector.copy(0x42),collector.copy(042)}, VariableKeywordArgs());
+    QCOMPARE(test3, std::string("0042|42|42"));
+
+    const std::string test4 = formatString({collector.copy("{0:<4}|{1:<3}|{2:^@*7}|{3:>6}"), collector.copy(42),collector.copy("test"),collector.copy("test"),collector.copy("test")}, VariableKeywordArgs());
+    QCOMPARE(test4, std::string("42  |test|*test**|  test"));
+
+    const std::string test5 = formatString({collector.copy("{0:f.15}|{1:e1}"), collector.copy(1e-10),collector.copy(1)},  VariableKeywordArgs());
+    QCOMPARE(test5, std::string("0.000000000100000|1.0e+000"));
+
 }

@@ -20,6 +20,7 @@
 #include "core/interpreter/fromfiletemplate.h"
 #include "core/interpreter/programloader.h"
 #include "core/interpreter/fromfiletemplate.h"
+#include "core/interpreter/fromfilemethod.h"
 #include "core/variable/variablepath.h"
 #include "core/variable/variable.h"
 #include "core/interpreter/fromfileparser.h"
@@ -97,7 +98,7 @@ Variable FromFileModule::doExecuteFunction(const std::string &name, const Variab
     if(it == _functionDescriptors.end())
         return Variable();
 
-    Variable scope(new LocalScope(params), true);
+    Variable scope(new LocalScope(params, *this), true);
 
     const Program& definition = std::get<3>(it->second);
     Evaluator eval(scope, fromModule);
@@ -196,7 +197,20 @@ void FromFileModule::nameScan(Program& declarations)
         else if(declaration.tag() == HMC_FUNCTION_DECLARATION)
         {
             const std::string& name = declaration.node(0).payload().toString();
+            const Program& arguments = declaration.node(1);
+            const Program& definition = declaration.node(2);
+
+            std::vector<MethodArgument> signature;
+
+            for(const Program& argument: arguments)
+            {
+                signature.emplace_back(MethodArgument(argument.node(1).payload().toString(), !argument.node(0).payload().toBool(), _evaluator.rightValue(argument.node(2)).value()));
+            }
+            addMethod(name, new FromFileMethod(definition, signature, *this));
+
+            // TO DELETE
             _functions[name] = declaration;
+
         }
     }
 #ifdef LOAD_TRACE

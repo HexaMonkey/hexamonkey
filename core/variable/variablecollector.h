@@ -82,12 +82,6 @@ public:
         return Variable(new OwningVariableImplementation(*this, nullVariant), true);
     }
 
-    inline Variable lambda(const VariableLambda& lambda, const VariableMemory memory = VariableMemory())
-    {
-        return Variable(new LambdaVariableImplementation(*this, lambda, memory));
-    }
-
-
 private:
     void compact();
 

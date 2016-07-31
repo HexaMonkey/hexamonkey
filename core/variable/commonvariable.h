@@ -63,18 +63,4 @@ private:
     Variant _value;
 };
 
-class LambdaVariableImplementation : public VariableImplementation
-{
-public:
-    LambdaVariableImplementation(VariableCollector & variableCollector, const VariableLambda& lambda, const VariableMemory &bound);
-
-    virtual void collect(const VariableAdder &addAccessible) override;
-
-protected:
-    virtual Variable doCall(const VariableArgs &args, const VariableKeywordArgs &kwargs) override;
-private:
-    VariableLambda _lambda;
-    VariableMemory _bound;
-};
-
 #endif // COMMONVARIABLEIMPLEMENTATIONS_H

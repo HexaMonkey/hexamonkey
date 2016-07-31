@@ -32,8 +32,9 @@
 #include "core/formatdetector/standardformatdetector.h"
 #include "core/variable/variable.h"
 #include "core/specializer.h"
+#include "core/modulemethod.h"
+#include "core/object.h"
 
-class Object;
 class Parser;
 class Variable;
 
@@ -90,20 +91,18 @@ public:
      */
     void setSpecification(const ObjectType& parent, const ObjectType& child);
 
-
-    Object* handleFile(const ObjectType &type, File& file, VariableCollector& collector) const;
+    inline Object* handleFile(const ObjectType &type, File& file, VariableCollector& collector) const
+    {
+        return handle(type, file, nullptr, collector);
+    }
     /**
      * @brief Create an object beginning at the current position of the file and add the appropriate \link Parser
      * parsers\endlink according to the inheritance structure for the type
      */
-    Object* handle(const ObjectType& type, Object& parent) const;
-
-    /**
-     * @brief Get the module able to handle the type among the current \link Module module\endlink and the imported ones
-     *
-     * Return nullptr if the type cannot be handled
-     */
-    const Module* handler(const ObjectType &type) const;
+    inline Object* handle(const ObjectType& type, Object& parent) const
+    {
+        return handle(type, parent.file(), &parent, parent.collector());
+    }
 
     /**
      * @brief Get a \link ObjectTypeTemplate type template\endlink stored by the \link Module module\endlink or one of the imported one, by its name
@@ -158,10 +157,8 @@ public:
         return type;
     }
 
-    /**
-     * @brief Check if any \link ObjectTypeTemplate type template\endlink stored by the \link Module module\endlink or one of the imported one has this name
-     */
-    bool hasTemplate(const std::string& name) const;
+    Variable getVariable(const std::string& name, VariableCollector& collector) const;
+
 
     /**
      * @brief Check if the \link Module module\endlink or any of the imported ones can handle a function by this name
@@ -220,6 +217,9 @@ protected:
      */
     virtual bool doLoad();
 
+
+
+
     /**
      * @brief [Pure Virtual] Check if the type can be handled be the \link Module module\endlink directly.
      */
@@ -241,6 +241,8 @@ protected:
      */
     void addTemplate(const ObjectTypeTemplate& typeTemplate);
     ObjectTypeTemplate& addTemplate(ObjectTypeTemplate* typeTemplate);
+
+    void addMethod(const std::string& name, ModuleMethod *method);
 
     typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
     typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
@@ -296,9 +298,13 @@ private:
 
     SpecificationMap _automaticSpecifications;
 
-    std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
-    std::list<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
+    mutable std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
+    std::vector<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
     std::unordered_map<ObjectTypeTemplate *, Specializer> _specializers;
+
+
+    mutable std::unordered_map<std::string, const ModuleMethod*> _methods;
+    std::vector<std::unique_ptr<ModuleMethod> > _ownedMethods;
 
     typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Functor> FunctionDescriptor;
     std::unordered_map<std::string,  FunctionDescriptor>  _functions;

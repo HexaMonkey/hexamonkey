@@ -76,7 +76,6 @@ ObjectType Module::specify(const ObjectType &parent) const
 
 ObjectType Module::specifyLocally(const ObjectType& parent) const
 {
-#if 1
     auto it = _specializers.find(const_cast<ObjectTypeTemplate*>(&parent.typeTemplate()));
     if (it == _specializers.end())
     {
@@ -90,55 +89,8 @@ ObjectType Module::specifyLocally(const ObjectType& parent) const
     }
 
     return type;
-#else
-
-    ObjectType type;
-    ObjectType rangeBegin = ObjectTypeCreator::Create(parent.typeTemplate());
-    for(SpecificationMap::const_iterator it = _automaticSpecifications.lower_bound(&rangeBegin);
-        it != _automaticSpecifications.end() && it->first->typeTemplate() == parent.typeTemplate();
-        ++it)
-    {
-        if(parent.extendsDirectly(*(it->first)))
-        {
-            type = it->second;
-            type.importParameters(parent);
-            break;
-        }
-    }
-    return type;
-#endif
 }
- #if 0
-void addParsersRecursive(Object &object, const ObjectType &type, const ObjectType &lastType)
-{
-    const Module& fromModule = object._fromModule;
-    ObjectType specification;
 
-    //Building the father list
-    std::list<ObjectType> fathers;
-    ObjectType currentType = type;
-    while(currentType.typeTemplate() != lastType.typeTemplate() && !currentType.isNull())
-    {
-        fathers.push_front(currentType);
-        currentType = currentType.parent();
-    }
-
-    //Adding the fathers' parsers
-    for(ObjectType father : fathers)
-    {
-        object.setType(father);
-        Parser* parser = father.parseOrGetParser(static_cast<ParsingOption&>(object), fromModule);
-        object.addParser(parser);
-    }
-    //Type specification
-    specification = fromModule.specify(object.type());
-
-    if (!specification.isNull())
-    {
-        addParsersRecursive(object, specification, object.type());
-    }
-}
-#endif
 void Module::addParsers(Object &object, const ObjectType &type) const
 {
     //Building the father list
@@ -188,7 +140,7 @@ void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
     _automaticSpecifications.insert(std::make_pair(parentPtr, child));
 
     auto it = _specializers.find(const_cast<ObjectTypeTemplate*>(&parent.typeTemplate()));
-    if (it == _specializers.end()) {
+    if (it == _specializers.end()) {        
         _specializers.emplace(std::piecewise_construct, std::make_tuple(const_cast<ObjectTypeTemplate* >(&parent.typeTemplate())), std::make_tuple(parent, child));
     } else {
         it->second.forward(parent, child);
@@ -196,28 +148,9 @@ void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
 
 }
 
-Object* Module::handleFile(const ObjectType& type, File &file, VariableCollector &collector) const
-{
-    return handle(type, file, nullptr, collector);
-}
 
-Object* Module::handle(const ObjectType& type, Object &parent) const
-{
-    return handle(type, parent.file(), &parent, parent.collector());
-}
 
-const Module *Module::handler(const ObjectType &type) const
-{
-    if(hasParser(type))
-        return this;
 
-    for(const Module* importedModule : _importedModulesChain)
-    {
-        if(importedModule->hasParser(type))
-            return importedModule->handler(type);
-    }
-    return nullptr;
-}
 
 Object* Module::handle(const ObjectType& type, File& file, Object* parent, VariableCollector &collector) const
 {
@@ -245,16 +178,51 @@ const ObjectTypeTemplate& Module::getTemplate(const std::string &name) const
     {
         const auto it = importedModule->_templates.find(name);
 
-        if(it != _templates.end())
+        if(it != _templates.end()) {
+            _templates[name] = it->second;
             return *it->second;
+        }
     }
 
     return ObjectTypeTemplate::nullTypeTemplate;
 }
 
-bool Module::hasTemplate(const std::string& name) const
+class ModuleMethodVariableImplementation : public VariableImplementation
 {
-    return _templates.find(name) != _templates.end();
+public:
+    ModuleMethodVariableImplementation(const ModuleMethod& moduleMethod, VariableCollector& collector)
+        : VariableImplementation(collector),
+          _method(moduleMethod)
+    {}
+
+    virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &kwargs) override
+    {
+        return _method.call(args, kwargs, collector());
+    }
+
+private:
+   const ModuleMethod& _method;
+};
+
+Variable Module::getVariable(const std::string &name, VariableCollector &collector) const
+{
+    const auto it = _methods.find(name);
+
+    if(it != _methods.end()) {
+        return Variable(new ModuleMethodVariableImplementation(*it->second, collector), false);
+    }
+
+    for(const Module* importedModule : _importedModulesChain)
+    {
+        const auto it = importedModule->_methods.find(name);
+
+        if(it != _methods.end()) {
+            _methods[name] = it->second;
+            return Variable(new ModuleMethodVariableImplementation(*it->second, collector), false);
+        }
+    }
+
+    return Variable();
 }
 
 bool Module::canHandleFunction(const std::string& name) const
@@ -361,6 +329,12 @@ ObjectTypeTemplate &Module::addTemplate(ObjectTypeTemplate* typeTemplate)
     return *typeTemplate;
 }
 
+void Module::addMethod(const std::string &name, ModuleMethod* method)
+{
+    _ownedMethods.push_back(std::unique_ptr<ModuleMethod>(method));
+    _methods[name] = method;
+}
+
 void Module::addFunction(const std::string &name,
                             const std::vector<std::string> &parameterNames,
                             const std::vector<bool> &parameterModifiables,
@@ -368,11 +342,6 @@ void Module::addFunction(const std::string &name,
                             const Module::Functor &functor)
 {
     _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, functor);
-}
-
-bool Module::hasParser(const ObjectType &type) const
-{
-    return hasTemplate(type.typeTemplate().name());
 }
 
 bool Module::doCanHandleFunction(const std::string &name) const

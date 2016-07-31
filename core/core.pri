@@ -77,7 +77,11 @@ SOURCES += \
     ../core/modules/ebml/ebmlextensiontypetemplate.cpp \
     ../core/modules/stream/parentpidtemplate.cpp \
     ../core/interpreter/fromfiletemplate.cpp \
-    ../core/specializer.cpp
+    ../core/specializer.cpp \
+    $$PWD/modulemethod.cpp \
+    $$PWD/variable/methodscope.cpp \
+    $$PWD/interpreter/fromfilemethod.cpp \
+    $$PWD/util/formatutil.cpp
     
 
 HEADERS  += \ 
@@ -165,6 +169,10 @@ HEADERS  += \
     ../core/modules/ebml/ebmlextensiontypetemplate.h \
     ../core/modules/stream/parentpidtemplate.h \
     ../core/interpreter/fromfiletemplate.h \
-    ../core/specializer.h
+    ../core/specializer.h \
+    $$PWD/modulemethod.h \
+    $$PWD/variable/methodscope.h \
+    $$PWD/interpreter/fromfilemethod.h \
+    $$PWD/util/formatutil.h
 
 

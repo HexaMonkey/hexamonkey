@@ -29,6 +29,7 @@ private slots:
     void testStrUtil_join();
     void testOptOwnPtr();
     void testIterationWrapper();
+    void testFormat();
 };
 
 #endif // TEST_UTIL

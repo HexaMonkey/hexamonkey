@@ -1,9 +1,12 @@
-
+function test(value)
+{
+	return 2*value;
+}
 
 class DefaultTestFile as File
 {
     @endianness = "bigEndian";
-    uint(8)  v100;
+    uint(SizeOf:int(8))  v100;
     uint(16) v4242;
     uint(32) v320000000;
     uint(64) v999999999999999999;
