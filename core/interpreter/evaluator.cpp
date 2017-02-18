@@ -4,7 +4,6 @@
 #include "core/log/logmanager.h"
 #include "core/interpreter/evaluator.h"
 #include "core/interpreter/program.h"
-#include "core/variable/functionscope.h"
 #include "core/util/unused.h"
 #include "core/variable/arrayscope.h"
 #include "core/variable/mapscope.h"
@@ -72,9 +71,6 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
         case HMC_FIELD_ASSIGN:
             return assignField(first[0], first[1]);
-
-        case HMC_FUNCTION_EVALUATION:
-            return function(first);
 
         case HMC_INT_CONSTANT:
         case HMC_UINT_CONSTANT:
@@ -348,48 +344,6 @@ Variable Evaluator::ternaryOperation(int op, const Variable& a, const Variable& 
             break;
     }
     return Variable();
-}
-
-Variable Evaluator::function(const Program &program) const
-{
-    const std::string& name = program.node(0).payload().toString() ;
-    Program arguments = program.node(1);
-    const std::vector<std::string>& parametersNames = module.getFunctionParameterNames(name);
-    const std::vector<bool>& parameterModifiables = module.getFunctionParameterModifiables(name);
-    const std::vector<Variant>& parametersDefaults = module.getFunctionParameterDefaults(name);
-
-    FunctionScope* functionScope = new FunctionScope(collector());
-    unsigned int size = parametersNames.size();
-    size_t i = 0;
-    for(Program argument:arguments)
-    {
-        if(i>=size) {
-            break;
-        }
-
-        bool modifiable = parameterModifiables[i];
-        Variable argumentVariable = rightValue(argument, modifiable);
-        if(!modifiable) {
-            argumentVariable.setConstant();
-        }
-        functionScope->addNamedParameter(argumentVariable, parametersNames[i]);
-
-        ++i;
-    }
-
-    while (i < parametersDefaults.size())
-    {
-        functionScope->addNamedParameter(collector().constRef(parametersDefaults[i]), parametersNames[i]);
-        ++i;
-    }
-
-    while (i < size)
-    {
-        functionScope->addNamedParameter(Variable(), parametersNames[i]);
-        ++i;
-    }
-
-    return module.executeFunction(name, Variable(functionScope, true));
 }
 
 Variable Evaluator::variable(const Program &program, bool modifiable, bool createIfNeeded) const

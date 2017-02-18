@@ -159,12 +159,6 @@ public:
 
     Variable getVariable(const std::string& name, VariableCollector& collector) const;
 
-
-    /**
-     * @brief Check if the \link Module module\endlink or any of the imported ones can handle a function by this name
-     */
-    bool canHandleFunction(const std::string &name) const;
-
     /**
      * @brief Get the module able to handle a function by this name among the current\link Module module\endlink and the imported ones
      *
@@ -196,7 +190,10 @@ public:
      * @brief Check if the module has been successfully loaded by the
      * \link ModuleLoader module loader\endlink
      */
-    bool isLoaded() const;
+    bool isLoaded() const
+    {
+        return _loaded;
+    }
 
 protected:
     /**
@@ -217,20 +214,6 @@ protected:
      */
     virtual bool doLoad();
 
-
-
-
-    /**
-     * @brief [Pure Virtual] Check if the type can be handled be the \link Module module\endlink directly.
-     */
-    bool hasParser(const ObjectType &type) const;
-
-    virtual bool doCanHandleFunction(const std::string& name) const;
-    virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const;
-    virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const;
-    virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const;
-    virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const;
-
     /**
      * @brief Register a \link ObjectTypeTemplate type template\endlink to the \link Module module\endlink so that it can be
      * accessed by its name by the function getTemplate.
@@ -244,19 +227,6 @@ protected:
 
     void addMethod(const std::string& name, ModuleMethod *method);
 
-    typedef std::function<Parser* (const ObjectType &, Object &, const Module &)> ParserGenerator;
-    typedef std::function<int64_t (const ObjectType &, const Module &)> FixedSizeGenerator;
-    typedef std::function<Variable (const Variable&, const Module &)> Functor;
-
-    /**
-     * @brief Define a function signature and define a \link Functor functor\endlink to execute the function
-     */
-    void addFunction(const std::string& name,
-                     const std::vector<std::string>& parameterNames,
-                     const std::vector<bool>& parameterModifiables,
-                     const std::vector<Variant>& parameterDefaults,
-                     const Functor& functor);
-
 private:
     friend class ModuleLoader;
     template<class T>
@@ -268,10 +238,6 @@ private:
         }
     };
 
-    typedef std::map<const ObjectType*, ObjectType, UnrefCompare<const ObjectType*> > SpecificationMap;
-
-    typedef std::map<const ObjectTypeTemplate*, std::function<ObjectType(const ObjectType&)>, UnrefCompare<const ObjectTypeTemplate*> > ExtensionMap;
-
     /** @brief Import a \link Module module\endlink to serve as fallback if a \link ObjectType type\endlink cannot be handled directly by the
      *  \link Module module\endlink
      *
@@ -280,23 +246,25 @@ private:
      */
     void import(const Module& module);
 
-    bool load();
+    bool load()
+    {
+        if(!_loaded)
+        {
+            _loaded = doLoad();
+        }
+        return _loaded;
+    }
 
     ObjectType specifyLocally(const ObjectType& parent) const;
     void addParsers(Object& data, const ObjectType &type) const;
 
     Object* handle(const ObjectType& type, File& file, Object *parent, VariableCollector& collector) const;
 
-    Variable executeFunction(const std::string& name, const Variable &params, const Module& fromModule) const;
-
     std::string _name;
     bool _loaded;
 
     std::vector<const Module*> _importedModulesChain;
     std::unordered_map<std::string, const Module*> _importedModulesMap;
-
-
-    SpecificationMap _automaticSpecifications;
 
     mutable std::unordered_map<std::string, const ObjectTypeTemplate*> _templates;
     std::vector<std::unique_ptr<ObjectTypeTemplate> > _ownedTemplates;
@@ -305,9 +273,6 @@ private:
 
     mutable std::unordered_map<std::string, const ModuleMethod*> _methods;
     std::vector<std::unique_ptr<ModuleMethod> > _ownedMethods;
-
-    typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Functor> FunctionDescriptor;
-    std::unordered_map<std::string,  FunctionDescriptor>  _functions;
 };
 
 #endif // MODULE_H

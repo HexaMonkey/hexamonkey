@@ -8,7 +8,7 @@ class SQLiteFile as File
 {
 	@endianness = "bigEndian";
 
-    BTreePage *;
+    BTreePage _;
     var contains_ptrmap = self[].db_header.LargestRootBTreePageNumber != 0;
     var page_size = self[].db_header.DatabasePageSize;
     var j = page_size / 5;
@@ -16,11 +16,11 @@ class SQLiteFile as File
     var next_freelist_trunk_page = self[].db_header.FirstFreelistTrunkPageNumber;
     while(1) {
         if(contains_ptrmap && page_count % (j+1) == 2 ) {
-            PtrMapPage *;
+            PtrMapPage _;
         } else if(next_freelist_trunk_page == page_count){
-            FreeListTrunkPage *;
+            FreeListTrunkPage _;
         } else {
-            BTreePage *;
+            BTreePage _;
         }
         page_count++;
     }
@@ -121,7 +121,7 @@ class Varint {
     @value = 0;
     var i;
     for(i=1;i<10;i++) {
-        uint(8) *;
+        uint(8) _;
         if(i < 9) {
             if(self[] > 127) {
                 @value = (@value << 7) + self[] - 128;
@@ -171,7 +171,7 @@ class FreeListLeafPage {
 class PtrMapPage {
     @size = @global.databasePageSize;
     while(1) {
-        PtrMapEntry *;
+        PtrMapEntry _;
     }
 }
 

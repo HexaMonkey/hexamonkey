@@ -23,7 +23,7 @@ class ZipFile as File
 	@endianness = "littleEndian";
 	
 	while(1) {
-		Chunk *;
+		Chunk _;
 		var signature = self[].signature;
 		if(signature != 0x4034b50
 		&& signature != 0x8064b50
@@ -32,7 +32,7 @@ class ZipFile as File
 		&& signature != 0x6064b50
 		&& signature != 0x7064b50
 		&& signature != 0x6054b50) {
-			%error("Unknown signature : 0x"+%str(signature, 16));
+			Error:("Unknown signature : 0x{:x}", signature);
 			break;
 		}
 	}

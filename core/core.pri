@@ -51,7 +51,6 @@ SOURCES += \
     ../core/variable/localscope.cpp \
     ../core/variable/objectcontext.cpp \
     ../core/variable/objectattributes.cpp \
-    ../core/variable/functionscope.cpp \
     ../core/variable/parserscope.cpp \
     ../core/variable/typescope.cpp \
     ../core/variable/objectscope.cpp \
@@ -143,7 +142,6 @@ HEADERS  += \
     ../core/variable/localscope.h \
     ../core/variable/objectcontext.h \
     ../core/variable/objectattributes.h \
-    ../core/variable/functionscope.h \
     ../core/variable/typescope.h \
     ../core/variable/objectscope.h \
     ../core/variable/arrayscope.h \
@@ -173,6 +171,7 @@ HEADERS  += \
     $$PWD/modulemethod.h \
     $$PWD/variable/methodscope.h \
     $$PWD/interpreter/fromfilemethod.h \
-    $$PWD/util/formatutil.h
+    $$PWD/util/formatutil.h \
+    $$PWD/modules/default/defaultmethods.h
 
 

@@ -55,13 +55,13 @@ class ImageDescriptor as Block(0x2c){
 	{
 		RGB LocalColorTable[1<<(SizeOfLocalColorTable + 1)];
 	}
-	TableBasedImageData *;
+	TableBasedImageData _;
 }
 
 class TableBasedImageData
 {
 	uint(8) LZWMinimumCodeSize;
-	DataSubSequence *;
+	DataSubSequence _;
 }
 
 class DataSubSequence with {elemType:DataSubBlock()}

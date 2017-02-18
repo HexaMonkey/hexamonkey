@@ -94,26 +94,11 @@ Parser *IntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOpt
 
 
 
-    int base = 0;
+    int base = 10;
     if (type.parameterSpecified(1)) {
         base = type.parameterValue(1).toInteger();
     }
-    switch (base) {
-        case 2:
-            value.setDisplayBase(Variant::binary);
-            break;
-
-        case 8:
-            value.setDisplayBase(Variant::octal);
-            break;
-
-        case 16:
-            value.setDisplayBase(Variant::hexadecimal);
-            break;
-
-        default:
-            value.setDisplayBase(Variant::decimal);
-    }
+    value.setDisplayBase(base);
 
     object.setValue(value);
 
@@ -214,26 +199,11 @@ Parser *UIntegerTypeTemplate::parseOrGetParser(const ObjectType &type, ParsingOp
 
 
 
-    int base = 0;
+    int base = 10;
     if (type.parameterSpecified(1)) {
         base = type.parameterValue(1).toInteger();
     }
-    switch (base) {
-        case 2:
-            value.setDisplayBase(Variant::binary);
-            break;
-
-        case 8:
-            value.setDisplayBase(Variant::octal);
-            break;
-
-        case 16:
-            value.setDisplayBase(Variant::hexadecimal);
-            break;
-
-        default:
-            value.setDisplayBase(Variant::decimal);
-    }
+    value.setDisplayBase(base);
 
     object.setValue(value);
 
@@ -265,7 +235,7 @@ Parser *ByteTypeTemplate::parseOrGetParser(const ObjectType &, ParsingOption &op
     uint8_t integer;
     object.file().read(reinterpret_cast<char* >(&integer), 8);
     value.setValue(integer);
-    value.setDisplayBase(Variant::hexadecimal);
+    value.setDisplayBase(16);
 
     object.setValue(value);
 

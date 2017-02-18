@@ -116,3 +116,8 @@ Variable ObjectAttributes::doGetField(const Variant &key, bool /*modifiable*/, b
         return Variable();
     }
 }
+
+bool ObjectAttributes::isByRefOnly()
+{
+    return true;
+}

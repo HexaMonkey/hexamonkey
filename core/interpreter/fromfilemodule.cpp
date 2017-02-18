@@ -25,7 +25,6 @@
 #include "core/variable/variable.h"
 #include "core/interpreter/fromfileparser.h"
 #include "core/interpreter/blockexecution.h"
-#include "core/variable/functionscope.h"
 #include "core/variable/localscope.h"
 #include "core/variable/typescope.h"
 #include "core/variable/variablecollector.h"
@@ -83,60 +82,6 @@ bool FromFileModule::doLoad()
     nameScan(classDeclarations);
     loadSpecifications(classDeclarations);
     return true;
-}
-
-
-bool FromFileModule::doCanHandleFunction(const std::string &name) const
-{
-    return _functions.find(name) != _functions.end();
-}
-
-Variable FromFileModule::doExecuteFunction(const std::string &name, const Variable &params, const Module &fromModule) const
-{
-    auto it = functionDescriptor(name);
-
-    if(it == _functionDescriptors.end())
-        return Variable();
-
-    Variable scope(new LocalScope(params, *this), true);
-
-    const Program& definition = std::get<3>(it->second);
-    Evaluator eval(scope, fromModule);
-    BlockExecution blockExecution(definition, eval, scope, nullptr);
-
-    blockExecution.execute();
-
-    return blockExecution.returnValue();
-}
-
-const std::vector<std::string> &FromFileModule::doGetFunctionParameterNames(const std::string &name) const
-{
-    auto it = functionDescriptor(name);
-
-    if(it == _functionDescriptors.end())
-        return emptyParameterNames;
-
-    return std::get<0>(it->second);
-}
-
-const std::vector<bool> &FromFileModule::doGetFunctionParameterModifiables(const std::string &name) const
-{
-    auto it = functionDescriptor(name);
-
-    if(it == _functionDescriptors.end())
-        return emptyParameterModifiables;
-
-    return std::get<1>(it->second);
-}
-
-const std::vector<Variant> &FromFileModule::doGetFunctionParameterDefaults(const std::string &name) const
-{
-    auto it = functionDescriptor(name);
-
-    if(it == _functionDescriptors.end())
-        return emptyParameterDefaults;
-
-    return std::get<2>(it->second);
 }
 
 void FromFileModule::loadFormatDetections(Program &formatDetections, StandardFormatDetector::Adder &formatAdder)
@@ -207,10 +152,6 @@ void FromFileModule::nameScan(Program& declarations)
                 signature.emplace_back(MethodArgument(argument.node(1).payload().toString(), !argument.node(0).payload().toBool(), _evaluator.rightValue(argument.node(2)).value()));
             }
             addMethod(name, new FromFileMethod(definition, signature, *this));
-
-            // TO DELETE
-            _functions[name] = declaration;
-
         }
     }
 #ifdef LOAD_TRACE
@@ -256,36 +197,3 @@ void FromFileModule::loadSpecifications(Program &classDeclarations)
 }
 
 
-FromFileModule::FunctionDescriptorMap::iterator FromFileModule::functionDescriptor(const std::string &name) const
-{
-    auto alreadyIt = _functionDescriptors.find(name);
-    if(alreadyIt != _functionDescriptors.end())
-        return alreadyIt;
-
-    auto it = _functions.find(name);
-    if(it == _functions.end())
-        return _functionDescriptors.end();
-
-    const Program& declaration = it->second;
-    const Program& arguments = declaration.node(1);
-    const Program& definition = declaration.node(2);
-
-    std::vector<std::string> parameterNames;
-    std::vector<bool> parameterModifiables;
-    std::vector<Variant> parameterDefaults;
-
-    for(const Program& argument: arguments)
-    {
-        parameterNames.push_back(argument.node(1).payload().toString());
-        parameterModifiables.push_back(argument.node(0).payload().toBool());
-        parameterDefaults.push_back(_evaluator.rightValue(argument.node(2)).value());
-    }
-
-    auto functionDescriptor = std::forward_as_tuple(parameterNames, parameterModifiables, parameterDefaults, definition);
-    return _functionDescriptors.insert(std::make_pair(name, functionDescriptor)).first;
-}
-
-const Program &FromFileModule::program() const
-{
-    return _program;
-}

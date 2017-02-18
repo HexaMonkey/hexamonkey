@@ -7,12 +7,12 @@ class FindTestFile as File
         uint(8) error;
     }
     
-    Found("aa bb") *;
+    Found("aa bb") _;
     uint(16) aabb;
     
-    Found("aa bb|00 cc dd") *;
+    Found("aa bb|00 cc dd") _;
     uint(24) ccdd;
-    Found("ad | 00 cc dd | a0 0b & f0 0f") *;
+    Found("ad | 00 cc dd | a0 0b & f0 0f") _;
     uint(16) aabb;
 }
 

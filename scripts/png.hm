@@ -25,7 +25,7 @@ class PngFile as File
 	@endianness = "bigEndian";
 
 	byte signature[8];
-	while(1) Chunk *;
+	while(1) Chunk _;
 }
 
 virtual class Chunk(code)

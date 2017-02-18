@@ -42,14 +42,6 @@ private:
     virtual void requestImportations(std::vector<std::string>& formatRequested) final;
     virtual bool doLoad() final;
 
-    virtual bool doCanHandleFunction(const std::string& name) const final;
-    virtual Variable doExecuteFunction(const std::string& name, const Variable &params, const Module &fromModule) const final;
-    virtual const std::vector<std::string>& doGetFunctionParameterNames(const std::string& name) const final;
-    virtual const std::vector<bool>& doGetFunctionParameterModifiables(const std::string& name) const final;
-    virtual const std::vector<Variant>& doGetFunctionParameterDefaults(const std::string& name) const final;
-
-    typedef std::tuple<std::vector<std::string>, std::vector<bool>, std::vector<Variant>, Program> FunctionDescriptor;
-    typedef std::unordered_map<std::string, FunctionDescriptor> FunctionDescriptorMap;
     bool loadProgram(const std::string path);
 
     void loadFormatDetections(Program& formatDetections, StandardFormatDetector::Adder& formatAdder);
@@ -58,14 +50,12 @@ private:
     void nameScan(Program &classDeclarations);
     void loadSpecifications(Program &classDeclarations);
 
-    FunctionDescriptorMap::iterator functionDescriptor(const std::string& name) const;
-
-    const Program& program() const;
+    inline const Program& program() const
+    {
+        return _program;
+    }
 
     Program _program;
-
-    std::unordered_map<std::string, Program> _functions;
-    mutable FunctionDescriptorMap _functionDescriptors;
 
     mutable VariableCollector _collector;
     Variable _scope;

@@ -20,7 +20,7 @@ class RGB
 	byte red;
 	byte green;
 	byte blue;
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+	@attr.code = Format:("#{:x2}{:x2}{:x2}", red, green, blue);
 }
 
 class RGBA
@@ -29,7 +29,7 @@ class RGBA
 	byte green;
 	byte blue;
 	byte alpha;
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+%str(alpha, 16, 2);
+	@attr.code = Format:("#{:x2}{:x2}{:x2}{:x2}", red, green, blue, alpha);
 }
 
 class DenseRGB(redCount, greenCount, blueCount, _bitsPerPixels, _redMask, _greenMask, _blueMask) extends uint(_bitsPerPixels, 16)
@@ -47,5 +47,5 @@ class DenseRGB(redCount, greenCount, blueCount, _bitsPerPixels, _redMask, _green
 	var blue  = (@value & @args._blueMask) >> shift;
 	blue <<= 8 - @args.blueCount;
 	
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+	@attr.code = Format:("#{:x2}{:x2}{:x2}", red, green, blue);
 }

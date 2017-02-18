@@ -32,7 +32,6 @@ loop;master;0;
 doLoop;master;0;
 emptyStringConstant;integer;0;
 forward;master;0;
-functionEvaluation;master;0;
 methodEvaluation;master;0;
 break;master;0;
 continue;master;0;

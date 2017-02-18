@@ -38,7 +38,6 @@ private:
     Variable unaryOperation(int op, const Variable& a) const;
     Variable binaryOperation(int op, const Variable& a, const Variable& b) const;
     Variable ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const;
-    Variable function(const Program& program) const;
     Variable variable(const Program& program, bool modifiable, bool createIfNeeded) const;
     Variable assignField(const Program& path, const Program& rightValue) const;
     Variable arrayScope(const Program& program) const;

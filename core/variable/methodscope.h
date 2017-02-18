@@ -10,6 +10,9 @@ public:
 
     virtual Variable doGetField(const Variant &key, bool, bool createIfNeeded) override;
 
+protected:
+    virtual bool isByRefOnly() override;
+
 private:
    VariableArgs& _args;
    VariableKeywordArgs& _kwargs;

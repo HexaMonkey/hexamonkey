@@ -29,7 +29,7 @@ class ProgramImageMatchingData(_size) extends Data(_size)
 {
     String(8) header;
     String version;
-    %log("rem : "+@rem);
+
     if ((@rem) % 32  != 0) {
         Data(32 - (@rem % 32)) padding;
     }
@@ -39,7 +39,7 @@ class ProgramImageMatchingData(_size) extends Data(_size)
 
 class PrintImageMatchingInteroperability as Interoperability("Image", 0xC4A5)
 {
-    @attr._valueType = ProgramImageMatchingData(%sizeof(@attr._valueType));
+    @attr._valueType = ProgramImageMatchingData(SizeOf:@attr._valueType);
 }
 
 class ExifVersionInteroperability as Interoperability("Exif", 0x9000)
@@ -552,7 +552,7 @@ class FlashpixVersionInteroperability as Interoperability("Exif", 0xA000)
 
 class Version extends String(4)
 {
-    @value = %int(@value)/100.0;
+    @value = (ToInt:@value)/100.0;
 }
 
 class SubjectDistanceRangeInteroperability as Interoperability("Exif", 0xA40C)

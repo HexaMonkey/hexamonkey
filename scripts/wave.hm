@@ -25,5 +25,5 @@ class WaveFile as File
 {
 	@endianness = "littleEndian";
 	
-	while(1) CHUNK *;
+	while(1) CHUNK _;
 }

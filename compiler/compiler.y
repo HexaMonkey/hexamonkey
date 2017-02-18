@@ -65,10 +65,10 @@
 %right INC_TOKEN DEC_TOKEN
 %left SUF_INC SUF_DEC
 %right DEREF
+%left MET
 
 %token <s> IDENT
 %token <s> A_IDENT
-%token <s> P_IDENT
 %token <s> MAGIC_NUMBER
 
 %token NULL_TOKEN
@@ -238,7 +238,6 @@ struct_header:
 
 struct_name:
 	IDENT {push_string(HMC_STRING_CONSTANT, $1); push_master(HMC_RIGHT_VALUE, 1);}
-   |'*'   {push_string(HMC_STRING_CONSTANT, "*"); push_master(HMC_RIGHT_VALUE, 1);}
    |'#'   {push_string(HMC_STRING_CONSTANT, "#"); push_master(HMC_RIGHT_VALUE, 1);}
    
 struct_type:
@@ -413,15 +412,14 @@ extended_identifier:
    |A_IDENT {push_string(HMC_IDENTIFIER, $1);}
 ;
 
-function_identifier:
-    P_IDENT {push_string(HMC_IDENTIFIER, $1);}
-
 name_identifier:
     IDENT {push_string(HMC_IDENTIFIER, $1);}
-   |'*'   {push_string(HMC_IDENTIFIER, "*");}
    |'#'   {push_string(HMC_IDENTIFIER, "#");}
    |'(' right_value ')' 
-    
+
+v_right_value:
+	|variable                                    {push_master(HMC_RIGHT_VALUE, 1);}
+   
 right_value:
      right_value '=' right_value                 {handle_op(HMC_ASSIGN_OP);}
     |right_value RIGHT_ASSIGN_TOKEN right_value  {handle_op(HMC_RIGHT_ASSIGN_OP);}
@@ -463,8 +461,18 @@ right_value:
     |constant_value                              {push_master(HMC_RIGHT_VALUE, 1);}
     |variable                                    {push_master(HMC_RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(HMC_RIGHT_VALUE, 1);}
-    |function_identifier right_value_arguments   {push_master(HMC_FUNCTION_EVALUATION, 2);push_master(HMC_RIGHT_VALUE, 1);}
-    |right_value ':' method_arguments            {push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
+	|v_right_value ':' %prec MET right_value     {push_master(HMC_ARGUMENTS, 1);
+                                                  push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                  push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                  push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+												  push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
+    |v_right_value ':' %prec MET method_arguments{push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
+	|'(' right_value ')' ':' %prec MET right_value     {push_master(HMC_ARGUMENTS, 1);
+                                                  push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+                                                  push_master(HMC_KEYWORD_ARGUMENTS, 0);
+                                                  push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
+												  push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
+    |'(' right_value ')'  ':' %prec MET method_arguments{push_master(HMC_METHOD_EVALUATION, 5);push_master(HMC_RIGHT_VALUE, 1);}
 	|variable SUBSCOPE_ASSIGN_TOKEN right_value  {push_master(HMC_FIELD_ASSIGN, 2);push_master(HMC_RIGHT_VALUE, 1);}
 	|'[' array_items ']'                         {push_master(HMC_RIGHT_VALUE, 1);}
 	|'{' map_items '}'                           {push_master(HMC_RIGHT_VALUE, 1);}
@@ -531,14 +539,6 @@ remove:
 	REMOVE_TOKEN variable {push_master(HMC_REMOVE, 1);}
 
 method_arguments:
-    /*empty*/                                       {push_master(HMC_ARGUMENTS, 0);
-                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
-                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
-                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
-   |right_value                                     {push_master(HMC_ARGUMENTS, 1);
-                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
-                                                     push_master(HMC_KEYWORD_ARGUMENTS, 0);
-                                                     push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);}
    |'('')'                                          {push_master(HMC_ARGUMENTS, 0);
                                                      push_integer(HMC_UNDEFINED_CONSTANT, 0); push_master(HMC_RIGHT_VALUE, 1);
                                                      push_master(HMC_KEYWORD_ARGUMENTS, 0);

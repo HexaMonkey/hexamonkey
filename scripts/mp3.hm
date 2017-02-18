@@ -31,31 +31,31 @@ class MP3File as File
     // look for id3v2 tag at the beginning
     var id3v2Check = @parser.peek:(String(3));
     if (id3v2Check == "ID3") {
-        ID3v2Tag *;
+        ID3v2Tag _;
     }
     
     // look for id3v1 tag at the end
-    var id3v1Offset = @rem - %sizeof(ID3v1Tag());
+    var id3v1Offset = @rem - SizeOf:(ID3v1Tag());
     var id3v1Check = @parser.peek:(String(3), id3v1Offset);
     if (id3v1Check == "TAG") {
-        MP3Frames(id3v1Offset) *;
-        ID3v1Tag *;
+        MP3Frames(id3v1Offset) _;
+        ID3v1Tag _;
     } else {
         // look for extended id3v1
-        var id3v1ExtOffset = @rem - %sizeof(ID3v1ExtendedTag());
+        var id3v1ExtOffset = @rem - SizeOf:(ID3v1ExtendedTag());
         var id3v1ExtCheck = @parser.peek:(String(4), id3v1ExtOffset);
         if (id3v1ExtCheck == "TAG+") {
-            MP3Frames(id3v1ExtOffset) *;
-            ID3v1Tag *;
+            MP3Frames(id3v1ExtOffset) _;
+            ID3v1Tag _;
         } else {
             // look for id3v2.4 at the end
-            var id3v2Check = @parser.peek:(String(3), @rem - %sizeOf(ID3v2Header()));
+            var id3v2Check = @parser.peek:(String(3), @rem - SizeOf:(ID3v2Header()));
             if (id3v2Check == "3DI") {
                 var id3v2Size = 8*(@parser.peek:(SynchsafeInteger(32), @rem - 32));
-                MP3Frames(@rem - id3v2Size) *;
-                ID3v2Tag *;
+                MP3Frames(@rem - id3v2Size) _;
+                ID3v2Tag _;
             } else {
-                MP3Frames *;
+                MP3Frames _;
             }
         }
     }

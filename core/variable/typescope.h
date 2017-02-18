@@ -16,6 +16,8 @@ class AbstractTypeScope : public VariableImplementation
 protected:
     AbstractTypeScope(VariableCollector& collector);
 
+    friend class TypeParameterVariableImplementation;
+
     virtual Variant doGetValue() override;
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
 

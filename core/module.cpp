@@ -136,8 +136,6 @@ void Module::setSpecification(const ObjectType& parent, const ObjectType& child)
     if (!parent.typeTemplate().isVirtual()) {
         Log::error("Cannot forward ",parent," to ",child," because ",parent.typeTemplate().name(), " is not virtual ");
     }
-    const ObjectType* parentPtr = new ObjectType(parent);
-    _automaticSpecifications.insert(std::make_pair(parentPtr, child));
 
     auto it = _specializers.find(const_cast<ObjectTypeTemplate*>(&parent.typeTemplate()));
     if (it == _specializers.end()) {        
@@ -225,39 +223,6 @@ Variable Module::getVariable(const std::string &name, VariableCollector &collect
     return Variable();
 }
 
-bool Module::canHandleFunction(const std::string& name) const
-{
-    if(doCanHandleFunction(name))
-        return true;
-
-    for(const Module* importedModule: _importedModulesChain)
-    {
-        if(importedModule->doCanHandleFunction(name))
-            return true;
-    }
-
-    return false;
-}
-
-const Module *Module::functionHandler(const std::string &name) const
-{
-    if(doCanHandleFunction(name))
-        return this;
-
-    for(const Module* importedModule: _importedModulesChain)
-    {
-        if(importedModule->doCanHandleFunction(name))
-            return importedModule;
-    }
-
-    return nullptr;
-}
-
-Variable Module::executeFunction(const std::string &name, const Variable &params) const
-{
-    return executeFunction(name, params, *this);
-}
-
 void Module::addFormatDetection(StandardFormatDetector::Adder &/*formatAdder*/)
 {
 
@@ -272,56 +237,6 @@ bool Module::doLoad()
     return true;
 }
 
-bool Module::load()
-{
-    if(!_loaded)
-    {
-        _loaded = doLoad();
-    }
-    return _loaded;
-}
-
-Variable Module::executeFunction(const std::string &name, const Variable &params, const Module &fromModule) const
-{
-    const Module* handlerModule = functionHandler(name);
-    if(handlerModule == nullptr)
-        return Variable();
-
-    return handlerModule->doExecuteFunction(name, params, fromModule);
-}
-
-const std::vector<std::string> &Module::getFunctionParameterNames(const std::string &name) const
-{
-    const Module* handlerModule = functionHandler(name);
-    if(handlerModule == nullptr)
-        return emptyParameterNames;
-
-    return handlerModule->doGetFunctionParameterNames(name);
-}
-
-const std::vector<bool> &Module::getFunctionParameterModifiables(const std::string &name) const
-{
-    const Module* handlerModule = functionHandler(name);
-    if(handlerModule == nullptr)
-        return emptyParameterModifiables;
-
-    return handlerModule->doGetFunctionParameterModifiables(name);
-}
-
-const std::vector<Variant> &Module::getFunctionParameterDefaults(const std::string &name) const
-{
-    const Module* handlerModule = functionHandler(name);
-    if(handlerModule == nullptr)
-        return emptyParameterDefaults;
-
-    return handlerModule->doGetFunctionParameterDefaults(name);
-}
-
-bool Module::isLoaded() const
-{
-    return _loaded;
-}
-
 ObjectTypeTemplate &Module::addTemplate(ObjectTypeTemplate* typeTemplate)
 {
     _ownedTemplates.push_back(std::unique_ptr<ObjectTypeTemplate>(typeTemplate));
@@ -334,64 +249,3 @@ void Module::addMethod(const std::string &name, ModuleMethod* method)
     _ownedMethods.push_back(std::unique_ptr<ModuleMethod>(method));
     _methods[name] = method;
 }
-
-void Module::addFunction(const std::string &name,
-                            const std::vector<std::string> &parameterNames,
-                            const std::vector<bool> &parameterModifiables,
-                            const std::vector<Variant> &parameterDefaults,
-                            const Module::Functor &functor)
-{
-    _functions[name] = std::make_tuple(parameterNames, parameterModifiables, parameterDefaults, functor);
-}
-
-bool Module::doCanHandleFunction(const std::string &name) const
-{
-    return _functions.find(name) != _functions.end();
-}
-
-Variable Module::doExecuteFunction(const std::string &name, const Variable &params, const Module &fromModule) const
-{
-    auto it = _functions.find(name);
-
-    if(it == _functions.end())
-        return Variable();
-
-    const Functor& function = std::get<3>(it->second);
-
-    return function(params, fromModule);
-}
-
-
-const std::vector<std::string> &Module::doGetFunctionParameterNames(const std::string &name) const
-{
-    auto it = _functions.find(name);
-
-    if(it == _functions.end())
-        return emptyParameterNames;
-
-    const std::vector<std::string>& parameterNames = std::get<0>(it->second);
-    return parameterNames;
-}
-
-const std::vector<bool> &Module::doGetFunctionParameterModifiables(const std::string &name) const
-{
-    auto it = _functions.find(name);
-
-    if(it == _functions.end())
-        return emptyParameterModifiables;
-
-    const std::vector<bool>& parameterNames = std::get<1>(it->second);
-    return parameterNames;
-}
-
-const std::vector<Variant> &Module::doGetFunctionParameterDefaults(const std::string &name) const
-{
-    auto it = _functions.find(name);
-
-    if(it == _functions.end())
-        return emptyParameterDefaults;
-
-    const std::vector<Variant>& parameterDefaults = std::get<2>(it->second);
-    return parameterDefaults;
-}
-

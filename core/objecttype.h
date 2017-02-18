@@ -57,7 +57,6 @@ public:
      * Raise an exception if out of bound
      */
     const Variant& parameterValue(size_t index) const;
-    Variant& parameterValue(size_t index);
 
     /**
      * @brief Check if a parameter is non-null

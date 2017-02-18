@@ -40,3 +40,8 @@ Variable MethodScope::doGetField(const Variant &key, bool, bool createIfNeeded)
         return Variable();
     }
 }
+
+bool MethodScope::isByRefOnly()
+{
+    return true;
+}

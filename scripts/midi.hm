@@ -24,7 +24,7 @@ class MidiFile as File,
 {
 	@endianness = "bigEndian";
 
-	while(1) MidiChunk *;
+	while(1) MidiChunk _;
 }
 
 virtual class MidiChunk(type, extended_type)

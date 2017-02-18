@@ -35,14 +35,13 @@ protected:
 UndefinedVariableImplementation undefinedVariableImplementation;
 
 Variable::Variable()
-    :_implementation(&undefinedVariableImplementation),
-     _tag(Variable::Tag::undefined)
+    :_implementation(&undefinedVariableImplementation)
 {
 }
 
-Variable::Variable(VariableImplementation *implementation, bool modifiable)
+Variable::Variable(VariableImplementation *implementation, bool modifiable, bool byRef)
     : _implementation(implementation),
-      _tag(modifiable ? Variable::Tag::modifiable : Variable::Tag::constant)
+      _tag(modifiable, byRef)
 
 {
     implementation->collector().registerVariable(implementation);
@@ -50,46 +49,46 @@ Variable::Variable(VariableImplementation *implementation, bool modifiable)
 
 Variable::Variable(const Variable &variable)
     : _implementation(variable._implementation),
-      _tag(variable._tag)
+      _tag(variable._tag.data)
 {
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().addDirectlyAccessible(_implementation);
     }
 }
 
 Variable::Variable(Variable &&variable)
     : _implementation(variable._implementation),
-      _tag(variable._tag)
+      _tag(variable._tag.data)
 {
-    variable._tag = Tag::undefined;
+    variable._tag.data = 0;
 }
 
 Variable::Variable(const VariableMemory &variable)
     : _implementation(variable._implementation),
-      _tag(variable._tag)
+      _tag(variable._tag.data)
 {
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().addDirectlyAccessible(_implementation);
     }
 }
 
 Variable::~Variable()
 {
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().removeDirectlyAccessible(_implementation);
     }
 }
 
 Variable &Variable::operator =(const Variable& rhs)
 {
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().removeDirectlyAccessible(_implementation);
     }
 
     _implementation = rhs._implementation;
-    _tag = rhs._tag;
+    _tag.data = rhs._tag.data;
 
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().addDirectlyAccessible(_implementation);
     }
 
@@ -98,13 +97,13 @@ Variable &Variable::operator =(const Variable& rhs)
 
 Variable &Variable::operator =(Variable &&rhs)
 {
-    if (_tag != Tag::undefined) {
+    if (_tag.flags.defined) {
         _implementation->collector().removeDirectlyAccessible(_implementation);
     }
 
     _implementation = rhs._implementation;
-    _tag = rhs._tag;
-    rhs._tag = Tag::undefined;
+    _tag.data = rhs._tag.data;
+    rhs._tag.data = 0;
 
     return *this;
 }
@@ -116,7 +115,7 @@ Variant Variable::value() const
 
 void Variable::setValue(const Variant &value) const
 {
-    if (_tag == Tag::modifiable) {
+    if (_tag.flags.modifiable) {
         _implementation->doSetValue(value);
     } else {
         Log::warning("Trying to set the value of a constant variable");
@@ -125,7 +124,7 @@ void Variable::setValue(const Variant &value) const
 
 Variable Variable::field(const Variant &key, bool modifiable, bool createIfNeeded) const
 {
-    modifiable = modifiable && (_tag == Tag::modifiable);
+    modifiable = modifiable && _tag.flags.modifiable;
 
     Variable result = _implementation->doGetField(key, modifiable, modifiable && createIfNeeded);
 
@@ -139,12 +138,12 @@ Variable Variable::field(const Variant &key, bool modifiable, bool createIfNeede
 Variable Variable::field(const VariablePath &path, bool modifiable, bool createIfNeeded) const
 {
     auto implementation = &_implementation;
-    modifiable = modifiable && (_tag == Tag::modifiable);
+    modifiable = modifiable  && _tag.flags.modifiable;
     Variable result = (*implementation)->doGetField(path[0], modifiable, modifiable && createIfNeeded);
 
     for (auto it = ++path.cbegin(); it != path.cend(); ++it) {
         implementation = &result._implementation;
-        modifiable = modifiable && (result._tag == Tag::modifiable);
+        modifiable = modifiable  && _tag.flags.modifiable;
 
         result = (*implementation)->doGetField(*it, modifiable, modifiable && createIfNeeded);
     }
@@ -158,7 +157,7 @@ Variable Variable::field(const VariablePath &path, bool modifiable, bool createI
 
 void Variable::setField(const Variant &key, const Variable &variable) const
 {
-    if (_tag == Tag::modifiable) {
+    if (_tag.flags.modifiable) {
         _implementation->doSetField(key, variable);
     } else {
         Log::warning("Trying to set a field on a constant variable");
@@ -169,7 +168,7 @@ void Variable::setField(const VariablePath &path, const Variable &variable) cons
 {
     try {
         auto implementation = &_implementation;
-        if (_tag != Tag::modifiable) {
+        if (!_tag.flags.modifiable) {
             throw Error::constModification;
         }
 
@@ -178,7 +177,7 @@ void Variable::setField(const VariablePath &path, const Variable &variable) cons
 
             Variable field = (*implementation)->doGetField(*it, true, true);
             implementation = &(field._implementation);
-            if (field._tag != Tag::modifiable) {
+            if (!_tag.flags.modifiable) {
                 throw Error::constModification;
             }
         }
@@ -192,7 +191,7 @@ void Variable::setField(const VariablePath &path, const Variable &variable) cons
 
 void Variable::removeField(const Variant &key) const
 {
-    if (_tag == Tag::modifiable) {
+    if (_tag.flags.modifiable) {
         _implementation->doRemoveField(key);
     } else {
         Log::warning("Trying to set a field on a constant variable");
@@ -203,7 +202,7 @@ void Variable::removeField(const VariablePath &path) const
 {
     try {
         auto implementation = &_implementation;
-        if (_tag != Tag::modifiable) {
+        if (!_tag.flags.modifiable) {
             throw Error::constModification;
         }
 
@@ -212,7 +211,7 @@ void Variable::removeField(const VariablePath &path) const
 
             Variable field = (*implementation)->doGetField(*it, true, true);
             implementation = &(field._implementation);
-            if (field._tag != Tag::modifiable) {
+            if (!_tag.flags.modifiable) {
                 throw Error::constModification;
             }
         }
@@ -227,18 +226,6 @@ void Variable::removeField(const VariablePath &path) const
 Variable Variable::call(VariableArgs &args, VariableKeywordArgs &kwargs) const
 {
     return _implementation->doCall(args, kwargs);
-}
-
-void Variable::setConstant()
-{
-    if (_tag == Tag::modifiable) {
-        _tag = Tag::constant;
-    }
-}
-
-bool Variable::isDefined() const
-{
-    return _tag != Tag::undefined;
 }
 
 VariableCollector &Variable::collector() const
@@ -256,25 +243,26 @@ void swap(Variable &first, Variable &second)
     // by swapping the members of two classes,
     // the two classes are effectively swapped
     swap(first._implementation, second._implementation);
-    swap(first._tag, second._tag);
+    swap(first._tag.data, second._tag.data);
 }
 
 
 VariableMemory::VariableMemory()
-    : _implementation(&undefinedVariableImplementation),
-      _tag(Variable::Tag::undefined)
+    : _implementation(&undefinedVariableImplementation)
 {
 }
 
 VariableMemory::VariableMemory(const Variable &variable)
     : _implementation(variable._implementation),
-      _tag(variable._tag)
+      _tag(variable._tag.data)
 {
 }
 
+VariableTag defaultDefinedTag(true, false);
+
 VariableMemory::VariableMemory(VariableImplementation *implementation)
     : _implementation(implementation),
-      _tag(implementation == &undefinedVariableImplementation ? Variable::Tag::undefined : Variable::Tag::modifiable)
+      _tag(implementation == &undefinedVariableImplementation ? 0 : defaultDefinedTag.data)
 {
 }
 
@@ -317,6 +305,11 @@ Variable VariableImplementation::doCall(VariableArgs &/*args*/, VariableKeywordA
 {
     Log::warning("Trying call a variable that cannot be called");
     return Variable();
+}
+
+bool VariableImplementation::isByRefOnly()
+{
+    return false;
 }
 
 VariableImplementation::VariableImplementation()

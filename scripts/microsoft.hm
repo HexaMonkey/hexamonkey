@@ -49,7 +49,7 @@ class RGBQUAD {
     BYTE rgbRed;
     BYTE rgbReserved;
   
-   @attr.code = "#"+%str(rgbRed, 16, 2)+%str(rgbGreen, 16, 2)+%str(rgbBlue, 16, 2);
+   @attr.code = Format:("#{:x2}{:x2}{:x2}", rgbRed, rgbGreen, rgbBlue);
 }
 
 class RGBTRIPLE {
@@ -57,7 +57,7 @@ class RGBTRIPLE {
     BYTE rgbGreen;
     BYTE rgbRed;
     
-    @attr.code = "#"+%str(rgbRed, 16, 2)+%str(rgbGreen, 16, 2)+%str(rgbBlue, 16, 2);
+    @attr.code = Format:("#{:x2}{:x2}{:x2}", rgbRed, rgbGreen, rgbBlue);
 }
 
 class BSTR, BZSTR
@@ -88,7 +88,7 @@ class REVERSED_FOURCC extends Tuple(BYTE(), 4)
 	@value = "";
 	for (var i = 3; i >= 0; --i) {
 		if (self[i]) {
-			@value += %fromAscii(self[i]);
+			@value += FromAscii:(self[i]);
 		}
 	}
 }
@@ -97,15 +97,15 @@ class BITS(size) extends Bitset(size)
 
 class QWORD_DATE extends QWORD
 {
-    @attr[] = %formatDate(@value/10000000 - 11644473600);
+    @attr[] = FormatDate:(@value/10000000 - 11644473600);
 }
 
 class QWORD_DURATION extends QWORD
 {
-    @attr[] = %formatDuration(@value/10000000);
+    @attr[] = FormatDuration:(@value/10000000);
 }
 
 class QWORD_DURATION_MILLI extends QWORD
 {
-    @attr[] = %formatDuration(@value/1000);
+    @attr[] = FormatDuration:(@value/1000);
 }

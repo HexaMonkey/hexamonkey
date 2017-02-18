@@ -24,7 +24,7 @@ class Mp4File as File
 {
 	@endianness = "bigEndian";
 
-	while(1) Box *;
+	while(1) Box _;
 }
 
 virtual class Box(boxtype, extended_type)
@@ -89,7 +89,7 @@ class ProgressiveDownloadInfoBox extends FullBox as Box("pdin")
 
 class MovieBox as Box("moov")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class MovieHeaderBox extends FullBox as Box("mvhd")
@@ -111,7 +111,7 @@ class MovieHeaderBox extends FullBox as Box("mvhd")
 
 class TrackBox as Box("trak")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class TrackHeaderBox extends FullBox as Box("tkhd")
@@ -136,7 +136,7 @@ class TrackHeaderBox extends FullBox as Box("tkhd")
 
 class TrackReferenceBox as Box("tref")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 forward Box("hint") to TrackReferenceTypeBox
@@ -171,7 +171,7 @@ class TrackReferenceTypeBox extends Box
 
 class MediaBox as Box("mdia")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class MediaHeaderBox extends FullBox as Box("mdhd")
@@ -196,7 +196,7 @@ class HandlerBox extends FullBox as Box("hdlr")
 
 class MediaInformationBox as Box("minf")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class VideoMediaHeaderBox extends FullBox as Box('vmhd')
@@ -224,7 +224,7 @@ class NullMediaHeaderBox extends FullBox as Box("nmhd")
 
 class SampleTableBox as Box("stbl")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class SampleEntry(format) extends Box(format)
@@ -252,14 +252,14 @@ class XMLMetaDataSampleEntry as MetaDataSampleEntry("metx")
 	string content_encoding;
 	string namespace;
 	string schema_location;
-	BitRateBox *;
+	BitRateBox _;
 }
 
 class TextMetaDataSampleEntry as MetaDataSampleEntry("mett")
 {
 	string content_encoding;
 	string mime_format;
-	BitRateBox *;
+	BitRateBox _;
 }
 
 class PixelAspectRatioBox as Box("pasp")
@@ -305,7 +305,7 @@ class VisualSampleEntry extends SampleEntry
 	string(32)          reserved;
 	uint(16)            depth;
 	int(16)             pre_defined;
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class AudioSampleEntry extends SampleEntry
@@ -324,15 +324,15 @@ class SampleDescriptionBox extends FullBox as Box("stsd")
 
 	var handler_type = @parent.@parent.@parent[HandlerBox()].handler_type;
 	if(handler_type == "soun")
-		while(1) AudioSampleEntry *;
+		while(1) AudioSampleEntry _;
 	else if(handler_type == "vide")
-		while(1) VisualSampleEntry *;
+		while(1) VisualSampleEntry _;
 	else if(handler_type == "hint")
-		while(1) HintSampleEntry *;
+		while(1) HintSampleEntry _;
 	else if(handler_type == "meta")
-		while(1) MetadataSampleEntry *;
+		while(1) MetadataSampleEntry _;
 	else
-		while(1) Box *;
+		while(1) Box _;
 }
 
 class DegradationPriorityBox extends FullBox as Box("stdp")
@@ -406,7 +406,7 @@ class SampleDependencyTypeBox extends FullBox as Box("sdtp")
 
 class EditBox as Box("edts")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class EditListEntry(size) extends Data(2*size+32)
@@ -425,7 +425,7 @@ class EditListBox extends FullBox as Box("elst")
 
 class DataInformationBox as Box("dinf")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class DataEntryUrlBox extends FullBox as Box("url ")
@@ -444,7 +444,7 @@ class DataEntryUrnBox extends FullBox as Box("urn ")
 class DataReferenceBox extends FullBox as Box("dref")
 {
 	uint(32) entry_count;
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class SampleSizeBox extends FullBox as Box("stsz")
@@ -519,7 +519,7 @@ class SampleInformationEntry(size)
 {
 	uint(32) sample_delta;
 	uint(16) subsample_count;
-	@size =  48+(%sizeof(SubSampleInformationEntry(@args.size)) * subsample_count);
+	@size =  48+(SizeOf:(SubSampleInformationEntry(@args.size)) * subsample_count);
 	SubSampleInformationEntry(@args.size) subsamples[subsample_count];
 }
 
@@ -531,7 +531,7 @@ class SubSampleInformationBox extends FullBox as Box("subs")
 
 class MovieExtendsBox as Box("mvex")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class MovieExtendsHeaderBox extends FullBox as Box("mehd")
@@ -561,7 +561,7 @@ class TrackExtendsBox extends FullBox as Box("trex")
 
 class MovieFragmentBox as Box("moof")
 {	
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class MovieFragmentHeaderBox extends FullBox as Box("mfhd")
@@ -571,7 +571,7 @@ class MovieFragmentHeaderBox extends FullBox as Box("mfhd")
 
 class TrackFragmentBox as Box("traf")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class TrackFragmentHeaderBox extends FullBox as Box("tfhd")
@@ -589,7 +589,7 @@ class TrackFragmentHeaderBox extends FullBox as Box("tfhd")
 		SampleFlags default_sample_flags; 
 }
 
-class TrackRunEntry(flags) extends Data(32*%popCount(flags))
+class TrackRunEntry(flags) extends Data(32*PopCount:(flags))
 {
 	if(@args.flags & 0x000100)
 		duration(32) sample_duration;
@@ -614,7 +614,7 @@ class TrackRunBox extends FullBox as Box("trun")
 
 class MovieFragmentRandomAccessBox as Box("mfra")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class TrackFragmentRandomAccessEntry(size, traf_size, trun_size, sample_size)
@@ -661,7 +661,7 @@ class SampleToGroupBox extends FullBox as Box("sbgp")
 
 class UserDataBox as Box("udta")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class CopyrightBox extends FullBox("cprt")
@@ -678,7 +678,7 @@ class TrackSelectionBox extends FullBox as Box("tsel")
 
 class MetaBox extends FullBox as Box("meta")
 {
-	while(1) Box *;
+	while(1) Box _;
 } 
 
 class XMLBox extends FullBox as Box("xml ")
@@ -761,7 +761,7 @@ class ItemInfoBox extends FullBox as Box("iinf")
 
 class AdditionalMetadataContainerBox as Box("meco")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class MetaboxRelationBox extends FullBox as Box("mere")
@@ -773,7 +773,7 @@ class MetaboxRelationBox extends FullBox as Box("mere")
 
 class ProtectionSchemeInfoBox as Box("sinf")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class OriginialFormatBox as Box("frma")
@@ -803,19 +803,19 @@ class SchemeTypeBox extends FullBox as Box("schm")
 
 class SchemeInformationBox as Box("schii")
 {
-	while(1) Box *;
+	while(1) Box _;
 }
 
 class PartitionEntry as Box('paen') 
 { 
-	while(1) Box *;
+	while(1) Box _;
 } 
  
 class FDItemInformationBox extends FullBox as Box("fiin") 
 { 
 	uint(16)  entry_count; 
 	PartitionEntry   partition_entries[entry_count]; 
-    while(1) Box *;
+    while(1) Box _;
 }
 
 class FilePartitionBlock
@@ -939,13 +939,13 @@ class AVCConfigurationBox as Box("avcC")
 
 class ItunesDescriptionBox as Box("ilst")
 {
-	while(1) ItunesTagBox *;
+	while(1) ItunesTagBox _;
 }
 
 class ItunesTagBox(tag) extends Box
 {
-	if(%toAscii(type) & 0x80) //if the first letter is (c) it is replaced by c
-		@args.tag = "c"+%substr(type, 1, 3);
+	if(ToAscii:(type) & 0x80) //if the first letter is (c) it is replaced by c
+		@args.tag = "c"+Substring:(type, 1, 3);
 	else
 		@args.tag = type;
 		
@@ -1031,20 +1031,20 @@ class string(size) extends String(size)
 
 class date(size) extends uint(size)
 {
-	@attr[] = %formatDate(@value - 2082844800);
+	@attr[] = FormatDate:(@value - 2082844800);
 }
 
 class duration(size, scale) extends uint(size)
 {
 	if(!@args.scale)
-		@attr[] = %formatDuration(@value);
+		@attr[] = FormatDuration:(@value);
 	else
-		@attr[] = %formatDuration(@value/@args.scale);
+		@attr[] = FormatDuration:(@value/@args.scale);
 }
 
 class fixedPoint(dec, frac) extends int(dec+frac)
 {
-	@value = %float(@value)/(1<<@args.frac);
+	@value = ToFloat:(@value)/(1<<@args.frac);
 }
 
 class language extends uint(16)
@@ -1052,7 +1052,7 @@ class language extends uint(16)
 	var code = "";
 	for(var i = 2; i >= 0; --i)
 	{
-		code += %fromAscii(((@value>>(5*i))&0b11111) + 0x60);
+		code += FromAscii:(((@value>>(5*i))&0b11111) + 0x60);
 	}
 	@attr.code = code;
 }

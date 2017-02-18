@@ -42,7 +42,7 @@ void VariableCollector::collect()
 
         do {
             _directlyAccessible[i]->collect([this] (VariableMemory& variable) {
-                if (variable._tag != Variable::Tag::undefined) {
+                if (variable._tag.flags.defined) {
                     VariableImplementation* implementation = variable._implementation;
                     auto& isAccessible = _accessibility[implementation];
                     if (!isAccessible) {

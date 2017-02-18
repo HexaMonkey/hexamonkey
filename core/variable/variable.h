@@ -38,6 +38,22 @@ typedef std::unordered_map<std::string, Variable> VariableKeywordArgs;
 typedef std::function<Variable(const VariableArgs&, const VariableKeywordArgs&)> VariableLambda;
 typedef std::function<void (VariableMemory &)> VariableAdder;
 
+union VariableTag {
+    VariableTag() : data(0) {}
+    VariableTag(int32_t data) : data(data) {}
+    VariableTag(bool modifiable, bool byRef) : flags(modifiable, byRef) {}
+
+    int32_t data;
+    struct Flags {
+        Flags(bool modifiable, bool byRef) : defined(1), modifiable(modifiable), byRef(byRef) {}
+
+        int8_t defined;
+        int8_t modifiable;
+        int8_t byRef;
+        int8_t padding;
+    } flags;
+};
+
 /**
  * @brief Accesser (getter and setter) for a value
  *
@@ -61,7 +77,7 @@ public:
      * @param implementation Must be a new created instance of a subclass of \link VariableImplementation variable implementation\endlink
      * @param modifiable
      */
-    Variable(VariableImplementation* implementation, bool modifiable);
+    Variable(VariableImplementation* implementation, bool modifiable, bool byRef = false);
 
     Variable(const Variable& variable);
     Variable(Variable&& variable);
@@ -123,12 +139,18 @@ public:
     /**
      * @brief Set the variable as constant which prevents modification of the value
      */
-    void setConstant();
+    void setConstant()
+    {
+        _tag.flags.modifiable = false;
+    }
 
     /**
      * @brief Check if the variable not been constructed by the default constructor.
      */
-    bool isDefined() const;
+    inline bool isDefined() const
+    {
+        return _tag.flags.defined;
+    }
 
     VariableCollector& collector() const;
 
@@ -136,12 +158,11 @@ public:
 private:
     friend class VariableMemory;
     friend class VariableCollector;
-    enum class Tag {undefined = 0, constant = 1, modifiable = 2};
 
     enum class Error {constModification};
 
     VariableImplementation* _implementation;
-    Tag _tag;
+    VariableTag _tag;
 };
 
 void swap(Variable &first, Variable &second);
@@ -160,7 +181,7 @@ private:
     VariableMemory(VariableImplementation* implementation); /*=>*/ friend class VariableImplementation;
 
     VariableImplementation* _implementation;
-    Variable::Tag _tag;
+    VariableTag _tag;
 
 };
 
@@ -191,6 +212,8 @@ protected:
     virtual void doRemoveField(const Variant& key);
 
     virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &kwargs);
+    
+    virtual bool isByRefOnly();
 private:
     VariableImplementation(); /* <--- */ friend class UndefinedVariableImplementation;
 

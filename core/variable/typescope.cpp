@@ -18,6 +18,43 @@ const std::unordered_map<std::string, int> reserved = {
     {"@name", A_NAME}
 };
 
+/**
+ * @brief Basic variable implentation owning a \link Variant value\endlink by copy
+ */
+class TypeParameterVariableImplementation : public VariableImplementation
+{
+public:
+    TypeParameterVariableImplementation(VariableCollector& variableCollector, VariableMemory memory, AbstractTypeScope& typeScope, int index) :
+        VariableImplementation(variableCollector),
+        _memory(memory),
+        _typeScope(typeScope),
+        _index(index)
+    {
+
+    }
+
+protected:
+    virtual void doSetValue(const Variant& value) override
+    {
+        _typeScope.modifiableType()->setParameter(_index, value);
+    }
+
+    virtual Variant doGetValue() override
+    {
+        return _typeScope.constType().parameterValue(_index);
+    }
+
+    virtual void collect(const std::function<void(VariableMemory&)>& addAccessible)
+    {
+        addAccessible(_memory);
+    }
+
+private:
+    VariableMemory _memory;
+    AbstractTypeScope& _typeScope;
+    int _index;
+};
+
 class ConstTypeNameVariableImplementation : public VariableImplementation
 {
 public:
@@ -81,7 +118,6 @@ Variant AbstractTypeScope::doGetValue()
 
 Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool createIfNeeded)
 {
-    ObjectType* mType = modifiable ? modifiableType() : nullptr;
     const ObjectType& cType = constType();
 
     int64_t parameterIndex = -1LL;
@@ -145,14 +181,15 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
     }
 
     if (parameterIndex != -1) {
-        if(mType) {
-            return collector().ref(mType->parameterValue(parameterIndex));
-        } else {
-            return collector().copy(cType.parameterValue(parameterIndex));
-        }
+        return Variable(new TypeParameterVariableImplementation(collector(), memory(), *this, parameterIndex), modifiable);
     } else {
         return Variable();
     }
+}
+
+bool AbstractTypeScope::isByRefOnly()
+{
+    return true;
 }
 
 TypeScope::TypeScope(VariableCollector& collector, ObjectType &type, bool modifiable)

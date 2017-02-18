@@ -40,7 +40,7 @@ virtual class OBJECT(Id)
 class AsfFile as File
 {
 	@endianness = "littleEndian";
-	while(1) OBJECT *;
+	while(1) OBJECT _;
 }
 
 // 3. Top-level Header Object
@@ -51,7 +51,7 @@ class HeaderObject as OBJECT("75B22630-668E-11CF-A6D9-00AA0062CE6C")
 	DWORD NumberOfHeaderObjects;
 	BYTE Reserved1;
 	BYTE Reserved2;
-	while(1) OBJECT *;
+	while(1) OBJECT _;
 }
 
 //// 3.2 File Properties Object
@@ -113,7 +113,7 @@ class HeaderExtensionObject as OBJECT("5FBF03B5-A92E-11CF-8EE3-00C00C205365")
     }  ReservedField1;
 	WORD  ReservedField2;
 	DWORD HeaderExtensionDataSize;
-	while(1) OBJECT *;
+	while(1) OBJECT _;
 }
 
 //// 3.5 Codec List Object
@@ -350,7 +350,7 @@ class ExtendedStreamPropertiesObject as OBJECT("14E6A5CB-C672-4332-8399-A9695206
 	WORD  PayloadExtensionSystemCount;
 	StreamName StreamNames[StreamNameCount];
 	PayloadExtensionSystem PayloadExtensionSystems[PayloadExtensionSystemCount];
-	while(1) OBJECT *;
+	while(1) OBJECT _;
 }
 
 class StreamName
@@ -597,14 +597,16 @@ class DataPacket(_size) extends Data(_size)
 	BITS(2) ReplicatedDataLengthType;
 	
 	// put types in context variables to be used when parsing payloads
-	@context.MediaObjectNumberType = %WORDTYPE(MediaObjectNumberType);
-	@context.OffsetIntoMediaObjectLengthType = %WORDTYPE(OffsetIntoMediaObjectLengthType);
-	@context.ReplicatedDataLengthType = %WORDTYPE(ReplicatedDataLengthType);
+	@context.MediaObjectNumberType = WordType:(MediaObjectNumberType);
+	@context.OffsetIntoMediaObjectLengthType = WordType:(OffsetIntoMediaObjectLengthType);
+	@context.ReplicatedDataLengthType = WordType:(ReplicatedDataLengthType);
 	
-	(%WORDTYPE(PacketLengthType))  PacketLength;
-	(%WORDTYPE(SequenceType))      Sequence;
-	(%WORDTYPE(PaddingLengthType)) PaddingLength;
-	var paddingLength = PaddingLength ? 8*PaddingLength : 0;
+	(WordType:(PacketLengthType))  PacketLength;
+	(WordType:(SequenceType))      Sequence;
+	(WordType:(PaddingLengthType)) PaddingLength;
+	
+	var paddingLength = 0;
+	if (PaddingLength) paddingLength = 8*PaddingLength;
 	DWORD SendTime;
 	WORD  Duration;
 	
@@ -612,7 +614,7 @@ class DataPacket(_size) extends Data(_size)
 	{
 		////// 5.2.3.3 & 5.2.3.4 Multiple Payload
 		BITS(2) PayloadLengthType;
-		@context.PayloadLengthType = %WORDTYPE(PayloadLengthType);
+		@context.PayloadLengthType = WordType:(PayloadLengthType);
 		
 		BITS(6) NumberOfPayloads;
 		MultiplePayloadData(NumberOfPayloads, @rem - paddingLength) Payloads;
@@ -626,7 +628,7 @@ class DataPacket(_size) extends Data(_size)
 	}
 }
 
-function WORDTYPE(const flags)
+function WordType(const flags)
 {
 	if(flags == 0b00)
 		return null;
@@ -811,7 +813,7 @@ class VideoMedia as Media("BC19EFC0-5B4D-11CF-A8FD-00805F5C442B")
 	DWORD EncodedImageHeight;
 	BYTE  ReservedFlags;
 	WORD  FormatDataSize;
-	VideoFormatData *;
+	VideoFormatData _;
 }
 
 class VideoFormatData

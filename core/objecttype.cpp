@@ -47,10 +47,7 @@ const Variant& ObjectType::parameterValue(size_t index) const
     }
 }
 
-Variant &ObjectType::parameterValue(size_t index)
-{
-    return _parametersValue[index];
-}
+
 
 bool ObjectType::parameterSpecified(size_t index) const
 {

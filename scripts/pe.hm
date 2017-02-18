@@ -211,15 +211,15 @@ class IMAGE_SECTIONS(count) with {elemType:IMAGE_SECTION(), elemCount:count}
 			var sectionSize          = 0;
 			var sectionVirtualOffset = 0;
 		}
-		IMAGE_SECTION(sectionName, sectionSize, sectionVirtualOffset) *;
+		IMAGE_SECTION(sectionName, sectionSize, sectionVirtualOffset) _;
 	}
 }
 
 virtual class IMAGE_DIRECTORY_ENTRY(index, _size) extends Data(-1)
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Export table
-//*********************************************************
+///////////////////////////////////////////////////////////
 class IMAGE_DIRECTORY_ENTRY_EXPORT as IMAGE_DIRECTORY_ENTRY(0)
 {
 	IMAGE_EXPORT_DIRECTORY _directory;
@@ -278,9 +278,9 @@ class IMAGE_EXPORT_NAMES(count) extends Data(-1) with {elemType:String(), elemCo
 	}
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Import table
-//*********************************************************
+///////////////////////////////////////////////////////////
 class IMAGE_DIRECTORY_ENTRY_IMPORT as IMAGE_DIRECTORY_ENTRY(1)
 {
 	IMAGE_IMPORT_DESCRIPTORS _descriptors;
@@ -412,9 +412,9 @@ class IMAGE_IMPORT_BY_NAMES(count) extends Data(-1)
 	}
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Resource
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_RESOURCE as IMAGE_DIRECTORY_ENTRY(2)
 {
@@ -461,7 +461,7 @@ class IMAGE_RESOURCE_ENTRY
 		var id = @attr.id = resource.integerId;
 		if (level == 1) {
 			if (@global.resourceTypeArray == undefined) {
-				@global.resourceTypeArray := %createResourceTypeArray();
+				@global.resourceTypeArray := CreateResourceTypeArray:();
 			}
 			var type = @global.resourceTypeArray[id];
 			if (type != undefined) {
@@ -469,7 +469,7 @@ class IMAGE_RESOURCE_ENTRY
 			}
 		} else if (level == 3) {
 			if (@global.resourceLanguageMap == undefined) {
-				@global.resourceLanguageMap := %createResourceLanguageMap();
+				@global.resourceLanguageMap := CreateResourceLanguageMap:();
 			}
 			var language = @global.resourceLanguageMap[id];
 			if (language != undefined) {
@@ -558,7 +558,7 @@ class ResourceRVA extends DWORD(16)
 	@linkTo = @context.resourceRVAOffset + 8*@value;
 }
 
-function createResourceTypeArray()
+function CreateResourceTypeArray()
 {
 	return [
 		undefined,
@@ -589,7 +589,7 @@ function createResourceTypeArray()
 	];
 }
 
-function createResourceLanguageMap()
+function CreateResourceLanguageMap()
 {
 	return {
 		0x0C00 : "Default custom locale language",
@@ -817,21 +817,21 @@ function createResourceLanguageMap()
 	};
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Exception
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_EXCEPTION as IMAGE_DIRECTORY_ENTRY(3)
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Security
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_SECURITY as IMAGE_DIRECTORY_ENTRY(4)
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Relocation table
-//*********************************************************
+///////////////////////////////////////////////////////////
 class IMAGE_DIRECTORY_ENTRY_BASERELOC as IMAGE_DIRECTORY_ENTRY(5)
 {
 	do {
@@ -844,7 +844,7 @@ class IMAGE_BASE_RELOCATION
 	DWORD VirtualAddress;
 	DWORD SizeOfBlock;
 	if (SizeOfBlock) {
-		IMAGE_BASE_RELOCATION_ITEM _items [(8*SizeOfBlock-@pos)/%sizeof(WORD())];
+		IMAGE_BASE_RELOCATION_ITEM _items [(8*SizeOfBlock-@pos)/SizeOf:(WORD())];
 	}
 }
 
@@ -854,27 +854,27 @@ class IMAGE_BASE_RELOCATION_ITEM extends WORD
 	@value &= 0x0fff;
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Debug
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_DEBUG as IMAGE_DIRECTORY_ENTRY(6)
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Copyright
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_COPYRIGHT as IMAGE_DIRECTORY_ENTRY(7)
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // Global ptr
-//*********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_EXCEPTION as IMAGE_DIRECTORY_ENTRY(8)
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // Thread local storage
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_TLS as IMAGE_DIRECTORY_ENTRY(9)
 {
@@ -901,21 +901,21 @@ class IMAGE_TLS_DIRECTORY32
     DWORD   Characteristics;
 }
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // Load configuration
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG as IMAGE_DIRECTORY_ENTRY(10)
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // Bound import
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_BOUND_IMPORT as IMAGE_DIRECTORY_ENTRY(11)
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // Import address table
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_IAT as IMAGE_DIRECTORY_ENTRY(12)
 {
@@ -929,14 +929,14 @@ class IMAGE_DIRECTORY_ENTRY_IAT as IMAGE_DIRECTORY_ENTRY(12)
 	}
 }
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // Delay import descriptor
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_DELAY as IMAGE_DIRECTORY_ENTRY(13)
 
-//********************************************************
+///////////////////////////////////////////////////////////
 // COM+ Runtime Header
-//********************************************************
+///////////////////////////////////////////////////////////
 
 class IMAGE_DIRECTORY_ENTRY_COM as IMAGE_DIRECTORY_ENTRY(14)

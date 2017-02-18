@@ -323,7 +323,7 @@ class ScriptDateValue as ScriptDataValue(11)
     double dateTime;
     SI(16) localDateTimeOffset;
     
-    @attr[] = %formatDate(%int(dateTime/1000));
+    @attr[] = FormatDate:(ToInt:(dateTime/1000));
 }
 
 class ScriptLongStringValue as ScriptDataValue(12)

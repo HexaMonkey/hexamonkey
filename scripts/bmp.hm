@@ -66,21 +66,20 @@ class BmpFile as File,
 			} else if (bitsPerPixel == 32) {
 				pixelType = Win3xPaletteElement();
 			} else {
-				%error("Invalid number of pixels "+bitsPerPixel);
+				Error:("Invalid number of pixels {}", bitsPerPixel);
 			}
 		} else { // Bitfields
 		
 			if (version == 3) {
-				pixelType = %getBitfieldRGB(bitsPerPixel, _bitFieldMasks);
+				pixelType = GetBitfieldRGB:(bitsPerPixel, _bitFieldMasks);
 			} else if (version >= 4) {
-				pixelType = %getBitfieldRGB(bitsPerPixel, _bitmapHeader);
+				pixelType = GetBitfieldRGB:(bitsPerPixel, _bitmapHeader);
 			} else {
-				%error("Bit field compression not supported on version "+version);	
+				Error:("Bit field compression not supported on version {}", version);	
 			}
 		}
 		
-		var rowSize = %pad(%sizeof(pixelType) * width, 32);
-		%log("Row size "+%sizeof(pixelType));
+		var rowSize = Pad:(SizeOf:pixelType * width, 32);
 		PixelRow(width, pixelType, rowSize) PixelData[height];
 		
 	} else if (compression == 1 || compression == 2) { // RLE
@@ -112,7 +111,7 @@ class Win3xPaletteElement
 	BYTE Red;       /* Red component */
 	BYTE Reserved;  /* Padding (always 0) */
 	
-	@attr.code = "#"+%str(Red, 16, 2)+%str(Green, 16, 2)+%str(Blue, 16, 2);
+	@attr.code = Format:("#{:x2}{:x2}{:x2}", Red, Green, Blue);
 }
 
 class WinBitmapHeader
@@ -216,7 +215,7 @@ class RGB
 	BYTE Blue;
 	BYTE Green;
 	BYTE Red;
-	@attr.code = "#"+%str(Red, 16, 2)+%str(Green, 16, 2)+%str(Blue, 16, 2);
+	@attr.code = Format:("#{:x2}{:x2}{:x2}", Red, Green, Blue);
 }
 
 class BitfieldRGB(redCount, greenCount, blueCount, 
@@ -224,11 +223,11 @@ class BitfieldRGB(redCount, greenCount, blueCount,
 				  _redMask, _greenMask, _blueMask, 
 				  _redShift, _greenShift, _blueShift) extends uint(_bitsPerPixel, 16)
 {	
-	var red   = %maskedColor(@value, @args._redMask,   @args._redShift,   @args.redCount);
-	var green = %maskedColor(@value, @args._greenMask, @args._greenShift, @args.greenCount);
-	var blue  = %maskedColor(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
+	var red   = MaskedColor:(@value, @args._redMask,   @args._redShift,   @args.redCount);
+	var green = MaskedColor:(@value, @args._greenMask, @args._greenShift, @args.greenCount);
+	var blue  = MaskedColor:(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
 
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2);
+	@attr.code = Format("#{:x2}{:x2}{:x2}", red, green, blue);
 }
 
 class BitfieldRGBA(redCount, greenCount, blueCount, alphaCount, 
@@ -236,31 +235,34 @@ class BitfieldRGBA(redCount, greenCount, blueCount, alphaCount,
 				   _redMask, _greenMask, _blueMask, _alphaMask, 
 				   _redShift, _greenShift, _blueShift, _alphaShift) extends uint(_bitsPerPixel, 16)
 {	
-	var red   = %maskedColor(@value, @args._redMask,   @args._redShift,   @args.redCount);
-	var green = %maskedColor(@value, @args._greenMask, @args._greenShift, @args.greenCount);
-	var blue  = %maskedColor(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
-	var alpha = %maskedColor(@value, @args._alphaMask, @args._alphaShift, @args.alphaCount);
-
-	@attr.code = "#"+%str(red, 16, 2)+%str(green, 16, 2)+%str(blue, 16, 2)+ (alpha == 0xff ? "" : %str(alpha, 16, 2));
+	var red   = MaskedColor:(@value, @args._redMask,   @args._redShift,   @args.redCount);
+	var green = MaskedColor:(@value, @args._greenMask, @args._greenShift, @args.greenCount);
+	var blue  = MaskedColor:(@value, @args._blueMask,  @args._blueShift,  @args.blueCount);
+	var alpha = MaskedColor:(@value, @args._alphaMask, @args._alphaShift, @args.alphaCount);
+	if (alpha == 0xff) {
+		@attr.code = Format("#{:x2}{:x2}{:x2}", red, green, blue);
+	} else {
+		@attr.code = Format("#{:x2}{:x2}{:x2}{:x2}", red, green, blue, alpha);
+	}
 }
 
-function getBitfieldRGB(const bitsPerPixel, const bitFieldMasks)
+function GetBitfieldRGB(const bitsPerPixel, const bitFieldMasks)
 {
 	var redMask = bitFieldMasks.RedMask;
-	var redCount = %maskCount(redMask);
-	var redShift = %maskShift(redMask);
+	var redCount = MaskCount:redMask;
+	var redShift = MaskShift:redMask;
 	
 	var greenMask = bitFieldMasks.GreenMask;
-	var greenCount = %maskCount(greenMask);
-	var greenShift = %maskShift(greenMask);
+	var greenCount = MaskCount:greenMask;
+	var greenShift = MaskShift:greenMask;
 	
 	var blueMask = bitFieldMasks.BlueMask;
-	var blueCount = %maskCount(blueMask);
-	var blueShift = %maskShift(blueMask);
+	var blueCount = MaskCount:blueMask;
+	var blueShift = MaskShift:blueMask;
 	
 	var alphaMask = bitFieldMasks.AlphaMask;
-	var alphaCount = %maskCount(alphaMask);
-	var alphaShift = %maskShift(alphaMask);
+	var alphaCount = MaskCount:alphaMask;
+	var alphaShift = MaskShift:alphaMask;
 	
 	if (alphaCount) {
 		return BitfieldRGBA(redCount, greenCount, blueCount, alphaCount, 
@@ -275,7 +277,7 @@ function getBitfieldRGB(const bitsPerPixel, const bitFieldMasks)
 	}
 }
 
-function maskCount (const mask)
+function MaskCount (const mask)
 {
 	var count = 0;
 	
@@ -288,7 +290,7 @@ function maskCount (const mask)
 	return count;
 }
 
-function maskShift (const mask)
+function MaskShift (const mask)
 {
 	if (!mask) {
 		return 0;
@@ -310,7 +312,7 @@ function maskShift (const mask)
 	return shift;
 }
 
-function maskedColor(const input, const mask, const shift, const count)
+function MaskedColor(const input, const mask, const shift, const count)
 {
 	var value = input & mask;
 	if (shift > 0) {
@@ -330,7 +332,7 @@ function maskedColor(const input, const mask, const shift, const count)
 
 class RLEData (version, _size) extends Data(8*_size)
 {
-	while (1) RLEChunk(null, @args.version) *;
+	while (1) RLEChunk(null, @args.version) _;
 }
 
 virtual class RLEChunk(type, version)
@@ -350,7 +352,7 @@ virtual class RLEChunk(type, version)
 		} else {
 			@args.type = "Absolute";
 			@pos = 8;
-			@size = %pad(8 *(Info + 1), 32);
+			@size = Pad:(8 *(Info + 1), 32);
 			if (@args.version == 8) {
 				RGBIndex(8) colors[Info];
 			} else {
@@ -380,7 +382,7 @@ class AbsoluteRun as RLEChunk("Absolute")
 
 
 
-function pad(size, increment)
+function Pad(size, increment)
 {
 	var mod = size % increment; 
 	if (mod != 0) {

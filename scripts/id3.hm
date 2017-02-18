@@ -239,7 +239,7 @@ class ID3v2Tag
 class ID3v2Frames(_size) extends Data(_size)
 {
 	while (1) {
-		ID3v2Frame *;
+		ID3v2Frame _;
 		
 		if (self[].FrameID == "") {
 			break;
@@ -250,7 +250,7 @@ class ID3v2Frames(_size) extends Data(_size)
 class ID3v2OldFrames(_size) extends Data(_size)
 {
 	while (1) {
-		ID3v2OldFrame *;
+		ID3v2OldFrame _;
 		
 		if (self[].FrameID == "") {
 			break;

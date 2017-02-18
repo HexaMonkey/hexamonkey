@@ -25,7 +25,7 @@ class AviFile as File
 {
 	@endianness = "littleEndian";
 	
-	while(1) CHUNK *;
+	while(1) CHUNK _;
 }
 
 class AviRIFF as RIFF("AVI "),
@@ -33,7 +33,7 @@ class AviRIFF as RIFF("AVI "),
 {
     @context.namespace = "AVI";
     while(1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 

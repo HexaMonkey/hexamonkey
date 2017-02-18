@@ -113,7 +113,6 @@ extern int line_number;
 
 {L}{DL}* {yylval.s = strdup(yytext); return IDENT;} 
 "@"{L}{DL}* {yylval.s = strdup(yytext); return A_IDENT;} 
-"%"{L}{DL}* {yylval.s = strdup(yytext+1); return P_IDENT;}
 {WS}+      /* eat up whitespace */   
 [\n]     {++line_number;}                                                                     
 %%

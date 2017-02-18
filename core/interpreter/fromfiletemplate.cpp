@@ -8,7 +8,6 @@
 #include "core/variable/variable.h"
 #include "core/interpreter/fromfileparser.h"
 #include "core/interpreter/blockexecution.h"
-#include "core/variable/functionscope.h"
 #include "core/variable/localscope.h"
 #include "core/variable/typescope.h"
 #include "core/variable/variablecollector.h"

@@ -10,7 +10,7 @@ class MsgPackFile as File
 {
 	@endianness = "bigEndian";
 
-	while(1) MsgPackObject *; // The input file may contain concatenated msg pack objects
+	while(1) MsgPackObject _; // The input file may contain concatenated msg pack objects
 }
 
 virtual class MsgPackObject(byteId)
@@ -48,7 +48,7 @@ forward MsgPackObject(0xc3) to MsgPackBool(1)
 
 // Integer family
 class MsgPackPositiveFixNum as MsgPackObject(0x00) {
-    @value = %int(first_byte & 0b01111111, 10);
+    @value = ToInt:(first_byte & 0b01111111, 10);
 }
 
 class MsgPackNegativeFixNum as MsgPackObject(0xe0) {
@@ -90,7 +90,7 @@ forward MsgPackObject(0xcb) to MsgPackFloat(64)
 
 // String family
 class MsgPackFixStr as MsgPackObject(0xa0) {
-    var length = %int(first_byte & 0b00001111, 10);
+    var length = ToInt:(first_byte & 0b00001111, 10);
     String(length) string;
     @value = string;
 }
@@ -117,7 +117,7 @@ forward MsgPackObject(0xc6) to MsgPackBin(32)
 
 // Array family
 class MsgPackFixArray as MsgPackObject(0x90) {
-    var length = %int(first_byte & 0b00001111);
+    var length = ToInt:(first_byte & 0b00001111);
     @attr.length = length;
     Tuple(MsgPackObject(), length, "item%") array; // don't use standard display to show each item type
 }
@@ -142,7 +142,7 @@ class MsgPackMapEntry {
 }
 
 class MsgPackFixMap as MsgPackObject(0x80) {
-    var length = %int(first_byte & 0b00001111, 10);
+    var length = ToInt:(first_byte & 0b00001111, 10);
 	@attr.length = length;
     MsgPackMapEntry map[length];
 }

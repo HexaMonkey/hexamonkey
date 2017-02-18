@@ -29,13 +29,13 @@ class JpegFile as File,
 	@endianness = "bigEndian";
 	
 	while(1) {
-		MarkerSegment *;
+		MarkerSegment _;
 		if(self[].marker == 0xffda) {
 			break;
 		} 
 	}
-	Data(@size - @pos - 16) *;
-	MarkerSegment *;
+	Data(@size - @pos - 16) _;
+	MarkerSegment _;
 }
 
 virtual class MarkerSegment(symbol)
@@ -105,7 +105,7 @@ class StartOfFrame(info) as MarkerSegment("SOF")
 	uint(16) numberOfLines;
 	uint(16) numberOfSamplesPerLine;
 	uint(8)  numberOfImageComponentsInFrame;
-	FrameComponent *[numberOfImageComponentsInFrame];
+	FrameComponent _ [numberOfImageComponentsInFrame];
 
 	if(marker == 0xffc0) {
 		@attr.type = "Baseline DCT";
@@ -134,7 +134,7 @@ class ScanComponent
 class StartOfScan as MarkerSegment("SOS")
 {
 	uint(8) numberOfImageComponents;
-	ScanComponent * [numberOfImageComponents];
+	ScanComponent _ [numberOfImageComponents];
 	uint(8) startOfSpectralSelection;
 	uint(8) endOfSpectralSelection;
 	uint(4) successiveApproximationBitPositionHigh;
@@ -186,7 +186,7 @@ class HuffmanComponent
 		uint(8) item13 [lengths[0xd]];
 		uint(8) item14 [lengths[0xe]];
 		uint(8) item15 [lengths[0xf]];	
-	} *;
+	} _;
 }
 
 class HuffmanTable as MarkerSegment("DHT")
@@ -245,7 +245,7 @@ class Exif extends ApplicationSegment
 {
     uint(8,16) identifierExtraByte;
     
-    ExifData(@rem) *;    
+    ExifData(@rem) _;    
 }
 
 forward ApplicationSegment(1, "Exif") to Exif

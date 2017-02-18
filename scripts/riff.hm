@@ -23,7 +23,7 @@ import microsoft bmp midi
 class RiffFile as File 
 {
 	@endianness = "littleEndian";
-	while(1) CHUNK *;
+	while(1) CHUNK _;
 }
 
 virtual class CHUNK(code, namespace) 
@@ -34,11 +34,11 @@ virtual class CHUNK(code, namespace)
 	
 	//The fourCC are either four letter codes or
 	//two letters and two digits i
-	var subCode1 = %substr(dwFourCC,0,2);
-	var subCode2 = %substr(dwFourCC,2,2);
-	if (%int(subCode1) != undefined) {
+	var subCode1 = Substring:(dwFourCC,0,2);
+	var subCode2 = Substring:(dwFourCC,2,2);
+	if (ToInt:(subCode1) != undefined) {
 		@args.code = subCode2;
-	} else if (%int(subCode2) != undefined) {
+	} else if (ToInt:(subCode2) != undefined) {
 		@args.code = subCode1;
 	} else {
 		@args.code = dwFourCC;
@@ -48,7 +48,7 @@ virtual class CHUNK(code, namespace)
 
 class ContainerCHUNK extends CHUNK
 {
-    while(1) CHUNK *;
+    while(1) CHUNK _;
 }
 
 virtual class RIFF(code) as CHUNK("RIFF")
@@ -62,7 +62,7 @@ virtual class LIST(code, namespace) as CHUNK("LIST", namespace)
     FOURCC dwFourCC;
     @args.code = dwFourCC;
     while(1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 
@@ -316,13 +316,13 @@ class RdibRIFF as RIFF("RDIB")
 {
     @context.namespace = "DIB";
     while (1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 
 class RdibCHUNK as CHUNK("data", "DIB")
 {
-    BmpData *;
+    BmpData _;
 }
 
 class BitmapHeaderCHUNK as CHUNK("bmhd", "DIB")
@@ -354,20 +354,20 @@ class MidiRiff as RIFF("RMID")
 {
     @context.namespace = "MIDI";
     while(1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 
 class MidiCHUNK as CHUNK("data", "MIDI")
 {
-    MidiData *;
+    MidiData _;
 }
 
 class PaletteRIFF as RIFF("PAL")
 {
     @context.namespace = "PAL";
     while(1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 
@@ -385,7 +385,7 @@ class PalletteEntry
     BYTE peBlue;
     BYTE peFlags;
     
-    @attr.code = "#"+%str(peRed, 16, 2)+%str(peGreen, 16, 2)+%str(peBlue, 16, 2);
+    @attr.code = Format:("#{:x2}{:x2}{:x2}", peRed, peGreen, peBlue);
 }
 
 class PalleteHeaderCHUNK as CHUNK("plth", "PAL")
@@ -423,7 +423,7 @@ class WaveRIFF as RIFF("WAVE")
 {
     @context.namespace = "WAVE";
     while(1) {
-        CHUNK *;
+        CHUNK _;
     }
 }
 

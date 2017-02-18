@@ -54,7 +54,7 @@ class TiffHeader
     } else if (byteOrder == "MM"){
         @endianness = @parent.@endianness = "bigEndian";
     } else {
-        %error("Unrecognized byte order");
+        Error:("Unrecognized byte order");
     }
     uint(16) n42;
     uint(32) OffsetOfInteroperability;
@@ -79,7 +79,6 @@ class IFD(namespace)
             self[].@attr.valueFor = type;
             
             var typeName = type.@name;
-            %log("type name "+type+" "+typeName);
             if (typeName == "StripOffsetsInteroperability" 
              || typeName == "TileOffsetsInteroperability") {
                 chunks.type = typeName == "StripOffsetsInteroperability" ? "strip" : "tile";
@@ -95,7 +94,7 @@ class IFD(namespace)
     
     //compute chunks min and max index
     var n = chunks.count;
-    %log("strip count" + n);
+
     if (chunks.count) {
         var min = 0xffffffff;
         var max = 0;
@@ -110,7 +109,6 @@ class IFD(namespace)
         }
         chunks.offset = min;
         chunks.length = max - min;
-        %log("strip " + chunks.offset + " " + chunks.length);
     } else {
         delete @context._chunks;
     }
@@ -153,7 +151,7 @@ virtual class Interoperability(namespace, tag) extends Data(96)
     
     ...
     valueType = @attr._valueType;
-    var valueSize = %sizeof(valueType);
+    var valueSize = SizeOf:(valueType);
     if (valueSize > @rem) {
         uint(32) valueOffset;
         @linkTo = @context.interabilityReferenceBase + 8 * valueOffset;
