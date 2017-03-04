@@ -91,8 +91,3 @@ void ObjectContext::collect(const std::function<void(VariableMemory&)>& addAcces
         addAccessible(entry.second);
     }
 }
-
-bool ObjectContext::isByRefOnly()
-{
-    return true;
-}

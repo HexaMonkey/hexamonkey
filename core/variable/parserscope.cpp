@@ -136,8 +136,3 @@ Variable ParserScope::doGetField(const Variant &key, bool /*modifiable*/, bool /
     }
     return Variable();
 }
-
-bool ParserScope::isByRefOnly()
-{
-    return true;
-}

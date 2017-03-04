@@ -33,11 +33,6 @@ Variant OwningVariableImplementation::doGetValue()
     return _value;
 }
 
-bool OwningVariableImplementation::isByRefOnly()
-{
-    return false;
-}
-
 
 RefVariableImplementation::RefVariableImplementation(VariableCollector &variableCollector, Variant& value)
     : VariableImplementation(variableCollector), _value(value)
@@ -54,11 +49,6 @@ Variant RefVariableImplementation::doGetValue()
     return _value;
 }
 
-bool RefVariableImplementation::isByRefOnly()
-{
-    return false;
-}
-
 ConstRefVariableImplementation::ConstRefVariableImplementation(VariableCollector &variableCollector, const Variant& value)
     : VariableImplementation(variableCollector), _value(value)
 {
@@ -67,9 +57,4 @@ ConstRefVariableImplementation::ConstRefVariableImplementation(VariableCollector
 Variant ConstRefVariableImplementation::doGetValue()
 {
     return _value;
-}
-
-bool ConstRefVariableImplementation::isByRefOnly()
-{
-    return false;
 }

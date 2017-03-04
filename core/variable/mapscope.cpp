@@ -56,8 +56,3 @@ void MapScope::collect(const std::function<void(VariableMemory&)>& addAccessible
         addAccessible(entry.second);
     }
 }
-
-bool MapScope::isByRefOnly()
-{
-    return true;
-}

@@ -187,11 +187,6 @@ Variable AbstractTypeScope::doGetField(const Variant &key, bool modifiable, bool
     }
 }
 
-bool AbstractTypeScope::isByRefOnly()
-{
-    return true;
-}
-
 TypeScope::TypeScope(VariableCollector& collector, ObjectType &type, bool modifiable)
     : AbstractTypeScope(collector),
       _type(modifiable? &type : nullptr),
