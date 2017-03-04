@@ -133,6 +133,7 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
                 }
 
                 case HMC_AND_ASSIGN_OP:
+<<<<<<< HEAD
                 {
                     Variable a = rightValue(program[1], true, true);
                     a.setValue(a.value() & rightValue(program[2]).value());
@@ -209,6 +210,84 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
                 case HMC_TERNARY_OP:
                 {
+=======
+                {
+                    Variable a = rightValue(program[1], true, true);
+                    a.setValue(a.value() & rightValue(program[2]).value());
+                    return a;
+                }
+
+                case HMC_XOR_ASSIGN_OP:
+                {
+                    Variable a = rightValue(program[1], true, true);
+                    a.setValue(a.value() ^ rightValue(program[2]).value());
+                    return a;
+                }
+
+                case HMC_OR_ASSIGN_OP:
+                {
+                    Variable a = rightValue(program[1], true, true);
+                    a.setValue(a.value() | rightValue(program[2]).value());
+                    return a;
+                }
+
+                case HMC_OR_OP:
+                    return collector().copy(rightValue(program[1]).value() || rightValue(program[2]).value());
+
+                case HMC_AND_OP:
+                    return collector().copy(rightValue(program[1]).value() && rightValue(program[2]).value());
+
+                case HMC_BITWISE_OR_OP:
+                    return collector().copy(rightValue(program[1]).value() | rightValue(program[2]).value());
+
+                case HMC_BITWISE_XOR_OP:
+                    return collector().copy(rightValue(program[1]).value() ^ rightValue(program[2]).value());
+
+                case HMC_BITWISE_AND_OP:
+                    return collector().copy(rightValue(program[1]).value() & rightValue(program[2]).value());
+
+                case HMC_EQ_OP:
+                    return collector().copy(rightValue(program[1]).value() == rightValue(program[2]).value());
+
+                case HMC_NE_OP:
+                    return collector().copy(rightValue(program[1]).value() != rightValue(program[2]).value());
+
+                case HMC_GE_OP:
+                    return collector().copy(rightValue(program[1]).value() >= rightValue(program[2]).value());
+
+                case HMC_GT_OP:
+                    return collector().copy(rightValue(program[1]).value() > rightValue(program[2]).value());
+
+                case HMC_LE_OP:
+                    return collector().copy(rightValue(program[1]).value() <= rightValue(program[2]).value());
+
+                case HMC_LT_OP:
+                    return collector().copy(rightValue(program[1]).value() < rightValue(program[2]).value());
+
+                case HMC_RIGHT_OP:
+                    return collector().copy(rightValue(program[1]).value() >> rightValue(program[2]).value());
+
+                case HMC_LEFT_OP:
+                    return collector().copy(rightValue(program[1]).value() << rightValue(program[2]).value());
+
+                case HMC_ADD_OP:
+                    return collector().copy(rightValue(program[1]).value() + rightValue(program[2]).value());
+
+                case HMC_SUB_OP:
+                    return collector().copy(rightValue(program[1]).value() - rightValue(program[2]).value());
+
+                case HMC_MUL_OP:
+                    return collector().copy(rightValue(program[1]).value() * rightValue(program[2]).value());
+
+                case HMC_DIV_OP:
+                    return collector().copy(rightValue(program[1]).value() / rightValue(program[2]).value());
+
+                case HMC_MOD_OP:
+                    return collector().copy(rightValue(program[1]).value() % rightValue(program[2]).value());
+
+                case HMC_TERNARY_OP:
+                {
+>>>>>>> 5508f166a463e73f6085853aa2f2928fb5c1ea93
                     const int index = rightValue(program[1]).value().toBool() ? 2 : 3;
                     return collector().copy(rightValue(program[index]).value());
                 }
@@ -328,6 +407,26 @@ VariableCollector &Evaluator::collector() const
     return scope.collector();
 }
 
+<<<<<<< HEAD
+=======
+
+Variable Evaluator::ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const
+{
+    switch(op)
+    {
+        case HMC_TERNARY_OP:
+            if(a.value().toBool())
+                return collector().copy(b.value());
+            else
+                return collector().copy(c.value());
+
+        default:
+            break;
+    }
+    return Variable();
+}
+
+>>>>>>> 5508f166a463e73f6085853aa2f2928fb5c1ea93
 Variable Evaluator::variable(const Program &program, bool modifiable, bool createIfNeeded) const
 {
     return scope.field(variablePath(program), modifiable, createIfNeeded);
