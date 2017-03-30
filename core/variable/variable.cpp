@@ -39,9 +39,9 @@ Variable::Variable()
 {
 }
 
-Variable::Variable(VariableImplementation *implementation, bool modifiable, bool byRef)
+Variable::Variable(VariableImplementation *implementation, bool modifiable)
     : _implementation(implementation),
-      _tag(modifiable, byRef)
+      _tag(modifiable)
 
 {
     implementation->collector().registerVariable(implementation);
@@ -155,7 +155,7 @@ Variable Variable::field(const VariablePath &path, bool modifiable, bool createI
     return result;
 }
 
-void Variable::setField(const Variant &key, const Variable &variable) const
+void Variable::setField(const Variant &key, const Variable& variable) const
 {
     if (_tag.flags.modifiable) {
         _implementation->doSetField(key, variable);
@@ -258,7 +258,7 @@ VariableMemory::VariableMemory(const Variable &variable)
 {
 }
 
-VariableTag defaultDefinedTag(true, false);
+VariableTag defaultDefinedTag(true);
 
 VariableMemory::VariableMemory(VariableImplementation *implementation)
     : _implementation(implementation),
@@ -305,11 +305,6 @@ Variable VariableImplementation::doCall(VariableArgs &/*args*/, VariableKeywordA
 {
     Log::warning("Trying call a variable that cannot be called");
     return Variable();
-}
-
-bool VariableImplementation::isByRefOnly()
-{
-    return false;
 }
 
 VariableImplementation::VariableImplementation()

@@ -41,16 +41,19 @@ typedef std::function<void (VariableMemory &)> VariableAdder;
 union VariableTag {
     VariableTag() : data(0) {}
     VariableTag(int32_t data) : data(data) {}
-    VariableTag(bool modifiable, bool byRef) : flags(modifiable, byRef) {}
+    VariableTag(bool modifiable)
+        : flags(modifiable) {}
 
     int32_t data;
     struct Flags {
-        Flags(bool modifiable, bool byRef) : defined(1), modifiable(modifiable), byRef(byRef) {}
+        Flags(bool modifiable)
+            : defined(1),
+              modifiable(modifiable) {
+        }
 
         int8_t defined;
         int8_t modifiable;
-        int8_t byRef;
-        int8_t padding;
+        int16_t padding;
     } flags;
 };
 
@@ -77,7 +80,7 @@ public:
      * @param implementation Must be a new created instance of a subclass of \link VariableImplementation variable implementation\endlink
      * @param modifiable
      */
-    Variable(VariableImplementation* implementation, bool modifiable, bool byRef = false);
+    Variable(VariableImplementation* implementation, bool modifiable);
 
     Variable(const Variable& variable);
     Variable(Variable&& variable);
@@ -137,9 +140,9 @@ public:
     Variable call(VariableArgs& args, VariableKeywordArgs& kwargs) const;
 
     /**
-     * @brief Set the variable as constant which prevents modification of the value
+     * @brief Set the variable as constant which prevents modification of the fields
      */
-    void setConstant()
+    inline void setConstant()
     {
         _tag.flags.modifiable = false;
     }
@@ -151,6 +154,8 @@ public:
     {
         return _tag.flags.defined;
     }
+
+
 
     VariableCollector& collector() const;
 
@@ -212,8 +217,6 @@ protected:
     virtual void doRemoveField(const Variant& key);
 
     virtual Variable doCall(VariableArgs &args, VariableKeywordArgs &kwargs);
-    
-    virtual bool isByRefOnly();
 private:
     VariableImplementation(); /* <--- */ friend class UndefinedVariableImplementation;
 

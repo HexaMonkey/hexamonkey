@@ -12,16 +12,8 @@ Variable ModuleMethod::call(VariableArgs &, VariableKeywordArgs &, VariableColle
 
 void ModuleMethod::fillNumberedArgs(VariableArgs &args, const VariableKeywordArgs &kwargs, VariableCollector &collector) const
 {
-    const size_t nArgs = args.size();
     const size_t nSignature = _signature.size();
     size_t i = 0;
-    for (; i < nArgs && i < nSignature; ++i)
-    {
-        const MethodArgument& argSignature = _signature[i];
-        if (argSignature.constant()) {
-            args[i].setConstant();
-        }
-    }
 
     for (; i < nSignature; ++i)
     {
@@ -31,10 +23,6 @@ void ModuleMethod::fillNumberedArgs(VariableArgs &args, const VariableKeywordArg
             args.push_back(it->second);
         } else {
             args.push_back(collector.copy(argSignature.defaultValue()));
-        }
-
-        if (argSignature.constant()) {
-            args[i].setConstant();
         }
     }
 }
@@ -48,11 +36,7 @@ void ModuleMethod::fillArgs(VariableArgs &args, VariableKeywordArgs &kwargs, Var
     {
         const MethodArgument& argSignature = _signature[i];
         auto it = kwargs.find(argSignature.name());
-        if (it != kwargs.cend()) {
-            if (argSignature.constant()) {
-                it->second.setConstant();
-            }
-        } else {
+        if (it == kwargs.cend()) {
             kwargs[argSignature.name()] = args[i];
         }
     }

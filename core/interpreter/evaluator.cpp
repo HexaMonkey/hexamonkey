@@ -35,32 +35,23 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
             const int op = first.payload().toInteger();
 
             switch(op) {
-                case HMC_NOT_OP:
-                    return collector().copy(!rightValue(program[1]).value());
-
-                case HMC_BITWISE_NOT_OP:
-                    return collector().copy(~rightValue(program[1]).value());
-
-                case HMC_OPP_OP:
-                    return collector().copy(-rightValue(program[1]).value());;
-
                 case HMC_PRE_INC_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value()+1);
                     return a;
                 }
 
                 case HMC_PRE_DEC_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value()-1);
                     return a;
                 }
 
                 case HMC_SUF_INC_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     const Variant& value = a.value();
                     Variable aCopy = collector().copy(value);
                     a.setValue(value + 1);
@@ -69,7 +60,7 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
                 case HMC_SUF_DEC_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     const Variant& value = a.value();
                     Variable aCopy = collector().copy(value);
                     a.setValue(value - 1);
@@ -78,80 +69,89 @@ Variable Evaluator::rightValue(const Program &program, int modifiable, int creat
 
                 case HMC_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_RIGHT_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() >> rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_LEFT_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() << rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_ADD_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() + rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_SUB_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
-                    rightValue(program[1], true, true).setValue(a.value() - rightValue(program[2]).value());
+                    Variable a = variable(program[1], true, true);
+                    a.setValue(a.value() - rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_MUL_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() * rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_DIV_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() / rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_MOD_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() % rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_AND_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() & rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_XOR_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() ^ rightValue(program[2]).value());
                     return a;
                 }
 
                 case HMC_OR_ASSIGN_OP:
                 {
-                    Variable a = rightValue(program[1], true, true);
+                    Variable a = variable(program[1], true, true);
                     a.setValue(a.value() | rightValue(program[2]).value());
                     return a;
                 }
+
+                case HMC_NOT_OP:
+                    return collector().copy(!rightValue(program[1]).value());
+
+                case HMC_BITWISE_NOT_OP:
+                    return collector().copy(~rightValue(program[1]).value());
+
+                case HMC_OPP_OP:
+                    return collector().copy(-rightValue(program[1]).value());
 
                 case HMC_OR_OP:
                     return collector().copy(rightValue(program[1]).value() || rightValue(program[2]).value());
@@ -336,6 +336,8 @@ Variable Evaluator::variable(const Program &program, bool modifiable, bool creat
 Variable Evaluator::assignField(const Program &pathProgram, const Program &rightValueProgram) const
 {
     Variable value = rightValue(rightValueProgram, true);
+
+    value.setConstant();
 
     scope.setField(variablePath(pathProgram), value);
 

@@ -18,7 +18,6 @@ protected:
     virtual Variable doGetField(const Variant &key, bool modifiable, bool createIfNeeded) override;
     virtual void doSetField(const Variant &key, const Variable &variable) override;
     virtual void collect(const std::function<void(VariableMemory&)>& addAccessible) override;
-    virtual bool isByRefOnly() override;
 
 private:
     std::vector<VariableMemory> _fields;

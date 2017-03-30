@@ -123,8 +123,3 @@ void ArrayScope::collect(const std::function<void(VariableMemory&)>& addAccessib
         addAccessible(variableMemory);
     }
 }
-
-bool ArrayScope::isByRefOnly()
-{
-    return true;
-}

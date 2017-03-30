@@ -19,7 +19,7 @@ public:
     /**
      * @brief Evaluate a right value tagged \link Program program node\endlink
      */
-    Variable rightValue(const Program& program, int modifiable = false, int createIfNeeded = false) const;
+    Variable rightValue(const Program& program, int modifiable = false, int createIfNeeded = false ) const;
 
     /**
      * @brief Get the \link VariablePath variable path\endlink of a variable
@@ -35,9 +35,6 @@ public:
 private:
     VariableCollector& collector() const;
 
-    Variable unaryOperation(int op, const Variable& a) const;
-    Variable binaryOperation(int op, const Variable& a, const Variable& b) const;
-    Variable ternaryOperation(int op, const Variable& a, const Variable& b, const Variable& c) const;
     Variable variable(const Program& program, bool modifiable, bool createIfNeeded) const;
     Variable assignField(const Program& path, const Program& rightValue) const;
     Variable arrayScope(const Program& program) const;

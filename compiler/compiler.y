@@ -421,17 +421,21 @@ v_right_value:
 	|variable                                    {push_master(HMC_RIGHT_VALUE, 1);}
    
 right_value:
-     right_value '=' right_value                 {handle_op(HMC_ASSIGN_OP);}
-    |right_value RIGHT_ASSIGN_TOKEN right_value  {handle_op(HMC_RIGHT_ASSIGN_OP);}
-    |right_value LEFT_ASSIGN_TOKEN right_value   {handle_op(HMC_LEFT_ASSIGN_OP);}
-    |right_value ADD_ASSIGN_TOKEN right_value    {handle_op(HMC_ADD_ASSIGN_OP);}
-    |right_value SUB_ASSIGN_TOKEN right_value    {handle_op(HMC_SUB_ASSIGN_OP);}
-    |right_value MUL_ASSIGN_TOKEN right_value    {handle_op(HMC_MUL_ASSIGN_OP);}
-    |right_value DIV_ASSIGN_TOKEN right_value    {handle_op(HMC_DIV_ASSIGN_OP);}
-    |right_value MOD_ASSIGN_TOKEN right_value    {handle_op(HMC_MOD_ASSIGN_OP);}
-    |right_value AND_ASSIGN_TOKEN right_value    {handle_op(HMC_AND_ASSIGN_OP);}
-    |right_value XOR_ASSIGN_TOKEN right_value    {handle_op(HMC_XOR_ASSIGN_OP);}
-    |right_value OR_ASSIGN_TOKEN right_value     {handle_op(HMC_OR_ASSIGN_OP);}
+     variable '=' right_value                    {handle_op(HMC_ASSIGN_OP);}
+    |variable RIGHT_ASSIGN_TOKEN right_value     {handle_op(HMC_RIGHT_ASSIGN_OP);}
+    |variable LEFT_ASSIGN_TOKEN right_value      {handle_op(HMC_LEFT_ASSIGN_OP);}
+    |variable ADD_ASSIGN_TOKEN right_value       {handle_op(HMC_ADD_ASSIGN_OP);}
+    |variable SUB_ASSIGN_TOKEN right_value       {handle_op(HMC_SUB_ASSIGN_OP);}
+    |variable MUL_ASSIGN_TOKEN right_value       {handle_op(HMC_MUL_ASSIGN_OP);}
+    |variable DIV_ASSIGN_TOKEN right_value       {handle_op(HMC_DIV_ASSIGN_OP);}
+    |variable MOD_ASSIGN_TOKEN right_value       {handle_op(HMC_MOD_ASSIGN_OP);}
+    |variable AND_ASSIGN_TOKEN right_value       {handle_op(HMC_AND_ASSIGN_OP);}
+    |variable XOR_ASSIGN_TOKEN right_value       {handle_op(HMC_XOR_ASSIGN_OP);}
+    |variable OR_ASSIGN_TOKEN right_value        {handle_op(HMC_OR_ASSIGN_OP);}
+	|INC_TOKEN variable                          {handle_op(HMC_PRE_INC_OP);}
+    |DEC_TOKEN variable                          {handle_op(HMC_PRE_DEC_OP);}
+    |variable INC_TOKEN %prec SUF_INC            {handle_op(HMC_SUF_INC_OP);}
+    |variable DEC_TOKEN %prec SUF_DEC            {handle_op(HMC_SUF_DEC_OP);}
     |right_value '?' right_value ':' right_value {handle_op(HMC_TERNARY_OP);}
     |right_value OR_TOKEN right_value            {handle_op(HMC_OR_OP);}
     |right_value AND_TOKEN right_value           {handle_op(HMC_AND_OP);}
@@ -454,10 +458,6 @@ right_value:
     |NOT_TOKEN right_value                       {handle_op(HMC_NOT_OP);}
     |BITWISE_NOT_TOKEN  right_value              {handle_op(HMC_BITWISE_NOT_OP);}
     |'-' %prec OPP right_value                   {handle_op(HMC_OPP_OP);}
-    |INC_TOKEN right_value                       {handle_op(HMC_PRE_INC_OP);}
-    |DEC_TOKEN right_value                       {handle_op(HMC_PRE_DEC_OP);}
-    |right_value INC_TOKEN %prec SUF_INC         {handle_op(HMC_SUF_INC_OP);}
-    |right_value DEC_TOKEN %prec SUF_DEC         {handle_op(HMC_SUF_DEC_OP);}
     |constant_value                              {push_master(HMC_RIGHT_VALUE, 1);}
     |variable                                    {push_master(HMC_RIGHT_VALUE, 1);}
     |explicit_type                               {push_master(HMC_RIGHT_VALUE, 1);}
