@@ -373,14 +373,6 @@ int empty()
 stack* current_stashes[] = {NULL, NULL}; 
 int_stack* stashes_counts[] = {NULL, NULL};
 
-void stash(int number)
-{
-	int_stack* s = malloc(sizeof(int_stack));
-	s->i = _stash(number);
-	s->st = stashes_counts[number];
-	stashes_counts[number] = s;
-}
-
 int _stash(int number)
 {
 	stack* s = current_stack;
@@ -396,6 +388,14 @@ int _stash(int number)
 	}
 
 	return result; 
+}
+
+void stash(int number)
+{
+	int_stack* s = malloc(sizeof(int_stack));
+	s->i = _stash(number);
+	s->st = stashes_counts[number];
+	stashes_counts[number] = s;
 }
 
 void unstash(int number)

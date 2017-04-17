@@ -26,7 +26,9 @@ WS          [ \t\r]
 #include "compiler.tab.h"
 #include <string.h>      
 #include "struct.h"                                                               
-extern int line_number;                                                              
+extern int line_number;
+
+void comment();                                                          
 %}                                                                                          
 %option noyywrap                                                                            
  
@@ -117,7 +119,7 @@ extern int line_number;
 [\n]     {++line_number;}                                                                     
 %%
 
-comment()
+void comment()
 {
 	char c, c1;
 

@@ -308,7 +308,7 @@ type_attribute_items:
    |type_attribute_items ',' type_attribute_item {push_master(HMC_TYPE_ATTRIBUTES,2);}
 
 type_attribute_item:
-	identifier ':' right_value {push_master(HMC_TYPE_ATTRIBUTE_ITEM, 2)}
+	identifier ':' right_value {push_master(HMC_TYPE_ATTRIBUTE_ITEM, 2);}
 
 class_definition:
     /*empty*/ {push_master(HMC_EXECUTION_BLOCK, 0);push_master(HMC_EXECUTION_BLOCK, 0); push_master(HMC_CLASS_DEFINITION, 2);}

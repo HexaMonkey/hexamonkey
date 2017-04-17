@@ -60,26 +60,42 @@ to start the program.
 Under Windows
 -------------
 
-Build the .exe files
-You need the version of qt5 with the MinGW compiler to build the project and also cygwin with gcc3, flex, bison and make. Sadly the most recent version of cygwin don't ship gcc3, so you'll have to use the Cygwin time machine (www.fruitbat.org/Cygwin/) to get older version of the packages. So download the cygwin setup file from the official site (www.cygwin.com) and then run 
+### Build compiler
 
-setup-x86.exe -X -S ftp://www.fruitbat.org/pub/cygwin/circa/2012/08/20/222043 -O
+First step is to build compiler which is used to compile hmscript files. For this you can either use GnuWin32 or Cygwin :
+
+#### Option 1: GnuWin32 (recommended)
+
+Install GnuWin32 (http://getgnuwin32.sourceforge.net/) and MinGW (should be provided in with your Qt install) and make sure that the bin folders are in the PATH variable environment. Then you need to browse to open a console, cd to the compiler directory and run
+
+`make`
+
+#### Option 2: Cygwin
+
+Install cygwin with gcc3, flex, bison and make. Sadly the most recent version of cygwin don't ship gcc3, so you'll have to use the Cygwin time machine (www.fruitbat.org/Cygwin/) to get older version of the packages. So download the cygwin setup file from the official site (www.cygwin.com) and then run 
+
+`setup-x86.exe -X -S ftp://www.fruitbat.org/pub/cygwin/circa/2012/08/20/222043 -O`
 
 Follow the installer instructions and select the packages gcc, flex, bison and make. Then you should have all the tools you need to build the project.
 
-First step : in cygwin browse the compiler directory of the source then run
+In cygwin browse the compiler directory of the source then run
 
-make CFLAGS=-mno-cygwin
+`make CFLAGS=-mno-cygwin`
 
-if it doesn't work you may check that gcc in cygwin is pointing to /usr/bin/gcc-3.exe if this is not the case you may change the CC variable in the Makefile and put it to /usr/bin/gcc-3 and then rerun the command.
-Then use qt5 on the file gui/gui.pro open wiht qt creator, then choose a Release configuration before compiling check in your project configuration that shadow build is unchecked then compile with the button or Ctrl+B. 
+if it doesn't work you may check that gcc in cygwin is pointing to /usr/bin/gcc-3.exe.
 
-Build the installer
+### Build Qt project
+
+Install Qt5 with the MinGW compiler to build the project. Open gui/gui.pro with qt creator. Check in your project configuration that shadow build is unchecked then compile with the button or Ctrl+B.
+
+Create windows installer
+========================
+
 Check that all the required DLLs are in a dll directory you have created at the root of the project.
 
 Required DLLs : 
 
-Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
+Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw%VERSION%_32\bin:
 
 - Qt5Core.dll 
 - Qt5Gui.dll 
@@ -94,7 +110,7 @@ Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION\mingw47_32\bin:
 - libstdc++-6.dll
 - libwinpthread-1.dll
 
-Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw47_32\plugins\platform:
+Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw%VERSION%_32\plugins\platform:
 
 - qminimal.dll
 - qwindows.dll
@@ -102,6 +118,6 @@ Found in %QtINSTALLDIR%\Qt%VERSION%\%VERSION%\mingw47_32\plugins\platform:
 
 You need to install wix (available at http://wix.sourceforge.net/) then run in the root of the project (after adding the bin dir of wix to your PATH or run full path to the candle.exe and light.exe instead of just their names.)
 
-candle.exe installer.wxs
+`candle.exe installer.wxs`
 
-light.exe installer.wixobj
+`light.exe installer.wixobj`

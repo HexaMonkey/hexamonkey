@@ -10,17 +10,17 @@ all: hexacompiler expcompiler
 check:
 
 hexacompiler: compiler.yy.o compiler.tab.o
-	$(CC) $(CFLAGS) -o $@ $^
+	gcc $(CFLAGS) -o $@ $^
 
 expcompiler: compilerExp.yy.o compilerExp.tab.o
-	$(CC) $(CFLAGS) -o $@ $^
+	gcc $(CFLAGS) -o $@ $^
 
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $^
+	gcc $(CFLAGS) -o $@ -c $^
 
 %.yy.c: %.flex %.tab.h
-	flex -o $@ $<
+	flex -o$@ $<
 
 %.tab.c %.tab.h: %.y model.h
 	bison -d $<
@@ -45,7 +45,16 @@ model: model.o ../core/util/strutil.o ../core/util/csvreader.o
 
 .PHONY: clean
 clean:
-	rm -f *.o *.exe compilerExp.* compiler.tab.* lex.yy.* lexExp.yy.* model model.h hexacompiler expcompiler ../core/util/strutil.o ../core/util/csvreader.o
+	rm -rf model model.exe model.h model.o
+	rm -f hexacompiler hexacompiler.exe
+	rm -f compiler.tab.c compiler.tab.o
+	rm -f compiler.yy.c compiler.yy.o
+	rm -f expcompiler expcompiler.exe
+	rm -f compilerExp.y compilerExp.flex
+	rm -f compilerExp.tab.c compilerExp.tab.o
+	rm -f compilerExp.yy.c compilerExp.yy.o
+	rm -f ../core/util/strutil.o ../core/util/csvreader.o
+
 distclean: clean
 
 install:

@@ -64,7 +64,7 @@ int uint_size(uint64_t value)
     return size;
 }
 
-write_ebml_int(FILE* file, uint64_t i)
+void write_ebml_int(FILE* file, uint64_t i)
 {
 	int size = ebml_int_size(i);
 	unsigned char* p_first = (char*)&i;
@@ -76,7 +76,7 @@ write_ebml_int(FILE* file, uint64_t i)
 	}
 }
 
-write_int(FILE* file, int64_t i, int size)
+void write_int(FILE* file, int64_t i, int size)
 {
 	unsigned char* p_first = (char*)&i;
 	unsigned char* p_current;
@@ -86,7 +86,7 @@ write_int(FILE* file, int64_t i, int size)
 	}
 }
 
-write_uint(FILE* file, uint64_t u, int size)
+void write_uint(FILE* file, uint64_t u, int size)
 {
 	unsigned char* p_first = (char*)&u;
 	unsigned char* p_current;
@@ -96,14 +96,14 @@ write_uint(FILE* file, uint64_t u, int size)
 	}
 }
 
-write_string(FILE* file, char* s, int size)
+void write_string(FILE* file, char* s, int size)
 {
 	int count;
 	for(count = 0; count < size; count ++)
 		fputc(s[count],file);
 }
 
-write_float(FILE* file, double f)
+void write_float(FILE* file, double f)
 {
 	unsigned char* p_first = (char*)&f;
 	unsigned char* p_current;

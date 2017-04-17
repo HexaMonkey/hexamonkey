@@ -1,4 +1,0 @@
-class Test
-{
-	Pad:(SizeOf: test * width, 32);
-}
